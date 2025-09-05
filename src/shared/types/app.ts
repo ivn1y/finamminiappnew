@@ -1,0 +1,102 @@
+export type UserRole = 'trader' | 'startup' | 'expert' | 'partner';
+
+export interface User {
+  id: string;
+  createdAt: string;
+  role: UserRole | null;
+  profile: {
+    trader?: {
+      years?: number;
+      markets?: string[];
+      risk?: 'low' | 'medium' | 'high';
+    };
+    startup?: {
+      stage?: 'idea' | 'MVP' | 'PMF' | 'Scale';
+      pitch3?: string;
+      site?: string;
+    };
+    expert?: {
+      domain?: string;
+      availabilityHrs?: number;
+      mode?: 'mentor' | 'tracker';
+    };
+    partner?: {
+      type?: 'university' | 'business' | 'media' | 'franchise';
+      interest?: 'white-label' | 'franchise' | 'api';
+    };
+  };
+  intent7d?: string;
+  badges: string[];
+  xp: number;
+  progressSteps: number; // 0..5
+  name?: string;
+}
+
+export interface Badge {
+  id: string;
+  title: string;
+  tooltip: string;
+  icon?: string;
+}
+
+export interface RoleContent {
+  id: UserRole;
+  title: string;
+  subtitle: string;
+  goals7d: string[];
+  firstQuest: {
+    title: string;
+    desc: string;
+    rewardBadge: string;
+  };
+  badges: Badge[];
+  pushes: string[];
+}
+
+export interface EventData {
+  eventMode: boolean;
+  zones: {
+    id: string;
+    name: string;
+    coords: [number, number];
+    qr?: string;
+    prize?: string;
+  }[];
+  schedule: {
+    id: string;
+    title: string;
+    time: string;
+    stage: string;
+    durationMin?: number;
+  }[];
+}
+
+export interface QRRedemption {
+  id: string;
+  userId: string;
+  zoneId: string;
+  code: string;
+  redeemedAt: string;
+}
+
+export interface AnalyticEvent {
+  id: string;
+  userId?: string;
+  name: string;
+  ts: string;
+  props?: Record<string, any>;
+}
+
+export interface AppState {
+  user: User | null;
+  eventMode: boolean;
+  currentTab: 'home' | 'map' | 'chat' | 'profile';
+  isOnboardingComplete: boolean;
+  showQRScanner: boolean;
+}
+
+export interface ChatIntent {
+  id: string;
+  title: string;
+  response: string;
+}

@@ -1,0 +1,155 @@
+---
+description: FastAPI с DDD и Clean Architecture
+globs:
+alwaysApply: false
+---
+
+Вы эксперт в Python, FastAPI, Domain-Driven Design (DDD) и масштабируемой разработке API с чистой архитектурой.
+
+Принципы чистой архитектуры
+Слоевая архитектура (Layered Architecture)
+
+Domain Layer: Бизнес-логика, entities, value objects, domain services
+Application Layer: Use cases, handlers, DTO, application services
+Infrastructure Layer: Репозитории, внешние сервисы, адаптеры
+Presentation Layer: API controllers, middleware, валидация входных данных
+
+Принцип инверсии зависимостей
+
+Внутренние слои не должны зависеть от внешних
+Используйте абстракции (протоколы) для определения интерфейсов
+Реализации должны зависеть от абстракций, а не наоборот
+
+DDD Принципы
+Bounded Contexts
+
+Каждый домен (auth, user) - отдельный bounded context
+Четкое разделение ответственностей между доменами
+Общение между контекстами только через события или API
+
+Общие принципы
+
+Пишите краткие, технические ответы с точными примерами на Python
+Используйте функциональное, декларативное программирование; избегайте классов где возможно (кроме entities и value objects)
+Предпочитайте итерацию и модуляризацию дублированию кода
+Используйте описательные имена переменных с вспомогательными глаголами (e.g., is_active, has_permission)
+Используйте lowercase с подчеркиваниями для директорий и файлов
+Используйте паттерн RORO (Receive an Object, Return an Object)
+
+Python/FastAPI специфика
+
+Используйте def для чистых функций и async def для асинхронных операций
+Используйте type hints для всех сигнатур функций
+Предпочитайте Pydantic модели сырым словарям для валидации
+Структура файлов: экспортируемый роутер, под-роуты, утилиты, статический контент, типы
+
+DDD Guidelines
+
+Entities: Используйте dataclasses или Pydantic models с четкой бизнес-логикой
+Value Objects: Всегда неизменяемые (frozen=True), с валидацией в __post_init__
+Domain Services: Для сложной бизнес-логики, которая не принадлежит entity
+Repositories: Абстракции в domain, реализации в infrastructure
+Use Cases: Единственная точка входа для бизнес-операций
+Events: Используйте для связи между bounded contexts
+
+Обработка ошибок
+
+Используйте доменные исключения для бизнес-правил
+Обрабатывайте ошибки в начале функций (guard clauses)
+Используйте early returns для улучшения читаемости
+Логируйте ошибки и возвращайте пользователю понятные сообщения
+
+Производительность
+
+Минимизируйте блокирующие I/O операции
+Используйте асинхронные операции для всех вызовов БД и внешних API
+Реализуйте кэширование для статических и часто запрашиваемых данных
+Используйте lazy loading для больших datasets
+
+FastAPI специфика
+
+Используйте dependency injection для управления состоянием и ресурсами
+Минимизируйте использование @app.on_event(), предпочитайте lifespan context managers
+Используйте middleware для логирования и мониторинга
+Используйте HTTPException для ожидаемых ошибок
+
+Тестирование
+
+Единичные тесты для domain logic (entities, value objects, services)
+Интеграционные тесты для use cases
+Contract тесты для repositories
+E2E тесты для API endpoints
+
+Следуйте документации FastAPI, SQLAlchemy 2.0 и принципам DDD от Eric Evans для лучших практик.
+
+⚙️ Технологический стек (примерный по необходиости для задачи)
+Язык: Fastapi python
+ORM: SQLAlchemy
+БД: PostgreSQL (разные схемы auth, user)
+EventDriven: Kafka
+
+API: REST 
+
+проект придерживается DDD - примерная структура кода
+
+auth/ (это пример для boundary context auth)
+├── application/
+│   └── use_cases/
+│       ├── login_user.py         # UseCase: логин пользователя
+│       └── register_user.py      # UseCase: регистрация пользователя
+│
+├-- domain  # Authentication Domain
+│   │   │   ├── entities/
+│   │   │   │   ├── session.py
+│   │   │   │   └── auth_token.py
+│   │   │   ├── services/
+│   │   │   │   ├── auth_service.py
+│   │   │   │   └── token_service.py
+│   │   │   └── repositories/
+│   │   │       └── session_repository.py
+├── infrastructure/        # Инфраструктурный слой
+│   │   ├── __init__.py
+│   │   ├── providers/         # Провайдеры авторизации
+│   │   │   ├── __init__.py
+│   │   │   ├── base_provider.py
+│   │   │   ├── clerk_provider.py
+│   │   │   ├── keycloak_provider.py
+│   │   │   └── custom_provider.py
+│   │   ├── repositories/      # Реализации репозиториев
+│   │   │   ├── __init__.py
+│   │   │   ├── database_user_repository.py
+│   │   │   └── redis_session_repository.py
+│   │   └── adapters/          # Внешние адаптеры
+│   │       ├── __init__.py
+│   │       ├── database.py
+│   │       └── redis.py
+│   ├── application/           # Слой приложения
+│   │   ├── __init__.py
+│   │   ├── use_cases/         # Сценарии использования
+│   │   │   ├── __init__.py
+│   │   │   ├── authenticate_user.py
+│   │   │   ├── refresh_token.py
+│   │   │   ├── validate_token.py
+│   │   │   └── logout_user.py
+│   │   ├── dto/               # DTO объекты
+│   │   │   ├── __init__.py
+│   │   │   ├── auth_request.py
+│   │   │   └── auth_response.py
+│   │   └── handlers/          # Обработчики команд
+│   │       ├── __init__.py
+│   │       └── auth_handler.py
+│   └── presentation/          # Слой представления
+│       ├── __init__.py
+│       ├── api/               # REST API
+│       │   ├── __init__.py
+│       │   ├── v1/
+│       │   │   ├── __init__.py
+│       │   │   ├── auth.py
+│       │   │   ├── users.py
+│       │   │   └── health.py
+│       │   └── dependencies.py
+│       └── middleware/        # Middleware
+│           ├── __init__.py
+│           ├── auth_middleware.py
+│           └── cors_middleware.py
+

@@ -1,0 +1,303 @@
+'use client';
+
+import React, { useState } from 'react';
+import { useAppStore } from '@/shared/store/app-store';
+import { roleContent } from '@/shared/data/seed';
+import { 
+  User, 
+  Award, 
+  Target, 
+  Share2, 
+  Edit3, 
+  Star, 
+  Crown,
+  Zap,
+  Shield,
+  Lightbulb,
+  Users,
+  Building2
+} from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
+import { Button } from '@/shared/ui/button';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/shared/ui/dialog';
+import { Input } from '@/shared/ui/input';
+import { Label } from '@/shared/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/shared/ui/select';
+import { Avatar, AvatarFallback } from '@/shared/ui/avatar';
+
+export const ProfilePage: React.FC = () => {
+  const { user, getAllBadges, getProgressPercentage } = useAppStore();
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editData, setEditData] = useState({
+    name: user?.name || '',
+    intent7d: user?.intent7d || ''
+  });
+
+  if (!user || !user.role) return null;
+
+  const role = roleContent.find(r => r.id === user.role);
+  if (!role) return null;
+
+  const allBadges = getAllBadges();
+  const userBadges = allBadges.filter(badge => user.badges.includes(badge.id));
+  const lockedBadges = allBadges.filter(badge => !user.badges.includes(badge.id));
+
+  const getRoleIcon = (roleId: string) => {
+    switch (roleId) {
+      case 'trader': return Target;
+      case 'startup': return Lightbulb;
+      case 'expert': return Users;
+      case 'partner': return Building2;
+      default: return User;
+    }
+  };
+
+  const getBadgeIcon = (badgeId: string) => {
+    switch (badgeId) {
+      case 'explorer': return Star;
+      case 'risk': return Shield;
+      case 'algo': return Zap;
+      case 'pilot': return Target;
+      case 'growth': return Zap;
+      case 'deal': return Crown;
+      case 'owl': return Users;
+      case 'challenger': return Lightbulb;
+      case 'mentor': return Users;
+      case 'integrator': return Building2;
+      case 'builder': return Zap;
+      case 'visionary': return Crown;
+      default: return Award;
+    }
+  };
+
+  const handleSaveEdit = () => {
+    useAppStore.getState().updateUser(editData);
+    setShowEditModal(false);
+  };
+
+  const handleShare = async () => {
+    const shareData = {
+      title: 'Finam Collab',
+      text: `Я участвую в Finam Collab как ${role.title}! Присоединяйся!`,
+      url: window.location.href
+    };
+
+    if (navigator.share) {
+      try {
+        await navigator.share(shareData);
+      } catch (err) {
+        console.log('Error sharing:', err);
+      }
+    } else {
+      // Fallback: copy to clipboard
+      await navigator.clipboard.writeText(shareData.url);
+      // Show toast notification
+      alert('Ссылка скопирована в буфер обмена!');
+    }
+  };
+
+  const RoleIcon = getRoleIcon(user.role!);
+
+  return (
+    <div className="min-h-screen bg-gray-50 p-6 pb-24">
+      <div className="max-w-md mx-auto lg:max-w-4xl xl:max-w-6xl">
+        {/* Avatar */}
+        <div className="text-center mb-6">
+          <div className="relative inline-block">
+            <Avatar className="w-24 h-24 mx-auto mb-4">
+              <AvatarFallback className="bg-gradient-to-br from-blue-600 to-blue-700 text-white">
+                <RoleIcon className="w-12 h-12" />
+              </AvatarFallback>
+            </Avatar>
+            {/* XP indicator */}
+            <div className="absolute -bottom-2 -right-2 bg-yellow-500 text-white text-xs font-bold px-2 py-1 rounded-full">
+              {user.xp} XP
+            </div>
+          </div>
+          
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">
+            {user.name || role.title}
+          </h2>
+          <p className="text-lg text-blue-600 font-medium">{role.subtitle}</p>
+          <p className="text-gray-600 text-base mt-2">
+            Прогресс: {Math.round(getProgressPercentage())}%
+          </p>
+        </div>
+
+        {/* Badges */}
+        <Card className="mb-6">
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-xl">Мои бейджи</CardTitle>
+              <span className="text-base text-gray-500">
+                {userBadges.length}/{allBadges.length}
+              </span>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-2 gap-3 lg:grid-cols-3 xl:grid-cols-4">
+              {/* Earned badges */}
+              {userBadges.map((badge) => {
+                const BadgeIcon = getBadgeIcon(badge.id);
+                return (
+                  <Card
+                    key={badge.id}
+                    className="bg-blue-50 border-2 border-blue-500 text-center"
+                  >
+                    <CardContent className="p-3">
+                      <BadgeIcon className="w-8 h-8 text-blue-600 mx-auto mb-3" />
+                      <h4 className="font-medium text-gray-900 text-base">{badge.title}</h4>
+                      <p className="text-sm text-gray-600 mt-2">{badge.tooltip}</p>
+                    </CardContent>
+                  </Card>
+                );
+              })}
+              
+              {/* Locked badges */}
+              {lockedBadges.map((badge) => {
+                const BadgeIcon = getBadgeIcon(badge.id);
+                return (
+                  <Card
+                    key={badge.id}
+                    className="bg-gray-100 border-2 border-gray-200 text-center opacity-50"
+                  >
+                    <CardContent className="p-3">
+                      <BadgeIcon className="w-8 h-8 text-gray-400 mx-auto mb-3" />
+                      <h4 className="font-medium text-gray-500 text-base">{badge.title}</h4>
+                      <p className="text-sm text-gray-400 mt-2">Заблокировано</p>
+                    </CardContent>
+                  </Card>
+                );
+              })}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* User Data */}
+        <Card className="mb-6">
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-lg">Мои данные</CardTitle>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setShowEditModal(true)}
+              >
+                <Edit3 className="w-5 h-5" />
+              </Button>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              <div>
+                <Label className="text-sm font-medium text-gray-700">
+                  Роль
+                </Label>
+                <p className="text-gray-900 mt-1">{role.title} — {role.subtitle}</p>
+              </div>
+              
+              <div>
+                <Label className="text-sm font-medium text-gray-700">
+                  Цель на 7 дней
+                </Label>
+                <p className="text-gray-900 mt-1">
+                  {user.intent7d || 'Не выбрана'}
+                </p>
+              </div>
+              
+              <div>
+                <Label className="text-sm font-medium text-gray-700">
+                  Опыт
+                </Label>
+                <p className="text-gray-900 mt-1">{user.xp} XP</p>
+              </div>
+              
+              <div>
+                <Label className="text-sm font-medium text-gray-700">
+                  Шаги прогресса
+                </Label>
+                <p className="text-gray-900 mt-1">{user.progressSteps}/5</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Share Button */}
+        <Card>
+          <CardContent className="p-6">
+            <Button
+              onClick={handleShare}
+              variant="ghost"
+              className="w-full flex items-center justify-center space-x-2 text-blue-600 hover:text-blue-700"
+            >
+              <Share2 className="w-5 h-5" />
+              <span>Поделиться</span>
+            </Button>
+          </CardContent>
+        </Card>
+
+        {/* Edit Modal */}
+        <Dialog open={showEditModal} onOpenChange={setShowEditModal}>
+          <DialogContent className="w-full max-w-md">
+            <DialogHeader>
+              <DialogTitle>
+                Редактировать данные
+              </DialogTitle>
+            </DialogHeader>
+            
+            <div className="space-y-4 mb-6">
+              <div>
+                <Label htmlFor="name" className="text-sm font-medium text-gray-700">
+                  Имя
+                </Label>
+                <Input
+                  id="name"
+                  type="text"
+                  value={editData.name}
+                  onChange={(e) => setEditData(prev => ({ ...prev, name: e.target.value }))}
+                  placeholder="Введите имя"
+                  className="mt-2"
+                />
+              </div>
+              
+              <div>
+                <Label htmlFor="intent" className="text-sm font-medium text-gray-700">
+                  Цель на 7 дней
+                </Label>
+                <Select 
+                  value={editData.intent7d} 
+                  onValueChange={(value) => setEditData(prev => ({ ...prev, intent7d: value }))}
+                >
+                  <SelectTrigger className="mt-2">
+                    <SelectValue placeholder="Выберите цель" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {role.goals7d.map((goal, index) => (
+                      <SelectItem key={index} value={goal}>{goal}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            
+            <div className="flex space-x-3">
+              <Button
+                variant="outline"
+                onClick={() => setShowEditModal(false)}
+                className="flex-1"
+              >
+                Отмена
+              </Button>
+              <Button
+                onClick={handleSaveEdit}
+                className="flex-1"
+              >
+                Сохранить
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+      </div>
+    </div>
+  );
+};
