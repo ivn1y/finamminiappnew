@@ -1,5 +1,27 @@
 export type UserRole = 'trader' | 'startup' | 'expert' | 'partner';
 
+export interface GoalProgress {
+  current: number;
+  target: number;
+  daysLeft: number;
+  notes: GoalProgressNote[];
+  milestones: GoalMilestone[];
+}
+
+export interface GoalProgressNote {
+  id: number;
+  text: string;
+  date: string;
+  progress: number;
+}
+
+export interface GoalMilestone {
+  id: number;
+  title: string;
+  completed: boolean;
+  date: string | null;
+}
+
 export interface User {
   id: string;
   createdAt: string;
@@ -26,6 +48,7 @@ export interface User {
     };
   };
   intent7d?: string;
+  goalProgress?: GoalProgress;
   badges: string[];
   xp: number;
   progressSteps: number; // 0..5

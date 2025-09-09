@@ -24,10 +24,12 @@ import { Input } from '@/shared/ui/input';
 import { Label } from '@/shared/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/shared/ui/select';
 import { Avatar, AvatarFallback } from '@/shared/ui/avatar';
+import { GoalWizard, GoalProgressTracker } from '@/features/goal-wizard';
 
 export const ProfilePage: React.FC = () => {
   const { user, getAllBadges, getProgressPercentage } = useAppStore();
   const [showEditModal, setShowEditModal] = useState(false);
+  const [showGoalWizard, setShowGoalWizard] = useState(false);
   const [editData, setEditData] = useState({
     name: user?.name || '',
     intent7d: user?.intent7d || ''
@@ -73,6 +75,15 @@ export const ProfilePage: React.FC = () => {
   const handleSaveEdit = () => {
     useAppStore.getState().updateUser(editData);
     setShowEditModal(false);
+  };
+
+  const handleOpenGoalWizard = () => {
+    setShowGoalWizard(true);
+  };
+
+  const handleGoalSelected = (goal: string) => {
+    // Цель уже сохранена в хуке, здесь можно добавить дополнительную логику
+    console.log('Goal selected:', goal);
   };
 
   const handleShare = async () => {
@@ -197,9 +208,20 @@ export const ProfilePage: React.FC = () => {
               </div>
               
               <div>
-                <Label className="text-sm font-medium text-gray-700">
-                  Цель на 7 дней
-                </Label>
+                <div className="flex items-center justify-between">
+                  <Label className="text-sm font-medium text-gray-700">
+                    Цель на 7 дней
+                  </Label>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={handleOpenGoalWizard}
+                    className="text-blue-600 hover:text-blue-700"
+                  >
+                    <Target className="w-4 h-4 mr-1" />
+                    {user.intent7d ? 'Изменить' : 'Выбрать'}
+                  </Button>
+                </div>
                 <p className="text-gray-900 mt-1">
                   {user.intent7d || 'Не выбрана'}
                 </p>
@@ -221,6 +243,13 @@ export const ProfilePage: React.FC = () => {
             </div>
           </CardContent>
         </Card>
+
+        {/* Goal Progress Tracker */}
+        {user.intent7d && (
+          <div className="mb-6">
+            <GoalProgressTracker onEditGoal={handleOpenGoalWizard} />
+          </div>
+        )}
 
         {/* Share Button */}
         <Card>
@@ -297,6 +326,13 @@ export const ProfilePage: React.FC = () => {
             </div>
           </DialogContent>
         </Dialog>
+
+        {/* Goal Wizard */}
+        <GoalWizard
+          isOpen={showGoalWizard}
+          onClose={() => setShowGoalWizard(false)}
+          onGoalSelected={handleGoalSelected}
+        />
       </div>
     </div>
   );
