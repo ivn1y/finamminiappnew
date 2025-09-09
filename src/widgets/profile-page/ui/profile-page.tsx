@@ -15,7 +15,8 @@ import {
   Shield,
   Lightbulb,
   Users,
-  Building2
+  Building2,
+  RefreshCw
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
 import { Button } from '@/shared/ui/button';
@@ -25,15 +26,15 @@ import { Label } from '@/shared/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/shared/ui/select';
 import { Avatar, AvatarFallback } from '@/shared/ui/avatar';
 import { GoalWizard, GoalProgressTracker } from '@/features/goal-wizard';
+import { ProfileEditModal } from '@/features/profile-edit';
+import { useProfile } from '@/shared/hooks/use-profile';
 
 export const ProfilePage: React.FC = () => {
   const { user, getAllBadges, getProgressPercentage } = useAppStore();
+  const { syncWithApi, isLoading: isProfileLoading } = useProfile();
   const [showEditModal, setShowEditModal] = useState(false);
   const [showGoalWizard, setShowGoalWizard] = useState(false);
-  const [editData, setEditData] = useState({
-    name: user?.name || '',
-    intent7d: user?.intent7d || ''
-  });
+  const [showAdvancedEdit, setShowAdvancedEdit] = useState(false);
 
   if (!user || !user.role) return null;
 
@@ -72,9 +73,35 @@ export const ProfilePage: React.FC = () => {
     }
   };
 
+  const [editData, setEditData] = useState({
+    name: user?.name || '',
+    intent7d: user?.intent7d || ''
+  });
+
+  // Обновляем editData при изменении пользователя
+  React.useEffect(() => {
+    setEditData({
+      name: user?.name || '',
+      intent7d: user?.intent7d || ''
+    });
+  }, [user]);
+
   const handleSaveEdit = () => {
     useAppStore.getState().updateUser(editData);
     setShowEditModal(false);
+  };
+
+  const handleAdvancedEdit = () => {
+    setShowAdvancedEdit(true);
+  };
+
+  const handleProfileSaved = (updatedUser: User) => {
+    useAppStore.getState().setUser(updatedUser);
+    setShowAdvancedEdit(false);
+  };
+
+  const handleSyncProfile = async () => {
+    await syncWithApi();
   };
 
   const handleOpenGoalWizard = () => {
@@ -189,13 +216,24 @@ export const ProfilePage: React.FC = () => {
           <CardHeader>
             <div className="flex items-center justify-between">
               <CardTitle className="text-lg">Мои данные</CardTitle>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => setShowEditModal(true)}
-              >
-                <Edit3 className="w-5 h-5" />
-              </Button>
+              <div className="flex space-x-2">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleSyncProfile}
+                  disabled={isProfileLoading}
+                >
+                  <RefreshCw className={`w-4 h-4 mr-1 ${isProfileLoading ? 'animate-spin' : ''}`} />
+                  Синхронизировать
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={handleAdvancedEdit}
+                >
+                  <Edit3 className="w-5 h-5" />
+                </Button>
+              </div>
             </div>
           </CardHeader>
           <CardContent>
@@ -240,6 +278,109 @@ export const ProfilePage: React.FC = () => {
                 </Label>
                 <p className="text-gray-900 mt-1">{user.progressSteps}/5</p>
               </div>
+
+              {/* Ролевые данные профиля */}
+              {user.profile && user.profile[user.role] && (
+                <div className="mt-4 pt-4 border-t border-gray-200">
+                  <h4 className="text-md font-semibold text-gray-800 mb-3">
+                    Детали профиля
+                  </h4>
+                  <div className="space-y-2">
+                    {user.role === 'trader' && user.profile.trader && (
+                      <>
+                        {user.profile.trader.years && (
+                          <div>
+                            <span className="text-sm text-gray-600">Опыт: </span>
+                            <span className="text-sm text-gray-900">{user.profile.trader.years} лет</span>
+                          </div>
+                        )}
+                        {user.profile.trader.risk && (
+                          <div>
+                            <span className="text-sm text-gray-600">Риск: </span>
+                            <span className="text-sm text-gray-900 capitalize">{user.profile.trader.risk}</span>
+                          </div>
+                        )}
+                        {user.profile.trader.markets && user.profile.trader.markets.length > 0 && (
+                          <div>
+                            <span className="text-sm text-gray-600">Рынки: </span>
+                            <span className="text-sm text-gray-900">{user.profile.trader.markets.join(', ')}</span>
+                          </div>
+                        )}
+                      </>
+                    )}
+                    
+                    {user.role === 'startup' && user.profile.startup && (
+                      <>
+                        {user.profile.startup.stage && (
+                          <div>
+                            <span className="text-sm text-gray-600">Стадия: </span>
+                            <span className="text-sm text-gray-900 capitalize">{user.profile.startup.stage}</span>
+                          </div>
+                        )}
+                        {user.profile.startup.pitch3 && (
+                          <div>
+                            <span className="text-sm text-gray-600">Питч: </span>
+                            <span className="text-sm text-gray-900">{user.profile.startup.pitch3}</span>
+                          </div>
+                        )}
+                        {user.profile.startup.site && (
+                          <div>
+                            <span className="text-sm text-gray-600">Сайт: </span>
+                            <a 
+                              href={user.profile.startup.site} 
+                              target="_blank" 
+                              rel="noopener noreferrer"
+                              className="text-sm text-blue-600 hover:underline"
+                            >
+                              {user.profile.startup.site}
+                            </a>
+                          </div>
+                        )}
+                      </>
+                    )}
+
+                    {user.role === 'expert' && user.profile.expert && (
+                      <>
+                        {user.profile.expert.domain && (
+                          <div>
+                            <span className="text-sm text-gray-600">Область: </span>
+                            <span className="text-sm text-gray-900">{user.profile.expert.domain}</span>
+                          </div>
+                        )}
+                        {user.profile.expert.availabilityHrs && (
+                          <div>
+                            <span className="text-sm text-gray-600">Доступность: </span>
+                            <span className="text-sm text-gray-900">{user.profile.expert.availabilityHrs} ч/нед</span>
+                          </div>
+                        )}
+                        {user.profile.expert.mode && (
+                          <div>
+                            <span className="text-sm text-gray-600">Режим: </span>
+                            <span className="text-sm text-gray-900 capitalize">{user.profile.expert.mode}</span>
+                          </div>
+                        )}
+                      </>
+                    )}
+
+                    {user.role === 'partner' && user.profile.partner && (
+                      <>
+                        {user.profile.partner.type && (
+                          <div>
+                            <span className="text-sm text-gray-600">Тип: </span>
+                            <span className="text-sm text-gray-900 capitalize">{user.profile.partner.type}</span>
+                          </div>
+                        )}
+                        {user.profile.partner.interest && (
+                          <div>
+                            <span className="text-sm text-gray-600">Интерес: </span>
+                            <span className="text-sm text-gray-900 capitalize">{user.profile.partner.interest}</span>
+                          </div>
+                        )}
+                      </>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
           </CardContent>
         </Card>
@@ -332,6 +473,14 @@ export const ProfilePage: React.FC = () => {
           isOpen={showGoalWizard}
           onClose={() => setShowGoalWizard(false)}
           onGoalSelected={handleGoalSelected}
+        />
+
+        {/* Advanced Profile Edit Modal */}
+        <ProfileEditModal
+          isOpen={showAdvancedEdit}
+          onClose={() => setShowAdvancedEdit(false)}
+          user={user}
+          onSave={handleProfileSaved}
         />
       </div>
     </div>
