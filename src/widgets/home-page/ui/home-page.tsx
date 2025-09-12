@@ -9,11 +9,11 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
 import { Button } from '@/shared/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/shared/ui/dialog';
 import { Progress } from '@/shared/ui/progress';
+import { GoalWizard, GoalProgressTracker } from '@/features/goal-wizard';
 
 export const HomePage: React.FC = () => {
-  const { user, eventMode, incrementProgress } = useAppStore();
+  const { user, eventMode } = useAppStore();
   const [showGoalWizard, setShowGoalWizard] = useState(false);
-  const [selectedGoal, setSelectedGoal] = useState('');
 
   if (!user || !user.role) return null;
 
@@ -22,20 +22,13 @@ export const HomePage: React.FC = () => {
 
   const progressPercentage = (user.progressSteps / 5) * 100;
 
-  const handleCompleteProfile = () => {
+  const handleOpenGoalWizard = () => {
     setShowGoalWizard(true);
   };
 
-  const handleGoalSelect = (goal: string) => {
-    setSelectedGoal(goal);
-  };
-
-  const handleGoalSubmit = () => {
-    if (selectedGoal) {
-      useAppStore.getState().updateUser({ intent7d: selectedGoal });
-      incrementProgress();
-      setShowGoalWizard(false);
-    }
+  const handleGoalSelected = (goal: string) => {
+    // Цель уже сохранена в хуке, здесь можно добавить дополнительную логику
+    console.log('Goal selected:', goal);
   };
 
   const progressSteps = [
@@ -95,7 +88,7 @@ export const HomePage: React.FC = () => {
         <div className="space-y-4 mb-6 lg:grid lg:grid-cols-2 lg:gap-6 lg:space-y-0">
           <Card 
             className="cursor-pointer hover:shadow-md transition-shadow"
-            onClick={handleCompleteProfile}
+            onClick={handleOpenGoalWizard}
           >
             <CardContent className="p-6">
               <div className="flex items-center space-x-5">
@@ -103,8 +96,12 @@ export const HomePage: React.FC = () => {
                   <Target className="w-8 h-8 text-blue-600" />
                 </div>
                 <div className="flex-1">
-                  <h3 className="text-lg font-semibold text-gray-900">Заполни профиль</h3>
-                  <p className="text-gray-600 text-base">→ Первый квест</p>
+                  <h3 className="text-lg font-semibold text-gray-900">
+                    {user.intent7d ? 'Изменить цель' : 'Выбрать цель на 7 дней'}
+                  </h3>
+                  <p className="text-gray-600 text-base">
+                    {user.intent7d ? 'Обновить фокус' : '→ Первый квест'}
+                  </p>
                 </div>
                 <ChevronRight className="w-6 h-6 text-gray-400" />
               </div>
@@ -165,6 +162,13 @@ export const HomePage: React.FC = () => {
           </Card>
         </div>
 
+        {/* Goal Progress Tracker */}
+        {user.intent7d && (
+          <div className="mb-6">
+            <GoalProgressTracker onEditGoal={handleOpenGoalWizard} />
+          </div>
+        )}
+
         {/* Daily Quest */}
         <Card>
           <CardContent className="p-6">
@@ -186,44 +190,12 @@ export const HomePage: React.FC = () => {
           </CardContent>
         </Card>
 
-        {/* Goal Wizard Modal */}
-        <Dialog open={showGoalWizard} onOpenChange={setShowGoalWizard}>
-          <DialogContent className="w-full max-w-md">
-            <DialogHeader>
-              <DialogTitle>Цель на 7 дней</DialogTitle>
-            </DialogHeader>
-            
-            <div className="space-y-3 mb-6">
-              {role.goals7d.map((goal, index) => (
-                <Button
-                  key={index}
-                  variant={selectedGoal === goal ? "default" : "outline"}
-                  onClick={() => handleGoalSelect(goal)}
-                  className="w-full text-left justify-start h-auto p-3"
-                >
-                  {goal}
-                </Button>
-              ))}
-            </div>
-            
-            <div className="flex space-x-3">
-              <Button
-                variant="outline"
-                onClick={() => setShowGoalWizard(false)}
-                className="flex-1"
-              >
-                Отмена
-              </Button>
-              <Button
-                onClick={handleGoalSubmit}
-                disabled={!selectedGoal}
-                className="flex-1"
-              >
-                Готово
-              </Button>
-            </div>
-          </DialogContent>
-        </Dialog>
+        {/* Goal Wizard */}
+        <GoalWizard
+          isOpen={showGoalWizard}
+          onClose={() => setShowGoalWizard(false)}
+          onGoalSelected={handleGoalSelected}
+        />
       </div>
     </div>
   );
