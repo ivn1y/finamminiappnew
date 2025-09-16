@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { useAppStore } from '@/shared/store/app-store';
-import { roleContent } from '@/shared/data/seed';
+import { roleContent, eventData } from '@/shared/data/seed';
 import { 
   User, 
   Award, 
@@ -16,7 +16,9 @@ import {
   Lightbulb,
   Users,
   Building2,
-  RefreshCw
+  RefreshCw,
+  MapPin,
+  CheckCircle
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
 import { Button } from '@/shared/ui/button';
@@ -36,7 +38,33 @@ export const ProfilePage: React.FC = () => {
   const [showGoalWizard, setShowGoalWizard] = useState(false);
   const [showAdvancedEdit, setShowAdvancedEdit] = useState(false);
 
-  if (!user || !user.role) return null;
+  if (!user || !user.role) {
+    return (
+      <div className="min-h-screen bg-gray-50 p-6 pb-24 flex items-center justify-center">
+        <Card className="w-full max-w-md">
+          <CardHeader>
+            <CardTitle className="text-center">Пользователь не найден</CardTitle>
+          </CardHeader>
+          <CardContent className="text-center">
+            <p className="text-gray-600 mb-4">
+              Данные пользователя не загружены. Нажмите кнопку для инициализации.
+            </p>
+            <Button onClick={handleResetData} className="w-full">
+              Инициализировать пользователя
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  // Отладочная информация
+  console.log('🔍 ProfilePage: Данные пользователя:', {
+    user,
+    scannedZones: user.scannedZones,
+    badges: user.badges,
+    xp: user.xp
+  });
 
   const role = roleContent.find(r => r.id === user.role);
   if (!role) return null;
@@ -57,6 +85,7 @@ export const ProfilePage: React.FC = () => {
 
   const getBadgeIcon = (badgeId: string) => {
     switch (badgeId) {
+      case 'qr_scanner_badge': return Target; // QR-сканер
       case 'explorer': return Star;
       case 'risk': return Shield;
       case 'algo': return Zap;
@@ -132,6 +161,63 @@ export const ProfilePage: React.FC = () => {
       // Show toast notification
       alert('Ссылка скопирована в буфер обмена!');
     }
+  };
+
+  const handleResetData = () => {
+    // Reset user data to initial state
+    const newUser = {
+      id: `user_${Date.now()}`,
+      createdAt: new Date().toISOString(),
+      role: 'trader' as const,
+      profile: {},
+      badges: ['explorer', 'qr_scanner_badge'],
+      xp: 300,
+      progressSteps: 2,
+      scannedZones: ['finam-a', 'startup-zone'],
+      intent7d: 'Получить доступ к платформе автоследования',
+      goalProgress: {
+        current: 10,
+        target: 100,
+        daysLeft: 7,
+        notes: [
+          {
+            id: 1,
+            text: 'прогресс',
+            date: new Date().toISOString(),
+            progress: 10
+          }
+        ],
+        milestones: [
+          {
+            id: 1,
+            title: 'Начало работы',
+            completed: true,
+            date: '2024-01-01'
+          },
+          {
+            id: 2,
+            title: 'Первый результат',
+            completed: false,
+            date: null
+          },
+          {
+            id: 3,
+            title: 'Промежуточная проверка',
+            completed: false,
+            date: null
+          },
+          {
+            id: 4,
+            title: 'Завершение цели',
+            completed: false,
+            date: null
+          }
+        ]
+      }
+    };
+    
+    console.log('🔄 ProfilePage: Сброс данных пользователя:', newUser);
+    useAppStore.getState().setUser(newUser);
   };
 
   const RoleIcon = getRoleIcon(user.role!);
@@ -211,6 +297,46 @@ export const ProfilePage: React.FC = () => {
           </CardContent>
         </Card>
 
+        {/* Scanned Zones */}
+        {user.scannedZones && user.scannedZones.length > 0 && (
+          <Card className="mb-6">
+            <CardHeader>
+              <CardTitle className="text-xl flex items-center space-x-2">
+                <MapPin className="w-5 h-5" />
+                <span>Отсканированные зоны</span>
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                {user.scannedZones.map((zoneId) => {
+                  const zone = eventData.zones.find(z => z.id === zoneId);
+                  if (!zone) return null;
+                  
+                  return (
+                    <div
+                      key={zoneId}
+                      className="flex items-center justify-between p-3 bg-green-50 border border-green-200 rounded-lg"
+                    >
+                      <div className="flex items-center space-x-3">
+                        <CheckCircle className="w-5 h-5 text-green-600" />
+                        <div>
+                          <h4 className="font-medium text-gray-900">{zone.name}</h4>
+                          {zone.prize && (
+                            <p className="text-sm text-green-600">Приз: {zone.prize}</p>
+                          )}
+                        </div>
+                      </div>
+                      <div className="text-xs text-gray-500">
+                        QR: {zone.qr}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
         {/* User Data */}
         <Card className="mb-6">
           <CardHeader>
@@ -232,6 +358,14 @@ export const ProfilePage: React.FC = () => {
                   onClick={handleAdvancedEdit}
                 >
                   <Edit3 className="w-5 h-5" />
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleResetData}
+                  className="ml-2"
+                >
+                  Сбросить данные
                 </Button>
               </div>
             </div>

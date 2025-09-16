@@ -4,9 +4,9 @@ import type { AuthConfig } from './types'
 
 export function createNextAuthHandler(config: AuthConfig) {
   console.log('[NextAuth] Creating handler with config:', {
-    secret: config.secret ? '***' : 'MISSING',
-    telegramBotToken: config.telegramBotToken ? '***' : 'MISSING',
-    apiBaseUrl: config.apiBaseUrl || 'MISSING',
+    secret: config.secret ? '***' : 'DEFAULT',
+    telegramBotToken: config.telegramBotToken ? '***' : 'DEFAULT',
+    apiBaseUrl: config.apiBaseUrl || 'DEFAULT',
   })
 
   return NextAuth({

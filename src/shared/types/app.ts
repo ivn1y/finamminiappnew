@@ -53,6 +53,7 @@ export interface User {
   xp: number;
   progressSteps: number; // 0..5
   name?: string;
+  scannedZones?: string[]; // ID отсканированных зон
 }
 
 export interface Badge {
