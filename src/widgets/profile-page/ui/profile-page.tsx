@@ -28,6 +28,7 @@ import { Avatar, AvatarFallback } from '@/shared/ui/avatar';
 import { GoalWizard, GoalProgressTracker } from '@/features/goal-wizard';
 import { ProfileEditModal } from '@/features/profile-edit';
 import { useProfile } from '@/shared/hooks/use-profile';
+import { BadgeInfoTooltip } from '@/shared/ui/badge-info-tooltip';
 
 export const ProfilePage: React.FC = () => {
   const { user, getAllBadges, getProgressPercentage } = useAppStore();
@@ -180,9 +181,12 @@ export const ProfilePage: React.FC = () => {
                 return (
                   <Card
                     key={badge.id}
-                    className="bg-blue-50 border-2 border-blue-500 text-center"
+                    className="bg-blue-50 border-2 border-blue-500 text-center relative"
                   >
                     <CardContent className="p-3">
+                      <div className="absolute top-2 right-2">
+                        <BadgeInfoTooltip badge={badge} isEarned={true} />
+                      </div>
                       <BadgeIcon className="w-8 h-8 text-blue-600 mx-auto mb-3" />
                       <h4 className="font-medium text-gray-900 text-base">{badge.title}</h4>
                       <p className="text-sm text-gray-600 mt-2">{badge.tooltip}</p>
@@ -197,9 +201,12 @@ export const ProfilePage: React.FC = () => {
                 return (
                   <Card
                     key={badge.id}
-                    className="bg-gray-100 border-2 border-gray-200 text-center opacity-50"
+                    className="bg-gray-100 border-2 border-gray-200 text-center opacity-50 relative"
                   >
                     <CardContent className="p-3">
+                      <div className="absolute top-2 right-2">
+                        <BadgeInfoTooltip badge={badge} isEarned={false} />
+                      </div>
                       <BadgeIcon className="w-8 h-8 text-gray-400 mx-auto mb-3" />
                       <h4 className="font-medium text-gray-500 text-base">{badge.title}</h4>
                       <p className="text-sm text-gray-400 mt-2">Заблокировано</p>

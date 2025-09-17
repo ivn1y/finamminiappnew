@@ -60,6 +60,7 @@ export interface Badge {
   title: string;
   tooltip: string;
   icon?: string;
+  howToEarn: string;
 }
 
 export interface RoleContent {
