@@ -1,7 +1,12 @@
 import { RoleContent, Badge, EventData, ChatIntent } from '../types/app';
 
 export const globalBadges: Badge[] = [
-  { id: 'explorer', title: 'Исследователь', tooltip: 'Первый шаг в Collab сделан' }
+  { 
+    id: 'explorer', 
+    title: 'Исследователь', 
+    tooltip: 'Первый шаг в Collab сделан',
+    howToEarn: 'Заверши онбординг и выбери свою роль в экосистеме'
+  }
 ];
 
 export const roleContent: RoleContent[] = [
@@ -20,9 +25,24 @@ export const roleContent: RoleContent[] = [
       rewardBadge: 'Risk Manager'
     },
     badges: [
-      { id: 'risk', title: 'Risk Manager', tooltip: 'Точно знаешь свой риск-профиль' },
-      { id: 'algo', title: 'Algo-Creator', tooltip: 'Создаёшь стратегии на алгоритмах' },
-      { id: 'explorer', title: 'Market Explorer', tooltip: 'Изучаешь новые рынки' }
+      { 
+        id: 'risk', 
+        title: 'Risk Manager', 
+        tooltip: 'Точно знаешь свой риск-профиль',
+        howToEarn: 'Заполни свой риск-профиль в настройках профиля'
+      },
+      { 
+        id: 'algo', 
+        title: 'Algo-Creator', 
+        tooltip: 'Создаёшь стратегии на алгоритмах',
+        howToEarn: 'Создай свою первую торговую стратегию в тестовой среде'
+      },
+      { 
+        id: 'explorer', 
+        title: 'Market Explorer', 
+        tooltip: 'Изучаешь новые рынки',
+        howToEarn: 'Изучи и протестируй торговлю на 3 разных рынках'
+      }
     ],
     pushes: [
       'Проверим твою выдержку? Заполни риск-профиль →',
@@ -44,9 +64,24 @@ export const roleContent: RoleContent[] = [
       rewardBadge: 'Pilot Starter'
     },
     badges: [
-      { id: 'pilot', title: 'Pilot Starter', tooltip: 'Запустил первый пилот' },
-      { id: 'growth', title: 'Growth Hacker', tooltip: 'Нашёл нестандартный путь к росту' },
-      { id: 'deal', title: 'Deal Closer', tooltip: 'Закрыл сделку с партнёром' }
+      { 
+        id: 'pilot', 
+        title: 'Pilot Starter', 
+        tooltip: 'Запустил первый пилот',
+        howToEarn: 'Найди и запусти пилотный проект с партнёром'
+      },
+      { 
+        id: 'growth', 
+        title: 'Growth Hacker', 
+        tooltip: 'Нашёл нестандартный путь к росту',
+        howToEarn: 'Реализуй креативную стратегию роста и покажи результаты'
+      },
+      { 
+        id: 'deal', 
+        title: 'Deal Closer', 
+        tooltip: 'Закрыл сделку с партнёром',
+        howToEarn: 'Заключи первую коммерческую сделку через платформу'
+      }
     ],
     pushes: [
       'Challenge: опиши проект тремя словами →',
@@ -68,9 +103,24 @@ export const roleContent: RoleContent[] = [
       rewardBadge: 'Wise Owl'
     },
     badges: [
-      { id: 'owl', title: 'Wise Owl', tooltip: 'Делишься опытом и видением' },
-      { id: 'challenger', title: 'Idea Challenger', tooltip: 'Помогаешь проверять гипотезы' },
-      { id: 'mentor', title: 'Mentor+', tooltip: 'Поддерживаешь команды на пути к рынку' }
+      { 
+        id: 'owl', 
+        title: 'Wise Owl', 
+        tooltip: 'Делишься опытом и видением',
+        howToEarn: 'Выбери роль ментора или трекера в настройках профиля'
+      },
+      { 
+        id: 'challenger', 
+        title: 'Idea Challenger', 
+        tooltip: 'Помогаешь проверять гипотезы',
+        howToEarn: 'Проведи 5 экспертных оценок проектов в чате'
+      },
+      { 
+        id: 'mentor', 
+        title: 'Mentor+', 
+        tooltip: 'Поддерживаешь команды на пути к рынку',
+        howToEarn: 'Стань ментором для 3 команд и помоги им достичь целей'
+      }
     ],
     pushes: [
       'Миссия: оцени идею, которую мы пришлём завтра',
@@ -92,9 +142,24 @@ export const roleContent: RoleContent[] = [
       rewardBadge: 'Integrator'
     },
     badges: [
-      { id: 'integrator', title: 'Integrator', tooltip: 'Соединяешь решения в экосистеме' },
-      { id: 'builder', title: 'Builder', tooltip: 'Запустил новый продукт с Collab' },
-      { id: 'visionary', title: 'Visionary', tooltip: 'Формируешь стратегию будущего' }
+      { 
+        id: 'integrator', 
+        title: 'Integrator', 
+        tooltip: 'Соединяешь решения в экосистеме',
+        howToEarn: 'Выбери пакет партнёрства и заверши процесс интеграции'
+      },
+      { 
+        id: 'builder', 
+        title: 'Builder', 
+        tooltip: 'Запустил новый продукт с Collab',
+        howToEarn: 'Запусти свой продукт в витрине Collab и получи первые пользователей'
+      },
+      { 
+        id: 'visionary', 
+        title: 'Visionary', 
+        tooltip: 'Формируешь стратегию будущего',
+        howToEarn: 'Прими участие в формировании стратегии развития экосистемы'
+      }
     ],
     pushes: [
       'Выбери пакет и получи чек-лист онбординга',
