@@ -3,7 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, Map, MessageCircle, User } from 'lucide-react';
+import { Home, Map, MessageCircle, User, Calendar } from 'lucide-react';
 
 export const BottomNavigation: React.FC = () => {
   const pathname = usePathname();
@@ -11,6 +11,7 @@ export const BottomNavigation: React.FC = () => {
   const tabs = [
     { id: 'home', label: 'Главная', icon: Home, href: '/collab/home' },
     { id: 'map', label: 'Карта', icon: Map, href: '/collab/map' },
+    { id: 'schedule', label: 'Расписание', icon: Calendar, href: '/collab/schedule' },
     { id: 'chat', label: 'Чат', icon: MessageCircle, href: '/collab/chat' },
     { id: 'profile', label: 'Я', icon: User, href: '/collab/profile' }
   ];
