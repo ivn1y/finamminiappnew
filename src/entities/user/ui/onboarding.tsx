@@ -54,7 +54,7 @@ export const Onboarding: React.FC = () => {
         trader: {
           years: 3,
           markets: ['Форекс', 'Акции'],
-          risk: 'medium'
+          risk: 'medium' as const
         }
       },
       badges: ['explorer'],

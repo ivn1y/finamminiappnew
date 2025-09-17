@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { useAppStore } from '@/shared/store/app-store';
 import { roleContent } from '@/shared/data/seed';
 import { 
-  User, 
+  User as UserIcon, 
   Award, 
   Target, 
   Share2, 
@@ -29,6 +29,7 @@ import { GoalWizard, GoalProgressTracker } from '@/features/goal-wizard';
 import { ProfileEditModal } from '@/features/profile-edit';
 import { useProfile } from '@/shared/hooks/use-profile';
 import { BadgeInfoTooltip } from '@/shared/ui/badge-info-tooltip';
+import { User } from '@/shared/types/app';
 
 export const ProfilePage: React.FC = () => {
   const { user, getAllBadges, getProgressPercentage } = useAppStore();
@@ -52,7 +53,7 @@ export const ProfilePage: React.FC = () => {
       case 'startup': return Lightbulb;
       case 'expert': return Users;
       case 'partner': return Building2;
-      default: return User;
+      default: return UserIcon;
     }
   };
 

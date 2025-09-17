@@ -111,7 +111,8 @@ export const ProfileEditForm: React.FC<ProfileEditFormProps> = ({
                 type="number"
                 min="0"
                 max="50"
-                value={roleProfile.years || ''}
+                // так не делаем
+                value={(roleProfile as { years?: number })?.years || ''}
                 onChange={(e) => handleProfileChange('trader', 'years', parseInt(e.target.value) || 0)}
                 placeholder="Введите количество лет"
                 className="mt-2"
@@ -123,7 +124,7 @@ export const ProfileEditForm: React.FC<ProfileEditFormProps> = ({
                 Уровень риска
               </Label>
               <Select
-                value={roleProfile.risk || ''}
+                value={(roleProfile as { risk?: string })?.risk || ''}
                 onValueChange={(value) => handleProfileChange('trader', 'risk', value)}
               >
                 <SelectTrigger className="mt-2">
@@ -144,7 +145,7 @@ export const ProfileEditForm: React.FC<ProfileEditFormProps> = ({
               <Input
                 id="trader-markets"
                 type="text"
-                value={Array.isArray(roleProfile.markets) ? roleProfile.markets.join(', ') : ''}
+                value={"markets" in roleProfile && Array.isArray(roleProfile?.markets) ? roleProfile?.markets.join(', ') : ''}
                 onChange={(e) => handleProfileChange('trader', 'markets', e.target.value.split(',').map(s => s.trim()).filter(Boolean))}
                 placeholder="forex, crypto, stocks"
                 className="mt-2"
@@ -163,7 +164,7 @@ export const ProfileEditForm: React.FC<ProfileEditFormProps> = ({
                 Стадия проекта
               </Label>
               <Select
-                value={roleProfile.stage || ''}
+                value={(roleProfile as { stage?: string })?.stage || ''}
                 onValueChange={(value) => handleProfileChange('startup', 'stage', value)}
               >
                 <SelectTrigger className="mt-2">
@@ -186,7 +187,7 @@ export const ProfileEditForm: React.FC<ProfileEditFormProps> = ({
                 id="startup-pitch"
                 type="text"
                 maxLength={100}
-                value={roleProfile.pitch3 || ''}
+                value={(roleProfile as { pitch3?: string })?.pitch3 || ''}
                 onChange={(e) => handleProfileChange('startup', 'pitch3', e.target.value)}
                 placeholder="Опишите проект тремя словами"
                 className="mt-2"
@@ -200,7 +201,7 @@ export const ProfileEditForm: React.FC<ProfileEditFormProps> = ({
               <Input
                 id="startup-site"
                 type="url"
-                value={roleProfile.site || ''}
+                value={(roleProfile as { site?: string })?.site || ''}
                 onChange={(e) => handleProfileChange('startup', 'site', e.target.value)}
                 placeholder="https://example.com"
                 className="mt-2"
@@ -221,7 +222,7 @@ export const ProfileEditForm: React.FC<ProfileEditFormProps> = ({
               <Input
                 id="expert-domain"
                 type="text"
-                value={roleProfile.domain || ''}
+                value={(roleProfile as { domain?: string })?.domain || ''}
                 onChange={(e) => handleProfileChange('expert', 'domain', e.target.value)}
                 placeholder="Финансы, технологии, маркетинг..."
                 className="mt-2"
@@ -237,7 +238,7 @@ export const ProfileEditForm: React.FC<ProfileEditFormProps> = ({
                 type="number"
                 min="0"
                 max="40"
-                value={roleProfile.availabilityHrs || ''}
+                value={(roleProfile as { availabilityHrs?: number })?.availabilityHrs || ''}
                 onChange={(e) => handleProfileChange('expert', 'availabilityHrs', parseInt(e.target.value) || 0)}
                 placeholder="Введите количество часов"
                 className="mt-2"
@@ -249,7 +250,7 @@ export const ProfileEditForm: React.FC<ProfileEditFormProps> = ({
                 Режим работы
               </Label>
               <Select
-                value={roleProfile.mode || ''}
+                value={(roleProfile as { mode?: string })?.mode || ''}
                 onValueChange={(value) => handleProfileChange('expert', 'mode', value)}
               >
                 <SelectTrigger className="mt-2">
@@ -274,7 +275,7 @@ export const ProfileEditForm: React.FC<ProfileEditFormProps> = ({
                 Тип партнёра
               </Label>
               <Select
-                value={roleProfile.type || ''}
+                value={(roleProfile as { type?: string })?.type || ''}
                 onValueChange={(value) => handleProfileChange('partner', 'type', value)}
               >
                 <SelectTrigger className="mt-2">
@@ -294,7 +295,7 @@ export const ProfileEditForm: React.FC<ProfileEditFormProps> = ({
                 Область интереса
               </Label>
               <Select
-                value={roleProfile.interest || ''}
+                value={(roleProfile as { interest?: string })?.interest || ''}
                 onValueChange={(value) => handleProfileChange('partner', 'interest', value)}
               >
                 <SelectTrigger className="mt-2">

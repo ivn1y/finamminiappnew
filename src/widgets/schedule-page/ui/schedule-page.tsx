@@ -79,7 +79,7 @@ export const SchedulePage: React.FC = () => {
               {blocks.map((block) => (
                 <button
                   key={block}
-                  onClick={() => setSelectedBlock(block)}
+                  onClick={() => block && setSelectedBlock(block)}
                   className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                     selectedBlock === block
                       ? 'bg-blue-600 text-white'
