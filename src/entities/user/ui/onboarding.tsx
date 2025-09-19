@@ -168,7 +168,7 @@ export const Onboarding: React.FC = () => {
                 <select
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   value={profileData.years || ''}
-                  onChange={(e) => handleInputChange('years', parseInt(e.target.value))}
+                  onChange={(e) => handleInputChange('years', e.target.value)}
                 >
                   <option value="">Выбери опыт</option>
                   <option value="0">Меньше года</option>
@@ -206,9 +206,152 @@ export const Onboarding: React.FC = () => {
               </div>
             </div>
           );
-        // Добавить остальные роли по аналогии...
+
+        case 'startup':
+          return (
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  На какой стадии твой проект?
+                </label>
+                <select
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  value={profileData.stage || ''}
+                  onChange={(e) => handleInputChange('stage', e.target.value)}
+                >
+                  <option value="">Выбери стадию</option>
+                  <option value="idea">Идея</option>
+                  <option value="mvp">MVP</option>
+                  <option value="growth">Рост</option>
+                  <option value="scale">Масштабирование</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Опиши свой продукт в трех словах
+                </label>
+                <input
+                  type="text"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Быстро, удобно, эффективно"
+                  value={profileData.description || ''}
+                  onChange={(e) => handleInputChange('description', e.target.value)}
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Какая у тебя цель на 7 дней?
+                </label>
+                <input
+                  type="text"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Найти пилота с Финам"
+                  value={profileData.goal || ''}
+                  onChange={(e) => handleInputChange('goal', e.target.value)}
+                />
+              </div>
+            </div>
+          );
+
+        case 'expert':
+          return (
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Кем ты хочешь быть в Collab?
+                </label>
+                <select
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  value={profileData.expertType || ''}
+                  onChange={(e) => handleInputChange('expertType', e.target.value)}
+                >
+                  <option value="">Выбери роль</option>
+                  <option value="mentor">Ментор</option>
+                  <option value="tracker">Трекер</option>
+                  <option value="council">Совет директоров</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  В какой области твоя экспертиза?
+                </label>
+                <input
+                  type="text"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Финансы, технологии, маркетинг..."
+                  value={profileData.expertise || ''}
+                  onChange={(e) => handleInputChange('expertise', e.target.value)}
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Сколько лет опыта в этой области?
+                </label>
+                <select
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  value={profileData.experience || ''}
+                  onChange={(e) => handleInputChange('experience', e.target.value)}
+                >
+                  <option value="">Выбери опыт</option>
+                  <option value="1-3">1-3 года</option>
+                  <option value="3-5">3-5 лет</option>
+                  <option value="5-10">5-10 лет</option>
+                  <option value="10+">Больше 10 лет</option>
+                </select>
+              </div>
+            </div>
+          );
+
+        case 'partner':
+          return (
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Что тебя интересует?
+                </label>
+                <select
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  value={profileData.partnershipType || ''}
+                  onChange={(e) => handleInputChange('partnershipType', e.target.value)}
+                >
+                  <option value="">Выбери пакет</option>
+                  <option value="franchise">Франшиза</option>
+                  <option value="white-label">White-label</option>
+                  <option value="api">API интеграция</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Опиши свой продукт/услугу
+                </label>
+                <textarea
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 h-20"
+                  placeholder="Расскажи о том, что ты предлагаешь..."
+                  value={profileData.description || ''}
+                  onChange={(e) => handleInputChange('description', e.target.value)}
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Какая у тебя цель на 7 дней?
+                </label>
+                <input
+                  type="text"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Запустить white-label решение"
+                  value={profileData.goal || ''}
+                  onChange={(e) => handleInputChange('goal', e.target.value)}
+                />
+              </div>
+            </div>
+          );
+
         default:
-          return null;
+          return (
+            <div className="text-center py-8">
+              <p className="text-gray-500">Форма для этой роли пока не готова</p>
+            </div>
+          );
       }
     };
 
