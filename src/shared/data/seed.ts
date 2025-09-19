@@ -2,6 +2,12 @@ import { RoleContent, Badge, EventData, ChatIntent, ScheduleData } from '../type
 
 export const globalBadges: Badge[] = [
   { 
+    id: 'qr_scanner_badge', 
+    title: 'QR-Сканер', 
+    tooltip: 'QR-код отсканирован! (+50 XP)',
+    howToEarn: 'Отсканируй QR-код на мероприятии'
+  },
+  { 
     id: 'explorer', 
     title: 'Исследователь', 
     tooltip: 'Первый шаг в Collab сделан',

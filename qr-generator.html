@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Code Generator для тестирования</title>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .input-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-right: 10px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .qr-container {
+            text-align: center;
+            margin-top: 30px;
+        }
+        #qrcode {
+            display: inline-block;
+            margin: 20px 0;
+        }
+        .preset-buttons {
+            margin-bottom: 20px;
+        }
+        .preset-btn {
+            background-color: #28a745;
+            margin: 5px;
+        }
+        .preset-btn:hover {
+            background-color: #1e7e34;
+        }
+        .instructions {
+            background-color: #e9ecef;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+        .instructions h3 {
+            margin-top: 0;
+            color: #495057;
+        }
+        .instructions ol {
+            margin-bottom: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 QR Code Generator для тестирования</h1>
+        
+        <div class="preset-buttons">
+            <h3>Быстрые коды для тестирования:</h3>
+            <button class="preset-btn" onclick="generatePreset('FINAM:TEST_12345')">FINAM:TEST_12345</button>
+            <button class="preset-btn" onclick="generatePreset('FINAM:DEMO_67890')">FINAM:DEMO_67890</button>
+            <button class="preset-btn" onclick="generatePreset('FINAM:REWARD_99999')">FINAM:REWARD_99999</button>
+            <button class="preset-btn" onclick="generatePreset('INVALID_CODE')">INVALID_CODE (неверный)</button>
+        </div>
+
+        <div class="input-group">
+            <label for="qrText">Или введите свой текст:</label>
+            <input type="text" id="qrText" placeholder="Введите текст для QR-кода..." value="FINAM:TEST_12345">
+        </div>
+
+        <button onclick="generateQR()">Сгенерировать QR-код</button>
+        <button onclick="clearQR()">Очистить</button>
+
+        <div class="qr-container">
+            <div id="qrcode"></div>
+        </div>
+
+        <div class="instructions">
+            <h3>📋 Инструкции по тестированию:</h3>
+            <ol>
+                <li>Сгенерируйте QR-код с помощью кнопок выше</li>
+                <li>Откройте QR-сканер в приложении (страница /qr-test или /collab/map)</li>
+                <li>Нажмите "Начать сканирование"</li>
+                <li>Поднесите QR-код к камере</li>
+                <li>Наблюдайте за изменениями:
+                    <ul>
+                        <li>🟢 <strong>Зеленая рамка</strong> = код валиден (начинается с FINAM:)</li>
+                        <li>🔴 <strong>Красная рамка</strong> = код неверный</li>
+                        <li>⚪ <strong>Белая рамка</strong> = сканирование в процессе</li>
+                    </ul>
+                </li>
+                <li>Внизу экрана появится текст найденного кода</li>
+            </ol>
+        </div>
+    </div>
+
+    <script>
+        function generateQR() {
+            const text = document.getElementById('qrText').value;
+            if (!text.trim()) {
+                alert('Пожалуйста, введите текст для QR-кода');
+                return;
+            }
+
+            const qrContainer = document.getElementById('qrcode');
+            qrContainer.innerHTML = '';
+
+            QRCode.toCanvas(qrContainer, text, {
+                width: 300,
+                height: 300,
+                color: {
+                    dark: '#000000',
+                    light: '#FFFFFF'
+                },
+                margin: 2,
+                errorCorrectionLevel: 'M'
+            }, function (error) {
+                if (error) {
+                    console.error('Ошибка генерации QR-кода:', error);
+                    alert('Ошибка генерации QR-кода: ' + error.message);
+                } else {
+                    console.log('QR-код успешно сгенерирован для текста:', text);
+                }
+            });
+        }
+
+        function generatePreset(text) {
+            document.getElementById('qrText').value = text;
+            generateQR();
+        }
+
+        function clearQR() {
+            document.getElementById('qrcode').innerHTML = '';
+            document.getElementById('qrText').value = '';
+        }
+
+        // Автоматически генерируем QR-код при загрузке страницы
+        window.onload = function() {
+            generateQR();
+        };
+    </script>
+</body>
+</html>

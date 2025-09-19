@@ -31,13 +31,28 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="ru" className={`${outfit.variable} ${inter.variable}`}>
+    <html lang="ru" className={`${outfit.variable} ${inter.variable}`} suppressHydrationWarning>
       <head>
         <link
           rel="icon"
           href="/icon?<generated>"
           type="image/<generated>"
           sizes="<generated>"
+        />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              try {
+                var theme = localStorage.getItem('theme') || 'system';
+                if (theme === 'system') {
+                  var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                  document.documentElement.classList.add(prefersDark ? 'dark' : 'light');
+                } else {
+                  document.documentElement.classList.add(theme);
+                }
+              } catch (e) {}
+            `,
+          }}
         />
       </head>
       <body className="min-h-screen bg-background font-sans antialiased">
