@@ -3,11 +3,9 @@
 import React, { useState } from 'react';
 import { useAppStore } from '@/shared/store/app-store';
 import { eventData } from '@/shared/data/seed';
-import { QrCode, CheckCircle, Calendar } from 'lucide-react';
+import { QrCode, CheckCircle } from 'lucide-react';
 import { Button } from '@/shared/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/shared/ui/dialog';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/shared/ui/tabs';
-import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
 import { QRScanner } from '@/features/qr-scanner';
 import { QRScanResult } from '@/shared/types/qr';
 
@@ -81,130 +79,87 @@ export const MapPage: React.FC = () => {
           <p className="text-lg text-gray-600">Нажмите на зону для сканирования QR-кода</p>
         </div>
 
-        <Tabs defaultValue="map" className="w-full">
-          <TabsList className="grid w-full grid-cols-2 mb-6">
-            <TabsTrigger value="map" className="flex items-center space-x-2">
-              <QrCode className="w-4 h-4" />
-              <span>Карта</span>
-            </TabsTrigger>
-            <TabsTrigger value="schedule" className="flex items-center space-x-2">
-              <Calendar className="w-4 h-4" />
-              <span>Расписание</span>
-            </TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="map">
-            {/* Large Interactive Map */}
-            <div className="relative bg-gradient-to-br from-green-100 to-blue-100 rounded-xl h-[70vh] overflow-hidden shadow-lg">
-              {/* Map Background - можно заменить на реальное изображение карты */}
-              <div className="absolute inset-0 bg-gradient-to-br from-green-200 via-blue-100 to-purple-100 opacity-50"></div>
-              
-              {/* Interactive Zones */}
-              {eventData.zones.map((zone, index) => {
-                const positions = [
-                  { left: '15%', top: '20%' }, // Стенд Финам A
-                  { left: '75%', top: '30%' }, // Стенд Финам B  
-                  { left: '45%', top: '60%' }  // Зона стартапов
-                ];
+        {/* Large Interactive Map */}
+        <div className="relative bg-gradient-to-br from-green-100 to-blue-100 rounded-xl h-[70vh] overflow-hidden shadow-lg">
+          {/* Map Background - можно заменить на реальное изображение карты */}
+          <div className="absolute inset-0 bg-gradient-to-br from-green-200 via-blue-100 to-purple-100 opacity-50"></div>
+          
+          {/* Interactive Zones */}
+          {eventData.zones.map((zone, index) => {
+            const positions = [
+              { left: '15%', top: '20%' }, // Стенд Финам A
+              { left: '75%', top: '30%' }, // Стенд Финам B  
+              { left: '45%', top: '60%' }  // Зона стартапов
+            ];
+            
+            return (
+              <div key={zone.id}>
+                {/* Zone Area - кликабельная область */}
+                <div
+                  className={`absolute w-16 h-16 rounded-full flex items-center justify-center cursor-pointer transition-all transform hover:scale-110 ${
+                    redeemedZones.includes(zone.id)
+                      ? 'bg-green-500 text-white shadow-lg'
+                      : 'bg-blue-600 text-white hover:bg-blue-700 shadow-md'
+                  }`}
+                  style={{
+                    left: positions[index]?.left || '50%',
+                    top: positions[index]?.top || '50%'
+                  }}
+                  onClick={() => handleZoneClick(zone)}
+                >
+                  {redeemedZones.includes(zone.id) ? (
+                    <CheckCircle className="w-8 h-8" />
+                  ) : (
+                    <QrCode className="w-8 h-8" />
+                  )}
+                </div>
                 
-                return (
-                  <div key={zone.id}>
-                    {/* Zone Area - кликабельная область */}
-                    <div
-                      className={`absolute w-16 h-16 rounded-full flex items-center justify-center cursor-pointer transition-all transform hover:scale-110 ${
-                        redeemedZones.includes(zone.id)
-                          ? 'bg-green-500 text-white shadow-lg'
-                          : 'bg-blue-600 text-white hover:bg-blue-700 shadow-md'
-                      }`}
-                      style={{
-                        left: positions[index]?.left || '50%',
-                        top: positions[index]?.top || '50%'
-                      }}
-                      onClick={() => handleZoneClick(zone)}
-                    >
-                      {redeemedZones.includes(zone.id) ? (
-                        <CheckCircle className="w-8 h-8" />
-                      ) : (
-                        <QrCode className="w-8 h-8" />
-                      )}
+                {/* Zone Label */}
+                <div
+                  className="absolute text-sm font-semibold text-gray-800 bg-white/90 px-3 py-2 rounded-lg backdrop-blur-sm shadow-sm border border-white/20"
+                  style={{
+                    left: positions[index]?.left || '50%',
+                    top: positions[index]?.top ? `calc(${positions[index].top} + 4rem)` : 'calc(50% + 4rem)',
+                    transform: 'translateX(-50%)'
+                  }}
+                >
+                  {zone.name}
+                  {zone.prize && (
+                    <div className="text-xs text-gray-600 mt-1">
+                      Приз: {zone.prize}
                     </div>
-                    
-                    {/* Zone Label */}
-                    <div
-                      className="absolute text-sm font-semibold text-gray-800 bg-white/90 px-3 py-2 rounded-lg backdrop-blur-sm shadow-sm border border-white/20"
-                      style={{
-                        left: positions[index]?.left || '50%',
-                        top: positions[index]?.top ? `calc(${positions[index].top} + 4rem)` : 'calc(50% + 4rem)',
-                        transform: 'translateX(-50%)'
-                      }}
-                    >
-                      {zone.name}
-                      {zone.prize && (
-                        <div className="text-xs text-gray-600 mt-1">
-                          Приз: {zone.prize}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                );
-              })}
-              
-              {/* Map Legend */}
-              <div className="absolute bottom-4 left-4 bg-white/90 backdrop-blur-sm rounded-lg p-3 shadow-lg border border-white/20">
-                <div className="flex items-center space-x-4 text-sm">
-                  <div className="flex items-center space-x-2">
-                    <QrCode className="w-4 h-4 text-blue-600" />
-                    <span className="text-gray-700">Доступно для сканирования</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <CheckCircle className="w-4 h-4 text-green-500" />
-                    <span className="text-gray-700">Уже отсканировано</span>
-                  </div>
+                  )}
                 </div>
               </div>
+            );
+          })}
+          
+          {/* Map Legend */}
+          <div className="absolute bottom-4 left-4 bg-white/90 backdrop-blur-sm rounded-lg p-3 shadow-lg border border-white/20">
+            <div className="flex items-center space-x-4 text-sm">
+              <div className="flex items-center space-x-2">
+                <QrCode className="w-4 h-4 text-blue-600" />
+                <span className="text-gray-700">Доступно для сканирования</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <CheckCircle className="w-4 h-4 text-green-500" />
+                <span className="text-gray-700">Уже отсканировано</span>
+              </div>
             </div>
+          </div>
+        </div>
 
-            {/* Single QR Scanner Button */}
-            <div className="mt-6 text-center">
-              <Button
-                onClick={() => setQRScanner(true)}
-                size="lg"
-                className="px-8 py-4 text-lg font-semibold bg-blue-600 hover:bg-blue-700 text-white rounded-xl shadow-lg hover:shadow-xl transition-all"
-              >
-                <QrCode className="w-6 h-6 mr-3" />
-                Сканировать QR
-              </Button>
-            </div>
-          </TabsContent>
-
-          <TabsContent value="schedule">
-            <Card>
-              <CardHeader>
-                <CardTitle>Расписание</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  {eventData.schedule.map((event) => (
-                    <div key={event.id} className="border-l-4 border-blue-600 pl-4 py-2">
-                      <div className="flex items-start justify-between">
-                        <div>
-                          <h4 className="font-medium text-gray-900">{event.title}</h4>
-                          <p className="text-sm text-gray-600">{event.stage}</p>
-                        </div>
-                        <div className="text-right">
-                          <p className="text-sm font-medium text-blue-600">{event.time}</p>
-                          {event.durationMin && (
-                            <p className="text-xs text-gray-500">{event.durationMin} мин</p>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>
+        {/* Single QR Scanner Button */}
+        <div className="mt-6 text-center">
+          <Button
+            onClick={() => setQRScanner(true)}
+            size="lg"
+            className="px-8 py-4 text-lg font-semibold bg-blue-600 hover:bg-blue-700 text-white rounded-xl shadow-lg hover:shadow-xl transition-all"
+          >
+            <QrCode className="w-6 h-6 mr-3" />
+            Сканировать QR
+          </Button>
+        </div>
 
         {/* QR Scanner */}
         {showQRScanner && (
