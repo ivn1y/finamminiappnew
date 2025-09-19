@@ -31,6 +31,8 @@ import { GoalWizard, GoalProgressTracker } from '@/features/goal-wizard';
 import { ProfileEditModal } from '@/features/profile-edit';
 import { useProfile } from '@/shared/hooks/use-profile';
 import { BadgeInfoTooltip } from '@/shared/ui/badge-info-tooltip';
+import { ProgressCircle } from '@/shared/ui/progress-circle';
+import { XPTooltip } from '@/shared/ui/xp-tooltip';
 import { User } from '@/shared/types/app';
 
 export const ProfilePage: React.FC = () => {
@@ -231,7 +233,7 @@ export const ProfilePage: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50 p-6 pb-24">
       <div className="max-w-md mx-auto lg:max-w-4xl xl:max-w-6xl">
-        {/* Avatar */}
+        {/* Avatar with Progress Circle */}
         <div className="text-center mb-6">
           <div className="relative inline-block">
             <Avatar className="w-24 h-24 mx-auto mb-4">
@@ -239,9 +241,22 @@ export const ProfilePage: React.FC = () => {
                 <RoleIcon className="w-12 h-12" />
               </AvatarFallback>
             </Avatar>
-            {/* XP indicator */}
-            <div className="absolute -bottom-2 -right-2 bg-yellow-500 text-white text-xs font-bold px-2 py-1 rounded-full">
-              {user.xp} XP
+            {/* Progress Circle with Level - replaces XP indicator */}
+            <div className="absolute -bottom-2 -right-2">
+              <XPTooltip currentXP={user.xp}>
+                <ProgressCircle 
+                  progress={getProgressPercentage()} 
+                  size={50}
+                  strokeWidth={4}
+                  className="text-blue-600 cursor-pointer hover:scale-105 transition-transform"
+                >
+                  <div className="text-center">
+                    <div className="text-sm font-bold text-gray-900">
+                      {Math.floor(user.xp / 100) + 1}
+                    </div>
+                  </div>
+                </ProgressCircle>
+              </XPTooltip>
             </div>
           </div>
           
@@ -409,13 +424,6 @@ export const ProfilePage: React.FC = () => {
                 <p className="text-gray-900 mt-1">
                   {user.intent7d || 'Не выбрана'}
                 </p>
-              </div>
-              
-              <div>
-                <Label className="text-sm font-medium text-gray-700">
-                  Опыт
-                </Label>
-                <p className="text-gray-900 mt-1">{user.xp} XP</p>
               </div>
               
               <div>

@@ -13,6 +13,7 @@ export interface GoalProgressNote {
   text: string;
   date: string;
   progress: number;
+  isEditable?: boolean;
 }
 
 export interface GoalMilestone {

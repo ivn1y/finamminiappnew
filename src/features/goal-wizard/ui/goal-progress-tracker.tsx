@@ -19,6 +19,7 @@ import { Badge } from '@/shared/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/shared/ui/dialog';
 import { Textarea } from '@/shared/ui/textarea';
 import { Label } from '@/shared/ui/label';
+import { GoalProgressNote } from '@/shared/types/app';
 
 interface GoalProgressTrackerProps {
   onEditGoal?: () => void;
@@ -31,7 +32,9 @@ export const GoalProgressTracker: React.FC<GoalProgressTrackerProps> = ({
 }) => {
   const { user, updateUser } = useAppStore();
   const [showProgressModal, setShowProgressModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
   const [progressNote, setProgressNote] = useState('');
+  const [editingNote, setEditingNote] = useState<GoalProgressNote | null>(null);
 
   if (!user || !user.intent7d) {
     return (
@@ -53,23 +56,71 @@ export const GoalProgressTracker: React.FC<GoalProgressTrackerProps> = ({
   }
 
   // Мокаем данные прогресса (в реальном приложении это будет приходить с сервера)
+  const defaultMilestones = [
+    { id: 1, title: 'Начало работы', completed: true, date: new Date().toISOString() },
+    { id: 2, title: 'Первый результат', completed: false, date: null },
+    { id: 3, title: 'Промежуточная проверка', completed: false, date: null },
+    { id: 4, title: 'Завершение цели', completed: false, date: null }
+  ];
+
   const goalProgress = user.goalProgress || {
     current: 0,
     target: 100,
     daysLeft: 7,
     notes: [],
-    milestones: [
-      { id: 1, title: 'Начало работы', completed: true, date: '2024-01-01' },
-      { id: 2, title: 'Первый результат', completed: false, date: null },
-      { id: 3, title: 'Промежуточная проверка', completed: false, date: null },
-      { id: 4, title: 'Завершение цели', completed: false, date: null }
-    ]
+    milestones: defaultMilestones
   };
 
-  const progressPercentage = Math.round((goalProgress.current / goalProgress.target) * 100);
+  // Обновляем дату "Начало работы" если она старая (2024 год)
+  const updatedMilestones = goalProgress.milestones.map(milestone => {
+    if (milestone.id === 1 && milestone.title === 'Начало работы' && milestone.date && milestone.date.includes('2024')) {
+      return { ...milestone, date: new Date().toISOString() };
+    }
+    return milestone;
+  });
+
+  const updatedGoalProgress = {
+    ...goalProgress,
+    milestones: updatedMilestones
+  };
+
+  const progressPercentage = Math.round((updatedGoalProgress.current / updatedGoalProgress.target) * 100);
 
   const handleAddProgress = () => {
     setShowProgressModal(true);
+  };
+
+  const handleEditNote = (note: GoalProgressNote) => {
+    setEditingNote(note);
+    setProgressNote(note.text);
+    setShowEditModal(true);
+  };
+
+  const handleSaveEdit = () => {
+    if (editingNote && progressNote.trim()) {
+      const updatedNotes = updatedGoalProgress.notes.map(note => 
+        note.id === editingNote.id 
+          ? { ...note, text: progressNote }
+          : note
+      );
+      
+      updateUser({
+        goalProgress: {
+          ...updatedGoalProgress,
+          notes: updatedNotes
+        }
+      });
+      
+      setEditingNote(null);
+      setProgressNote('');
+      setShowEditModal(false);
+    }
+  };
+
+  const handleCancelEdit = () => {
+    setEditingNote(null);
+    setProgressNote('');
+    setShowEditModal(false);
   };
 
   const handleSaveProgress = () => {
@@ -79,15 +130,16 @@ export const GoalProgressTracker: React.FC<GoalProgressTrackerProps> = ({
         id: Date.now(),
         text: progressNote,
         date: new Date().toISOString(),
-        progress: Math.min(goalProgress.current + 10, goalProgress.target)
+        progress: Math.min(updatedGoalProgress.current + 10, updatedGoalProgress.target),
+        isEditable: true
       };
       
       // Обновляем прогресс пользователя
       updateUser({
         goalProgress: {
-          ...goalProgress,
+          ...updatedGoalProgress,
           current: newNote.progress,
-          notes: [...goalProgress.notes, newNote]
+          notes: [...updatedGoalProgress.notes, newNote]
         }
       });
       
@@ -138,7 +190,7 @@ export const GoalProgressTracker: React.FC<GoalProgressTrackerProps> = ({
             <div className="space-y-2">
               <div className="flex items-center justify-between">
                 <span className="text-sm font-medium text-gray-700">
-                  Прогресс: {goalProgress.current}/{goalProgress.target}
+                  Прогресс: {updatedGoalProgress.current}/{updatedGoalProgress.target}
                 </span>
                 <Badge variant="outline" className="text-xs">
                   {progressPercentage}%
@@ -150,7 +202,7 @@ export const GoalProgressTracker: React.FC<GoalProgressTrackerProps> = ({
               />
               <div className="flex items-center justify-between text-xs text-gray-600">
                 <span>{getProgressText(progressPercentage)}</span>
-                <span>{goalProgress.daysLeft} дней осталось</span>
+                <span>{updatedGoalProgress.daysLeft} дней осталось</span>
               </div>
             </div>
 
@@ -174,7 +226,7 @@ export const GoalProgressTracker: React.FC<GoalProgressTrackerProps> = ({
         </CardHeader>
         <CardContent>
           <div className="space-y-3">
-            {goalProgress.milestones.map((milestone, index) => (
+            {updatedGoalProgress.milestones.map((milestone, index) => (
               <div key={milestone.id} className="flex items-center space-x-3">
                 <div className={`w-6 h-6 rounded-full flex items-center justify-center ${
                   milestone.completed 
@@ -211,19 +263,33 @@ export const GoalProgressTracker: React.FC<GoalProgressTrackerProps> = ({
       </Card>
 
       {/* Progress Notes */}
-      {goalProgress.notes.length > 0 && (
+      {updatedGoalProgress.notes.length > 0 && (
         <Card className="mt-4">
           <CardHeader>
             <CardTitle className="text-lg">Заметки о прогрессе</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
-              {goalProgress.notes.map((note) => (
+              {updatedGoalProgress.notes.map((note) => (
                 <div key={note.id} className="bg-gray-50 rounded-lg p-3">
-                  <p className="text-sm text-gray-900">{note.text}</p>
-                  <p className="text-xs text-gray-500 mt-1">
-                    {new Date(note.date).toLocaleString()}
-                  </p>
+                  <div className="flex justify-between items-start">
+                    <div className="flex-1">
+                      <p className="text-sm text-gray-900">{note.text}</p>
+                      <p className="text-xs text-gray-500 mt-1">
+                        {new Date(note.date).toLocaleString()}
+                      </p>
+                    </div>
+                    {note.isEditable && (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleEditNote(note)}
+                        className="ml-2 text-blue-600 hover:text-blue-700"
+                      >
+                        <Edit3 className="w-3 h-3" />
+                      </Button>
+                    )}
+                  </div>
                 </div>
               ))}
             </div>
@@ -266,6 +332,50 @@ export const GoalProgressTracker: React.FC<GoalProgressTrackerProps> = ({
             </Button>
             <Button
               onClick={handleSaveProgress}
+              disabled={!progressNote.trim()}
+              className="flex-1"
+            >
+              Сохранить
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit Progress Modal */}
+      <Dialog open={showEditModal} onOpenChange={setShowEditModal}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-lg font-semibold text-gray-900">
+              Редактировать заметку
+            </DialogTitle>
+          </DialogHeader>
+      
+          <div className="space-y-4 mb-6">
+            <div>
+              <Label htmlFor="edit-progress-note" className="text-sm font-medium text-gray-700">
+                Что удалось сделать?
+              </Label>
+              <Textarea
+                id="edit-progress-note"
+                value={progressNote}
+                onChange={(e) => setProgressNote(e.target.value)}
+                placeholder="Опиши свой прогресс..."
+                className="mt-2"
+                rows={4}
+              />
+            </div>
+          </div>
+          
+          <div className="flex space-x-3">
+            <Button
+              variant="outline"
+              onClick={handleCancelEdit}
+              className="flex-1"
+            >
+              Отмена
+            </Button>
+            <Button
+              onClick={handleSaveEdit}
               disabled={!progressNote.trim()}
               className="flex-1"
             >
