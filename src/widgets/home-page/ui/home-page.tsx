@@ -45,7 +45,7 @@ export const HomePage: React.FC = () => {
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-3">
-            Привет, {user.name || role.title}!
+            Привет, {role.title}!
           </h1>
           <p className="text-lg text-gray-600">
             Ты прошёл {user.progressSteps}/5 шагов до своей первой коллаборации
@@ -86,74 +86,72 @@ export const HomePage: React.FC = () => {
 
         {/* Action Cards */}
         <div className="space-y-4 mb-6 lg:grid lg:grid-cols-2 lg:gap-6 lg:space-y-0">
+          {/* Заполни профиль */}
+          <Link href="/collab/profile">
+            <Card className="cursor-pointer hover:shadow-md transition-shadow">
+              <CardContent className="p-6">
+                <div className="flex items-center space-x-5">
+                  <div className="w-16 h-16 bg-indigo-50 rounded-lg flex items-center justify-center">
+                    <Users className="w-8 h-8 text-indigo-600" />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="text-lg font-semibold text-gray-900">Заполни профиль</h3>
+                    <p className="text-gray-600 text-base">Расскажи о себе и своих целях</p>
+                  </div>
+                  <ChevronRight className="w-6 h-6 text-gray-400" />
+                </div>
+              </CardContent>
+            </Card>
+          </Link>
+
+          {/* Открой карту */}
+          <Link href="/collab/map">
+            <Card className="cursor-pointer hover:shadow-md transition-shadow">
+              <CardContent className="p-6">
+                <div className="flex items-center space-x-5">
+                  <div className="w-16 h-16 bg-green-50 rounded-lg flex items-center justify-center">
+                    <Map className="w-8 h-8 text-green-600" />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="text-lg font-semibold text-gray-900">Открой карту</h3>
+                    <p className="text-gray-600 text-base">Найди стенды и события</p>
+                  </div>
+                  <ChevronRight className="w-6 h-6 text-gray-400" />
+                </div>
+              </CardContent>
+            </Card>
+          </Link>
+
+          {/* Сканируй QR */}
+          <Link href="/collab/map">
+            <Card className="cursor-pointer hover:shadow-md transition-shadow">
+              <CardContent className="p-6">
+                <div className="flex items-center space-x-5">
+                  <div className="w-16 h-16 bg-yellow-50 rounded-lg flex items-center justify-center">
+                    <QrCode className="w-8 h-8 text-yellow-600" />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="text-lg font-semibold text-gray-900">Сканируй QR</h3>
+                    <p className="text-gray-600 text-base">Найди зоны и получи призы</p>
+                  </div>
+                  <ChevronRight className="w-6 h-6 text-gray-400" />
+                </div>
+              </CardContent>
+            </Card>
+          </Link>
+
+          {/* Присоединяйся к коммьюнити */}
           <Card 
             className="cursor-pointer hover:shadow-md transition-shadow"
-            onClick={handleOpenGoalWizard}
+            onClick={() => window.open('https://t.me/finam_invest', '_blank')}
           >
-            <CardContent className="p-6">
-              <div className="flex items-center space-x-5">
-                <div className="w-16 h-16 bg-blue-50 rounded-lg flex items-center justify-center">
-                  <Target className="w-8 h-8 text-blue-600" />
-                </div>
-                <div className="flex-1">
-                  <h3 className="text-lg font-semibold text-gray-900">
-                    {user.intent7d ? 'Изменить цель' : 'Выбрать цель на 7 дней'}
-                  </h3>
-                  <p className="text-gray-600 text-base">
-                    {user.intent7d ? 'Обновить фокус' : '→ Первый квест'}
-                  </p>
-                </div>
-                <ChevronRight className="w-6 h-6 text-gray-400" />
-              </div>
-            </CardContent>
-          </Card>
-
-          {eventMode && (
-            <>
-              <Link href="/collab/map">
-                <Card className="cursor-pointer hover:shadow-md transition-shadow">
-                  <CardContent className="p-6">
-                    <div className="flex items-center space-x-5">
-                      <div className="w-16 h-16 bg-green-50 rounded-lg flex items-center justify-center">
-                        <Map className="w-8 h-8 text-green-600" />
-                      </div>
-                      <div className="flex-1">
-                        <h3 className="text-lg font-semibold text-gray-900">Открыть карту и расписание</h3>
-                        <p className="text-gray-600 text-base">Найди стенды и события</p>
-                      </div>
-                      <ChevronRight className="w-6 h-6 text-gray-400" />
-                    </div>
-                  </CardContent>
-                </Card>
-              </Link>
-
-              <Link href="/collab/map">
-                <Card className="cursor-pointer hover:shadow-md transition-shadow">
-                  <CardContent className="p-6">
-                    <div className="flex items-center space-x-5">
-                      <div className="w-16 h-16 bg-yellow-50 rounded-lg flex items-center justify-center">
-                        <QrCode className="w-8 h-8 text-yellow-600" />
-                      </div>
-                      <div className="flex-1">
-                        <h3 className="text-lg font-semibold text-gray-900">Сканировать QR и получить бонус</h3>
-                        <p className="text-gray-600 text-base">Найди зоны и получи призы</p>
-                      </div>
-                      <ChevronRight className="w-6 h-6 text-gray-400" />
-                    </div>
-                  </CardContent>
-                </Card>
-              </Link>
-            </>
-          )}
-
-          <Card className="cursor-pointer hover:shadow-md transition-shadow">
             <CardContent className="p-6">
               <div className="flex items-center space-x-5">
                 <div className="w-16 h-16 bg-purple-50 rounded-lg flex items-center justify-center">
                   <Users className="w-8 h-8 text-purple-600" />
                 </div>
                 <div className="flex-1">
-                  <h3 className="text-lg font-semibold text-gray-900">Присоединиться к коммьюнити</h3>
+                  <h3 className="text-lg font-semibold text-gray-900">Присоединяйся к коммьюнити</h3>
                   <p className="text-gray-600 text-base">Telegram канал</p>
                 </div>
                 <ChevronRight className="w-6 h-6 text-gray-400" />
@@ -178,12 +176,15 @@ export const HomePage: React.FC = () => {
             </div>
             
             <div className="bg-blue-50 rounded-lg p-6">
-              <h4 className="text-lg font-medium text-blue-600 mb-3">{role.firstQuest.title}</h4>
-              <p className="text-gray-700 text-base mb-4">{role.firstQuest.desc}</p>
+              <h4 className="text-lg font-medium text-blue-600 mb-3">Присоединиться к нашему Telegram коммьюнити</h4>
+              <p className="text-gray-700 text-base mb-4">Стань частью сообщества Finam Invest и получи доступ к эксклюзивным материалам, обсуждениям и новостям</p>
               <div className="flex items-center justify-between">
-                <span className="text-sm text-gray-500">Награда: {role.firstQuest.rewardBadge}</span>
-                <Button className="px-6 py-3">
-                  Выполнить
+                <span className="text-sm text-gray-500">Награда: Доступ к коммьюнити</span>
+                <Button 
+                  className="px-6 py-3"
+                  onClick={() => window.open('https://t.me/finam_invest', '_blank')}
+                >
+                  Присоединиться
                 </Button>
               </div>
             </div>

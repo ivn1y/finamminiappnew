@@ -61,6 +61,7 @@ export interface Badge {
   title: string;
   tooltip: string;
   icon?: string;
+  howToEarn: string;
 }
 
 export interface RoleContent {
@@ -123,4 +124,18 @@ export interface ChatIntent {
   id: string;
   title: string;
   response: string;
+}
+
+export interface ScheduleEvent {
+  id: string;
+  time: string;
+  title: string;
+  description?: string;
+  format: 'Выступление' | 'Панель' | 'Круглый стол' | 'Кофе-брейк' | 'Обед' | 'After Party';
+  speakers: string[];
+  block?: string;
+}
+
+export interface ScheduleData {
+  events: ScheduleEvent[];
 }

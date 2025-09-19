@@ -63,7 +63,7 @@ class QRApiService {
       
       // Получение истории пользователя
       const userHistory = scanHistory.get(request.userId) || [];
-      const userScannedCodes = userHistory.map(scan => scan.code).filter(Boolean);
+      const userScannedCodes = userHistory.map(scan => scan.code).filter((code): code is string => Boolean(code));
       
       // Проверка на дубликат
       const isDuplicate = isDuplicateCode(request.code, userScannedCodes);
@@ -164,7 +164,7 @@ class QRApiService {
         totalXP: history.reduce((sum, scan) => sum + (scan.reward?.xp || 0), 0),
         badgesEarned: history
           .map(scan => scan.reward?.badge)
-          .filter(Boolean)
+          .filter((badge): badge is string => Boolean(badge))
           .filter((badge, index, arr) => arr.indexOf(badge) === index), // Уникальные бейджи
         lastScanDate: history.length > 0 ? history[history.length - 1].code : undefined
       };

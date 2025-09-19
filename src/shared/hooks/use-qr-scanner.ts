@@ -42,7 +42,7 @@ export function useQRScanner(userId: string, config: Partial<QRScannerConfig> = 
         const totalXP = history.reduce((sum, scan) => sum + (scan.reward?.xp || 0), 0);
         const badgesEarned = history
           .map(scan => scan.reward?.badge)
-          .filter(Boolean)
+          .filter((badge): badge is string => Boolean(badge))
           .filter((badge, index, arr) => arr.indexOf(badge) === index);
 
         setState(prev => ({

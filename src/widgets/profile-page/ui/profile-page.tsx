@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { useAppStore } from '@/shared/store/app-store';
 import { roleContent, eventData } from '@/shared/data/seed';
 import { 
-  User, 
+  User as UserIcon, 
   Award, 
   Target, 
   Share2, 
@@ -30,6 +30,8 @@ import { Avatar, AvatarFallback } from '@/shared/ui/avatar';
 import { GoalWizard, GoalProgressTracker } from '@/features/goal-wizard';
 import { ProfileEditModal } from '@/features/profile-edit';
 import { useProfile } from '@/shared/hooks/use-profile';
+import { BadgeInfoTooltip } from '@/shared/ui/badge-info-tooltip';
+import { User } from '@/shared/types/app';
 
 export const ProfilePage: React.FC = () => {
   const { user, getAllBadges, getProgressPercentage } = useAppStore();
@@ -37,6 +39,66 @@ export const ProfilePage: React.FC = () => {
   const [showEditModal, setShowEditModal] = useState(false);
   const [showGoalWizard, setShowGoalWizard] = useState(false);
   const [showAdvancedEdit, setShowAdvancedEdit] = useState(false);
+
+  const handleResetData = () => {
+    // Reset user data to initial state
+    const newUser = {
+      id: `user_${Date.now()}`,
+      createdAt: new Date().toISOString(),
+      role: 'trader' as const,
+      profile: {},
+      badges: ['explorer', 'qr_scanner_badge'],
+      xp: 300,
+      progressSteps: 2,
+      scannedZones: ['finam-a', 'startup-zone'],
+      intent7d: 'Получить доступ к платформе автоследования',
+      goalProgress: {
+        current: 10,
+        target: 100,
+        daysLeft: 7,
+        notes: [
+          {
+            id: 1,
+            text: 'прогресс',
+            date: new Date().toISOString(),
+            progress: 10
+          }
+        ],
+        milestones: [
+          {
+            id: 1,
+            title: 'Начало работы',
+            completed: true,
+            date: '2024-01-01'
+          },
+          {
+            id: 2,
+            title: 'Первый результат',
+            completed: false,
+            date: null
+          },
+          {
+            id: 3,
+            title: 'Промежуточная проверка',
+            completed: false,
+            date: null
+          },
+          {
+            id: 4,
+            title: 'Завершение цели',
+            completed: false,
+            date: null
+          }
+        ]
+      }
+    };
+    
+    // Update the store with new user data
+    useAppStore.setState({ user: newUser });
+    
+    // Show success message
+    alert('Данные пользователя сброшены и инициализированы!');
+  };
 
   if (!user || !user.role) {
     return (
@@ -79,7 +141,7 @@ export const ProfilePage: React.FC = () => {
       case 'startup': return Lightbulb;
       case 'expert': return Users;
       case 'partner': return Building2;
-      default: return User;
+      default: return UserIcon;
     }
   };
 
@@ -163,62 +225,6 @@ export const ProfilePage: React.FC = () => {
     }
   };
 
-  const handleResetData = () => {
-    // Reset user data to initial state
-    const newUser = {
-      id: `user_${Date.now()}`,
-      createdAt: new Date().toISOString(),
-      role: 'trader' as const,
-      profile: {},
-      badges: ['explorer', 'qr_scanner_badge'],
-      xp: 300,
-      progressSteps: 2,
-      scannedZones: ['finam-a', 'startup-zone'],
-      intent7d: 'Получить доступ к платформе автоследования',
-      goalProgress: {
-        current: 10,
-        target: 100,
-        daysLeft: 7,
-        notes: [
-          {
-            id: 1,
-            text: 'прогресс',
-            date: new Date().toISOString(),
-            progress: 10
-          }
-        ],
-        milestones: [
-          {
-            id: 1,
-            title: 'Начало работы',
-            completed: true,
-            date: '2024-01-01'
-          },
-          {
-            id: 2,
-            title: 'Первый результат',
-            completed: false,
-            date: null
-          },
-          {
-            id: 3,
-            title: 'Промежуточная проверка',
-            completed: false,
-            date: null
-          },
-          {
-            id: 4,
-            title: 'Завершение цели',
-            completed: false,
-            date: null
-          }
-        ]
-      }
-    };
-    
-    console.log('🔄 ProfilePage: Сброс данных пользователя:', newUser);
-    useAppStore.getState().setUser(newUser);
-  };
 
   const RoleIcon = getRoleIcon(user.role!);
 
@@ -266,9 +272,12 @@ export const ProfilePage: React.FC = () => {
                 return (
                   <Card
                     key={badge.id}
-                    className="bg-blue-50 border-2 border-blue-500 text-center"
+                    className="bg-blue-50 border-2 border-blue-500 text-center relative"
                   >
                     <CardContent className="p-3">
+                      <div className="absolute top-2 right-2">
+                        <BadgeInfoTooltip badge={badge} isEarned={true} />
+                      </div>
                       <BadgeIcon className="w-8 h-8 text-blue-600 mx-auto mb-3" />
                       <h4 className="font-medium text-gray-900 text-base">{badge.title}</h4>
                       <p className="text-sm text-gray-600 mt-2">{badge.tooltip}</p>
@@ -283,9 +292,12 @@ export const ProfilePage: React.FC = () => {
                 return (
                   <Card
                     key={badge.id}
-                    className="bg-gray-100 border-2 border-gray-200 text-center opacity-50"
+                    className="bg-gray-100 border-2 border-gray-200 text-center opacity-50 relative"
                   >
                     <CardContent className="p-3">
+                      <div className="absolute top-2 right-2">
+                        <BadgeInfoTooltip badge={badge} isEarned={false} />
+                      </div>
                       <BadgeIcon className="w-8 h-8 text-gray-400 mx-auto mb-3" />
                       <h4 className="font-medium text-gray-500 text-base">{badge.title}</h4>
                       <p className="text-sm text-gray-400 mt-2">Заблокировано</p>

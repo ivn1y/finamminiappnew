@@ -1,8 +1,18 @@
-import { RoleContent, Badge, EventData, ChatIntent } from '../types/app';
+import { RoleContent, Badge, EventData, ChatIntent, ScheduleData } from '../types/app';
 
 export const globalBadges: Badge[] = [
-  { id: 'qr_scanner_badge', title: 'QR-Сканер', tooltip: 'QR-код отсканирован! (+50 XP)' },
-  { id: 'explorer', title: 'Исследователь', tooltip: 'Первый шаг в Collab сделан' }
+  { 
+    id: 'qr_scanner_badge', 
+    title: 'QR-Сканер', 
+    tooltip: 'QR-код отсканирован! (+50 XP)',
+    howToEarn: 'Отсканируй QR-код на мероприятии'
+  },
+  { 
+    id: 'explorer', 
+    title: 'Исследователь', 
+    tooltip: 'Первый шаг в Collab сделан',
+    howToEarn: 'Заверши онбординг и выбери свою роль в экосистеме'
+  }
 ];
 
 export const roleContent: RoleContent[] = [
@@ -21,9 +31,24 @@ export const roleContent: RoleContent[] = [
       rewardBadge: 'Risk Manager'
     },
     badges: [
-      { id: 'risk', title: 'Risk Manager', tooltip: 'Точно знаешь свой риск-профиль' },
-      { id: 'algo', title: 'Algo-Creator', tooltip: 'Создаёшь стратегии на алгоритмах' },
-      { id: 'explorer', title: 'Market Explorer', tooltip: 'Изучаешь новые рынки' }
+      { 
+        id: 'risk', 
+        title: 'Risk Manager', 
+        tooltip: 'Точно знаешь свой риск-профиль',
+        howToEarn: 'Заполни свой риск-профиль в настройках профиля'
+      },
+      { 
+        id: 'algo', 
+        title: 'Algo-Creator', 
+        tooltip: 'Создаёшь стратегии на алгоритмах',
+        howToEarn: 'Создай свою первую торговую стратегию в тестовой среде'
+      },
+      { 
+        id: 'explorer', 
+        title: 'Market Explorer', 
+        tooltip: 'Изучаешь новые рынки',
+        howToEarn: 'Изучи и протестируй торговлю на 3 разных рынках'
+      }
     ],
     pushes: [
       'Проверим твою выдержку? Заполни риск-профиль →',
@@ -45,9 +70,24 @@ export const roleContent: RoleContent[] = [
       rewardBadge: 'Pilot Starter'
     },
     badges: [
-      { id: 'pilot', title: 'Pilot Starter', tooltip: 'Запустил первый пилот' },
-      { id: 'growth', title: 'Growth Hacker', tooltip: 'Нашёл нестандартный путь к росту' },
-      { id: 'deal', title: 'Deal Closer', tooltip: 'Закрыл сделку с партнёром' }
+      { 
+        id: 'pilot', 
+        title: 'Pilot Starter', 
+        tooltip: 'Запустил первый пилот',
+        howToEarn: 'Найди и запусти пилотный проект с партнёром'
+      },
+      { 
+        id: 'growth', 
+        title: 'Growth Hacker', 
+        tooltip: 'Нашёл нестандартный путь к росту',
+        howToEarn: 'Реализуй креативную стратегию роста и покажи результаты'
+      },
+      { 
+        id: 'deal', 
+        title: 'Deal Closer', 
+        tooltip: 'Закрыл сделку с партнёром',
+        howToEarn: 'Заключи первую коммерческую сделку через платформу'
+      }
     ],
     pushes: [
       'Challenge: опиши проект тремя словами →',
@@ -69,9 +109,24 @@ export const roleContent: RoleContent[] = [
       rewardBadge: 'Wise Owl'
     },
     badges: [
-      { id: 'owl', title: 'Wise Owl', tooltip: 'Делишься опытом и видением' },
-      { id: 'challenger', title: 'Idea Challenger', tooltip: 'Помогаешь проверять гипотезы' },
-      { id: 'mentor', title: 'Mentor+', tooltip: 'Поддерживаешь команды на пути к рынку' }
+      { 
+        id: 'owl', 
+        title: 'Wise Owl', 
+        tooltip: 'Делишься опытом и видением',
+        howToEarn: 'Выбери роль ментора или трекера в настройках профиля'
+      },
+      { 
+        id: 'challenger', 
+        title: 'Idea Challenger', 
+        tooltip: 'Помогаешь проверять гипотезы',
+        howToEarn: 'Проведи 5 экспертных оценок проектов в чате'
+      },
+      { 
+        id: 'mentor', 
+        title: 'Mentor+', 
+        tooltip: 'Поддерживаешь команды на пути к рынку',
+        howToEarn: 'Стань ментором для 3 команд и помоги им достичь целей'
+      }
     ],
     pushes: [
       'Миссия: оцени идею, которую мы пришлём завтра',
@@ -93,9 +148,24 @@ export const roleContent: RoleContent[] = [
       rewardBadge: 'Integrator'
     },
     badges: [
-      { id: 'integrator', title: 'Integrator', tooltip: 'Соединяешь решения в экосистеме' },
-      { id: 'builder', title: 'Builder', tooltip: 'Запустил новый продукт с Collab' },
-      { id: 'visionary', title: 'Visionary', tooltip: 'Формируешь стратегию будущего' }
+      { 
+        id: 'integrator', 
+        title: 'Integrator', 
+        tooltip: 'Соединяешь решения в экосистеме',
+        howToEarn: 'Выбери пакет партнёрства и заверши процесс интеграции'
+      },
+      { 
+        id: 'builder', 
+        title: 'Builder', 
+        tooltip: 'Запустил новый продукт с Collab',
+        howToEarn: 'Запусти свой продукт в витрине Collab и получи первые пользователей'
+      },
+      { 
+        id: 'visionary', 
+        title: 'Visionary', 
+        tooltip: 'Формируешь стратегию будущего',
+        howToEarn: 'Прими участие в формировании стратегии развития экосистемы'
+      }
     ],
     pushes: [
       'Выбери пакет и получи чек-лист онбординга',
@@ -188,3 +258,207 @@ export const chatIntents: ChatIntent[] = [
     response: 'Партнёры могут запустить white-label, франшизу или API интеграцию, а также подключиться к витрине продуктов.'
   }
 ];
+
+export const scheduleData: ScheduleData = {
+  events: [
+    {
+      id: 'opening',
+      time: '10:00-10:05',
+      title: 'Открытие конференции',
+      description: 'Представление конференции от ведущего, представление партнеров, зон, тизер того, что нас сегодня ждет, расписание и общая логика блоков, наше обещание перед аудиторией',
+      format: 'Выступление',
+      speakers: ['Ведущий', 'Ибрагим'],
+      block: 'Блок 1: РЫНКИ в 2025'
+    },
+    {
+      id: 'global-markets',
+      time: '10:05-10:20',
+      title: 'Что происходит на глобальном рынке?',
+      description: 'Макро разбор того, что сейчас происходит на ключевых рынках: Америка, Россия, Крипта',
+      format: 'Выступление',
+      speakers: ['Антон Клевцов'],
+      block: 'Блок 1: РЫНКИ в 2025'
+    },
+    {
+      id: 'trading-2026',
+      time: '10:20-10:40',
+      title: 'Трейдинг 2026: ИИ, CBDC, новые рынки СНГ',
+      description: 'Обзор новых возможностей в 2025 году',
+      format: 'Панель',
+      speakers: ['Алексей Бербеницкий', 'Московская биржа', 'Рафаэль', 'Нарэк Григорян'],
+      block: 'Блок 1: РЫНКИ в 2025'
+    },
+    {
+      id: 'entry-points',
+      time: '10:40-10:55',
+      title: 'Как искать точки входа 2025г. Почему трейдеры теряют деньги в 2025м',
+      description: 'Условия для заработка на современных рынках (биржевые, международные, крипто)',
+      format: 'Выступление',
+      speakers: ['Федор Наумов'],
+      block: 'Блок 1: РЫНКИ в 2025'
+    },
+    {
+      id: 'young-traders-crypto',
+      time: '10:55-11:15',
+      title: 'Как молодые трейдеры зарабатывают на крипте',
+      format: 'Панель',
+      speakers: ['Илья Тарасов', 'Дневник 10x', 'Костя Ахметов'],
+      block: 'Блок 1: РЫНКИ в 2025'
+    },
+    {
+      id: 'coffee-break-1',
+      time: '11:15-11:35',
+      title: 'Кофе-брейк',
+      format: 'Кофе-брейк',
+      speakers: []
+    },
+    {
+      id: 'trading-strategies-moex',
+      time: '11:35-12:05',
+      title: 'Разбор торговых стратегий. МОЕХ',
+      description: 'Эксперты обсудят стратегии скальпинга на Московской бирже, разницу в ликвидности, риски и тактические подходы',
+      format: 'Панель',
+      speakers: ['Иван Попов', 'Спейс', 'Иван Кашинин', 'Ибрагим Джураев', 'Сигналы рцб', 'Чудаев', 'Олег Похилый', 'Вредный инвестор', 'Инвест фьючерс'],
+      block: 'Блок 2: ОБЗОР СТРАТЕГИЙ И ТАКТИК'
+    },
+    {
+      id: 'portfolio-formation',
+      time: '12:05-12:20',
+      title: 'Как формировать портфель в условиях санкций и ограниченной ликвидности',
+      description: 'Где искать доходность в 2025м году',
+      format: 'Выступление',
+      speakers: ['Вредный инвестор'],
+      block: 'Блок 2: ОБЗОР СТРАТЕГИЙ И ТАКТИК'
+    },
+    {
+      id: 'crypto-exchanges',
+      time: '12:20-12:40',
+      title: 'Как криптобиржи меняют правила игры',
+      description: 'Безопасность, ликвидность, Алгоритмы',
+      format: 'Панель',
+      speakers: ['Мекс', 'Битгейт', 'Бингх'],
+      block: 'Блок 2: ОБЗОР СТРАТЕГИЙ И ТАКТИК'
+    },
+    {
+      id: 'fed-rates',
+      time: '12:40-13:00',
+      title: 'Ставки ФРС, доллар, инфляция',
+      description: 'Как макро экономика США влияет на трейдера. Американский рынок 2025м году - Куда идут деньги частных инвесторов',
+      format: 'Выступление',
+      speakers: ['Анатолий Радченко'],
+      block: 'Блок 2: ОБЗОР СТРАТЕГИЙ И ТАКТИК'
+    },
+    {
+      id: 'collaboration',
+      time: '13:00-13:30',
+      title: '1+1=3. Совместный заработок вместе с инвестиционными домами?',
+      description: 'Возможности для трейдера: запуск фонда, автоследование, агентские программы, Finam Collab',
+      format: 'Панель',
+      speakers: ['Спикеры от Финам', 'Динар'],
+      block: 'Блок 2: ОБЗОР СТРАТЕГИЙ И ТАКТИК'
+    },
+    {
+      id: 'lunch',
+      time: '13:30-14:15',
+      title: 'Обед',
+      format: 'Обед',
+      speakers: []
+    },
+    {
+      id: 'trading-strategies-crypto',
+      time: '14:15-14:35',
+      title: 'Разбор торговых стратегий. Crypto',
+      format: 'Панель',
+      speakers: ['Илья Тарасов', 'Рафаэль', 'Малалетов', 'Раст'],
+      block: 'Блок 2: ОБЗОР СТРАТЕГИЙ И ТАКТИК'
+    },
+    {
+      id: 'options-trading',
+      time: '14:35-14:50',
+      title: 'Интересные торговые ситуации на опционах в 2025 году',
+      format: 'Выступление',
+      speakers: ['Илья Коровин'],
+      block: 'Блок 2: ОБЗОР СТРАТЕГИЙ И ТАКТИК'
+    },
+    {
+      id: 'trading-tools',
+      time: '14:50-15:20',
+      title: 'Инструменты: скринеры, T&S, API, ИИ-боты',
+      format: 'Панель',
+      speakers: ['Вячеслав Арбузов (Финам)', 'Дмитрий Трость (Финам)', 'Эмиль Казакбаев', 'Борис трейдер'],
+      block: 'Блок 3: НОВЫЕ ВОЗМОЖНОСТИ'
+    },
+    {
+      id: 'defi-traders',
+      time: '15:20-15:40',
+      title: 'DeFi для трейдеров: риски и возможности',
+      format: 'Выступление',
+      speakers: ['Иван Шашов'],
+      block: 'Блок 3: НОВЫЕ ВОЗМОЖНОСТИ'
+    },
+    {
+      id: 'trader-mistakes',
+      time: '15:40-16:00',
+      title: 'Ошибки трейдеров 2025 и как их избежать',
+      format: 'Выступление',
+      speakers: ['Инвест фьючерс'],
+      block: 'Блок 3: НОВЫЕ ВОЗМОЖНОСТИ'
+    },
+    {
+      id: 'prop-trading',
+      time: '16:00-16:40',
+      title: 'Рост трейдера или Проп-трейдинг: рентабельность, расходы, вход',
+      description: 'На сколько рентабельная проп компания, Тяжело ли открыть сейчас проп сейчас, расходы при открытии проп компании',
+      format: 'Круглый стол',
+      speakers: ['Нарэк Григорян', 'Иван Каширин', 'Рома Мельников', 'Женя', 'Сергей Алексеев', 'Дмитрий Суханов (Финам)'],
+      block: 'Блок 3: НОВЫЕ ВОЗМОЖНОСТИ'
+    },
+    {
+      id: 'coffee-break-2',
+      time: '16:40-17:00',
+      title: 'Кофе-брейк',
+      format: 'Кофе-брейк',
+      speakers: []
+    },
+    {
+      id: 'survivor-traders',
+      time: '17:00-17:20',
+      title: '10 лет на рынке. Характер трейдера. Как попасть в 10% выживших',
+      format: 'Панель',
+      speakers: ['Стас Чудаев', 'Легенда', 'Попов', 'Цветков', 'Олег Похилый'],
+      block: 'Блок 4: ПОСТ ТРЕЙД'
+    },
+    {
+      id: 'sergey-khitrov',
+      time: '17:20-17:40',
+      title: 'Выступление',
+      format: 'Выступление',
+      speakers: ['Сергей Хитров'],
+      block: 'Блок 4: ПОСТ ТРЕЙД'
+    },
+    {
+      id: 'trading-opportunities',
+      time: '17:40-18:20',
+      title: 'Возможности для трейдеров',
+      description: 'Даши - мемкоины, Станислав Жупин - опционы про крипту, Климченко Дима - стейблы?, Шашев - DeFi, Вайс - видеть возможности',
+      format: 'Панель',
+      speakers: ['Даши', 'Станислав Жупин', 'Климченко Дима', 'Шашев', 'Вайс'],
+      block: 'Блок 4: ПОСТ ТРЕЙД'
+    },
+    {
+      id: 'final-speech',
+      time: '18:20-18:40',
+      title: 'Заключительное выступление',
+      format: 'Выступление',
+      speakers: [],
+      block: 'Блок 5'
+    },
+    {
+      id: 'after-party',
+      time: '19:00',
+      title: 'After Party. Нетворкинг',
+      format: 'After Party',
+      speakers: []
+    }
+  ]
+};
