@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { User, UserRole } from '@/shared/types/app';
 import { useProfile } from '@/shared/hooks/use-profile';
+import { useProfileAnalytics } from '@/shared/hooks/use-profile-analytics';
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
 import { Button } from '@/shared/ui/button';
 import { Input } from '@/shared/ui/input';
@@ -26,7 +27,8 @@ export const ProfileEditForm: React.FC<ProfileEditFormProps> = ({
   onCancel,
   className
 }) => {
-  const { updateProfile, isLoading, error, isUpdating, clearError } = useProfile();
+  const { updateProfile: updateProfileLocal, isLoading, error, isUpdating, clearError } = useProfile();
+  const { updateProfile } = useProfileAnalytics();
   const [formData, setFormData] = useState({
     name: user.name || '',
     intent7d: user.intent7d || '',
@@ -67,15 +69,20 @@ export const ProfileEditForm: React.FC<ProfileEditFormProps> = ({
   };
 
   const handleSave = async () => {
-    const updates = {
-      name: formData.name,
-      intent7d: formData.intent7d,
-      profile: formData.profile
-    };
+    try {
+      const updates = {
+        displayName: formData.name,
+        intent7d: formData.intent7d,
+        // Note: profile updates would need to be handled separately in real API
+      };
 
-    const success = await updateProfile(updates);
-    if (success && onSave) {
-      onSave({ ...user, ...updates });
+      const updatedUser = await updateProfile(updates);
+      if (updatedUser && onSave) {
+        onSave(updatedUser);
+      }
+    } catch (error) {
+      console.error('Error saving profile:', error);
+      // Error is handled by the hook
     }
   };
 

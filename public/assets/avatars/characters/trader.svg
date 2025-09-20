@@ -1,0 +1,146 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background gradient -->
+  <defs>
+    <radialGradient id="bgGradient" cx="50%" cy="30%" r="70%">
+      <stop offset="0%" style="stop-color:#2C3E50;stop-opacity:0.2"/>
+      <stop offset="50%" style="stop-color:#E74C3C;stop-opacity:0.1"/>
+      <stop offset="100%" style="stop-color:#F39C12;stop-opacity:0.2"/>
+    </radialGradient>
+    <linearGradient id="robeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1A1A2E"/>
+      <stop offset="50%" style="stop-color:#16213E"/>
+      <stop offset="100%" style="stop-color:#0F0F23"/>
+    </linearGradient>
+    <linearGradient id="flaskGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FF6B35"/>
+      <stop offset="50%" style="stop-color:#FF8C00"/>
+      <stop offset="100%" style="stop-color:#FFA500"/>
+    </linearGradient>
+    <linearGradient id="flaskBlueGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4A90E2"/>
+      <stop offset="50%" style="stop-color:#87CEEB"/>
+      <stop offset="100%" style="stop-color:#B0E0E6"/>
+    </linearGradient>
+    <linearGradient id="flaskYellowGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFD700"/>
+      <stop offset="50%" style="stop-color:#FFA500"/>
+      <stop offset="100%" style="stop-color:#FF8C00"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="512" height="512" fill="url(#bgGradient)"/>
+  
+  <!-- Mystical smoke background -->
+  <g opacity="0.4" fill="#4A90E2">
+    <path d="M100 200 Q150 150 200 200 Q250 250 300 200 Q350 150 400 200" stroke="#4A90E2" stroke-width="3" fill="none"/>
+    <path d="M80 250 Q130 200 180 250 Q230 300 280 250 Q330 200 380 250" stroke="#4A90E2" stroke-width="2" fill="none"/>
+    <path d="M120 300 Q170 250 220 300 Q270 350 320 300 Q370 250 420 300" stroke="#4A90E2" stroke-width="2" fill="none"/>
+  </g>
+  
+  <!-- Main figure - Trader/Alchemist -->
+  <!-- Robe/Hood -->
+  <path d="M200 200 Q256 180 312 200 L320 400 Q256 420 192 400 Z" fill="url(#robeGradient)"/>
+  
+  <!-- Hood -->
+  <path d="M220 200 Q256 160 292 200 Q280 240 256 220 Q232 240 220 200" fill="url(#robeGradient)"/>
+  
+  <!-- Head -->
+  <circle cx="256" cy="180" r="30" fill="#F4C2A1"/>
+  
+  <!-- Beard -->
+  <path d="M240 190 Q256 210 272 190 Q270 200 256 195 Q242 200 240 190" fill="#8B4513"/>
+  
+  <!-- Face details -->
+  <circle cx="248" cy="175" r="2" fill="#2C1810"/> <!-- Left eye -->
+  <circle cx="264" cy="175" r="2" fill="#2C1810"/> <!-- Right eye -->
+  <path d="M248 185 Q256 188 264 185" stroke="#2C1810" stroke-width="1.5" fill="none"/> <!-- Mouth -->
+  
+  <!-- Robe belt -->
+  <rect x="220" y="250" width="72" height="8" fill="#8B4513"/>
+  
+  <!-- Medallion with candlestick chart -->
+  <circle cx="256" cy="220" r="15" fill="#FFD700" stroke="#FFA500" stroke-width="2"/>
+  <g stroke="#8B4513" stroke-width="1" fill="none">
+    <!-- Candlestick chart on medallion -->
+    <rect x="250" y="215" width="2" height="8" fill="#8B4513"/>
+    <rect x="252" y="213" width="2" height="4" fill="#8B4513"/>
+    <rect x="254" y="217" width="2" height="6" fill="#8B4513"/>
+    <rect x="256" y="214" width="2" height="5" fill="#8B4513"/>
+    <rect x="258" y="216" width="2" height="7" fill="#8B4513"/>
+  </g>
+  
+  <!-- Left hand holding main flask -->
+  <ellipse cx="180" cy="280" rx="18" ry="30" fill="#F4C2A1" transform="rotate(-20 180 280)"/>
+  
+  <!-- Main flask (orange) -->
+  <ellipse cx="180" cy="280" rx="25" ry="40" fill="url(#flaskGradient)" opacity="0.8"/>
+  <ellipse cx="180" cy="280" rx="25" ry="40" stroke="#FF8C00" stroke-width="2" fill="none"/>
+  
+  <!-- Bubbles in main flask -->
+  <circle cx="175" cy="270" r="2" fill="#FFFFFF" opacity="0.7"/>
+  <circle cx="185" cy="275" r="1.5" fill="#FFFFFF" opacity="0.7"/>
+  <circle cx="180" cy="285" r="1" fill="#FFFFFF" opacity="0.7"/>
+  <circle cx="190" cy="290" r="1.5" fill="#FFFFFF" opacity="0.7"/>
+  
+  <!-- Steam from main flask -->
+  <g stroke="#FF8C00" stroke-width="1" fill="none" opacity="0.6">
+    <path d="M175 240 Q180 220 185 240"/>
+    <path d="M180 235 Q185 215 190 235"/>
+    <path d="M185 230 Q190 210 195 230"/>
+  </g>
+  
+  <!-- Bitcoin symbol above main flask -->
+  <g transform="translate(180, 220)">
+    <circle cx="0" cy="0" r="12" fill="#FF8C00" opacity="0.8"/>
+    <text x="0" y="4" text-anchor="middle" fill="#FFFFFF" font-family="Arial, sans-serif" font-size="12" font-weight="bold">₿</text>
+  </g>
+  
+  <!-- Right hand holding two flasks -->
+  <ellipse cx="320" cy="280" rx="18" ry="30" fill="#F4C2A1" transform="rotate(20 320 280)"/>
+  
+  <!-- Blue flask (left) -->
+  <ellipse cx="310" cy="270" rx="15" ry="25" fill="url(#flaskBlueGradient)" opacity="0.8"/>
+  <ellipse cx="310" cy="270" rx="15" ry="25" stroke="#4A90E2" stroke-width="2" fill="none"/>
+  
+  <!-- Bubbles in blue flask -->
+  <circle cx="307" cy="262" r="1" fill="#FFFFFF" opacity="0.7"/>
+  <circle cx="313" cy="268" r="1.5" fill="#FFFFFF" opacity="0.7"/>
+  <circle cx="310" cy="275" r="1" fill="#FFFFFF" opacity="0.7"/>
+  
+  <!-- Steam from blue flask -->
+  <g stroke="#4A90E2" stroke-width="1" fill="none" opacity="0.6">
+    <path d="M307 245 Q310 230 313 245"/>
+    <path d="M310 240 Q313 225 316 240"/>
+  </g>
+  
+  <!-- Yellow flask (right) -->
+  <ellipse cx="330" cy="290" rx="15" ry="25" fill="url(#flaskYellowGradient)" opacity="0.8"/>
+  <ellipse cx="330" cy="290" rx="15" ry="25" stroke="#FFD700" stroke-width="2" fill="none"/>
+  
+  <!-- Bubbles in yellow flask -->
+  <circle cx="327" cy="282" r="1" fill="#FFFFFF" opacity="0.7"/>
+  <circle cx="333" cy="288" r="1.5" fill="#FFFFFF" opacity="0.7"/>
+  <circle cx="330" cy="295" r="1" fill="#FFFFFF" opacity="0.7"/>
+  
+  <!-- Steam from yellow flask -->
+  <g stroke="#FFD700" stroke-width="1" fill="none" opacity="0.6">
+    <path d="M327 265 Q330 250 333 265"/>
+    <path d="M330 260 Q333 245 336 260"/>
+  </g>
+  
+  <!-- Currency symbols above flasks -->
+  <g transform="translate(310, 230)">
+    <circle cx="0" cy="0" r="8" fill="#4A90E2" opacity="0.8"/>
+    <text x="0" y="3" text-anchor="middle" fill="#FFFFFF" font-family="Arial, sans-serif" font-size="10" font-weight="bold">$</text>
+  </g>
+  
+  <g transform="translate(330, 250)">
+    <circle cx="0" cy="0" r="8" fill="#FFD700" opacity="0.8"/>
+    <text x="0" y="3" text-anchor="middle" fill="#8B4513" font-family="Arial, sans-serif" font-size="10" font-weight="bold">¥</text>
+  </g>
+  
+  <!-- Title text -->
+  <text x="256" y="480" text-anchor="middle" fill="#2C3E50" font-family="Arial, sans-serif" font-size="24" font-weight="bold">Трейдер</text>
+  <text x="256" y="500" text-anchor="middle" fill="#E74C3C" font-family="Arial, sans-serif" font-size="14">Алхимик рынков</text>
+</svg>

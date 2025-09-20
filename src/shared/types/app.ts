@@ -55,6 +55,11 @@ export interface User {
   progressSteps: number; // 0..5
   name?: string;
   scannedZones?: string[]; // ID отсканированных зон
+  avatar?: {
+    characterId?: string;
+    frameId?: string;
+    accessories?: string[];
+  };
 }
 
 export interface Badge {

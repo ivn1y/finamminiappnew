@@ -29,7 +29,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Avatar, AvatarFallback } from '@/shared/ui/avatar';
 import { GoalWizard, GoalProgressTracker } from '@/features/goal-wizard';
 import { ProfileEditModal } from '@/features/profile-edit';
+import { AvatarView, AvatarCustomizationModal } from '@/features/avatar-customization';
+import { BadgesGrid } from '@/features/badges-grid';
 import { useProfile } from '@/shared/hooks/use-profile';
+import { useProfileAnalytics } from '@/shared/hooks/use-profile-analytics';
 import { BadgeInfoTooltip } from '@/shared/ui/badge-info-tooltip';
 import { ProgressCircle } from '@/shared/ui/progress-circle';
 import { XPTooltip } from '@/shared/ui/xp-tooltip';
@@ -39,9 +42,18 @@ import { User } from '@/shared/types/app';
 export const ProfilePage: React.FC = () => {
   const { user, getAllBadges, getProgressPercentage } = useAppStore();
   const { syncWithApi, isLoading: isProfileLoading } = useProfile();
+  const { 
+    updateProfile, 
+    updateAvatar, 
+    trackBadgeClick, 
+    trackScreenView, 
+    trackGoalSelection, 
+    trackShareProfile 
+  } = useProfileAnalytics();
   const [showEditModal, setShowEditModal] = useState(false);
   const [showGoalWizard, setShowGoalWizard] = useState(false);
   const [showAdvancedEdit, setShowAdvancedEdit] = useState(false);
+  const [showAvatarCustomization, setShowAvatarCustomization] = useState(false);
 
   const handleResetData = () => {
     // Reset user data to initial state
@@ -207,7 +219,27 @@ export const ProfilePage: React.FC = () => {
     console.log('Goal selected:', goal);
   };
 
+  const handleAvatarCustomization = () => {
+    setShowAvatarCustomization(true);
+  };
+
+  const handleAvatarSave = async (avatarData: { frameId?: string; accessories?: string[] }) => {
+    try {
+      await updateAvatar(avatarData);
+      setShowAvatarCustomization(false);
+    } catch (error) {
+      console.error('Error saving avatar:', error);
+      // Show error toast or handle error
+    }
+  };
+
+  const handleBadgeClick = async (badge: any) => {
+    await trackBadgeClick(badge.id);
+  };
+
   const handleShare = async () => {
+    await trackShareProfile();
+    
     const shareData = {
       title: 'Finam Collab',
       text: `Я участвую в Finam Collab как ${role.title}! Присоединяйся!`,
@@ -231,17 +263,22 @@ export const ProfilePage: React.FC = () => {
 
   const RoleIcon = getRoleIcon(user.role!);
 
+  // Track screen view on mount
+  React.useEffect(() => {
+    trackScreenView('me');
+  }, [trackScreenView]);
+
   return (
     <div className="min-h-screen bg-gray-50 p-6 pb-24">
       <div className="max-w-md mx-auto lg:max-w-4xl xl:max-w-6xl">
-        {/* Avatar with Progress Circle */}
+        {/* RPG Avatar with Progress Circle */}
         <div className="text-center mb-6">
           <div className="relative inline-block">
-            <Avatar className="w-24 h-24 mx-auto mb-4">
-              <AvatarFallback className="bg-gradient-to-br from-blue-600 to-blue-700 text-white">
-                <RoleIcon className="w-12 h-12" />
-              </AvatarFallback>
-            </Avatar>
+            <AvatarView 
+              user={user}
+              onCustomize={handleAvatarCustomization}
+              className="mb-4"
+            />
             {/* Progress Circle with Level - replaces XP indicator */}
             <div className="absolute -bottom-2 -right-2">
               <XPTooltip currentXP={user.xp}>
@@ -268,60 +305,19 @@ export const ProfilePage: React.FC = () => {
           <p className="text-gray-600 text-base mt-2">
             Прогресс: {Math.round(getProgressPercentage())}%
           </p>
+          <p className="text-sm text-gray-500 mt-1 opacity-75">
+            Нажмите на аватар для кастомизации
+          </p>
         </div>
 
-        {/* Badges */}
+        {/* Badges Grid */}
         <Card className="mb-6">
-          <CardHeader>
-            <div className="flex items-center justify-between">
-              <CardTitle className="text-xl">Мои бейджи</CardTitle>
-              <span className="text-base text-gray-500">
-                {userBadges.length}/{allBadges.length}
-              </span>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-2 gap-3 lg:grid-cols-3 xl:grid-cols-4">
-              {/* Earned badges */}
-              {userBadges.map((badge) => {
-                const BadgeIcon = getBadgeIcon(badge.id);
-                return (
-                  <Card
-                    key={badge.id}
-                    className="bg-blue-50 border-2 border-blue-500 text-center relative"
-                  >
-                    <CardContent className="p-3">
-                      <div className="absolute top-2 right-2">
-                        <BadgeInfoTooltip badge={badge} isEarned={true} />
-                      </div>
-                      <BadgeIcon className="w-8 h-8 text-blue-600 mx-auto mb-3" />
-                      <h4 className="font-medium text-gray-900 text-base">{badge.title}</h4>
-                      <p className="text-sm text-gray-600 mt-2">{badge.tooltip}</p>
-                    </CardContent>
-                  </Card>
-                );
-              })}
-              
-              {/* Locked badges */}
-              {lockedBadges.map((badge) => {
-                const BadgeIcon = getBadgeIcon(badge.id);
-                return (
-                  <Card
-                    key={badge.id}
-                    className="bg-gray-100 border-2 border-gray-200 text-center opacity-50 relative"
-                  >
-                    <CardContent className="p-3">
-                      <div className="absolute top-2 right-2">
-                        <BadgeInfoTooltip badge={badge} isEarned={false} />
-                      </div>
-                      <BadgeIcon className="w-8 h-8 text-gray-400 mx-auto mb-3" />
-                      <h4 className="font-medium text-gray-500 text-base">{badge.title}</h4>
-                      <p className="text-sm text-gray-400 mt-2">Заблокировано</p>
-                    </CardContent>
-                  </Card>
-                );
-              })}
-            </div>
+          <CardContent className="p-6">
+            <BadgesGrid
+              userBadges={user.badges}
+              allBadges={allBadges}
+              onBadgeClick={handleBadgeClick}
+            />
           </CardContent>
         </Card>
 
@@ -639,6 +635,14 @@ export const ProfilePage: React.FC = () => {
           onClose={() => setShowAdvancedEdit(false)}
           user={user}
           onSave={handleProfileSaved}
+        />
+
+        {/* Avatar Customization Modal */}
+        <AvatarCustomizationModal
+          isOpen={showAvatarCustomization}
+          onClose={() => setShowAvatarCustomization(false)}
+          user={user}
+          onSave={handleAvatarSave}
         />
       </div>
     </div>
