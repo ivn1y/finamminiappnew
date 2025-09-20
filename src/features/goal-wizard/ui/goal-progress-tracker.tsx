@@ -331,6 +331,7 @@ export const GoalProgressTracker: React.FC<GoalProgressTrackerProps> = ({
               Отмена
             </Button>
             <Button
+              variant="outline"
               onClick={handleSaveProgress}
               disabled={!progressNote.trim()}
               className="flex-1"
@@ -375,6 +376,7 @@ export const GoalProgressTracker: React.FC<GoalProgressTrackerProps> = ({
               Отмена
             </Button>
             <Button
+              variant="outline"
               onClick={handleSaveEdit}
               disabled={!progressNote.trim()}
               className="flex-1"

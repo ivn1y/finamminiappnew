@@ -300,6 +300,7 @@ export const GoalWizard: React.FC<GoalWizardProps> = ({
                 Отмена
               </Button>
               <Button
+                variant="outline"
                 onClick={handleNext}
                 disabled={!selectedGoal}
                 className="flex-1"
@@ -318,6 +319,7 @@ export const GoalWizard: React.FC<GoalWizardProps> = ({
                 Назад
               </Button>
               <Button
+                variant="outline"
                 onClick={handleSubmit}
                 disabled={isSubmitting}
                 className="flex-1"
