@@ -47,6 +47,7 @@ export * from './submit-helper';
 export * from './switch';
 export * from './table';
 export * from './tabs';
+export * from './telegram-community-cta';
 export * from './textarea';
 export * from './theme-debug';
 export * from './theme-test';

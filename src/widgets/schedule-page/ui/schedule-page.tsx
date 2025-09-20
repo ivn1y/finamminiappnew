@@ -5,6 +5,7 @@ import { scheduleData } from '@/shared/data/seed';
 import { ScheduleEvent } from '@/shared/types/app';
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
 import { Badge } from '@/shared/ui/badge';
+import { TelegramCommunityCTA } from '@/shared/ui/telegram-community-cta';
 import { Clock, Users, Mic, Coffee, Utensils, Users2, Calendar } from 'lucide-react';
 
 export const SchedulePage: React.FC = () => {
@@ -136,6 +137,11 @@ export const SchedulePage: React.FC = () => {
               </CardContent>
             </Card>
           ))}
+        </div>
+
+        {/* Telegram Community CTA */}
+        <div className="mt-8">
+          <TelegramCommunityCTA />
         </div>
 
         {/* Footer Info */}
