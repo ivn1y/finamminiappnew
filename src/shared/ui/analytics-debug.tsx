@@ -6,7 +6,8 @@ import { Button } from './button';
 import { Badge } from './badge';
 import { ScrollArea } from './scroll-area';
 import { Separator } from './separator';
-import { analyticsService, AnalyticsEvent } from '../lib/analytics-service';
+import { analyticsService } from '../lib/analytics-service';
+import { AnalyticsEvent } from '../lib/mock-api-client';
 import { unifiedApiService } from '../lib/unified-api-service';
 
 export function AnalyticsDebug() {

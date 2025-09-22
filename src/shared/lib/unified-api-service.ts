@@ -1,6 +1,6 @@
 // Unified API service that works with both mock and real API
 import { apiClient } from './api-client'
-import { mockApiClient, CreateUserRequest, UpdateUserRequest, RedeemQRRequest } from './mock-api-client'
+import { mockApiClient, CreateUserRequest, UpdateUserRequest, RedeemQRRequest, LogEventRequest } from './mock-api-client'
 import { User } from '../types/app'
 
 export interface ApiResponse<T> {
@@ -59,7 +59,7 @@ class UnifiedApiService {
   }
 
   // Логировать событие
-  async logEvent(userId: string, eventType: string, data: any): Promise<ApiResponse<any>> {
+  async logEvent(userId: string, eventType: LogEventRequest["eventType"], data: any): Promise<ApiResponse<any>> {
     if (this.isMockMode) {
       return await mockApiClient.logEvent({ userId, eventType, data })
     } else {
