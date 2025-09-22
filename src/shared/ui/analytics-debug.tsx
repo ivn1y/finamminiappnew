@@ -11,12 +11,15 @@ import { unifiedApiService } from '../lib/unified-api-service';
 
 export function AnalyticsDebug() {
   const [events, setEvents] = useState<AnalyticsEvent[]>([]);
+  const [chatLogs, setChatLogs] = useState<any[]>([]);
   const [stats, setStats] = useState<any>(null);
   const [isExpanded, setIsExpanded] = useState(false);
+  const [activeTab, setActiveTab] = useState<'analytics' | 'chat'>('analytics');
 
   useEffect(() => {
     loadEvents();
     loadStats();
+    loadChatLogs();
   }, []);
 
   const loadEvents = () => {
@@ -29,10 +32,25 @@ export function AnalyticsDebug() {
     setStats(eventStats);
   };
 
+  const loadChatLogs = () => {
+    try {
+      const logs = JSON.parse(localStorage.getItem('chat_logs') || '[]');
+      setChatLogs(logs);
+    } catch (error) {
+      console.error('Failed to load chat logs:', error);
+      setChatLogs([]);
+    }
+  };
+
   const clearEvents = () => {
     analyticsService.clearLocalEvents();
     loadEvents();
     loadStats();
+  };
+
+  const clearChatLogs = () => {
+    localStorage.removeItem('chat_logs');
+    loadChatLogs();
   };
 
   const syncWithServer = async () => {
@@ -82,7 +100,7 @@ export function AnalyticsDebug() {
           onClick={() => setIsExpanded(true)}
           className="bg-blue-600 hover:bg-blue-700 text-white shadow-lg"
         >
-          📊 Analytics ({events.length})
+          Debug ({events.length + chatLogs.length})
         </Button>
       </div>
     );
@@ -93,7 +111,7 @@ export function AnalyticsDebug() {
       <Card className="shadow-xl border-2">
         <CardHeader className="pb-3">
           <div className="flex items-center justify-between">
-            <CardTitle className="text-lg">Analytics Debug</CardTitle>
+            <CardTitle className="text-lg">Debug Panel</CardTitle>
             <Button
               variant="ghost"
               size="sm"
@@ -102,79 +120,167 @@ export function AnalyticsDebug() {
               ✕
             </Button>
           </div>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          {/* Статистика */}
-          {stats && (
-            <div className="space-y-2">
-              <div className="text-sm font-medium">Статистика:</div>
-              <div className="grid grid-cols-2 gap-2 text-xs">
-                <div>Всего событий: {stats.totalEvents}</div>
-                <div>API режим: {unifiedApiService.getMode()}</div>
-              </div>
-              <div className="flex flex-wrap gap-1">
-                {Object.entries(stats.eventsByType).map(([type, count]) => (
-                  <Badge key={type} className={`${getEventTypeColor(type)} text-white text-xs`}>
-                    {type}: {count as number}
-                  </Badge>
-                ))}
-              </div>
-            </div>
-          )}
-
-          <Separator />
-
-          {/* Действия */}
-          <div className="flex flex-wrap gap-2">
-            <Button size="sm" onClick={loadEvents} variant="outline">
-              🔄 Обновить
+          <div className="flex space-x-2 mt-2">
+            <Button
+              size="sm"
+              variant={activeTab === 'analytics' ? 'default' : 'outline'}
+              onClick={() => setActiveTab('analytics')}
+            >
+              Analytics ({events.length})
             </Button>
-            <Button size="sm" onClick={syncWithServer} variant="outline">
-              ☁️ Синхронизировать
-            </Button>
-            <Button size="sm" onClick={exportEvents} variant="outline">
-              💾 Экспорт
-            </Button>
-            <Button size="sm" onClick={clearEvents} variant="destructive">
-              🗑️ Очистить
+            <Button
+              size="sm"
+              variant={activeTab === 'chat' ? 'default' : 'outline'}
+              onClick={() => setActiveTab('chat')}
+            >
+              Chat ({chatLogs.length})
             </Button>
           </div>
-
-          <Separator />
-
-          {/* Список событий */}
-          <div>
-            <div className="text-sm font-medium mb-2">Последние события:</div>
-            <ScrollArea className="h-32">
-              <div className="space-y-2">
-                {events.slice(0, 10).map((event) => (
-                  <div key={event.id} className="text-xs border rounded p-2">
-                    <div className="flex items-center gap-2 mb-1">
-                      <Badge className={`${getEventTypeColor(event.eventType)} text-white text-xs`}>
-                        {event.eventType}
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {activeTab === 'analytics' ? (
+            <>
+              {/* Статистика */}
+              {stats && (
+                <div className="space-y-2">
+                  <div className="text-sm font-medium">Статистика:</div>
+                  <div className="grid grid-cols-2 gap-2 text-xs">
+                    <div>Всего событий: {stats.totalEvents}</div>
+                    <div>API режим: {unifiedApiService.getMode()}</div>
+                  </div>
+                  <div className="flex flex-wrap gap-1">
+                    {Object.entries(stats.eventsByType).map(([type, count]) => (
+                      <Badge key={type} className={`${getEventTypeColor(type)} text-white text-xs`}>
+                        {type}: {count as number}
                       </Badge>
-                      <span className="text-gray-500">
-                        {formatTimestamp(event.createdAt)}
-                      </span>
-                    </div>
-                    <div className="text-gray-600">
-                      User: {event.userId}
-                    </div>
-                    {event.data && Object.keys(event.data).length > 0 && (
-                      <div className="text-gray-500 mt-1">
-                        {JSON.stringify(event.data, null, 2).substring(0, 100)}...
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              <Separator />
+
+              {/* Действия */}
+              <div className="flex flex-wrap gap-2">
+                <Button size="sm" onClick={loadEvents} variant="outline">
+                  Обновить
+                </Button>
+                <Button size="sm" onClick={syncWithServer} variant="outline">
+                  Синхронизировать
+                </Button>
+                <Button size="sm" onClick={exportEvents} variant="outline">
+                  Экспорт
+                </Button>
+                <Button size="sm" onClick={clearEvents} variant="destructive">
+                  Очистить
+                </Button>
+              </div>
+
+              <Separator />
+
+              {/* Список событий */}
+              <div>
+                <div className="text-sm font-medium mb-2">Последние события:</div>
+                <ScrollArea className="h-32">
+                  <div className="space-y-2">
+                    {events.slice(0, 10).map((event) => (
+                      <div key={event.id} className="text-xs border rounded p-2">
+                        <div className="flex items-center gap-2 mb-1">
+                          <Badge className={`${getEventTypeColor(event.eventType)} text-white text-xs`}>
+                            {event.eventType}
+                          </Badge>
+                          <span className="text-gray-500">
+                            {formatTimestamp(event.createdAt)}
+                          </span>
+                        </div>
+                        <div className="text-gray-600">
+                          User: {event.userId}
+                        </div>
+                        {event.data && Object.keys(event.data).length > 0 && (
+                          <div className="text-gray-500 mt-1">
+                            {JSON.stringify(event.data, null, 2).substring(0, 100)}...
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                    {events.length === 0 && (
+                      <div className="text-gray-500 text-center py-4">
+                        Нет событий
                       </div>
                     )}
                   </div>
-                ))}
-                {events.length === 0 && (
-                  <div className="text-gray-500 text-center py-4">
-                    Нет событий
-                  </div>
-                )}
+                </ScrollArea>
               </div>
-            </ScrollArea>
-          </div>
+            </>
+          ) : (
+            <>
+              {/* Статистика чата */}
+              <div className="space-y-2">
+                <div className="text-sm font-medium">Статистика чата:</div>
+                <div className="grid grid-cols-2 gap-2 text-xs">
+                  <div>Всего запросов: {chatLogs.length}</div>
+                  <div>Фолбэков: {chatLogs.filter(log => log.isFallback).length}</div>
+                </div>
+                <div className="flex flex-wrap gap-1">
+                  <Badge className="bg-green-500 text-white text-xs">
+                    Ответы из KB: {chatLogs.filter(log => !log.isFallback).length}
+                  </Badge>
+                  <Badge className="bg-yellow-500 text-white text-xs">
+                    Передано команде: {chatLogs.filter(log => log.isFallback).length}
+                  </Badge>
+                </div>
+              </div>
+
+              <Separator />
+
+              {/* Действия для чата */}
+              <div className="flex flex-wrap gap-2">
+                <Button size="sm" onClick={loadChatLogs} variant="outline">
+                  Обновить
+                </Button>
+                <Button size="sm" onClick={clearChatLogs} variant="destructive">
+                  Очистить
+                </Button>
+              </div>
+
+              <Separator />
+
+              {/* Список запросов чата */}
+              <div>
+                <div className="text-sm font-medium mb-2">Последние запросы:</div>
+                <ScrollArea className="h-32">
+                  <div className="space-y-2">
+                    {chatLogs.slice(0, 10).map((log, index) => (
+                      <div key={index} className="text-xs border rounded p-2">
+                        <div className="flex items-center gap-2 mb-1">
+                          <Badge className={`${log.isFallback ? 'bg-yellow-500' : 'bg-green-500'} text-white text-xs`}>
+                            {log.isFallback ? 'Фолбэк' : 'KB'}
+                          </Badge>
+                          <span className="text-gray-500">
+                            {formatTimestamp(log.timestamp)}
+                          </span>
+                        </div>
+                        <div className="text-gray-600 mb-1">
+                          <strong>Q:</strong> {log.query}
+                        </div>
+                        <div className="text-gray-500 text-xs">
+                          <strong>A:</strong> {log.response.substring(0, 100)}...
+                        </div>
+                        <div className="text-gray-400 text-xs mt-1">
+                          User: {log.userId}
+                        </div>
+                      </div>
+                    ))}
+                    {chatLogs.length === 0 && (
+                      <div className="text-gray-500 text-center py-4">
+                        Нет запросов чата
+                      </div>
+                    )}
+                  </div>
+                </ScrollArea>
+              </div>
+            </>
+          )}
         </CardContent>
       </Card>
     </div>

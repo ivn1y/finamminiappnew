@@ -1,25 +1,45 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Send, Bot, User } from 'lucide-react';
-import { chatIntents } from '@/shared/data/seed';
-import { Card, CardContent } from '@/shared/ui/card';
+import { Send, Bot, User, MessageSquare } from 'lucide-react';
+import chatKB from '@/shared/data/chat-kb.json';
 import { Button } from '@/shared/ui/button';
 import { Input } from '@/shared/ui/input';
 import { Avatar, AvatarFallback } from '@/shared/ui/avatar';
+import { useAppStore } from '@/shared/store/app-store';
 
 interface Message {
   id: string;
   text: string;
   isUser: boolean;
   timestamp: Date;
+  isFallback?: boolean;
+}
+
+interface ChatKB {
+  faq: Array<{
+    id: string;
+    question: string;
+    answer: string;
+    keywords: string[];
+    category: string;
+  }>;
+  quickButtons: Array<{
+    id: string;
+    text: string;
+  }>;
+  fallbackMessage: string;
+  welcomeMessage: string;
 }
 
 export const ChatPage: React.FC = () => {
+  const { user } = useAppStore();
+  const kb = chatKB as ChatKB;
+  
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
-      text: 'Привет! Я AI-ассистент Finam Collab. Чем могу помочь?',
+      text: kb.welcomeMessage,
       isUser: false,
       timestamp: new Date()
     }
@@ -36,10 +56,84 @@ export const ChatPage: React.FC = () => {
     scrollToBottom();
   }, [messages]);
 
-  const handleIntentClick = (intent: any) => {
+  // Функция для поиска ответа в KB
+  const findAnswerInKB = (query: string): string | null => {
+    const normalizedQuery = query.toLowerCase().trim();
+    
+    // Сначала ищем точное совпадение по ID
+    const exactMatch = kb.faq.find(item => item.id === normalizedQuery);
+    if (exactMatch) {
+      return exactMatch.answer;
+    }
+    
+    // Затем ищем по ключевым словам
+    for (const item of kb.faq) {
+      const hasKeywordMatch = item.keywords.some(keyword => 
+        normalizedQuery.includes(keyword.toLowerCase())
+      );
+      
+      if (hasKeywordMatch) {
+        return item.answer;
+      }
+    }
+    
+    // Поиск по частичному совпадению в вопросе
+    for (const item of kb.faq) {
+      if (item.question.toLowerCase().includes(normalizedQuery) || 
+          normalizedQuery.includes(item.question.toLowerCase())) {
+        return item.answer;
+      }
+    }
+    
+    return null;
+  };
+
+  // Функция для логирования запросов
+  const logChatRequest = async (query: string, response: string, isFallback: boolean = false) => {
+    try {
+      const eventData = {
+        query,
+        response,
+        isFallback,
+        userId: user?.id || 'anonymous',
+        timestamp: new Date().toISOString()
+      };
+      
+      // Логируем в localStorage
+      const existingLogs = JSON.parse(localStorage.getItem('chat_logs') || '[]');
+      existingLogs.push(eventData);
+      localStorage.setItem('chat_logs', JSON.stringify(existingLogs));
+      
+      // Отправляем на сервер (если доступен)
+      if (typeof window !== 'undefined' && process.env.NEXT_PUBLIC_USE_MOCK_API === 'true') {
+        try {
+          await fetch('http://localhost:3001/api/logEvent', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              userId: user?.id || 'anonymous',
+              eventType: 'chat_request',
+              data: eventData
+            })
+          });
+        } catch (error) {
+          console.warn('Failed to log to server:', error);
+        }
+      }
+    } catch (error) {
+      console.error('Failed to log chat request:', error);
+    }
+  };
+
+  const handleQuickButtonClick = (buttonId: string) => {
+    const button = kb.quickButtons.find(b => b.id === buttonId);
+    if (!button) return;
+
     const userMessage: Message = {
       id: Date.now().toString(),
-      text: intent.title,
+      text: button.text,
       isUser: true,
       timestamp: new Date()
     };
@@ -47,26 +141,35 @@ export const ChatPage: React.FC = () => {
     setMessages(prev => [...prev, userMessage]);
     setIsTyping(true);
 
-    // Simulate typing delay
+    // Ищем ответ в KB
     setTimeout(() => {
+      const answer = findAnswerInKB(buttonId);
+      const response = answer || kb.fallbackMessage;
+      const isFallback = !answer;
+
       const botMessage: Message = {
         id: (Date.now() + 1).toString(),
-        text: intent.response,
+        text: response,
         isUser: false,
-        timestamp: new Date()
+        timestamp: new Date(),
+        isFallback
       };
 
       setMessages(prev => [...prev, botMessage]);
       setIsTyping(false);
+
+      // Логируем запрос
+      logChatRequest(button.text, response, isFallback);
     }, 1000);
   };
 
   const handleSendMessage = () => {
     if (!inputText.trim()) return;
 
+    const query = inputText.trim();
     const userMessage: Message = {
       id: Date.now().toString(),
-      text: inputText,
+      text: query,
       isUser: true,
       timestamp: new Date()
     };
@@ -75,17 +178,25 @@ export const ChatPage: React.FC = () => {
     setInputText('');
     setIsTyping(true);
 
-    // Simulate bot response
+    // Ищем ответ в KB
     setTimeout(() => {
+      const answer = findAnswerInKB(query);
+      const response = answer || kb.fallbackMessage;
+      const isFallback = !answer;
+
       const botMessage: Message = {
         id: (Date.now() + 1).toString(),
-        text: 'Спасибо за вопрос! Наша команда свяжется с вами в ближайшее время для более детального ответа.',
+        text: response,
         isUser: false,
-        timestamp: new Date()
+        timestamp: new Date(),
+        isFallback
       };
 
       setMessages(prev => [...prev, botMessage]);
       setIsTyping(false);
+
+      // Логируем запрос
+      logChatRequest(query, response, isFallback);
     }, 1500);
   };
 
@@ -147,9 +258,16 @@ export const ChatPage: React.FC = () => {
               <div className={`rounded-lg px-4 py-2 ${
                 message.isUser
                   ? 'bg-blue-600 text-white'
+                  : message.isFallback
+                  ? 'bg-yellow-50 text-yellow-900 border border-yellow-200'
                   : 'bg-white text-gray-900 border border-gray-200'
               }`}>
-                <p className="text-base">{message.text}</p>
+                <p className="text-base whitespace-pre-line">{message.text}</p>
+                {message.isFallback && (
+                  <div className="mt-2 text-xs text-yellow-700 bg-yellow-100 px-2 py-1 rounded">
+                    Передано команде
+                  </div>
+                )}
                 <p className={`text-sm mt-2 ${
                   message.isUser ? 'text-blue-100' : 'text-gray-500'
                 }`}>
@@ -187,15 +305,15 @@ export const ChatPage: React.FC = () => {
       <div className="bg-white border-t border-gray-200 p-4">
         <div className="mb-4">
           <p className="text-base text-gray-600 mb-4">Быстрые вопросы:</p>
-          <div className="grid grid-cols-1 gap-2">
-            {chatIntents.map((intent) => (
+          <div className="grid grid-cols-2 gap-2">
+            {kb.quickButtons.map((button) => (
               <Button
-                key={intent.id}
+                key={button.id}
                 variant="ghost"
-                onClick={() => handleIntentClick(intent)}
+                onClick={() => handleQuickButtonClick(button.id)}
                 className="text-left justify-start h-auto p-3 bg-gray-50 hover:bg-gray-100"
               >
-                <p className="text-base font-medium text-gray-900">{intent.title}</p>
+                <p className="text-sm font-medium text-gray-900">{button.text}</p>
               </Button>
             ))}
           </div>
