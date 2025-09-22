@@ -385,6 +385,7 @@ export const ProfileEditForm: React.FC<ProfileEditFormProps> = ({
               Отмена
             </Button>
             <Button
+              variant="outline"
               onClick={handleSave}
               disabled={!hasChanges || isUpdating}
               className="flex-1"
