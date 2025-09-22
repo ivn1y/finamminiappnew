@@ -4,6 +4,7 @@ import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import { User, AppState, UserRole } from '../types/app';
 import { globalBadges, roleContent } from '../data/seed';
+import { logRoleSelected, logProfileSubmitted, logBadgeEarned, logQRScanned } from '../lib/analytics-service';
 
 interface AppStore extends Omit<AppState, 'currentTab'> {
   // Actions
@@ -83,11 +84,27 @@ export const useAppStore = create<AppStore>()(
       showQRScanner: false,
 
       // Actions
-      setUser: (user) => set({ user }),
+      setUser: (user) => {
+        set({ user });
+        // Логируем создание/обновление пользователя
+        if (user.role) {
+          logRoleSelected(user.role, user.id);
+        }
+      },
       
-      updateUser: (updates) => set((state) => ({
-        user: state.user ? { ...state.user, ...updates } : null
-      })),
+      updateUser: (updates) => set((state) => {
+        if (!state.user) return state;
+        
+        const updatedUser = { ...state.user, ...updates };
+        
+        // Логируем обновление профиля
+        if (updates.profile) {
+          const profileFields = Object.keys(updates.profile);
+          logProfileSubmitted(updatedUser.role || 'unknown', profileFields, updatedUser.id);
+        }
+        
+        return { user: updatedUser };
+      }),
       
       setEventMode: (mode) => set({ eventMode: mode }),
       
@@ -100,6 +117,9 @@ export const useAppStore = create<AppStore>()(
         if (!user.badges.includes(badgeId)) {
           user.badges.push(badgeId);
           user.xp += 100; // XP за бейдж
+          
+          // Логируем получение бейджа
+          logBadgeEarned(badgeId, badgeId, 100, user.id);
         }
         
         return { user };
@@ -128,6 +148,9 @@ export const useAppStore = create<AppStore>()(
         }
         if (!user.scannedZones.includes(zoneId)) {
           user.scannedZones.push(zoneId);
+          
+          // Логируем сканирование QR кода
+          logQRScanned(zoneId, 'zone', zoneId, user.id);
         }
         
         return { user };

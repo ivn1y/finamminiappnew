@@ -1,0 +1,97 @@
+{
+  "users": [
+    {
+      "id": "user_123",
+      "createdAt": "2024-01-01T00:00:00.000Z",
+      "role": "trader",
+      "profile": {
+        "trader": {
+          "years": 3,
+          "markets": ["forex", "crypto"],
+          "risk": "medium"
+        }
+      },
+      "intent7d": "Запустить стратегию на капитале",
+      "badges": ["explorer"],
+      "xp": 150,
+      "progressSteps": 2,
+      "name": "Тестовый Трейдер",
+      "goalProgress": {
+        "current": 25,
+        "target": 100,
+        "daysLeft": 5,
+        "notes": [],
+        "milestones": [
+          { "id": 1, "title": "Начало работы", "completed": true, "date": "2024-01-01" },
+          { "id": 2, "title": "Первый результат", "completed": false, "date": null },
+          { "id": 3, "title": "Промежуточная проверка", "completed": false, "date": null },
+          { "id": 4, "title": "Завершение цели", "completed": false, "date": null }
+        ]
+      }
+    }
+  ],
+  "content": [
+    {
+      "id": "content_1",
+      "type": "article",
+      "title": "Основы трейдинга",
+      "description": "Введение в мир трейдинга",
+      "content": "Трейдинг - это искусство...",
+      "tags": ["education", "trading"],
+      "difficulty": "beginner",
+      "xpReward": 50,
+      "createdAt": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "content_2",
+      "type": "video",
+      "title": "Анализ рынка",
+      "description": "Технический анализ для начинающих",
+      "content": "https://example.com/video1",
+      "tags": ["education", "analysis"],
+      "difficulty": "intermediate",
+      "xpReward": 75,
+      "createdAt": "2024-01-02T00:00:00.000Z"
+    }
+  ],
+  "qrCodes": [
+    {
+      "id": "qr_1",
+      "code": "TRADER_001",
+      "type": "badge",
+      "reward": {
+        "type": "badge",
+        "value": "first_trade",
+        "xp": 100
+      },
+      "isActive": true,
+      "createdAt": "2024-01-01T00:00:00.000Z",
+      "expiresAt": "2024-12-31T23:59:59.000Z"
+    },
+    {
+      "id": "qr_2",
+      "code": "CONTENT_001",
+      "type": "content",
+      "reward": {
+        "type": "content",
+        "value": "content_1",
+        "xp": 25
+      },
+      "isActive": true,
+      "createdAt": "2024-01-01T00:00:00.000Z",
+      "expiresAt": "2024-12-31T23:59:59.000Z"
+    }
+  ],
+  "events": [
+    {
+      "id": "event_1",
+      "userId": "user_123",
+      "eventType": "role_selected",
+      "data": {
+        "role": "trader",
+        "timestamp": "2024-01-01T10:00:00.000Z"
+      },
+      "createdAt": "2024-01-01T10:00:00.000Z"
+    }
+  ]
+}
