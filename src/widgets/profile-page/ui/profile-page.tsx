@@ -6,7 +6,6 @@ import { roleContent, eventData } from '@/shared/data/seed';
 import { 
   User as UserIcon, 
   Award, 
-  Target, 
   Share2, 
   Edit3, 
   Star, 
@@ -25,9 +24,7 @@ import { Button } from '@/shared/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/shared/ui/dialog';
 import { Input } from '@/shared/ui/input';
 import { Label } from '@/shared/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/shared/ui/select';
 import { Avatar, AvatarFallback } from '@/shared/ui/avatar';
-import { GoalWizard, GoalProgressTracker } from '@/features/goal-wizard';
 import { ProfileEditModal } from '@/features/profile-edit';
 import { AvatarView, AvatarCustomizationModal } from '@/features/avatar-customization';
 import { BadgesGrid } from '@/features/badges-grid';
@@ -47,11 +44,9 @@ export const ProfilePage: React.FC = () => {
     updateAvatar, 
     trackBadgeClick, 
     trackScreenView, 
-    trackGoalSelection, 
     trackShareProfile 
   } = useProfileAnalytics();
   const [showEditModal, setShowEditModal] = useState(false);
-  const [showGoalWizard, setShowGoalWizard] = useState(false);
   const [showAdvancedEdit, setShowAdvancedEdit] = useState(false);
   const [showAvatarCustomization, setShowAvatarCustomization] = useState(false);
 
@@ -152,7 +147,7 @@ export const ProfilePage: React.FC = () => {
 
   const getRoleIcon = (roleId: string) => {
     switch (roleId) {
-      case 'trader': return Target;
+      case 'trader': return UserIcon;
       case 'startup': return Lightbulb;
       case 'expert': return Users;
       case 'partner': return Building2;
@@ -162,11 +157,11 @@ export const ProfilePage: React.FC = () => {
 
   const getBadgeIcon = (badgeId: string) => {
     switch (badgeId) {
-      case 'qr_scanner_badge': return Target; // QR-сканер
+      case 'qr_scanner_badge': return Award; // QR-сканер
       case 'explorer': return Star;
       case 'risk': return Shield;
       case 'algo': return Zap;
-      case 'pilot': return Target;
+      case 'pilot': return Award;
       case 'growth': return Zap;
       case 'deal': return Crown;
       case 'owl': return Users;
@@ -180,15 +175,13 @@ export const ProfilePage: React.FC = () => {
   };
 
   const [editData, setEditData] = useState({
-    name: user?.name || '',
-    intent7d: user?.intent7d || ''
+    name: user?.name || ''
   });
 
   // Обновляем editData при изменении пользователя
   React.useEffect(() => {
     setEditData({
-      name: user?.name || '',
-      intent7d: user?.intent7d || ''
+      name: user?.name || ''
     });
   }, [user]);
 
@@ -210,14 +203,6 @@ export const ProfilePage: React.FC = () => {
     await syncWithApi();
   };
 
-  const handleOpenGoalWizard = () => {
-    setShowGoalWizard(true);
-  };
-
-  const handleGoalSelected = (goal: string) => {
-    // Цель уже сохранена в хуке, здесь можно добавить дополнительную логику
-    console.log('Goal selected:', goal);
-  };
 
   const handleAvatarCustomization = () => {
     setShowAvatarCustomization(true);
@@ -310,17 +295,6 @@ export const ProfilePage: React.FC = () => {
           </p>
         </div>
 
-        {/* Badges Grid */}
-        <Card className="mb-6">
-          <CardContent className="p-6">
-            <BadgesGrid
-              userBadges={user.badges}
-              allBadges={allBadges}
-              onBadgeClick={handleBadgeClick}
-            />
-          </CardContent>
-        </Card>
-
         {/* Scanned Zones */}
         {user.scannedZones && user.scannedZones.length > 0 && (
           <Card className="mb-6">
@@ -403,32 +377,7 @@ export const ProfilePage: React.FC = () => {
                 <p className="text-gray-900 mt-1">{role.title} — {role.subtitle}</p>
               </div>
               
-              <div>
-                <div className="flex items-center justify-between">
-                  <Label className="text-sm font-medium text-gray-700">
-                    Цель на 7 дней
-                  </Label>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={handleOpenGoalWizard}
-                    className="text-blue-600 hover:text-blue-700"
-                  >
-                    <Target className="w-4 h-4 mr-1" />
-                    {user.intent7d ? 'Изменить' : 'Выбрать'}
-                  </Button>
-                </div>
-                <p className="text-gray-900 mt-1">
-                  {user.intent7d || 'Не выбрана'}
-                </p>
-              </div>
               
-              <div>
-                <Label className="text-sm font-medium text-gray-700">
-                  Шаги прогресса
-                </Label>
-                <p className="text-gray-900 mt-1">{user.progressSteps}/5</p>
-              </div>
 
               {/* Ролевые данные профиля */}
               {user.profile && user.profile[user.role] && (
@@ -536,12 +485,17 @@ export const ProfilePage: React.FC = () => {
           </CardContent>
         </Card>
 
-        {/* Goal Progress Tracker */}
-        {user.intent7d && (
-          <div className="mb-6">
-            <GoalProgressTracker onEditGoal={handleOpenGoalWizard} />
-          </div>
-        )}
+
+        {/* Badges Grid */}
+        <Card className="mb-6">
+          <CardContent className="p-6">
+            <BadgesGrid
+              userBadges={user.badges}
+              allBadges={allBadges}
+              onBadgeClick={handleBadgeClick}
+            />
+          </CardContent>
+        </Card>
 
         {/* Share Button */}
         <Card>
@@ -584,24 +538,6 @@ export const ProfilePage: React.FC = () => {
                 />
               </div>
               
-              <div>
-                <Label htmlFor="intent" className="text-sm font-medium text-gray-700">
-                  Цель на 7 дней
-                </Label>
-                <Select 
-                  value={editData.intent7d} 
-                  onValueChange={(value) => setEditData(prev => ({ ...prev, intent7d: value }))}
-                >
-                  <SelectTrigger className="mt-2">
-                    <SelectValue placeholder="Выберите цель" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {role.goals7d.map((goal, index) => (
-                      <SelectItem key={index} value={goal}>{goal}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
             </div>
             
             <div className="flex space-x-3">
@@ -622,12 +558,6 @@ export const ProfilePage: React.FC = () => {
           </DialogContent>
         </Dialog>
 
-        {/* Goal Wizard */}
-        <GoalWizard
-          isOpen={showGoalWizard}
-          onClose={() => setShowGoalWizard(false)}
-          onGoalSelected={handleGoalSelected}
-        />
 
         {/* Advanced Profile Edit Modal */}
         <ProfileEditModal
