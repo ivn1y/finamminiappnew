@@ -128,4 +128,8 @@ class ApiClient {
   }
 }
 
-export const apiClient = new ApiClient(process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000')
+// Определяем какой API использовать - мок или реальный
+const isMockMode = process.env.NEXT_PUBLIC_USE_MOCK_API === 'true' || process.env.NODE_ENV === 'development'
+const apiUrl = isMockMode ? 'http://localhost:3001' : (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000')
+
+export const apiClient = new ApiClient(apiUrl)

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { WebAppConfigurator } from "@/widgets/telegram/ui/config";
 import { WebAppLoader } from "@/widgets/telegram/ui/loader";
+import { AnalyticsDebug } from "@/shared/ui/analytics-debug";
 
 
 export const metadata: Metadata = {
@@ -20,6 +21,7 @@ export default async function BaseLayout({
       <main className='min-h-screen flex flex-col'>
         {children}
       </main>
+      <AnalyticsDebug />
     </>
   );
 }
