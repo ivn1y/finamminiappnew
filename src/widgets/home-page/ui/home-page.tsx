@@ -175,17 +175,25 @@ export const HomePage: React.FC = () => {
               <h3 className="text-xl font-semibold text-gray-900">Задание на сегодня</h3>
             </div>
             
-            <div className="bg-blue-50 rounded-lg p-6">
+            <div 
+              className="bg-blue-50 hover:bg-blue-100 rounded-lg p-6 cursor-pointer transition-colors duration-200 ease-in-out"
+              onClick={() => window.open('https://t.me/finam_invest', '_blank')}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  window.open('https://t.me/finam_invest', '_blank');
+                }
+              }}
+            >
               <h4 className="text-lg font-medium text-blue-600 mb-3">Присоединиться к нашему Telegram коммьюнити</h4>
               <p className="text-gray-700 text-base mb-4">Стань частью сообщества Finam Invest и получи доступ к эксклюзивным материалам, обсуждениям и новостям</p>
               <div className="flex items-center justify-between">
                 <span className="text-sm text-gray-500">Награда: Доступ к коммьюнити</span>
-                <Button 
-                  className="px-6 py-3"
-                  onClick={() => window.open('https://t.me/finam_invest', '_blank')}
-                >
+                <div className="px-6 py-3 bg-blue-600 text-white rounded-md font-medium text-sm">
                   Присоединиться
-                </Button>
+                </div>
               </div>
             </div>
           </CardContent>
