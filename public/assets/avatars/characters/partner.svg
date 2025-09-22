@@ -1,0 +1,109 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background gradient -->
+  <defs>
+    <radialGradient id="bgGradient" cx="50%" cy="30%" r="70%">
+      <stop offset="0%" style="stop-color:#8B4513;stop-opacity:0.1"/>
+      <stop offset="100%" style="stop-color:#D2691E;stop-opacity:0.3"/>
+    </radialGradient>
+    <linearGradient id="robeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#2C1810"/>
+      <stop offset="50%" style="stop-color:#3D2317"/>
+      <stop offset="100%" style="stop-color:#1A0E08"/>
+    </linearGradient>
+    <linearGradient id="globeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#8B4513"/>
+      <stop offset="50%" style="stop-color:#D2691E"/>
+      <stop offset="100%" style="stop-color:#FF8C00"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="512" height="512" fill="url(#bgGradient)"/>
+  
+  <!-- City silhouette background -->
+  <g opacity="0.3">
+    <rect x="50" y="350" width="20" height="80" fill="#8B4513"/>
+    <rect x="80" y="320" width="25" height="110" fill="#8B4513"/>
+    <rect x="120" y="300" width="30" height="130" fill="#8B4513"/>
+    <rect x="170" y="280" width="20" height="150" fill="#8B4513"/>
+    <rect x="200" y="290" width="25" height="140" fill="#8B4513"/>
+    <rect x="240" y="270" width="35" height="160" fill="#8B4513"/>
+    <rect x="290" y="285" width="20" height="145" fill="#8B4513"/>
+    <rect x="320" y="275" width="30" height="155" fill="#8B4513"/>
+    <rect x="360" y="260" width="25" height="170" fill="#8B4513"/>
+    <rect x="400" y="280" width="20" height="150" fill="#8B4513"/>
+  </g>
+  
+  <!-- Light rays from behind -->
+  <g opacity="0.6">
+    <path d="M256 50 L280 100 L240 100 Z" fill="#FFD700"/>
+    <path d="M256 50 L300 120 L220 120 Z" fill="#FFD700"/>
+    <path d="M256 50 L320 140 L200 140 Z" fill="#FFD700"/>
+    <path d="M256 50 L340 160 L180 160 Z" fill="#FFD700"/>
+  </g>
+  
+  <!-- Main figure - Partner -->
+  <!-- Robe/Mantle -->
+  <path d="M200 200 Q256 180 312 200 L320 400 Q256 420 192 400 Z" fill="url(#robeGradient)"/>
+  
+  <!-- Robe collar -->
+  <ellipse cx="256" cy="200" rx="60" ry="20" fill="#1A0E08"/>
+  
+  <!-- Robe clasp -->
+  <circle cx="256" cy="200" r="8" fill="#FFD700"/>
+  
+  <!-- Puzzle pieces on robe -->
+  <g fill="#8B4513">
+    <!-- Puzzle piece 1 - chest right -->
+    <path d="M280 220 L290 225 L285 235 L275 230 Z"/>
+    <!-- Puzzle piece 2 - robe right -->
+    <path d="M300 280 L310 285 L305 295 L295 290 Z"/>
+    <!-- Puzzle piece 3 - robe left -->
+    <path d="M220 300 L230 305 L225 315 L215 310 Z"/>
+    <!-- Puzzle piece 4 - robe left -->
+    <path d="M200 320 L210 325 L205 335 L195 330 Z"/>
+  </g>
+  
+  <!-- Keys on robe -->
+  <g fill="#FFD700">
+    <!-- Key 1 - chest right -->
+    <rect x="270" y="210" width="2" height="8" fill="#FFD700"/>
+    <circle cx="271" cy="210" r="2" fill="#FFD700"/>
+    <!-- Key 2 - robe left -->
+    <rect x="210" y="310" width="2" height="8" fill="#FFD700"/>
+    <circle cx="211" cy="310" r="2" fill="#FFD700"/>
+  </g>
+  
+  <!-- Head -->
+  <circle cx="256" cy="160" r="35" fill="#F4C2A1"/>
+  
+  <!-- Hair -->
+  <path d="M230 140 Q256 120 282 140 Q280 160 256 150 Q232 160 230 140" fill="#8B4513"/>
+  
+  <!-- Face details -->
+  <circle cx="248" cy="155" r="3" fill="#2C1810"/> <!-- Left eye -->
+  <circle cx="264" cy="155" r="3" fill="#2C1810"/> <!-- Right eye -->
+  <path d="M248 170 Q256 175 264 170" stroke="#2C1810" stroke-width="2" fill="none"/> <!-- Mouth -->
+  
+  <!-- Left hand holding globe -->
+  <ellipse cx="180" cy="250" rx="15" ry="25" fill="#F4C2A1" transform="rotate(-20 180 250)"/>
+  
+  <!-- Globe (puzzle pieces) -->
+  <circle cx="180" cy="250" r="40" fill="url(#globeGradient)" opacity="0.8"/>
+  <g stroke="#8B4513" stroke-width="2" fill="none">
+    <path d="M160 230 Q180 220 200 230 Q200 250 180 260 Q160 250 160 230"/>
+    <path d="M200 230 Q220 240 200 250 Q180 260 160 250 Q140 240 160 230"/>
+    <path d="M180 220 Q200 210 220 220 Q220 240 200 250 Q180 260 160 250 Q140 240 160 230"/>
+  </g>
+  
+  <!-- Right hand holding puzzle piece -->
+  <ellipse cx="320" cy="250" rx="15" ry="25" fill="#F4C2A1" transform="rotate(20 320 250)"/>
+  
+  <!-- Puzzle piece in right hand -->
+  <path d="M330 240 L340 245 L335 255 L325 250 Z" fill="#8B4513"/>
+  <path d="M330 240 L340 245 L335 255 L325 250 Z" stroke="#FFD700" stroke-width="1" fill="none"/>
+  
+  <!-- Title text -->
+  <text x="256" y="480" text-anchor="middle" fill="#8B4513" font-family="Arial, sans-serif" font-size="24" font-weight="bold">Партнер</text>
+  <text x="256" y="500" text-anchor="middle" fill="#D2691E" font-family="Arial, sans-serif" font-size="14">Стратег сотрудничества</text>
+</svg>

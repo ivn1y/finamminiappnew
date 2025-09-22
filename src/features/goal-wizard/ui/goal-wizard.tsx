@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { useAppStore } from '@/shared/store/app-store';
+import { useProfileAnalytics } from '@/shared/hooks/use-profile-analytics';
 import { roleContent } from '@/shared/data/seed';
 import { 
   Target, 
@@ -32,6 +33,7 @@ export const GoalWizard: React.FC<GoalWizardProps> = ({
   onGoalSelected 
 }) => {
   const { user, updateUser, incrementProgress } = useAppStore();
+  const { trackGoalSelection } = useProfileAnalytics();
   const [selectedGoal, setSelectedGoal] = useState<string>('');
   const [currentStep, setCurrentStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -87,6 +89,9 @@ export const GoalWizard: React.FC<GoalWizardProps> = ({
     setIsSubmitting(true);
     
     try {
+      // Track goal selection
+      await trackGoalSelection(selectedGoal);
+      
       // Обновляем цель пользователя
       updateUser({ intent7d: selectedGoal });
       

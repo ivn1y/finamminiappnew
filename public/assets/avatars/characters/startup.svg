@@ -1,0 +1,144 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background gradient -->
+  <defs>
+    <radialGradient id="bgGradient" cx="50%" cy="30%" r="70%">
+      <stop offset="0%" style="stop-color:#FF6B35;stop-opacity:0.1"/>
+      <stop offset="50%" style="stop-color:#4A90E2;stop-opacity:0.2"/>
+      <stop offset="100%" style="stop-color:#00D4AA;stop-opacity:0.3"/>
+    </radialGradient>
+    <linearGradient id="shirtGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FF6B35"/>
+      <stop offset="100%" style="stop-color:#E55A2B"/>
+    </linearGradient>
+    <linearGradient id="jacketGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4A90E2"/>
+      <stop offset="100%" style="stop-color:#2E5B8A"/>
+    </linearGradient>
+    <linearGradient id="tabletGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4A90E2"/>
+      <stop offset="50%" style="stop-color:#87CEEB"/>
+      <stop offset="100%" style="stop-color:#B0E0E6"/>
+    </linearGradient>
+    <linearGradient id="rocketGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#87CEEB"/>
+      <stop offset="50%" style="stop-color:#4A90E2"/>
+      <stop offset="100%" style="stop-color:#2E5B8A"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="512" height="512" fill="url(#bgGradient)"/>
+  
+  <!-- Circuit patterns background -->
+  <g opacity="0.3" stroke="#4A90E2" stroke-width="1" fill="none">
+    <circle cx="100" cy="100" r="20"/>
+    <circle cx="400" cy="120" r="15"/>
+    <circle cx="80" cy="200" r="12"/>
+    <circle cx="420" cy="180" r="18"/>
+    <path d="M50 150 Q150 100 250 150 Q350 200 450 150"/>
+    <path d="M60 250 Q160 200 260 250 Q360 300 460 250"/>
+  </g>
+  
+  <!-- Left panel with icons -->
+  <rect x="50" y="80" width="120" height="80" fill="#FF6B35" opacity="0.8" rx="8"/>
+  
+  <!-- Icons on left panel -->
+  <g fill="#FFFFFF">
+    <!-- Rocket icon -->
+    <path d="M80 100 L90 95 L100 100 L95 110 L85 110 Z" fill="#FFFFFF"/>
+    <rect x="95" y="105" width="3" height="15" fill="#FFFFFF"/>
+    <!-- Lightbulb icon -->
+    <circle cx="110" cy="120" r="8" fill="#FFFFFF"/>
+    <rect x="108" y="128" width="4" height="6" fill="#FFFFFF"/>
+    <!-- Growth chart icon -->
+    <path d="M130 130 L135 125 L140 120 L145 115 L150 110" stroke="#FFFFFF" stroke-width="2" fill="none"/>
+    <rect x="130" y="130" width="2" height="10" fill="#FFFFFF"/>
+    <rect x="135" y="125" width="2" height="15" fill="#FFFFFF"/>
+    <rect x="140" y="120" width="2" height="20" fill="#FFFFFF"/>
+    <rect x="145" y="115" width="2" height="25" fill="#FFFFFF"/>
+    <rect x="150" y="110" width="2" height="30" fill="#FFFFFF"/>
+  </g>
+  
+  <!-- Right rocket -->
+  <g transform="translate(350, 100)">
+    <!-- Rocket body -->
+    <ellipse cx="0" cy="0" rx="25" ry="60" fill="url(#rocketGradient)"/>
+    <!-- Rocket nose -->
+    <path d="M-15 -60 L15 -60 L0 -80 Z" fill="#FF6B35"/>
+    <!-- Rocket fins -->
+    <path d="M-25 40 L-35 50 L-25 45 Z" fill="#2E5B8A"/>
+    <path d="M25 40 L35 50 L25 45 Z" fill="#2E5B8A"/>
+    <!-- Exhaust flame -->
+    <ellipse cx="0" cy="70" rx="20" ry="30" fill="#FF6B35" opacity="0.8"/>
+    <ellipse cx="0" cy="80" rx="15" ry="20" fill="#FFD700" opacity="0.6"/>
+  </g>
+  
+  <!-- Main figure - Startup founder -->
+  <!-- Head -->
+  <circle cx="256" cy="160" r="35" fill="#F4C2A1"/>
+  
+  <!-- Hair -->
+  <path d="M230 140 Q256 120 282 140 Q280 160 256 150 Q232 160 230 140" fill="#8B4513"/>
+  
+  <!-- Glasses -->
+  <g stroke="#2C1810" stroke-width="3" fill="none">
+    <circle cx="245" cy="155" r="12"/>
+    <circle cx="267" cy="155" r="12"/>
+    <line x1="257" y1="155" x2="245" y2="155"/>
+  </g>
+  
+  <!-- Eyes behind glasses -->
+  <circle cx="245" cy="155" r="3" fill="#2C1810"/>
+  <circle cx="267" cy="155" r="3" fill="#2C1810"/>
+  
+  <!-- Nose -->
+  <ellipse cx="256" cy="165" rx="3" ry="5" fill="#F4C2A1"/>
+  
+  <!-- Mouth -->
+  <path d="M248 175 Q256 180 264 175" stroke="#2C1810" stroke-width="2" fill="none"/>
+  
+  <!-- Shirt -->
+  <rect x="220" y="195" width="72" height="60" fill="url(#shirtGradient)" rx="5"/>
+  
+  <!-- Jacket -->
+  <path d="M200 200 Q256 180 312 200 L320 280 Q256 300 192 280 Z" fill="url(#jacketGradient)"/>
+  
+  <!-- Arms -->
+  <ellipse cx="200" cy="250" rx="20" ry="35" fill="#F4C2A1" transform="rotate(-30 200 250)"/>
+  <ellipse cx="312" cy="250" rx="20" ry="35" fill="#F4C2A1" transform="rotate(30 312 250)"/>
+  
+  <!-- Left hand holding tablet -->
+  <ellipse cx="180" cy="280" rx="15" ry="25" fill="#F4C2A1" transform="rotate(-20 180 280)"/>
+  
+  <!-- Tablet/Blueprint -->
+  <rect x="160" y="260" width="40" height="30" fill="url(#tabletGradient)" rx="3" transform="rotate(-20 180 275)"/>
+  <rect x="160" y="260" width="40" height="30" stroke="#2E5B8A" stroke-width="2" fill="none" rx="3" transform="rotate(-20 180 275)"/>
+  
+  <!-- Rocket outline on tablet -->
+  <path d="M170 270 L180 265 L190 270 L185 280 L175 280 Z" stroke="#FFFFFF" stroke-width="1" fill="none" transform="rotate(-20 180 275)"/>
+  
+  <!-- Cube outline on tablet -->
+  <path d="M175 275 L185 275 L185 285 L175 285 Z" stroke="#FFFFFF" stroke-width="1" fill="none" transform="rotate(-20 180 275)"/>
+  <path d="M175 275 L180 270 L185 275" stroke="#FFFFFF" stroke-width="1" fill="none" transform="rotate(-20 180 275)"/>
+  <path d="M185 275 L190 270 L185 285" stroke="#FFFFFF" stroke-width="1" fill="none" transform="rotate(-20 180 275)"/>
+  
+  <!-- Grid pattern on tablet -->
+  <g stroke="#FFFFFF" stroke-width="0.5" opacity="0.7" transform="rotate(-20 180 275)">
+    <line x1="165" y1="265" x2="195" y2="265"/>
+    <line x1="165" y1="270" x2="195" y2="270"/>
+    <line x1="165" y1="275" x2="195" y2="275"/>
+    <line x1="165" y1="280" x2="195" y2="280"/>
+    <line x1="170" y1="260" x2="170" y2="290"/>
+    <line x1="175" y1="260" x2="175" y2="290"/>
+    <line x1="180" y1="260" x2="180" y2="290"/>
+    <line x1="185" y1="260" x2="185" y2="290"/>
+    <line x1="190" y1="260" x2="190" y2="290"/>
+  </g>
+  
+  <!-- Right hand -->
+  <ellipse cx="320" cy="280" rx="15" ry="25" fill="#F4C2A1" transform="rotate(20 320 280)"/>
+  
+  <!-- Title text -->
+  <text x="256" y="480" text-anchor="middle" fill="#FF6B35" font-family="Arial, sans-serif" font-size="24" font-weight="bold">Стартапер</text>
+  <text x="256" y="500" text-anchor="middle" fill="#4A90E2" font-family="Arial, sans-serif" font-size="14">Инноватор будущего</text>
+</svg>
