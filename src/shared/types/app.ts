@@ -47,6 +47,7 @@ export interface User {
       type?: 'university' | 'business' | 'media' | 'franchise';
       interest?: 'white-label' | 'franchise' | 'api';
     };
+    guest?: {};
   };
   intent7d?: string;
   goalProgress?: GoalProgress;
