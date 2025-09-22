@@ -33,6 +33,7 @@ import { useProfile } from '@/shared/hooks/use-profile';
 import { BadgeInfoTooltip } from '@/shared/ui/badge-info-tooltip';
 import { ProgressCircle } from '@/shared/ui/progress-circle';
 import { XPTooltip } from '@/shared/ui/xp-tooltip';
+import { TelegramCommunityCTA } from '@/shared/ui/telegram-community-cta';
 import { User } from '@/shared/types/app';
 
 export const ProfilePage: React.FC = () => {
@@ -559,6 +560,9 @@ export const ProfilePage: React.FC = () => {
             </Button>
           </CardContent>
         </Card>
+
+        {/* Telegram Community CTA */}
+        <TelegramCommunityCTA className="mt-4" />
 
         {/* Edit Modal */}
         <Dialog open={showEditModal} onOpenChange={setShowEditModal}>
