@@ -225,7 +225,7 @@ export const ChatPage: React.FC = () => {
             </AvatarFallback>
           </Avatar>
           <div>
-            <h1 className="text-xl font-semibold text-gray-900">AI-ассистент</h1>
+            <h1 className="text-xl font-semibold text-gray-900">FAQ</h1>
             <p className="text-base text-gray-500">Finam Collab</p>
           </div>
         </div>
