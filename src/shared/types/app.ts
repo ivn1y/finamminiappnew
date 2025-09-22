@@ -1,4 +1,4 @@
-export type UserRole = 'trader' | 'startup' | 'expert' | 'partner';
+export type UserRole = 'trader' | 'startup' | 'expert' | 'partner' | 'guest';
 
 export interface GoalProgress {
   current: number;

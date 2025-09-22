@@ -1,26 +1,27 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { useAppStore } from '@/shared/store/app-store';
 import { UserRole } from '@/shared/types/app';
 import { roleContent } from '@/shared/data/seed';
-import { ChevronRight, ChevronLeft, Sparkles, Target, Users, Building2, Lightbulb, AlertCircle } from 'lucide-react';
+import { ChevronRight, ChevronLeft, Sparkles, Target, Users, Building2, Lightbulb, AlertCircle, User } from 'lucide-react';
 
 const roleIcons = {
   trader: Target,
   startup: Lightbulb,
   expert: Users,
-  partner: Building2
+  partner: Building2,
+  guest: User
 };
 
 export const Onboarding: React.FC = () => {
+  const router = useRouter();
   const { setUser, updateUser, completeOnboarding, eventMode } = useAppStore();
   const [currentStep, setCurrentStep] = useState(0);
   const [selectedRole, setSelectedRole] = useState<UserRole | null>(null);
   const [profileData, setProfileData] = useState<any>({});
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const [name, setName] = useState('');
-  const [intent7d, setIntent7d] = useState('');
 
   // Функции валидации
   const validateStep = (step: number): boolean => {
@@ -34,6 +35,11 @@ export const Onboarding: React.FC = () => {
         break;
       case 2: // Заполнение профиля
         if (!selectedRole) return false;
+        
+        // Для роли "гость" не требуем заполнения профиля
+        if (selectedRole === 'guest') {
+          return true;
+        }
         
         switch (selectedRole) {
           case 'trader':
@@ -55,10 +61,6 @@ export const Onboarding: React.FC = () => {
             if (!profileData.description || profileData.description.trim().length < 10) newErrors.description = 'Опишите продукт/услугу (минимум 10 символов)';
             break;
         }
-        break;
-      case 3: // Имя и цель
-        if (!name.trim()) newErrors.name = 'Введите ваше имя';
-        if (!intent7d.trim()) newErrors.intent7d = 'Опишите вашу цель на 7 дней';
         break;
     }
     
@@ -90,27 +92,29 @@ export const Onboarding: React.FC = () => {
 
   const handleProfileNext = () => {
     if (validateStep(2)) {
-      setCurrentStep(3);
+      // Для всех ролей сразу завершаем онбординг
+      handleFinalSubmit();
     }
   };
 
   const handleFinalSubmit = () => {
-    if (!selectedRole || !validateStep(3)) return;
+    if (!selectedRole || !validateStep(2)) return;
 
     const newUser = {
       id: `user_${Date.now()}`,
       createdAt: new Date().toISOString(),
       role: selectedRole,
-      profile: { [selectedRole]: profileData },
+      profile: selectedRole === 'guest' ? {} : { [selectedRole]: profileData },
       badges: ['explorer'],
       xp: 100,
       progressSteps: 1,
-      name: name.trim(),
-      intent7d: intent7d.trim()
+      name: selectedRole === 'guest' ? 'Гость' : `Пользователь ${selectedRole}`,
+      intent7d: selectedRole === 'guest' ? 'Изучить платформу Collab' : 'Изучить возможности платформы'
     };
 
     setUser(newUser);
     completeOnboarding();
+    router.push('/collab/home');
   };
 
   const handleQuickTest = () => {
@@ -132,6 +136,7 @@ export const Onboarding: React.FC = () => {
 
     setUser(testUser);
     completeOnboarding();
+    router.push('/collab/home');
   };
 
   const renderWelcomeScreen = () => (
@@ -554,6 +559,24 @@ export const Onboarding: React.FC = () => {
             </div>
           );
 
+        case 'guest':
+          return (
+            <div className="text-center py-8">
+              <div className="mb-6">
+                <User className="w-16 h-16 mx-auto text-blue-600 mb-4" />
+                <h3 className="text-xl font-semibold text-gray-900 mb-2">Добро пожаловать!</h3>
+                <p className="text-gray-600">
+                  Как гость, вы можете изучать платформу Collab, знакомиться с сообществом и находить интересные проекты.
+                </p>
+              </div>
+              <div className="bg-blue-50 rounded-lg p-4">
+                <p className="text-sm text-blue-800">
+                  Вы можете в любой момент выбрать конкретную роль и заполнить профиль для получения дополнительных возможностей.
+                </p>
+              </div>
+            </div>
+          );
+
         default:
           return (
             <div className="text-center py-8">
@@ -597,88 +620,6 @@ export const Onboarding: React.FC = () => {
     );
   };
 
-  const renderNameAndGoal = () => (
-    <div className="min-h-screen bg-gray-50 p-6">
-      <div className="max-w-md mx-auto">
-        <div className="text-center mb-8">
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">Последний шаг</h1>
-          <p className="text-gray-600">Расскажи немного о себе</p>
-        </div>
-        
-        <div className="bg-white rounded-lg p-6 mb-6 space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Как тебя зовут? *
-            </label>
-            <input
-              type="text"
-              className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                errors.name ? 'border-red-500' : 'border-gray-300'
-              }`}
-              placeholder="Введите ваше имя"
-              value={name}
-              onChange={(e) => {
-                setName(e.target.value);
-                if (errors.name) {
-                  setErrors(prev => ({ ...prev, name: '' }));
-                }
-              }}
-            />
-            {errors.name && (
-              <p className="mt-1 text-sm text-red-600 flex items-center">
-                <AlertCircle className="w-4 h-4 mr-1" />
-                {errors.name}
-              </p>
-            )}
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Какая у тебя цель на 7 дней? *
-            </label>
-            <textarea
-              className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 h-20 resize-none ${
-                errors.intent7d ? 'border-red-500' : 'border-gray-300'
-              }`}
-              placeholder="Опишите вашу цель на ближайшую неделю..."
-              value={intent7d}
-              onChange={(e) => {
-                setIntent7d(e.target.value);
-                if (errors.intent7d) {
-                  setErrors(prev => ({ ...prev, intent7d: '' }));
-                }
-              }}
-            />
-            {errors.intent7d && (
-              <p className="mt-1 text-sm text-red-600 flex items-center">
-                <AlertCircle className="w-4 h-4 mr-1" />
-                {errors.intent7d}
-              </p>
-            )}
-          </div>
-        </div>
-
-        {/* Navigation buttons */}
-        <div className="flex space-x-3">
-          <button
-            onClick={handleBack}
-            className="flex-1 bg-gray-200 text-gray-700 hover:bg-gray-300 py-3 px-6 rounded-lg font-medium transition-colors flex items-center justify-center"
-          >
-            <ChevronLeft className="w-5 h-5 mr-2" />
-            Назад
-          </button>
-          <button
-            onClick={handleFinalSubmit}
-            className="flex-1 bg-blue-600 text-white hover:bg-blue-700 py-3 px-6 rounded-lg font-medium transition-colors flex items-center justify-center"
-          >
-            Завершить
-            <ChevronRight className="w-5 h-5 ml-2" />
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-
   switch (currentStep) {
     case 0:
       return renderWelcomeScreen();
@@ -686,8 +627,6 @@ export const Onboarding: React.FC = () => {
       return renderRoleSelection();
     case 2:
       return renderProfileForm();
-    case 3:
-      return renderNameAndGoal();
     default:
       return renderWelcomeScreen();
   }
