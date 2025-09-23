@@ -30,7 +30,7 @@ const createInitialUser = (): User => ({
   profile: {},
   credentials: {
     phone: '',
-    password: ''
+    email: ''
   },
   badges: ['explorer', 'qr_scanner_badge'],
   xp: 300,

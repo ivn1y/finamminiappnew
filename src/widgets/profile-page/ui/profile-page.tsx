@@ -246,7 +246,7 @@ export const ProfilePage: React.FC = () => {
     }
   };
 
-  const handleCredentialsSave = (credentials: { phone?: string; password?: string }) => {
+  const handleCredentialsSave = (credentials: { phone?: string; email?: string }) => {
     const updatedUser = {
       ...user,
       credentials: {

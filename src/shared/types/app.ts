@@ -51,7 +51,7 @@ export interface User {
   };
   credentials?: {
     phone?: string;
-    password?: string;
+    email?: string;
   };
   intent7d?: string;
   goalProgress?: GoalProgress;

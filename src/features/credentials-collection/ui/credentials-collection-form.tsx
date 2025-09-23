@@ -5,12 +5,12 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
 import { Button } from '@/shared/ui/button';
 import { Input } from '@/shared/ui/input';
 import { Label } from '@/shared/ui/label';
-import { Phone, Lock, Eye, EyeOff, Save } from 'lucide-react';
+import { Phone, Mail, Save } from 'lucide-react';
 import { User } from '@/shared/types/app';
 
 interface CredentialsCollectionFormProps {
   user: User;
-  onSave: (credentials: { phone?: string; password?: string }) => void;
+  onSave: (credentials: { phone?: string; email?: string }) => void;
   isLoading?: boolean;
 }
 
@@ -20,29 +20,28 @@ export const CredentialsCollectionForm: React.FC<CredentialsCollectionFormProps>
   isLoading = false
 }) => {
   const [phone, setPhone] = useState(user.credentials?.phone || '');
-  const [password, setPassword] = useState(user.credentials?.password || '');
-  const [showPassword, setShowPassword] = useState(false);
+  const [email, setEmail] = useState(user.credentials?.email || '');
   const [isEditing, setIsEditing] = useState(false);
 
   const handleSave = () => {
-    onSave({ phone, password });
+    onSave({ phone, email });
     setIsEditing(false);
   };
 
   const handleCancel = () => {
     setPhone(user.credentials?.phone || '');
-    setPassword(user.credentials?.password || '');
+    setEmail(user.credentials?.email || '');
     setIsEditing(false);
   };
 
-  const hasCredentials = user.credentials?.phone || user.credentials?.password;
+  const hasCredentials = user.credentials?.phone || user.credentials?.email;
 
   return (
     <Card className="mb-4">
       <CardHeader className="pb-3">
         <CardTitle className="text-lg flex items-center space-x-2">
-          <Lock className="w-5 h-5 text-blue-600" />
-          <span>Учетные данные</span>
+          <Phone className="w-5 h-5 text-blue-600" />
+          <span>Контактные данные</span>
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -64,17 +63,20 @@ export const CredentialsCollectionForm: React.FC<CredentialsCollectionFormProps>
                 </div>
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-2">
-                    <Lock className="w-4 h-4 text-gray-500" />
-                    <span className="text-sm text-gray-600">Пароль:</span>
+                    <Mail className="w-4 h-4 text-gray-500" />
+                    <span className="text-sm text-gray-600">Email:</span>
                     <span className="text-sm font-medium text-gray-900">
-                      {user.credentials?.password ? '••••••••' : 'Не указан'}
+                      {user.credentials?.email ? 
+                        `${user.credentials.email.split('@')[0].slice(0, 2)}***@${user.credentials.email.split('@')[1]}` : 
+                        'Не указан'
+                      }
                     </span>
                   </div>
                 </div>
               </>
             ) : (
               <p className="text-sm text-gray-500 italic">
-                Учетные данные не указаны. Нажмите "Редактировать" для добавления.
+                Контактные данные не указаны. Нажмите "Добавить данные" для заполнения.
               </p>
             )}
             
@@ -107,26 +109,19 @@ export const CredentialsCollectionForm: React.FC<CredentialsCollectionFormProps>
             </div>
 
             <div>
-              <Label htmlFor="password" className="text-sm font-medium text-gray-700">
-                Пароль
+              <Label htmlFor="email" className="text-sm font-medium text-gray-700">
+                Email
               </Label>
               <div className="relative mt-1">
-                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
                 <Input
-                  id="password"
-                  type={showPassword ? 'text' : 'password'}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Введите пароль"
-                  className="pl-10 pr-10"
+                  id="email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="example@email.com"
+                  className="pl-10"
                 />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                >
-                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                </button>
               </div>
             </div>
 
