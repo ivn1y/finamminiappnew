@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
 import { Input } from '@/shared/ui/input';
 import { Button } from '@/shared/ui/button';
@@ -20,16 +20,7 @@ export const ScheduleFilters: React.FC<ScheduleFiltersProps> = ({
   const [titleFilter, setTitleFilter] = useState('');
   const [isExpanded, setIsExpanded] = useState(false);
 
-  // Автоматический поиск при изменении фильтров
-  useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      applyFilters();
-    }, 300); // Задержка 300мс для избежания слишком частых поисков
-
-    return () => clearTimeout(timeoutId);
-  }, [speakerFilter, titleFilter]);
-
-  const applyFilters = () => {
+  const applyFilters = useCallback(() => {
     let filteredEvents = events;
 
     // Фильтр по спикеру
@@ -52,7 +43,16 @@ export const ScheduleFilters: React.FC<ScheduleFiltersProps> = ({
     }
 
     onFilterChange(filteredEvents);
-  };
+  }, [events, onFilterChange, speakerFilter, titleFilter]);
+
+  // Автоматический поиск при изменении фильтров
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      applyFilters();
+    }, 300); // Задержка 300мс для избежания слишком частых поисков
+
+    return () => clearTimeout(timeoutId);
+  }, [applyFilters]);
 
   const clearFilters = () => {
     setSpeakerFilter('');
