@@ -6,6 +6,7 @@ import { useAppStore } from '@/shared/store/app-store';
 import { UserRole } from '@/shared/types/app';
 import { roleContent } from '@/shared/data/seed';
 import { ChevronRight, ChevronLeft, Sparkles, Target, Users, Building2, Lightbulb, AlertCircle, User } from 'lucide-react';
+import { RoleCarousel } from '@/features/role-carousel';
 
 const roleIcons = {
   trader: Target,
@@ -196,41 +197,10 @@ export const Onboarding: React.FC = () => {
   const renderRoleSelection = () => (
     <div className="min-h-screen bg-gray-50 p-6">
       <div className="max-w-md mx-auto lg:max-w-4xl xl:max-w-6xl">
-        <div className="text-center mb-8">
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">Кто ты?</h1>
-          <p className="text-gray-600">Выбери свою роль в экосистеме</p>
-        </div>
-        
-        <div className="space-y-4">
-          {roleContent.map((role) => {
-            const IconComponent = roleIcons[role.id];
-            const isSelected = selectedRole === role.id;
-            return (
-              <div
-                key={role.id}
-                onClick={() => setSelectedRole(role.id)}
-                className={`bg-white rounded-lg p-6 cursor-pointer hover:shadow-md transition-shadow border-2 ${
-                  isSelected ? 'border-blue-500 bg-blue-50' : 'border-transparent hover:border-blue-500'
-                }`}
-              >
-                <div className="flex items-center space-x-4">
-                  <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                    <IconComponent className="w-6 h-6 text-blue-600" />
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="font-semibold text-gray-900">{role.title}</h3>
-                    <p className="text-blue-600 font-medium text-sm">{role.subtitle}</p>
-                  </div>
-                  {isSelected && (
-                    <div className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center">
-                      <div className="w-2 h-2 bg-white rounded-full"></div>
-                    </div>
-                  )}
-                </div>
-              </div>
-            );
-          })}
-        </div>
+        <RoleCarousel
+          selectedRole={selectedRole}
+          onRoleSelect={setSelectedRole}
+        />
 
         {/* Error message */}
         {errors.role && (
