@@ -49,6 +49,10 @@ export interface User {
     };
     guest?: {};
   };
+  credentials?: {
+    phone?: string;
+    email?: string;
+  };
   intent7d?: string;
   goalProgress?: GoalProgress;
   badges: string[];
