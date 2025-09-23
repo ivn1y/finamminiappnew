@@ -88,7 +88,7 @@ export const ChatPage: React.FC = () => {
     return null;
   };
 
-  // Функция для логирования запросов
+  // Функция для логирования запросов к AI-ассистенту
   const logChatRequest = async (query: string, response: string, isFallback: boolean = false) => {
     try {
       const eventData = {
@@ -100,9 +100,9 @@ export const ChatPage: React.FC = () => {
       };
       
       // Логируем в localStorage
-      const existingLogs = JSON.parse(localStorage.getItem('chat_logs') || '[]');
+      const existingLogs = JSON.parse(localStorage.getItem('ai_assistant_logs') || '[]');
       existingLogs.push(eventData);
-      localStorage.setItem('chat_logs', JSON.stringify(existingLogs));
+      localStorage.setItem('ai_assistant_logs', JSON.stringify(existingLogs));
       
       // Отправляем на сервер (если доступен)
       if (typeof window !== 'undefined' && process.env.NEXT_PUBLIC_USE_MOCK_API === 'true') {
@@ -114,7 +114,7 @@ export const ChatPage: React.FC = () => {
             },
             body: JSON.stringify({
               userId: user?.id || 'anonymous',
-              eventType: 'chat_request',
+              eventType: 'ai_assistant_request',
               data: eventData
             })
           });
@@ -123,7 +123,7 @@ export const ChatPage: React.FC = () => {
         }
       }
     } catch (error) {
-      console.error('Failed to log chat request:', error);
+      console.error('Failed to log AI assistant request:', error);
     }
   };
 
@@ -225,8 +225,8 @@ export const ChatPage: React.FC = () => {
             </AvatarFallback>
           </Avatar>
           <div>
-            <h1 className="text-xl font-semibold text-gray-900">FAQ</h1>
-            <p className="text-base text-gray-500">Finam Collab</p>
+            <h1 className="text-xl font-semibold text-gray-900">AI-Ассистент</h1>
+            <p className="text-base text-gray-500">Помощник по продуктам и гид по конференции</p>
           </div>
         </div>
       </div>

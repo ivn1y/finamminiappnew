@@ -15,7 +15,7 @@ export function AnalyticsDebug() {
   const [chatLogs, setChatLogs] = useState<any[]>([]);
   const [stats, setStats] = useState<any>(null);
   const [isExpanded, setIsExpanded] = useState(false);
-  const [activeTab, setActiveTab] = useState<'analytics' | 'chat'>('analytics');
+  const [activeTab, setActiveTab] = useState<'analytics' | 'ai-assistant'>('analytics');
 
   useEffect(() => {
     loadEvents();
@@ -35,10 +35,10 @@ export function AnalyticsDebug() {
 
   const loadChatLogs = () => {
     try {
-      const logs = JSON.parse(localStorage.getItem('chat_logs') || '[]');
+      const logs = JSON.parse(localStorage.getItem('ai_assistant_logs') || '[]');
       setChatLogs(logs);
     } catch (error) {
-      console.error('Failed to load chat logs:', error);
+      console.error('Failed to load AI assistant logs:', error);
       setChatLogs([]);
     }
   };
@@ -50,7 +50,7 @@ export function AnalyticsDebug() {
   };
 
   const clearChatLogs = () => {
-    localStorage.removeItem('chat_logs');
+    localStorage.removeItem('ai_assistant_logs');
     loadChatLogs();
   };
 
@@ -131,10 +131,10 @@ export function AnalyticsDebug() {
             </Button>
             <Button
               size="sm"
-              variant={activeTab === 'chat' ? 'default' : 'outline'}
-              onClick={() => setActiveTab('chat')}
+              variant={activeTab === 'ai-assistant' ? 'default' : 'outline'}
+              onClick={() => setActiveTab('ai-assistant')}
             >
-              Chat ({chatLogs.length})
+              AI-Ассистент ({chatLogs.length})
             </Button>
           </div>
         </CardHeader>
@@ -215,9 +215,9 @@ export function AnalyticsDebug() {
             </>
           ) : (
             <>
-              {/* Статистика чата */}
+              {/* Статистика AI-ассистента */}
               <div className="space-y-2">
-                <div className="text-sm font-medium">Статистика чата:</div>
+                <div className="text-sm font-medium">Статистика AI-ассистента:</div>
                 <div className="grid grid-cols-2 gap-2 text-xs">
                   <div>Всего запросов: {chatLogs.length}</div>
                   <div>Фолбэков: {chatLogs.filter(log => log.isFallback).length}</div>
@@ -234,7 +234,7 @@ export function AnalyticsDebug() {
 
               <Separator />
 
-              {/* Действия для чата */}
+              {/* Действия для AI-ассистента */}
               <div className="flex flex-wrap gap-2">
                 <Button size="sm" onClick={loadChatLogs} variant="outline">
                   Обновить
@@ -246,7 +246,7 @@ export function AnalyticsDebug() {
 
               <Separator />
 
-              {/* Список запросов чата */}
+              {/* Список запросов AI-ассистента */}
               <div>
                 <div className="text-sm font-medium mb-2">Последние запросы:</div>
                 <ScrollArea className="h-32">
@@ -274,7 +274,7 @@ export function AnalyticsDebug() {
                     ))}
                     {chatLogs.length === 0 && (
                       <div className="text-gray-500 text-center py-4">
-                        Нет запросов чата
+                        Нет запросов к AI-ассистенту
                       </div>
                     )}
                   </div>
