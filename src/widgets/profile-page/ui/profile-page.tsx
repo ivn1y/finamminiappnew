@@ -382,18 +382,18 @@ export const ProfilePage: React.FC = () => {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
+              {/* Учетные данные - размещаем первыми после заголовка "Мои данные" */}
+              <CredentialsCollectionForm
+                user={user}
+                onSave={handleCredentialsSave}
+              />
+
               <div>
                 <Label className="text-sm font-medium text-gray-700">
                   Роль
                 </Label>
                 <p className="text-gray-900 mt-1">{role.title} — {role.subtitle}</p>
               </div>
-              
-              {/* Учетные данные - размещаем первыми после роли */}
-              <CredentialsCollectionForm
-                user={user}
-                onSave={handleCredentialsSave}
-              />
 
               {/* Ролевые данные профиля */}
               {user.profile && user.profile[user.role] && (
