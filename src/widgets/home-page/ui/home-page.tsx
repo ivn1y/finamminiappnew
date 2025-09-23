@@ -1,43 +1,21 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import Link from 'next/link';
 import { useAppStore } from '@/shared/store/app-store';
-import { Map, QrCode, Users, Target, ChevronRight, Star, Gift } from 'lucide-react';
+import { Map, QrCode, Users, ChevronRight, Gift } from 'lucide-react';
 import { roleContent } from '@/shared/data/seed';
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
 import { Button } from '@/shared/ui/button';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/shared/ui/dialog';
-import { Progress } from '@/shared/ui/progress';
-import { GoalWizard, GoalProgressTracker } from '@/features/goal-wizard';
 
 export const HomePage: React.FC = () => {
   const { user, eventMode } = useAppStore();
-  const [showGoalWizard, setShowGoalWizard] = useState(false);
 
   if (!user || !user.role) return null;
 
   const role = roleContent.find(r => r.id === user.role);
   if (!role) return null;
 
-  const progressPercentage = (user.progressSteps / 5) * 100;
-
-  const handleOpenGoalWizard = () => {
-    setShowGoalWizard(true);
-  };
-
-  const handleGoalSelected = (goal: string) => {
-    // Цель уже сохранена в хуке, здесь можно добавить дополнительную логику
-    console.log('Goal selected:', goal);
-  };
-
-  const progressSteps = [
-    'Роль выбрана',
-    'Профиль заполнен', 
-    'Цель на 7 дней',
-    'Первый квест',
-    'QR-квест'
-  ];
 
   return (
     <div className="min-h-screen bg-gray-50 p-6 pb-24">
@@ -48,41 +26,10 @@ export const HomePage: React.FC = () => {
             Привет, {role.title}!
           </h1>
           <p className="text-lg text-gray-600">
-            Ты прошёл {user.progressSteps}/5 шагов до своей первой коллаборации
+            Добро пожаловать в Finam Collab
           </p>
         </div>
 
-        {/* Progress Card */}
-        <Card className="mb-6">
-          <CardHeader>
-            <div className="flex items-center justify-between">
-              <CardTitle className="text-xl">Прогресс</CardTitle>
-              <span className="text-base text-gray-500">{user.progressSteps}/5</span>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <Progress value={progressPercentage} className="mb-6" />
-            
-            <div className="space-y-3">
-              {progressSteps.map((step, index) => (
-                <div key={index} className="flex items-center space-x-4">
-                  <div className={`w-6 h-6 rounded-full flex items-center justify-center ${
-                    index < user.progressSteps 
-                      ? 'bg-green-500 text-white' 
-                      : 'bg-gray-200 text-gray-400'
-                  }`}>
-                    {index < user.progressSteps && <Star className="w-4 h-4" />}
-                  </div>
-                  <span className={`text-base ${
-                    index < user.progressSteps ? 'text-gray-900' : 'text-gray-500'
-                  }`}>
-                    {step}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
 
         {/* Action Cards */}
         <div className="space-y-4 mb-6 lg:grid lg:grid-cols-2 lg:gap-6 lg:space-y-0">
@@ -160,12 +107,6 @@ export const HomePage: React.FC = () => {
           </Card>
         </div>
 
-        {/* Goal Progress Tracker */}
-        {user.intent7d && (
-          <div className="mb-6">
-            <GoalProgressTracker onEditGoal={handleOpenGoalWizard} />
-          </div>
-        )}
 
         {/* Daily Quest */}
         <Card>
@@ -199,12 +140,6 @@ export const HomePage: React.FC = () => {
           </CardContent>
         </Card>
 
-        {/* Goal Wizard */}
-        <GoalWizard
-          isOpen={showGoalWizard}
-          onClose={() => setShowGoalWizard(false)}
-          onGoalSelected={handleGoalSelected}
-        />
       </div>
     </div>
   );
