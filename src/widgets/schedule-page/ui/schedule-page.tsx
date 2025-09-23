@@ -6,10 +6,12 @@ import { ScheduleEvent } from '@/shared/types/app';
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
 import { Badge } from '@/shared/ui/badge';
 import { TelegramCommunityCTA } from '@/shared/ui/telegram-community-cta';
-import { Clock, Users, Mic, Coffee, Utensils, Users2, Calendar } from 'lucide-react';
+import { ScheduleFilters } from '@/features/schedule-filters';
+import { Clock, Users, Mic, Coffee, Utensils, Users2, Calendar, Search } from 'lucide-react';
 
 export const SchedulePage: React.FC = () => {
   const [selectedBlock, setSelectedBlock] = useState<string | null>(null);
+  const [filteredEvents, setFilteredEvents] = useState<ScheduleEvent[]>(scheduleData.events);
 
   const getFormatIcon = (format: string) => {
     switch (format) {
@@ -50,9 +52,14 @@ export const SchedulePage: React.FC = () => {
   };
 
   const blocks = Array.from(new Set(scheduleData.events.map(event => event.block).filter(Boolean)));
-  const filteredEvents = selectedBlock 
-    ? scheduleData.events.filter(event => event.block === selectedBlock)
-    : scheduleData.events;
+  
+  const handleFilterChange = (events: ScheduleEvent[]) => {
+    setFilteredEvents(events);
+  };
+
+  const displayEvents = selectedBlock 
+    ? filteredEvents.filter(event => event.block === selectedBlock)
+    : filteredEvents;
 
   return (
     <div className="min-h-screen bg-gray-50 p-6 pb-24">
@@ -94,9 +101,28 @@ export const SchedulePage: React.FC = () => {
           </div>
         )}
 
+        {/* Schedule Filters */}
+        <ScheduleFilters
+          events={scheduleData.events}
+          onFilterChange={handleFilterChange}
+        />
+
+        {/* Events Count */}
+        <div className="mb-4">
+          <p className="text-sm text-gray-600">
+            Найдено событий: <span className="font-medium text-gray-900">{displayEvents.length}</span>
+            {selectedBlock && (
+              <span className="ml-2 text-blue-600">
+                в блоке "{selectedBlock}"
+              </span>
+            )}
+          </p>
+        </div>
+
         {/* Events List */}
         <div className="space-y-4">
-          {filteredEvents.map((event) => (
+          {displayEvents.length > 0 ? (
+            displayEvents.map((event) => (
             <Card key={event.id} className="hover:shadow-md transition-shadow">
               <CardContent className="p-6">
                 <div className="flex items-start justify-between">
@@ -136,7 +162,22 @@ export const SchedulePage: React.FC = () => {
                 </div>
               </CardContent>
             </Card>
-          ))}
+            ))
+          ) : (
+            <Card>
+              <CardContent className="p-8 text-center">
+                <div className="text-gray-500">
+                  <Search className="w-12 h-12 mx-auto mb-4 text-gray-300" />
+                  <h3 className="text-lg font-medium text-gray-900 mb-2">
+                    События не найдены
+                  </h3>
+                  <p className="text-gray-600">
+                    Попробуйте изменить фильтры или выбрать другой блок
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+          )}
         </div>
 
         {/* Telegram Community CTA */}
