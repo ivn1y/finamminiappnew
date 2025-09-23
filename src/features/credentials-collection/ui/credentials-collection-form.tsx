@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
 import { Button } from '@/shared/ui/button';
 import { Input } from '@/shared/ui/input';
 import { Label } from '@/shared/ui/label';
-import { Phone, Mail, Save } from 'lucide-react';
+import { Phone, Mail } from 'lucide-react';
 import { User } from '@/shared/types/app';
 
 interface CredentialsCollectionFormProps {
@@ -139,7 +139,6 @@ export const CredentialsCollectionForm: React.FC<CredentialsCollectionFormProps>
                 className="flex-1"
                 disabled={isLoading}
               >
-                <Save className="w-4 h-4 mr-1" />
                 Сохранить
               </Button>
             </div>
