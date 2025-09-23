@@ -28,6 +28,7 @@ import { Avatar, AvatarFallback } from '@/shared/ui/avatar';
 import { ProfileEditModal } from '@/features/profile-edit';
 import { AvatarView, AvatarCustomizationModal } from '@/features/avatar-customization';
 import { BadgesGrid } from '@/features/badges-grid';
+import { CredentialsCollectionForm } from '@/features/credentials-collection';
 import { useProfile } from '@/shared/hooks/use-profile';
 import { useProfileAnalytics } from '@/shared/hooks/use-profile-analytics';
 import { BadgeInfoTooltip } from '@/shared/ui/badge-info-tooltip';
@@ -245,6 +246,17 @@ export const ProfilePage: React.FC = () => {
     }
   };
 
+  const handleCredentialsSave = (credentials: { phone?: string; password?: string }) => {
+    const updatedUser = {
+      ...user,
+      credentials: {
+        ...user.credentials,
+        ...credentials
+      }
+    };
+    useAppStore.getState().setUser(updatedUser);
+  };
+
 
   const RoleIcon = getRoleIcon(user.role!);
 
@@ -377,7 +389,11 @@ export const ProfilePage: React.FC = () => {
                 <p className="text-gray-900 mt-1">{role.title} — {role.subtitle}</p>
               </div>
               
-              
+              {/* Учетные данные - размещаем первыми после роли */}
+              <CredentialsCollectionForm
+                user={user}
+                onSave={handleCredentialsSave}
+              />
 
               {/* Ролевые данные профиля */}
               {user.profile && user.profile[user.role] && (

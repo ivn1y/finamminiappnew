@@ -28,6 +28,10 @@ const createInitialUser = (): User => ({
   createdAt: new Date().toISOString(),
   role: 'trader',
   profile: {},
+  credentials: {
+    phone: '',
+    password: ''
+  },
   badges: ['explorer', 'qr_scanner_badge'],
   xp: 300,
   progressSteps: 2,
