@@ -1,10 +1,10 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
 import { Input } from '@/shared/ui/input';
 import { Button } from '@/shared/ui/button';
-import { Search, User, X } from 'lucide-react';
+import { Search, User, X, ChevronDown, ChevronUp } from 'lucide-react';
 import { ScheduleEvent } from '@/shared/types/app';
 
 interface ScheduleFiltersProps {
@@ -18,6 +18,16 @@ export const ScheduleFilters: React.FC<ScheduleFiltersProps> = ({
 }) => {
   const [speakerFilter, setSpeakerFilter] = useState('');
   const [titleFilter, setTitleFilter] = useState('');
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  // Автоматический поиск при изменении фильтров
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      applyFilters();
+    }, 300); // Задержка 300мс для избежания слишком частых поисков
+
+    return () => clearTimeout(timeoutId);
+  }, [speakerFilter, titleFilter]);
 
   const applyFilters = () => {
     let filteredEvents = events;
@@ -54,85 +64,92 @@ export const ScheduleFilters: React.FC<ScheduleFiltersProps> = ({
 
   return (
     <Card className="mb-6">
-      <CardHeader className="pb-3">
-        <CardTitle className="text-lg flex items-center space-x-2">
-          <Search className="w-5 h-5 text-blue-600" />
-          <span>Фильтры</span>
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="space-y-4">
-          {/* Фильтр по спикеру */}
-          <div>
-            <label htmlFor="speaker-filter" className="block text-sm font-medium text-gray-700 mb-2">
-              Поиск по спикеру
-            </label>
-            <div className="relative">
-              <User className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
-              <Input
-                id="speaker-filter"
-                type="text"
-                value={speakerFilter}
-                onChange={(e) => setSpeakerFilter(e.target.value)}
-                placeholder="Например: Ибрагим, Антон Клевцов..."
-                className="pl-10"
-              />
-            </div>
-          </div>
-
-          {/* Фильтр по названию */}
-          <div>
-            <label htmlFor="title-filter" className="block text-sm font-medium text-gray-700 mb-2">
-              Поиск по названию или теме
-            </label>
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
-              <Input
-                id="title-filter"
-                type="text"
-                value={titleFilter}
-                onChange={(e) => setTitleFilter(e.target.value)}
-                placeholder="Например: Трейдинг, Криптовалюта, ФРС..."
-                className="pl-10"
-              />
-            </div>
-          </div>
-
-          {/* Кнопки управления */}
-          <div className="flex space-x-2">
-            <Button
-              onClick={applyFilters}
-              className="flex-1"
-              disabled={!hasActiveFilters}
-            >
-              <Search className="w-4 h-4 mr-1" />
-              Применить фильтры
-            </Button>
+      <CardHeader 
+        className="pb-3 cursor-pointer hover:bg-gray-50 transition-colors"
+        onClick={() => setIsExpanded(!isExpanded)}
+      >
+        <CardTitle className="text-lg flex items-center justify-between">
+          <div className="flex items-center space-x-2">
+            <Search className="w-5 h-5 text-blue-600" />
+            <span>Фильтры</span>
             {hasActiveFilters && (
-              <Button
-                variant="outline"
-                onClick={clearFilters}
-                className="flex-1"
-              >
-                <X className="w-4 h-4 mr-1" />
-                Очистить
-              </Button>
+              <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full">
+                Активны
+              </span>
             )}
           </div>
-
-          {/* Информация о результатах */}
-          {hasActiveFilters && (
-            <div className="text-sm text-gray-600 bg-gray-50 p-3 rounded-lg">
-              <p>
-                Найдено событий: <span className="font-medium">{events.length}</span>
-              </p>
-              <p className="text-xs text-gray-500 mt-1">
-                Нажмите "Применить фильтры" для поиска
-              </p>
-            </div>
+          {isExpanded ? (
+            <ChevronUp className="w-5 h-5 text-gray-400" />
+          ) : (
+            <ChevronDown className="w-5 h-5 text-gray-400" />
           )}
-        </div>
-      </CardContent>
+        </CardTitle>
+      </CardHeader>
+      
+      {isExpanded && (
+        <CardContent>
+          <div className="space-y-4">
+            {/* Фильтр по спикеру */}
+            <div>
+              <label htmlFor="speaker-filter" className="block text-sm font-medium text-gray-700 mb-2">
+                Поиск по спикеру
+              </label>
+              <div className="relative">
+                <User className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <Input
+                  id="speaker-filter"
+                  type="text"
+                  value={speakerFilter}
+                  onChange={(e) => setSpeakerFilter(e.target.value)}
+                  placeholder="Например: Ибрагим, Антон Клевцов..."
+                  className="pl-10"
+                />
+              </div>
+            </div>
+
+            {/* Фильтр по названию */}
+            <div>
+              <label htmlFor="title-filter" className="block text-sm font-medium text-gray-700 mb-2">
+                Поиск по названию или теме
+              </label>
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <Input
+                  id="title-filter"
+                  type="text"
+                  value={titleFilter}
+                  onChange={(e) => setTitleFilter(e.target.value)}
+                  placeholder="Например: Трейдинг, Криптовалюта, ФРС..."
+                  className="pl-10"
+                />
+              </div>
+            </div>
+
+            {/* Кнопка очистки */}
+            {hasActiveFilters && (
+              <div className="flex justify-end">
+                <Button
+                  variant="outline"
+                  onClick={clearFilters}
+                  size="sm"
+                >
+                  <X className="w-4 h-4 mr-1" />
+                  Очистить фильтры
+                </Button>
+              </div>
+            )}
+
+            {/* Информация о результатах */}
+            {hasActiveFilters && (
+              <div className="text-sm text-gray-600 bg-gray-50 p-3 rounded-lg">
+                <p className="text-xs text-gray-500">
+                  Поиск выполняется автоматически при вводе
+                </p>
+              </div>
+            )}
+          </div>
+        </CardContent>
+      )}
     </Card>
   );
 };
