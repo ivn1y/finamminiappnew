@@ -15,6 +15,14 @@ const roleIcons = {
   guest: User
 };
 
+const marketOptions = [
+  'Акции РФ',
+  'Фьючерсы',
+  'Облигации',
+  'Акции США',
+  'Криптовалюта'
+];
+
 export const Onboarding: React.FC = () => {
   const router = useRouter();
   const { setUser, updateUser, completeOnboarding, eventMode } = useAppStore();
@@ -22,6 +30,7 @@ export const Onboarding: React.FC = () => {
   const [selectedRole, setSelectedRole] = useState<UserRole | null>(null);
   const [profileData, setProfileData] = useState<any>({});
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [customMarkets, setCustomMarkets] = useState<string>('');
 
   // Функции валидации
   const validateStep = (step: number): boolean => {
@@ -45,7 +54,7 @@ export const Onboarding: React.FC = () => {
           case 'trader':
             if (!profileData.years) newErrors.years = 'Укажите опыт в трейдинге';
             if (!profileData.markets || profileData.markets.length === 0) newErrors.markets = 'Укажите рынки торговли';
-            if (!profileData.risk) newErrors.risk = 'Выберите риск-профиль';
+            // Риск-профиль теперь необязательный
             break;
           case 'startup':
             if (!profileData.stage) newErrors.stage = 'Укажите стадию проекта';
@@ -262,6 +271,21 @@ export const Onboarding: React.FC = () => {
       setProfileData((prev: any) => ({ ...prev, [field]: value }));
     };
 
+    const handleMarketToggle = (market: string) => {
+      const currentMarkets = profileData.markets || [];
+      const newMarkets = currentMarkets.includes(market)
+        ? currentMarkets.filter((m: string) => m !== market)
+        : [...currentMarkets, market];
+      handleInputChange('markets', newMarkets);
+    };
+
+    const handleCustomMarketsChange = (value: string) => {
+      setCustomMarkets(value);
+      const customMarketsArray = value.split(',').map(s => s.trim()).filter(s => s);
+      const allMarkets = [...(profileData.markets || []).filter((m: string) => marketOptions.includes(m)), ...customMarketsArray];
+      handleInputChange('markets', allMarkets);
+    };
+
     const renderFields = () => {
       switch (selectedRole) {
         case 'trader':
@@ -298,23 +322,61 @@ export const Onboarding: React.FC = () => {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  На каких рынках торгуешь? *
+                  На каких рынках торгуешь? * (выбери один или несколько)
                 </label>
-                <input
-                  type="text"
-                  className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                    errors.markets ? 'border-red-500' : 'border-gray-300'
-                  }`}
-                  placeholder="Форекс, акции, криптовалюты..."
-                  value={Array.isArray(profileData.markets) ? profileData.markets.join(', ') : (profileData.markets || '')}
-                  onChange={(e) => {
-                    const markets = e.target.value.split(',').map((s: string) => s.trim()).filter(s => s);
-                    handleInputChange('markets', markets);
-                    if (errors.markets) {
-                      setErrors(prev => ({ ...prev, markets: '' }));
-                    }
-                  }}
-                />
+                <div className="space-y-2">
+                  {marketOptions.map((market) => (
+                    <label key={market} className="flex items-center space-x-3 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={profileData.markets?.includes(market) || false}
+                        onChange={() => {
+                          handleMarketToggle(market);
+                          if (errors.markets) {
+                            setErrors(prev => ({ ...prev, markets: '' }));
+                          }
+                        }}
+                        className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                      />
+                      <span className="text-sm text-gray-700">{market}</span>
+                    </label>
+                  ))}
+                  <label className="flex items-center space-x-3 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={profileData.markets?.some((m: string) => !marketOptions.includes(m)) || false}
+                      onChange={() => {
+                        if (profileData.markets?.some((m: string) => !marketOptions.includes(m))) {
+                          // Убираем кастомные рынки
+                          const filteredMarkets = profileData.markets.filter((m: string) => marketOptions.includes(m));
+                          handleInputChange('markets', filteredMarkets);
+                          setCustomMarkets('');
+                        } else {
+                          // Добавляем пустую строку для кастомных рынков
+                          handleInputChange('markets', [...(profileData.markets || []), '']);
+                        }
+                      }}
+                      className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                    />
+                    <span className="text-sm text-gray-700">Другое</span>
+                  </label>
+                  {profileData.markets?.some((m: string) => !marketOptions.includes(m)) && (
+                    <div className="ml-7">
+                      <input
+                        type="text"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                        placeholder="Укажи свои варианты через запятую..."
+                        value={customMarkets}
+                        onChange={(e) => {
+                          handleCustomMarketsChange(e.target.value);
+                          if (errors.markets) {
+                            setErrors(prev => ({ ...prev, markets: '' }));
+                          }
+                        }}
+                      />
+                    </div>
+                  )}
+                </div>
                 {errors.markets && (
                   <p className="mt-1 text-sm text-red-600 flex items-center">
                     <AlertCircle className="w-4 h-4 mr-1" />
@@ -324,7 +386,7 @@ export const Onboarding: React.FC = () => {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Твой риск-профиль? *
+                  Твой риск-профиль? (необязательно)
                 </label>
                 <select
                   className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
