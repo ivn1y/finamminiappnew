@@ -35,6 +35,7 @@ import { BadgeInfoTooltip } from '@/shared/ui/badge-info-tooltip';
 import { ProgressCircle } from '@/shared/ui/progress-circle';
 import { XPTooltip } from '@/shared/ui/xp-tooltip';
 import { TelegramCommunityCTA } from '@/shared/ui/telegram-community-cta';
+import { CuratorContacts } from '@/features/curator-contacts';
 import { User } from '@/shared/types/app';
 
 export const ProfilePage: React.FC = () => {
@@ -306,6 +307,9 @@ export const ProfilePage: React.FC = () => {
             Нажмите на аватар для кастомизации
           </p>
         </div>
+
+        {/* Curator Contacts */}
+        <CuratorContacts />
 
         {/* Scanned Zones */}
         {user.scannedZones && user.scannedZones.length > 0 && (

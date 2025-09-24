@@ -1,5 +1,3 @@
-export { useLocalStorage } from './use-local-storage'
-export { useIsMobile } from './use-mobile'
-export { usePolling } from './use-polling'
-export { useQueryParams } from './use-query-params'
-export { useOptimizedSession } from './use-optimized-session' 
+// Export only used hooks
+export { useProfile } from './use-profile'
+export { useProfileAnalytics } from './use-profile-analytics' 
