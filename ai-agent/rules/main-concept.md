@@ -30,31 +30,7 @@
 - NextAuth.js credentials provider
 - Game Progress Context (для получения игрового прогресса)
 
-### 2. Card Collection Context
-**Ответственность**: Управление картами, коллекциями, крафт системой
-
-**Основные сущности**:
-- Card (карта)
-- CardTemplate (шаблон карты)
-- Collection (коллекция пользователя)
-- Pack (пак карт)
-- Rarity (редкость карты)
-- Region (регион: Россия, США, Гонконг)
-
-**Ключевые агрегаты**:
-- CollectionAggregate (корень - Collection)
-- PackAggregate (корень - Pack)
-
-**Доменные сервисы**:
-- PackOpeningService
-- CardCraftingService
-- RarityCalculationService
-
-**Интеграции**:
-- Game Economy Context (для валютных операций)
-- Trading Context (для обмена картами)
-
-### 3. Game Economy Context
+### 2. Game Economy Context
 **Ответственность**: Игровая экономика, валюты, магазин
 
 **Основные сущности**:
@@ -74,34 +50,9 @@
 - TransactionService
 
 **Интеграции**:
-- Card Collection Context (покупка паков)
 - Game Progress Context (начисление наград)
 
-### 4. Battle System Context (Game Engine)
-**Ответственность**: PvP бои, боевая механика, игровой движок
-
-**Основные сущности**:
-- Battle (бой)
-- Deck (колода)
-- BattleMove (ход в бою)
-- BattleResult (результат боя)
-- BattleState (состояние боя)
-
-**Ключевые агрегаты**:
-- BattleAggregate (корень - Battle)
-- DeckAggregate (корень - Deck)
-
-**Доменные сервисы**:
-- BattleMatchmakingService
-- BattleMechanicsService
-- DeckValidationService
-
-**Интеграции**:
-- WebSocket для real-time боев
-- Rating System Context (обновление рейтинга)
-- Game Progress Context (начисление опыта)
-
-### 5. Rating System Context
+### 3. Rating System Context
 **Ответственность**: Рейтинговая система, лидерборды
 
 **Основные сущности**:
@@ -117,10 +68,9 @@
 - LeaderboardUpdateService
 
 **Интеграции**:
-- Battle System Context (получение результатов боев)
 - User Management Context (получение данных пользователей)
 
-### 6. Quest System Context
+### 4. Quest System Context
 **Ответственность**: Система квестов, образовательные задания
 
 **Основные сущности**:
@@ -142,7 +92,7 @@
 - Game Progress Context (отслеживание прогресса)
 - Game Economy Context (выдача наград)
 
-### 7. Game Progress Context
+### 5. Game Progress Context
 **Ответственность**: Система уровней, опыт, достижения
 
 **Основные сущности**:
@@ -162,47 +112,7 @@
 **Интеграции**:
 - Все контексты (получение событий для начисления опыта)
 
-### 8. Mini-Games Context
-**Ответственность**: Мини-игры, PvE босс бои
-
-**Основные сущности**:
-- MiniGame (мини-игра)
-- GameSession (игровая сессия)
-- Boss (босс для PvE)
-- GameResult (результат игры)
-
-**Ключевые агрегаты**:
-- GameSessionAggregate (корень - GameSession)
-
-**Доменные сервисы**:
-- MiniGameMechanicsService
-- BossBattleService
-
-**Интеграции**:
-- Game Progress Context (начисление опыта)
-- Game Economy Context (награды)
-
-### 9. Trading Context
-**Ответственность**: P2P обмен картами между игроками
-
-**Основные сущности**:
-- TradeOffer (предложение обмена)
-- Trade (сделка обмена)
-- TradeHistory (история обменов)
-
-**Ключевые агрегаты**:
-- TradeAggregate (корень - Trade)
-
-**Доменные сервисы**:
-- TradeMatchingService
-- TradeValidationService
-- TradeExecutionService
-
-**Интеграции**:
-- Card Collection Context (проверка наличия карт)
-- User Management Context (проверка пользователей)
-
-### 10. Reward Distribution Context
+### 6. Reward Distribution Context
 **Ответственность**: Интеграция с брокерским счетом Финам
 
 **Основные сущности**:
@@ -218,7 +128,6 @@
 - BrokerageIntegrationService
 
 **Интеграции**:
-- Card Collection Context (проверка коллекции легендарных карт)
 - External Финам API
 
 ## Техническая архитектура
@@ -230,8 +139,6 @@
 4. **Infrastructure Layer** (SQLAlchemy repositories, Redis cache, Celery tasks)
 
 ### Real-time коммуникация (WebSocket)
-- **Battle System**: Синхронизация состояния боя в реальном времени
-- **Trading**: Обновления статуса обменов
 - **Notifications**: Push-уведомления о важных событиях
 
 ### Асинхронные задачи (Celery + Redis)
