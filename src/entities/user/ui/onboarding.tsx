@@ -127,27 +127,6 @@ export const Onboarding: React.FC = () => {
     router.push('/collab/home');
   };
 
-  const handleQuickTest = () => {
-    const testUser = {
-      id: `test_user_${Date.now()}`,
-      createdAt: new Date().toISOString(),
-      role: 'trader' as UserRole,
-      profile: { 
-        trader: {
-          years: 3,
-          markets: ['Форекс', 'Акции'],
-          risk: 'medium' as const
-        }
-      },
-      badges: ['explorer'],
-      xp: 100,
-      progressSteps: 2
-    };
-
-    setUser(testUser);
-    completeOnboarding();
-    router.push('/collab/home');
-  };
 
   const renderWelcomeScreen = () => (
     <div className="min-h-screen bg-gradient-to-br from-blue-600 to-blue-700 flex items-center justify-center p-6">
@@ -182,12 +161,6 @@ export const Onboarding: React.FC = () => {
           >
             Поехали
             <ChevronRight className="w-5 h-5 ml-2" />
-          </button>
-          <button
-            onClick={handleQuickTest}
-            className="bg-yellow-400 text-blue-600 hover:bg-yellow-300 w-full text-lg py-4 px-6 rounded-lg font-semibold transition-colors flex items-center justify-center"
-          >
-            🚀 Быстрый тест (Трейдер)
           </button>
         </div>
       </div>
