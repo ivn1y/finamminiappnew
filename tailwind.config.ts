@@ -24,8 +24,9 @@ const config = {
 		},
 		extend: {
 			fontFamily: {
-				sans: ["var(--font-outfit)"],
-				mono: ["var(--font-inter)"],
+				sans: ["var(--font-inter)", "Inter", "sans-serif"],
+				'inter-tight': ["var(--font-inter-tight)", "Inter Tight", "sans-serif"],
+				mono: ["var(--font-inter)", "Inter", "monospace"],
 			},
 			colors: {
 				border: "hsl(var(--border))",
