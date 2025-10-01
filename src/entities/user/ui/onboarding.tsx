@@ -7,6 +7,7 @@ import { UserRole } from '@/shared/types/app';
 import { roleContent } from '@/shared/data/seed';
 import { ChevronRight, ChevronLeft, Sparkles, Target, Users, Building2, Lightbulb, AlertCircle, User } from 'lucide-react';
 import { RoleCarousel } from '@/features/role-carousel';
+import { PrivacyPolicyLink } from '@/features/privacy-policy';
 
 // Логотип Финам
 const FinamLogo = () => (
@@ -230,7 +231,7 @@ export const Onboarding: React.FC = () => {
             onClick={handleWelcomeNext}
           className="flex justify-center items-center rounded-lg px-6 py-4 hover:opacity-90 transition-opacity"
           style={{
-            width: '289px', // точная ширина для iPhone 16
+            width: '353px', // ширина кнопки должна быть больше текста согласия
             background: 'linear-gradient(305deg, #FEDA3B -2.67%, #EF5541 38.9%, #801FDB 77.17%, #7E2A89 98.46%)',
           }}
         >
@@ -260,21 +261,23 @@ export const Onboarding: React.FC = () => {
             }}
           >
             Отправляя форму, я даю согласие на{' '}
-            <span 
-              style={{
-                background: 'linear-gradient(90deg, #FDB938 6.62%, #DE6D4B 53.31%, #A55AFF 100%)',
-                backgroundClip: 'text',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                fontFamily: 'Inter',
-                fontSize: '12px',
-                fontStyle: 'normal',
-                fontWeight: 400,
-                lineHeight: '16px',
-              }}
-            >
-              обработку персональных данных
-            </span>
+            <PrivacyPolicyLink>
+              <span 
+                style={{
+                  background: 'linear-gradient(90deg, #FDB938 6.62%, #DE6D4B 53.31%, #A55AFF 100%)',
+                  backgroundClip: 'text',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  fontFamily: 'Inter',
+                  fontSize: '12px',
+                  fontStyle: 'normal',
+                  fontWeight: 400,
+                  lineHeight: '16px',
+                }}
+              >
+                обработку персональных данных
+              </span>
+            </PrivacyPolicyLink>
           </p>
         </div>
       </div>
