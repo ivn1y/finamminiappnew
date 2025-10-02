@@ -68,7 +68,7 @@ export const Onboarding: React.FC = () => {
   const { setUser, updateUser, completeOnboarding, eventMode } = useAppStore();
   const [currentStep, setCurrentStep] = useState(0);
   const [selectedRole, setSelectedRole] = useState<UserRole | null>(null);
-  const [profileData, setProfileData] = useState<any>({});
+  const [profileData, setProfileData] = useState<Record<string, any>>({});
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [customMarkets, setCustomMarkets] = useState<string>('');
 
@@ -78,27 +78,88 @@ export const Onboarding: React.FC = () => {
 
   const handleRoleSelect = (role: UserRole) => {
     setSelectedRole(role);
-    setCurrentStep(2);
+    // Очищаем ошибки при выборе роли
+    if (errors.role) {
+      setErrors({...errors, role: ''});
+    }
   };
 
   const handleRoleNext = () => {
     if (selectedRole) {
       setCurrentStep(2);
+    } else {
+      // Если роль не выбрана, показываем ошибку
+      setErrors({...errors, role: 'Выберите роль'});
     }
   };
 
-  const handleProfileNext = () => {
-      handleFinalSubmit();
+  const handleProfileNext = async () => {
+    // Валидация для трейдера
+    if (selectedRole === 'trader') {
+      if (!profileData.experience) {
+        setErrors({...errors, experience: 'Выберите опыт торговли'});
+        return;
+      }
+      if (!profileData.markets || profileData.markets.length === 0) {
+        setErrors({...errors, markets: 'Выберите хотя бы один рынок'});
+        return;
+      }
+    }
+    
+    // Валидация для стартапа
+    if (selectedRole === 'startup') {
+      if (!profileData.projectStage) {
+        setErrors({...errors, projectStage: 'Выберите стадию проекта'});
+        return;
+      }
+      if (!profileData.productDescription || profileData.productDescription.trim() === '') {
+        setErrors({...errors, productDescription: 'Опишите свой продукт в трех словах'});
+        return;
+      }
+    }
+    
+    // Валидация для эксперта
+    if (selectedRole === 'expert') {
+      if (!profileData.expertRole) {
+        setErrors({...errors, expertRole: 'Выберите роль в Collab'});
+        return;
+      }
+      if (!profileData.expertise || profileData.expertise.trim() === '') {
+        setErrors({...errors, expertise: 'Укажите область вашей экспертизы'});
+        return;
+      }
+      if (!profileData.experience) {
+        setErrors({...errors, experience: 'Выберите опыт работы'});
+        return;
+      }
+    }
+    
+    // Валидация для партнера
+    if (selectedRole === 'partner') {
+      if (!profileData.partnerPackage) {
+        setErrors({...errors, partnerPackage: 'Выберите что вас интересует'});
+        return;
+      }
+    }
+    
+      await handleFinalSubmit();
   };
 
-  const handleFinalSubmit = () => {
-    if (!selectedRole) return;
+  const handleFinalSubmit = async () => {
+    if (!selectedRole) {
+      console.error('No selected role');
+      return;
+    }
+
+    try {
+      // Очищаем ошибки перед отправкой
+      setErrors({});
 
     const newUser = {
       id: `user_${Date.now()}`,
       createdAt: new Date().toISOString(),
       role: selectedRole,
-      profile: selectedRole === 'guest' ? {} : { [selectedRole]: profileData },
+        profile: selectedRole === 'guest' ? {} : { [selectedRole]: profileData || {} },
       badges: ['explorer'],
       xp: 100,
       progressSteps: 1,
@@ -106,9 +167,20 @@ export const Onboarding: React.FC = () => {
       intent7d: selectedRole === 'guest' ? 'Изучить платформу Collab' : 'Изучить возможности платформы'
     };
 
+      console.log('Creating user:', newUser);
+
     setUser(newUser);
     completeOnboarding();
+      
+      // Увеличиваем задержку для завершения обновления состояния
+      await new Promise(resolve => setTimeout(resolve, 300));
+      
+      console.log('Navigating to /collab/home');
     router.push('/collab/home');
+    } catch (error) {
+      console.error('Error creating user:', error);
+      // Можно добавить обработку ошибки для пользователя
+    }
   };
 
   const renderWelcomeScreen = () => (
@@ -319,7 +391,23 @@ export const Onboarding: React.FC = () => {
     const role = roleContent.find(r => r.id === selectedRole);
     if (!role) return null;
 
-          return (
+    // Рендерим форму в зависимости от выбранной роли
+    if (selectedRole === 'guest') {
+      return renderGuestProfile();
+    } else if (selectedRole === 'trader') {
+      return renderTraderProfile();
+    } else if (selectedRole === 'startup') {
+      return renderStartupProfile();
+    } else if (selectedRole === 'expert') {
+      return renderExpertProfile();
+    } else if (selectedRole === 'partner') {
+      return renderPartnerProfile();
+    }
+
+    return null;
+  };
+
+  const renderGuestProfile = () => (
       <div className="min-h-screen bg-gray-50 p-6">
         <div className="max-w-md mx-auto lg:max-w-4xl xl:max-w-6xl">
           <div className="text-center mb-8">
@@ -364,7 +452,570 @@ export const Onboarding: React.FC = () => {
         </div>
       </div>
     );
-  };
+
+  const renderTraderProfile = () => (
+    <div className="min-h-screen bg-gray-50 p-6">
+      <div className="max-w-md mx-auto lg:max-w-4xl xl:max-w-6xl">
+        <div className="text-center mb-8">
+          <h1 className="text-2xl font-bold text-gray-900 mb-2">Профиль трейдера</h1>
+          <p className="text-gray-600">Быстрый скоринг стратегии</p>
+        </div>
+        
+        <div className="bg-white rounded-lg p-6 mb-6">
+          <div className="space-y-6">
+            <div className="text-center mb-6">
+              <Target className="w-16 h-16 mx-auto text-blue-600 mb-4" />
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">Алхимик рынков</h3>
+              <p className="text-gray-600">
+                Ответь на 3 вопроса: опыт, рынки, риск-профиль. Откроем доступ к тестовой среде.
+              </p>
+            </div>
+
+            {/* Опыт торговли */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Опыт торговли <span className="text-red-500">*</span>
+              </label>
+              <select 
+                className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                  errors.experience ? 'border-red-500' : 'border-gray-300'
+                }`}
+                value={profileData.experience || ''}
+                onChange={(e) => {
+                  setProfileData({...profileData, experience: e.target.value});
+                  if (errors.experience) {
+                    setErrors({...errors, experience: ''});
+                  }
+                }}
+              >
+                <option value="">Выберите опыт</option>
+                <option value="less-than-year">Меньше года</option>
+                <option value="1-2-years">1-2 года</option>
+                <option value="3-5-years">3-5 лет</option>
+                <option value="more-than-5-years">Больше 5 лет</option>
+              </select>
+              {errors.experience && (
+                <p className="mt-1 text-sm text-red-600">{errors.experience}</p>
+              )}
+            </div>
+
+            {/* Рынки */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                На каких рынках торгуешь? (выбери один или несколько) <span className="text-red-500">*</span>
+              </label>
+              <div className="space-y-2">
+                {['Акции РФ', 'Фьючерсы', 'Облигации', 'Акции США', 'Криптовалюта', 'Другое'].map((market) => (
+                  <label key={market} className="flex items-center">
+                    <input
+                      type="checkbox"
+                      className="mr-2"
+                      checked={profileData.markets?.includes(market) || false}
+                      onChange={(e) => {
+                        const markets = profileData.markets || [];
+                        if (e.target.checked) {
+                          setProfileData({...profileData, markets: [...markets, market]});
+                        } else {
+                          setProfileData({...profileData, markets: markets.filter((m: string) => m !== market)});
+                        }
+                        if (errors.markets) {
+                          setErrors({...errors, markets: ''});
+                        }
+                      }}
+                    />
+                    <span className="text-sm text-gray-700">{market}</span>
+                  </label>
+                ))}
+              </div>
+              {errors.markets && (
+                <p className="mt-1 text-sm text-red-600">{errors.markets}</p>
+              )}
+            </div>
+
+            {/* Риск-профиль */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Твой риск-профиль?
+              </label>
+              <select 
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                value={profileData.riskProfile || ''}
+                onChange={(e) => setProfileData({...profileData, riskProfile: e.target.value})}
+              >
+                <option value="">Выберите риск-профиль (необязательно)</option>
+                <option value="conservative">Консервативный</option>
+                <option value="moderate">Умеренный</option>
+                <option value="aggressive">Агрессивный</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        
+        {/* Navigation buttons */}
+        <div className="flex space-x-3">
+          <button
+            onClick={() => setCurrentStep(1)}
+            className="flex-1 bg-gray-200 text-gray-700 hover:bg-gray-300 py-3 px-6 rounded-lg font-medium transition-colors flex items-center justify-center"
+          >
+            <ChevronLeft className="w-5 h-5 mr-2" />
+            Назад
+          </button>
+          <button
+            onClick={handleProfileNext}
+            className="flex-1 bg-blue-600 text-white hover:bg-blue-700 py-3 px-6 rounded-lg font-medium transition-colors flex items-center justify-center"
+          >
+            Далее
+            <ChevronRight className="w-5 h-5 ml-2" />
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+
+  const renderStartupProfile = () => (
+    <div className="min-h-screen bg-gray-50 p-6">
+      <div className="max-w-md mx-auto lg:max-w-4xl xl:max-w-6xl">
+        <div className="text-center mb-8">
+          <h1 className="text-2xl font-bold text-gray-900 mb-2">Профиль стартапа</h1>
+          <p className="text-gray-600">Питч в 3 слова</p>
+        </div>
+        
+        <div className="bg-white rounded-lg p-6 mb-6">
+          <div className="space-y-6">
+            <div className="text-center mb-6">
+              <Lightbulb className="w-16 h-16 mx-auto text-blue-600 mb-4" />
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">Изобретатель будущего</h3>
+              <p className="text-gray-600">
+                Опиши продукт тремя словами и выбери стадию проекта.
+              </p>
+            </div>
+
+            {/* Описание продукта */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Опиши свой продукт в трех словах <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="text"
+                className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                  errors.productDescription ? 'border-red-500' : 'border-gray-300'
+                }`}
+                placeholder="Например: Умный, Быстрый, Доступный"
+                value={profileData.productDescription || ''}
+                onChange={(e) => {
+                  setProfileData({...profileData, productDescription: e.target.value});
+                  if (errors.productDescription) {
+                    setErrors({...errors, productDescription: ''});
+                  }
+                }}
+              />
+              {errors.productDescription && (
+                <p className="mt-1 text-sm text-red-600">{errors.productDescription}</p>
+              )}
+            </div>
+
+            {/* Стадия проекта */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                На какой стадии твой проект <span className="text-red-500">*</span>
+              </label>
+              <select 
+                className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                  errors.projectStage ? 'border-red-500' : 'border-gray-300'
+                }`}
+                value={profileData.projectStage || ''}
+                onChange={(e) => {
+                  setProfileData({...profileData, projectStage: e.target.value});
+                  if (errors.projectStage) {
+                    setErrors({...errors, projectStage: ''});
+                  }
+                }}
+              >
+                <option value="">Выберите стадию</option>
+                <option value="idea">Идея</option>
+                <option value="mvp">MVP</option>
+                <option value="growth">Рост</option>
+                <option value="scaling">Масштабирование</option>
+              </select>
+              {errors.projectStage && (
+                <p className="mt-1 text-sm text-red-600">{errors.projectStage}</p>
+              )}
+            </div>
+
+            {/* Сфера деятельности */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Сфера деятельности
+              </label>
+              <select 
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                value={profileData.industry || ''}
+                onChange={(e) => setProfileData({...profileData, industry: e.target.value})}
+              >
+                <option value="">Выберите сферу</option>
+                <option value="fintech">FinTech</option>
+                <option value="edtech">EdTech</option>
+                <option value="healthtech">HealthTech</option>
+                <option value="ecommerce">E-commerce</option>
+                <option value="saas">SaaS</option>
+                <option value="other">Другое</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        
+        {/* Navigation buttons */}
+        <div className="flex space-x-3">
+          <button
+            onClick={() => setCurrentStep(1)}
+            className="flex-1 bg-gray-200 text-gray-700 hover:bg-gray-300 py-3 px-6 rounded-lg font-medium transition-colors flex items-center justify-center"
+          >
+            <ChevronLeft className="w-5 h-5 mr-2" />
+            Назад
+          </button>
+          <button
+            onClick={handleProfileNext}
+            className="flex-1 bg-blue-600 text-white hover:bg-blue-700 py-3 px-6 rounded-lg font-medium transition-colors flex items-center justify-center"
+          >
+            Далее
+            <ChevronRight className="w-5 h-5 ml-2" />
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+
+  const renderExpertProfile = () => (
+    <div className="min-h-screen bg-gray-50 p-6">
+      <div className="max-w-md mx-auto lg:max-w-4xl xl:max-w-6xl">
+        <div className="text-center mb-8">
+          <h1 className="text-2xl font-bold text-gray-900 mb-2">Профиль эксперта</h1>
+          <p className="text-gray-600">Выбор роли</p>
+        </div>
+        
+        <div className="bg-white rounded-lg p-6 mb-6">
+          <div className="space-y-6">
+            <div className="text-center mb-6">
+              <Users className="w-16 h-16 mx-auto text-blue-600 mb-4" />
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">Мудрец-наставник</h3>
+              <p className="text-gray-600">
+                Кем ты хочешь быть в Collab — ментором или трекером?
+              </p>
+            </div>
+
+            {/* Выбор роли */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Кем ты хочешь быть в Collab <span className="text-red-500">*</span>
+              </label>
+              <div className="space-y-3">
+                <label className={`flex items-center p-3 border rounded-lg hover:bg-gray-50 cursor-pointer ${
+                  errors.expertRole ? 'border-red-500' : 'border-gray-300'
+                }`}>
+                  <input
+                    type="radio"
+                    name="expertRole"
+                    value="mentor"
+                    className="mr-3"
+                    checked={profileData.expertRole === 'mentor'}
+                    onChange={(e) => {
+                      setProfileData({...profileData, expertRole: e.target.value});
+                      if (errors.expertRole) {
+                        setErrors({...errors, expertRole: ''});
+                      }
+                    }}
+                  />
+                  <div>
+                    <div className="font-medium text-gray-900">Ментор</div>
+                    <div className="text-sm text-gray-600">Поддерживаешь команды на пути к рынку</div>
+                  </div>
+                </label>
+                <label className={`flex items-center p-3 border rounded-lg hover:bg-gray-50 cursor-pointer ${
+                  errors.expertRole ? 'border-red-500' : 'border-gray-300'
+                }`}>
+                  <input
+                    type="radio"
+                    name="expertRole"
+                    value="tracker"
+                    className="mr-3"
+                    checked={profileData.expertRole === 'tracker'}
+                    onChange={(e) => {
+                      setProfileData({...profileData, expertRole: e.target.value});
+                      if (errors.expertRole) {
+                        setErrors({...errors, expertRole: ''});
+                      }
+                    }}
+                  />
+                  <div>
+                    <div className="font-medium text-gray-900">Трекер</div>
+                    <div className="text-sm text-gray-600">Помогаешь проверять гипотезы и идеи</div>
+                  </div>
+                </label>
+                <label className={`flex items-center p-3 border rounded-lg hover:bg-gray-50 cursor-pointer ${
+                  errors.expertRole ? 'border-red-500' : 'border-gray-300'
+                }`}>
+                  <input
+                    type="radio"
+                    name="expertRole"
+                    value="board"
+                    className="mr-3"
+                    checked={profileData.expertRole === 'board'}
+                    onChange={(e) => {
+                      setProfileData({...profileData, expertRole: e.target.value});
+                      if (errors.expertRole) {
+                        setErrors({...errors, expertRole: ''});
+                      }
+                    }}
+                  />
+                  <div>
+                    <div className="font-medium text-gray-900">Внешний совет директоров</div>
+                    <div className="text-sm text-gray-600">Участвуешь в стратегических решениях</div>
+                  </div>
+                </label>
+              </div>
+              {errors.expertRole && (
+                <p className="mt-1 text-sm text-red-600">{errors.expertRole}</p>
+              )}
+            </div>
+
+            {/* Опыт */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Сколько лет опыта в этой области <span className="text-red-500">*</span>
+              </label>
+              <select 
+                className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                  errors.experience ? 'border-red-500' : 'border-gray-300'
+                }`}
+                value={profileData.experience || ''}
+                onChange={(e) => {
+                  setProfileData({...profileData, experience: e.target.value});
+                  if (errors.experience) {
+                    setErrors({...errors, experience: ''});
+                  }
+                }}
+              >
+                <option value="">Выберите опыт</option>
+                <option value="1-3">1-3 года</option>
+                <option value="3-5">3-5 лет</option>
+                <option value="5-10">5-10 лет</option>
+                <option value="more-than-10">Больше 10 лет</option>
+              </select>
+              {errors.experience && (
+                <p className="mt-1 text-sm text-red-600">{errors.experience}</p>
+              )}
+            </div>
+
+            {/* Экспертиза */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                В какой области твоя экспертиза? <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="text"
+                className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                  errors.expertise ? 'border-red-500' : 'border-gray-300'
+                }`}
+                placeholder="Например: Финансы, Технологии, Маркетинг"
+                value={profileData.expertise || ''}
+                onChange={(e) => {
+                  setProfileData({...profileData, expertise: e.target.value});
+                  if (errors.expertise) {
+                    setErrors({...errors, expertise: ''});
+                  }
+                }}
+              />
+              {errors.expertise && (
+                <p className="mt-1 text-sm text-red-600">{errors.expertise}</p>
+              )}
+            </div>
+          </div>
+        </div>
+        
+        {/* Navigation buttons */}
+        <div className="flex space-x-3">
+          <button
+            onClick={() => setCurrentStep(1)}
+            className="flex-1 bg-gray-200 text-gray-700 hover:bg-gray-300 py-3 px-6 rounded-lg font-medium transition-colors flex items-center justify-center"
+          >
+            <ChevronLeft className="w-5 h-5 mr-2" />
+            Назад
+          </button>
+          <button
+            onClick={handleProfileNext}
+            className="flex-1 bg-blue-600 text-white hover:bg-blue-700 py-3 px-6 rounded-lg font-medium transition-colors flex items-center justify-center"
+          >
+            Далее
+            <ChevronRight className="w-5 h-5 ml-2" />
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+
+  const renderPartnerProfile = () => (
+    <div className="min-h-screen bg-gray-50 p-6">
+      <div className="max-w-md mx-auto lg:max-w-4xl xl:max-w-6xl">
+        <div className="text-center mb-8">
+          <h1 className="text-2xl font-bold text-gray-900 mb-2">Профиль партнёра</h1>
+          <p className="text-gray-600">Выбери пакет</p>
+        </div>
+        
+        <div className="bg-white rounded-lg p-6 mb-6">
+          <div className="space-y-6">
+            <div className="text-center mb-6">
+              <Building2 className="w-16 h-16 mx-auto text-blue-600 mb-4" />
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">Строитель экосистемы</h3>
+              <p className="text-gray-600">
+                Определи, что интереснее — франшиза, white-label или API. Получи чек-лист онбординга.
+              </p>
+            </div>
+
+            {/* Выбор пакета */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Что тебя интересует <span className="text-red-500">*</span>
+              </label>
+              <div className="space-y-3">
+                <label className={`flex items-center p-3 border rounded-lg hover:bg-gray-50 cursor-pointer ${
+                  errors.partnerPackage ? 'border-red-500' : 'border-gray-300'
+                }`}>
+                  <input
+                    type="radio"
+                    name="partnerPackage"
+                    value="franchise"
+                    className="mr-3"
+                    checked={profileData.partnerPackage === 'franchise'}
+                    onChange={(e) => {
+                      setProfileData({...profileData, partnerPackage: e.target.value});
+                      if (errors.partnerPackage) {
+                        setErrors({...errors, partnerPackage: ''});
+                      }
+                    }}
+                  />
+                  <div>
+                    <div className="font-medium text-gray-900">Франшиза</div>
+                    <div className="text-sm text-gray-600">Готовое решение под вашим брендом</div>
+                  </div>
+                </label>
+                <label className={`flex items-center p-3 border rounded-lg hover:bg-gray-50 cursor-pointer ${
+                  errors.partnerPackage ? 'border-red-500' : 'border-gray-300'
+                }`}>
+                  <input
+                    type="radio"
+                    name="partnerPackage"
+                    value="white-label"
+                    className="mr-3"
+                    checked={profileData.partnerPackage === 'white-label'}
+                    onChange={(e) => {
+                      setProfileData({...profileData, partnerPackage: e.target.value});
+                      if (errors.partnerPackage) {
+                        setErrors({...errors, partnerPackage: ''});
+                      }
+                    }}
+                  />
+                  <div>
+                    <div className="font-medium text-gray-900">White-label</div>
+                    <div className="text-sm text-gray-600">Интеграция в ваш продукт</div>
+                  </div>
+                </label>
+                <label className={`flex items-center p-3 border rounded-lg hover:bg-gray-50 cursor-pointer ${
+                  errors.partnerPackage ? 'border-red-500' : 'border-gray-300'
+                }`}>
+                  <input
+                    type="radio"
+                    name="partnerPackage"
+                    value="api"
+                    className="mr-3"
+                    checked={profileData.partnerPackage === 'api'}
+                    onChange={(e) => {
+                      setProfileData({...profileData, partnerPackage: e.target.value});
+                      if (errors.partnerPackage) {
+                        setErrors({...errors, partnerPackage: ''});
+                      }
+                    }}
+                  />
+                  <div>
+                    <div className="font-medium text-gray-900">API-интеграция</div>
+                    <div className="text-sm text-gray-600">Техническая интеграция по API</div>
+                  </div>
+                </label>
+              </div>
+              {errors.partnerPackage && (
+                <p className="mt-1 text-sm text-red-600">{errors.partnerPackage}</p>
+              )}
+            </div>
+
+            {/* Компания */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Название компании
+              </label>
+              <input
+                type="text"
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                placeholder="Введите название компании"
+                value={profileData.companyName || ''}
+                onChange={(e) => setProfileData({...profileData, companyName: e.target.value})}
+              />
+            </div>
+
+            {/* Описание продукта/услуги */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Опиши свой продукт/услугу
+              </label>
+              <textarea
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                placeholder="Расскажите о вашем продукте или услуге"
+                rows={3}
+                value={profileData.productServiceDescription || ''}
+                onChange={(e) => setProfileData({...profileData, productServiceDescription: e.target.value})}
+              />
+            </div>
+
+            {/* Сфера деятельности */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Сфера деятельности компании
+              </label>
+              <select 
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                value={profileData.companyIndustry || ''}
+                onChange={(e) => setProfileData({...profileData, companyIndustry: e.target.value})}
+              >
+                <option value="">Выберите сферу</option>
+                <option value="fintech">FinTech</option>
+                <option value="banking">Банкинг</option>
+                <option value="investment">Инвестиции</option>
+                <option value="consulting">Консалтинг</option>
+                <option value="technology">Технологии</option>
+                <option value="other">Другое</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        
+        {/* Navigation buttons */}
+        <div className="flex space-x-3">
+          <button
+            onClick={() => setCurrentStep(1)}
+            className="flex-1 bg-gray-200 text-gray-700 hover:bg-gray-300 py-3 px-6 rounded-lg font-medium transition-colors flex items-center justify-center"
+          >
+            <ChevronLeft className="w-5 h-5 mr-2" />
+            Назад
+          </button>
+          <button
+            onClick={handleProfileNext}
+            className="flex-1 bg-blue-600 text-white hover:bg-blue-700 py-3 px-6 rounded-lg font-medium transition-colors flex items-center justify-center"
+          >
+            Далее
+            <ChevronRight className="w-5 h-5 ml-2" />
+          </button>
+        </div>
+      </div>
+    </div>
+  );
 
   switch (currentStep) {
     case 0:
