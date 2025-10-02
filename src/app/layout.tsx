@@ -1,19 +1,19 @@
 import { Providers } from "./providers"
 import "@/app/globals.css"
-import { Inter, Outfit } from "next/font/google"
+import { Inter, Inter_Tight } from "next/font/google"
 import type { Metadata } from "next"
 import { Toaster } from "@/shared/ui/sonner"
-
-const outfit = Outfit({
-  subsets: ["latin", "latin-ext"],
-  display: "swap",
-  variable: "--font-outfit",
-})
 
 const inter = Inter({
   subsets: ["latin", "latin-ext"],
   display: "swap",
   variable: "--font-inter",
+})
+
+const interTight = Inter_Tight({
+  subsets: ["latin", "latin-ext"],
+  display: "swap",
+  variable: "--font-inter-tight",
 })
 
 export const metadata: Metadata = {
@@ -31,7 +31,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="ru" className={`${outfit.variable} ${inter.variable}`} suppressHydrationWarning>
+    <html lang="ru" className={`${inter.variable} ${interTight.variable}`} suppressHydrationWarning>
       <head>
         <link
           rel="icon"
