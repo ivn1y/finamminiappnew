@@ -7,11 +7,13 @@ import { globalBadges, roleContent } from '../data/seed';
 import { logRoleSelected, logProfileSubmitted, logBadgeEarned, logQRScanned } from '../lib/analytics-service';
 
 interface AppStore extends Omit<AppState, 'currentTab'> {
+  telegramQuestCompleted: boolean;
   // Actions
   setUser: (user: User) => void;
   updateUser: (updates: Partial<User>) => void;
   setEventMode: (mode: boolean) => void;
   completeOnboarding: () => void;
+  completeTelegramQuest: () => void;
   addBadge: (badgeId: string) => void;
   incrementProgress: () => void;
   setQRScanner: (show: boolean) => void;
@@ -86,6 +88,7 @@ export const useAppStore = create<AppStore>()(
       eventMode: true,
       isOnboardingComplete: false,
       showQRScanner: false,
+      telegramQuestCompleted: false,
 
       // Actions
       setUser: (user) => {
@@ -113,6 +116,8 @@ export const useAppStore = create<AppStore>()(
       setEventMode: (mode) => set({ eventMode: mode }),
       
       completeOnboarding: () => set({ isOnboardingComplete: true }),
+
+      completeTelegramQuest: () => set({ telegramQuestCompleted: true }),
       
       addBadge: (badgeId) => set((state) => {
         if (!state.user) return state;
