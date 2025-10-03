@@ -79,6 +79,8 @@ export interface RoleContent {
   id: UserRole;
   title: string;
   subtitle: string;
+  description: string;
+  image: string;
   goals7d: string[];
   firstQuest: {
     title: string;

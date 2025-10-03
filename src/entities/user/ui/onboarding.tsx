@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAppStore } from '@/shared/store/app-store';
 import { UserRole } from '@/shared/types/app';
@@ -12,6 +12,7 @@ import { TraderProfileForm } from '@/features/credentials-collection/ui/trader-p
 import { StartupProfileForm } from '@/features/credentials-collection/ui/startup-profile-form';
 import { ExpertProfileForm } from '@/features/credentials-collection/ui/expert-profile-form';
 import { PartnerProfileForm } from '@/features/credentials-collection/ui/partner-profile-form';
+import { type CarouselApi } from '@/shared/ui/carousel';
 
 // Логотип Финам
 const FinamLogo = () => (
@@ -67,14 +68,49 @@ const roleIcons = {
   guest: User
 };
 
+const SelectedIndicator = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="6" viewBox="0 0 16 6" fill="none">
+    <path d="M0 3C0 1.34315 1.34315 0 3 0H13C14.6569 0 16 1.34315 16 3C16 4.65685 14.6569 6 13 6H3C1.34315 6 0 4.65685 0 3Z" fill="#F9A605"/>
+  </svg>
+);
+
+const UnselectedIndicator = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="6" height="6" viewBox="0 0 6 6" fill="none">
+    <path d="M0 3C0 1.34315 1.34315 0 3 0C4.65685 0 6 1.34315 6 3C6 4.65685 4.65685 6 3 6C1.34315 6 0 4.65685 0 3Z" fill="#C0C0CC" fillOpacity="0.56"/>
+  </svg>
+);
+
 export const Onboarding: React.FC = () => {
   const router = useRouter();
   const { setUser, updateUser, completeOnboarding, eventMode } = useAppStore();
   const [currentStep, setCurrentStep] = useState(0);
-  const [selectedRole, setSelectedRole] = useState<UserRole | null>(null);
+  const [selectedRole, setSelectedRole] = useState<UserRole | null>('trader');
   const [profileData, setProfileData] = useState<Record<string, any>>({});
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [customMarkets, setCustomMarkets] = useState<string>('');
+  const [carouselApi, setCarouselApi] = useState<CarouselApi | undefined>();
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  useEffect(() => {
+    if (!carouselApi) {
+      return;
+    }
+
+    const handleSelect = () => {
+      const newIndex = carouselApi.selectedScrollSnap();
+      setCurrentSlide(newIndex);
+      const newRole = roleContent[newIndex].id;
+      setSelectedRole(newRole);
+    };
+
+    carouselApi.on('select', handleSelect);
+    handleSelect();
+
+    return () => {
+      carouselApi.off('select', handleSelect);
+    };
+  }, [carouselApi]);
+
 
   const handleWelcomeNext = () => {
     setCurrentStep(1);
@@ -365,30 +401,71 @@ export const Onboarding: React.FC = () => {
   );
 
   const renderRoleSelection = () => (
-    <div className="min-h-screen bg-gray-50 p-6">
-      <div className="max-w-md mx-auto lg:max-w-4xl xl:max-w-6xl">
-        <RoleCarousel
-          selectedRole={selectedRole}
-          onRoleSelect={setSelectedRole}
-        />
+    <div className="w-full h-screen bg-black flex flex-col items-center px-4 pt-[120px] pb-[90px] overflow-hidden">
+      <div className="w-full text-center mb-[15px]">
+        <h1
+          className="text-white text-[30px] font-normal leading-[110%] tracking-[-0.6px]"
+          style={{ fontFamily: '"Inter Tight", sans-serif' }}
+        >
+          Кто ты?
+        </h1>
+        <p
+          className="text-[17px] font-normal leading-6 tracking-[-0.17px] mt-[13px]"
+          style={{
+            color: 'rgba(255, 255, 255, 0.72)',
+            fontFamily: 'Inter, sans-serif',
+          }}
+        >
+          Выбери свою роль в экосистеме
+        </p>
+      </div>
 
-        {/* Navigation buttons */}
-        <div className="flex space-x-3 mt-8">
-          <button
-            onClick={() => setCurrentStep(0)}
-            className="flex-1 bg-gray-200 text-gray-700 hover:bg-gray-300 py-3 px-6 rounded-lg font-medium transition-colors flex items-center justify-center"
+      <div className="w-full">
+        <RoleCarousel
+          setApi={setCarouselApi}
+          onRoleChange={handleRoleSelect}
+          currentSlide={currentSlide}
+        />
+      </div>
+      
+      <div className="w-full text-center mt-[15px]">
+        <h2 
+          className="text-white text-[24px] font-normal leading-[110%] tracking-[-0.48px]"
+          style={{ fontFamily: '"Inter Tight", sans-serif' }}
+        >
+          {selectedRole ? roleContent.find(r => r.id === selectedRole)?.title : ''}
+        </h2>
+        <p 
+          className="text-[#6F6F7C] text-[14px] font-normal leading-[120%] tracking-[-0.14px] mt-[6px] max-w-[353px] mx-auto"
+          style={{ fontFamily: '"Inter Tight", sans-serif' }}
+        >
+          {selectedRole ? roleContent.find(r => r.id === selectedRole)?.description : ''}
+        </p>
+      </div>
+
+      <div className="flex justify-center items-center space-x-2 mt-[20px]">
+        {roleContent.map((_, index) => (
+          <div key={index}>
+            {index === currentSlide ? <SelectedIndicator /> : <UnselectedIndicator />}
+          </div>
+        ))}
+      </div>
+
+      <div className="w-full flex justify-center mt-[44px]">
+        <button
+          onClick={handleRoleNext}
+          className="flex justify-center items-center rounded-lg px-6 py-4 w-[353px] h-[56px]"
+          style={{
+            background: 'linear-gradient(305deg, #FEDA3B -2.67%, #EF5541 38.9%, #801FDB 77.17%, #7E2A89 98.46%)',
+          }}
+        >
+          <span
+            className="text-white text-center text-[17px] font-semibold leading-6 tracking-[-0.204px]"
+            style={{ fontFamily: 'Inter, sans-serif' }}
           >
-            <ChevronLeft className="w-5 h-5 mr-2" />
-            Назад
-          </button>
-          <button
-            onClick={handleRoleNext}
-            className="flex-1 bg-blue-600 text-white hover:bg-blue-700 py-3 px-6 rounded-lg font-medium transition-colors flex items-center justify-center"
-          >
-            Далее
-            <ChevronRight className="w-5 h-5 ml-2" />
-          </button>
-        </div>
+            Поехали
+          </span>
+        </button>
       </div>
     </div>
   );
