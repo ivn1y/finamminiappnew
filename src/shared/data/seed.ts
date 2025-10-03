@@ -19,7 +19,7 @@ export const roleContent: RoleContent[] = [
   {
     id: 'trader',
     title: 'Трейдер',
-    subtitle: 'Алхимик рынков',
+    subtitle: 'Охотник точной сделки',
     image: '/assets/roles/trader.png',
     description: 'Его сила — в хладнокровии и точности, а слабость — если промахнулся, добыча уходит, и приходится ждать новый шанс.',
     goals7d: [

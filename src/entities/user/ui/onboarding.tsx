@@ -207,7 +207,7 @@ export const Onboarding: React.FC = () => {
       badges: ['explorer'],
       xp: 100,
       progressSteps: 1,
-      name: selectedRole === 'guest' ? 'Гость' : `Пользователь ${selectedRole}`,
+      name: selectedRole === 'guest' ? 'Гость' : '',
       intent7d: selectedRole === 'guest' ? 'Изучить платформу Collab' : 'Изучить возможности платформы'
     };
 
@@ -401,7 +401,7 @@ export const Onboarding: React.FC = () => {
   );
 
   const renderRoleSelection = () => (
-    <div className="w-full h-screen bg-black flex flex-col items-center px-4 pt-[120px] pb-[90px] overflow-hidden">
+    <div className="relative w-full h-screen bg-black flex flex-col items-center px-4 pt-[120px] overflow-hidden">
       <div className="w-full text-center mb-[15px]">
         <h1
           className="text-white text-[30px] font-normal leading-[110%] tracking-[-0.6px]"
@@ -451,17 +451,43 @@ export const Onboarding: React.FC = () => {
         ))}
       </div>
 
-      <div className="w-full flex justify-center mt-[44px]">
+      <div
+        style={{
+          position: 'absolute',
+          top: '706px',
+          bottom: '90px',
+          left: '20px',
+          right: '20px',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+      >
         <button
           onClick={handleRoleNext}
-          className="flex justify-center items-center rounded-lg px-6 py-4 w-[353px] h-[56px]"
           style={{
+            display: 'flex',
+            width: '353px',
+            padding: '16px 24px',
+            justifyContent: 'center',
+            alignItems: 'center',
+            borderRadius: '8px',
             background: 'linear-gradient(305deg, #FEDA3B -2.67%, #EF5541 38.9%, #801FDB 77.17%, #7E2A89 98.46%)',
+            border: 'none',
+            cursor: 'pointer',
           }}
         >
           <span
-            className="text-white text-center text-[17px] font-semibold leading-6 tracking-[-0.204px]"
-            style={{ fontFamily: 'Inter, sans-serif' }}
+            style={{
+              color: '#FFF',
+              textAlign: 'center',
+              fontFamily: 'Inter, sans-serif',
+              fontSize: '17px',
+              fontStyle: 'normal',
+              fontWeight: 600,
+              lineHeight: '24px',
+              letterSpacing: '-0.204px',
+            }}
           >
             Поехали
           </span>

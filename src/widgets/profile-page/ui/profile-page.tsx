@@ -32,11 +32,107 @@ import { CredentialsCollectionForm } from '@/features/credentials-collection';
 import { useProfile } from '@/shared/hooks/use-profile';
 import { useProfileAnalytics } from '@/shared/hooks/use-profile-analytics';
 import { BadgeInfoTooltip } from '@/shared/ui/badge-info-tooltip';
-import { ProgressCircle } from '@/shared/ui/progress-circle';
+import { LevelProgressCircle } from '@/shared/ui/level-progress-circle';
 import { XPTooltip } from '@/shared/ui/xp-tooltip';
 import { TelegramCommunityCTA } from '@/shared/ui/telegram-community-cta';
 import { CuratorContacts } from '@/features/curator-contacts';
 import { User } from '@/shared/types/app';
+import Image from 'next/image';
+
+const FirstQuest = () => {
+  const handleTelegramClick = () => {
+    window.open('https://t.me/finam_invest', '_blank');
+  };
+
+  return (
+    <div
+      style={{
+        display: 'flex',
+        width: '354px',
+        height: '174px',
+        padding: '16px 20px 20px 20px',
+        flexDirection: 'column',
+        alignItems: 'flex-start',
+        gap: '16px',
+        borderRadius: '8px',
+        background: '#1A1A1F',
+      }}
+    >
+      <h3
+        style={{
+          color: '#FFF',
+          fontFamily: '"Inter Tight", sans-serif',
+          fontSize: '24px',
+          fontStyle: 'normal',
+          fontWeight: 400,
+          lineHeight: '110%',
+          letterSpacing: '-0.48px',
+          margin: 0,
+        }}
+      >
+        Твой первый квест
+      </h3>
+      <p
+        style={{
+          width: '329px',
+          color: '#FFF',
+          fontFamily: 'Inter, sans-serif',
+          fontSize: '14px',
+          fontStyle: 'normal',
+          fontWeight: 400,
+          lineHeight: '20px',
+          letterSpacing: '-0.056px',
+          margin: 0,
+        }}
+      >
+        Присоединиться к нашему Telegram коммьюнити
+      </p>
+      <button
+        onClick={handleTelegramClick}
+        style={{
+          display: 'flex',
+          width: '321px',
+          padding: '16px 24px',
+          justifyContent: 'center',
+          alignItems: 'center',
+          borderRadius: '8px',
+          background: 'rgba(79, 79, 89, 0.24)',
+          border: 'none',
+          cursor: 'pointer',
+        }}
+      >
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <span
+            style={{
+              color: '#EBEBF2',
+              textAlign: 'center',
+              fontFamily: 'Inter, sans-serif',
+              fontSize: '17px',
+              fontStyle: 'normal',
+              fontWeight: 600,
+              lineHeight: '24px',
+              letterSpacing: '-0.204px',
+            }}
+          >
+            Перейти
+          </span>
+          <svg xmlns="http://www.w3.org/2000/svg" width="21" height="20" viewBox="0 0 21 20" fill="none">
+            <path d="M10.5 20C16.0228 20 20.5 15.5228 20.5 10C20.5 4.47715 16.0228 0 10.5 0C4.97715 0 0.5 4.47715 0.5 10C0.5 15.5228 4.97715 20 10.5 20Z" fill="url(#paint0_linear_telegram_icon_quest)"/>
+            <defs>
+              <linearGradient id="paint0_linear_telegram_icon_quest" x1="10.5" y1="0" x2="10.5" y2="20" gradientUnits="userSpaceOnUse">
+                <stop stopColor="#2AABEE"/>
+                <stop offset="1" stopColor="#229ED9"/>
+              </linearGradient>
+            </defs>
+            <g transform="translate(4.5, 5)">
+              <path fillRule="evenodd" clipRule="evenodd" d="M1.02651 3.89397C3.94171 2.62387 5.88563 1.78653 6.85828 1.38197C9.63539 0.22688 10.2124 0.0262276 10.5886 0.0196019C10.6713 0.0181447 10.8563 0.0386461 10.9761 0.135865C11.0772 0.217955 11.1051 0.328847 11.1184 0.406678C11.1317 0.484508 11.1483 0.661808 11.1351 0.800345C10.9846 2.38158 10.3334 6.21883 10.0022 7.98984C9.86198 8.73922 9.58596 8.99048 9.31875 9.01507C8.73803 9.06851 8.29706 8.63129 7.73461 8.2626C6.85448 7.68566 6.35726 7.32652 5.50294 6.76353C4.51563 6.11291 5.15566 5.75531 5.71833 5.1709C5.86558 5.01796 8.42424 2.69066 8.47376 2.47954C8.47996 2.45313 8.4857 2.35471 8.42723 2.30274C8.36876 2.25077 8.28246 2.26854 8.22019 2.28268C8.13191 2.30271 6.72589 3.23204 4.00213 5.07066C3.60303 5.3447 3.24155 5.47823 2.91767 5.47123C2.56062 5.46352 1.87379 5.26935 1.36321 5.10338C0.736959 4.89981 0.239227 4.79218 0.282569 4.44646C0.305143 4.26638 0.553123 4.08222 1.02651 3.89397Z" fill="white"/>
+            </g>
+          </svg>
+        </div>
+      </button>
+    </div>
+  );
+};
 
 export const ProfilePage: React.FC = () => {
   const { user, getAllBadges, getProgressPercentage } = useAppStore();
@@ -143,6 +239,16 @@ export const ProfilePage: React.FC = () => {
   const role = roleContent.find(r => r.id === user.role);
   if (!role) return null;
 
+  const roleImageMapping: Record<string, string> = {
+    trader: '/assets/roles/trader.png',
+    startup: '/assets/roles/startaper.png',
+    partner: '/assets/roles/partner.png',
+    guest: '/assets/roles/guest.jpg',
+    expert: '/assets/roles/expert.png',
+  };
+
+  const roleImage = roleImageMapping[user.role] || '/assets/avatars/characters/placeholder.svg';
+
   const allBadges = getAllBadges();
   const userBadges = allBadges.filter(badge => user.badges.includes(badge.id));
   const lockedBadges = allBadges.filter(badge => !user.badges.includes(badge.id));
@@ -247,12 +353,14 @@ export const ProfilePage: React.FC = () => {
     }
   };
 
-  const handleCredentialsSave = (credentials: { phone?: string; email?: string }) => {
+  const handleCredentialsSave = (credentials: { name?: string; phone?: string; email?: string }) => {
     const updatedUser = {
       ...user,
+      name: credentials.name || user.name,
       credentials: {
         ...user.credentials,
-        ...credentials
+        phone: credentials.phone || user.credentials?.phone,
+        email: credentials.email || user.credentials?.email,
       }
     };
     useAppStore.getState().setUser(updatedUser);
@@ -267,327 +375,131 @@ export const ProfilePage: React.FC = () => {
   }, [trackScreenView]);
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6 pb-24">
-      <div className="max-w-md mx-auto lg:max-w-4xl xl:max-w-6xl">
-        {/* RPG Avatar with Progress Circle */}
-        <div className="text-center mb-6">
-          <div className="relative inline-block">
-            <AvatarView 
-              user={user}
-              onCustomize={handleAvatarCustomization}
-              className="mb-4"
-            />
-            {/* Progress Circle with Level - replaces XP indicator */}
-            <div className="absolute -bottom-2 -right-2">
-              <XPTooltip currentXP={user.xp}>
-                <ProgressCircle 
-                  progress={getProgressPercentage()} 
-                  size={50}
-                  strokeWidth={4}
-                  className="text-blue-600 cursor-pointer hover:scale-105 transition-transform"
-                >
-                  <div className="text-center">
-                    <div className="text-sm font-bold text-gray-900">
-                      {Math.floor(user.xp / 100) + 1}
-                    </div>
-                  </div>
-                </ProgressCircle>
-              </XPTooltip>
-            </div>
-          </div>
-          
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">
-            {user.name || role.title}
-          </h2>
-          <p className="text-lg text-blue-600 font-medium">{role.subtitle}</p>
-          <p className="text-gray-600 text-base mt-2">
-            Прогресс: {Math.round(getProgressPercentage())}%
-          </p>
-          <p className="text-sm text-gray-500 mt-1 opacity-75">
-            Нажмите на аватар для кастомизации
-          </p>
+    <div className="min-h-screen bg-black flex justify-center items-start">
+      <div className="relative" style={{ width: '393px', height: '1335px' }}>
+        {/* Avatar */}
+        <div
+          style={{
+            position: 'absolute',
+            top: '115px',
+            left: '126.8px',
+            width: '139px',
+            height: '184px',
+            borderRadius: '8px',
+            border: '1px solid #CD81FF',
+            overflow: 'hidden', // to ensure the Image respects the border radius
+            background: 'lightgray',
+          }}
+        >
+          <Image
+            src={roleImage}
+            alt={role.title}
+            width={139}
+            height={184}
+            className="w-full h-full object-cover"
+          />
         </div>
 
-        {/* Curator Contacts */}
-        <CuratorContacts />
-
-        {/* Scanned Zones */}
-        {user.scannedZones && user.scannedZones.length > 0 && (
-          <Card className="mb-6">
-            <CardHeader>
-              <CardTitle className="text-xl flex items-center space-x-2">
-                <MapPin className="w-5 h-5" />
-                <span>Отсканированные зоны</span>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
-                {user.scannedZones.map((zoneId) => {
-                  const zone = eventData.zones.find(z => z.id === zoneId);
-                  if (!zone) return null;
-                  
-                  return (
-                    <div
-                      key={zoneId}
-                      className="flex items-center justify-between p-3 bg-green-50 border border-green-200 rounded-lg"
-                    >
-                      <div className="flex items-center space-x-3">
-                        <CheckCircle className="w-5 h-5 text-green-600" />
-                        <div>
-                          <h4 className="font-medium text-gray-900">{zone.name}</h4>
-                          {zone.prize && (
-                            <p className="text-sm text-green-600">Приз: {zone.prize}</p>
-                          )}
-                        </div>
-                      </div>
-                      <div className="text-xs text-gray-500">
-                        QR: {zone.qr}
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </CardContent>
-          </Card>
-        )}
-
-        {/* User Data */}
-        <Card className="mb-6">
-          <CardHeader>
-            <div className="flex items-center justify-between">
-              <CardTitle className="text-lg">Мои данные</CardTitle>
-              <div className="flex space-x-2">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={handleSyncProfile}
-                  disabled={isProfileLoading}
-                >
-                  <RefreshCw className={`w-4 h-4 mr-1 ${isProfileLoading ? 'animate-spin' : ''}`} />
-                  Синхронизировать
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={handleAdvancedEdit}
-                >
-                  <Edit3 className="w-5 h-5" />
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={handleResetData}
-                  className="ml-2"
-                >
-                  Сбросить данные
-                </Button>
-              </div>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {/* Учетные данные - размещаем первыми после заголовка "Мои данные" */}
-              <CredentialsCollectionForm
-                user={user}
-                onSave={handleCredentialsSave}
-              />
-
-              <div>
-                <Label className="text-sm font-medium text-gray-700">
-                  Роль
-                </Label>
-                <p className="text-gray-900 mt-1">{role.title} — {role.subtitle}</p>
-              </div>
-
-              {/* Ролевые данные профиля */}
-              {user.profile && user.profile[user.role] && (
-                <div className="mt-4 pt-4 border-t border-gray-200">
-                  <h4 className="text-md font-semibold text-gray-800 mb-3">
-                    Детали профиля
-                  </h4>
-                  <div className="space-y-2">
-                    {user.role === 'trader' && user.profile.trader && (
-                      <>
-                        {user.profile.trader.years && (
-                          <div>
-                            <span className="text-sm text-gray-600">Опыт: </span>
-                            <span className="text-sm text-gray-900">{user.profile.trader.years} лет</span>
-                          </div>
-                        )}
-                        {user.profile.trader.risk && (
-                          <div>
-                            <span className="text-sm text-gray-600">Риск: </span>
-                            <span className="text-sm text-gray-900 capitalize">{user.profile.trader.risk}</span>
-                          </div>
-                        )}
-                        {user.profile.trader.markets && user.profile.trader.markets.length > 0 && (
-                          <div>
-                            <span className="text-sm text-gray-600">Рынки: </span>
-                            <span className="text-sm text-gray-900">{user.profile.trader.markets.join(', ')}</span>
-                          </div>
-                        )}
-                      </>
-                    )}
-                    
-                    {user.role === 'startup' && user.profile.startup && (
-                      <>
-                        {user.profile.startup.stage && (
-                          <div>
-                            <span className="text-sm text-gray-600">Стадия: </span>
-                            <span className="text-sm text-gray-900 capitalize">{user.profile.startup.stage}</span>
-                          </div>
-                        )}
-                        {user.profile.startup.pitch3 && (
-                          <div>
-                            <span className="text-sm text-gray-600">Питч: </span>
-                            <span className="text-sm text-gray-900">{user.profile.startup.pitch3}</span>
-                          </div>
-                        )}
-                        {user.profile.startup.site && (
-                          <div>
-                            <span className="text-sm text-gray-600">Сайт: </span>
-                            <a 
-                              href={user.profile.startup.site} 
-                              target="_blank" 
-                              rel="noopener noreferrer"
-                              className="text-sm text-blue-600 hover:underline"
-                            >
-                              {user.profile.startup.site}
-                            </a>
-                          </div>
-                        )}
-                      </>
-                    )}
-
-                    {user.role === 'expert' && user.profile.expert && (
-                      <>
-                        {user.profile.expert.domain && (
-                          <div>
-                            <span className="text-sm text-gray-600">Область: </span>
-                            <span className="text-sm text-gray-900">{user.profile.expert.domain}</span>
-                          </div>
-                        )}
-                        {user.profile.expert.availabilityHrs && (
-                          <div>
-                            <span className="text-sm text-gray-600">Доступность: </span>
-                            <span className="text-sm text-gray-900">{user.profile.expert.availabilityHrs} ч/нед</span>
-                          </div>
-                        )}
-                        {user.profile.expert.mode && (
-                          <div>
-                            <span className="text-sm text-gray-600">Режим: </span>
-                            <span className="text-sm text-gray-900 capitalize">{user.profile.expert.mode}</span>
-                          </div>
-                        )}
-                      </>
-                    )}
-
-                    {user.role === 'partner' && user.profile.partner && (
-                      <>
-                        {user.profile.partner.type && (
-                          <div>
-                            <span className="text-sm text-gray-600">Тип: </span>
-                            <span className="text-sm text-gray-900 capitalize">{user.profile.partner.type}</span>
-                          </div>
-                        )}
-                        {user.profile.partner.interest && (
-                          <div>
-                            <span className="text-sm text-gray-600">Интерес: </span>
-                            <span className="text-sm text-gray-900 capitalize">{user.profile.partner.interest}</span>
-                          </div>
-                        )}
-                      </>
-                    )}
-                  </div>
-                </div>
-              )}
-            </div>
-          </CardContent>
-        </Card>
-
-
-        {/* Badges Grid */}
-        <Card className="mb-6">
-          <CardContent className="p-6">
-            <BadgesGrid
-              userBadges={user.badges}
-              allBadges={allBadges}
-              onBadgeClick={handleBadgeClick}
+        {/* Level Indicator */}
+        <div
+          style={{
+            position: 'absolute',
+            top: '98.41px',
+            left: '243.21px',
+            width: '42.188px',
+            height: '42.188px',
+          }}
+          className="flex items-center justify-center"
+        >
+            <LevelProgressCircle
+                level={Math.floor(user.xp / 100) + 1}
+                progress={getProgressPercentage()}
             />
-          </CardContent>
-        </Card>
+          </div>
+          
+        {/* Role Name */}
+        <div
+          style={{
+            position: 'absolute',
+            top: '321px',
+            left: '27.8px',
+            right: '29.2px',
+            textAlign: 'center',
+            color: '#FFF',
+            fontFamily: '"Inter Tight", sans-serif',
+            fontSize: '30px',
+            fontStyle: 'normal',
+            fontWeight: 400,
+            lineHeight: '110%',
+            letterSpacing: '-0.6px',
+          }}
+        >
+            {user.name || role.title}
+        </div>
 
-        {/* Share Button */}
-        <Card>
-          <CardContent className="p-6">
-            <Button
-              onClick={handleShare}
-              variant="ghost"
-              className="w-full flex items-center justify-center space-x-2 text-blue-600 hover:text-blue-700"
-            >
-              <Share2 className="w-5 h-5" />
-              <span>Поделиться</span>
-            </Button>
-          </CardContent>
-        </Card>
+        {/* Role Description */}
+        <div
+          style={{
+            position: 'absolute',
+            top: '354px',
+            left: '27.8px',
+            right: '29.2px',
+            textAlign: 'center',
+            color: 'rgba(255, 255, 255, 0.72)',
+            fontFamily: '"Inter", sans-serif',
+            fontSize: '17px',
+            fontStyle: 'normal',
+            fontWeight: 400,
+            lineHeight: '24px',
+            letterSpacing: '-0.17px',
+          }}
+        >
+          {role.subtitle}
+              </div>
 
-        {/* Telegram Community CTA */}
-        <TelegramCommunityCTA className="mt-4" />
+        {/* User Credentials Section */}
+        <div
+          style={{
+            position: 'absolute',
+            top: '418px',
+            left: '20px',
+            right: '20px',
+          }}
+        >
+          <CredentialsCollectionForm user={user} role={role} onSave={handleCredentialsSave} />
+              </div>
 
-        {/* Edit Modal */}
-        <Dialog open={showEditModal} onOpenChange={setShowEditModal}>
-          <DialogContent className="w-full max-w-md">
-            <DialogHeader>
-              <DialogTitle>
-                Редактировать данные
-              </DialogTitle>
-            </DialogHeader>
-            
-            <div className="space-y-4 mb-6">
-              <div>
-                <Label htmlFor="name" className="text-sm font-medium text-gray-700">
-                  Имя
-                </Label>
-                <Input
-                  id="name"
-                  type="text"
-                  value={editData.name}
-                  onChange={(e) => setEditData(prev => ({ ...prev, name: e.target.value }))}
-                  placeholder="Введите имя"
-                  className="mt-2"
-                />
+        {/* Curator Contacts Section */}
+        <div
+          style={{
+            position: 'absolute',
+            top: '758px',
+            left: '20px',
+            right: '20px',
+          }}
+        >
+          <CuratorContacts />
               </div>
               
+        {/* First Quest Section */}
+        <div
+          style={{
+            position: 'absolute',
+            top: '980px',
+            left: '20px',
+            right: '20px',
+          }}
+        >
+          <FirstQuest />
             </div>
             
-            <div className="flex space-x-3">
-              <Button
-                variant="outline"
-                onClick={() => setShowEditModal(false)}
-                className="flex-1"
-              >
-                Отмена
-              </Button>
-              <Button
-                onClick={handleSaveEdit}
-                className="flex-1"
-              >
-                Сохранить
-              </Button>
-            </div>
-          </DialogContent>
-        </Dialog>
-
-
-        {/* Advanced Profile Edit Modal */}
+        {/* Modals */}
         <ProfileEditModal
           isOpen={showAdvancedEdit}
           onClose={() => setShowAdvancedEdit(false)}
           user={user}
           onSave={handleProfileSaved}
         />
-
-        {/* Avatar Customization Modal */}
         <AvatarCustomizationModal
           isOpen={showAvatarCustomization}
           onClose={() => setShowAvatarCustomization(false)}
