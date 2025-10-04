@@ -9,7 +9,7 @@ import { ScheduleEvent } from '@/shared/types/app';
 
 interface ScheduleFiltersProps {
   events: ScheduleEvent[];
-  onFilterChange: (filteredEvents: ScheduleEvent[]) => void;
+  onFilterChange: (filteredEvents: ScheduleEvent[] | null) => void;
 }
 
 export const ScheduleFilters: React.FC<ScheduleFiltersProps> = ({
@@ -21,11 +21,18 @@ export const ScheduleFilters: React.FC<ScheduleFiltersProps> = ({
   const [isExpanded, setIsExpanded] = useState(false);
 
   const applyFilters = useCallback(() => {
+    const speakerQuery = speakerFilter.toLowerCase().trim();
+    const titleQuery = titleFilter.toLowerCase().trim();
+
+    if (!speakerQuery && !titleQuery) {
+      onFilterChange(null);
+      return;
+    }
+
     let filteredEvents = events;
 
     // Фильтр по спикеру
-    if (speakerFilter.trim()) {
-      const speakerQuery = speakerFilter.toLowerCase().trim();
+    if (speakerQuery) {
       filteredEvents = filteredEvents.filter(event =>
         event.speakers.some(speaker =>
           speaker.toLowerCase().includes(speakerQuery)
@@ -34,8 +41,7 @@ export const ScheduleFilters: React.FC<ScheduleFiltersProps> = ({
     }
 
     // Фильтр по названию и описанию
-    if (titleFilter.trim()) {
-      const titleQuery = titleFilter.toLowerCase().trim();
+    if (titleQuery) {
       filteredEvents = filteredEvents.filter(event =>
         event.title.toLowerCase().includes(titleQuery) ||
         (event.description && event.description.toLowerCase().includes(titleQuery))
@@ -57,99 +63,65 @@ export const ScheduleFilters: React.FC<ScheduleFiltersProps> = ({
   const clearFilters = () => {
     setSpeakerFilter('');
     setTitleFilter('');
-    onFilterChange(events);
   };
 
   const hasActiveFilters = speakerFilter.trim() || titleFilter.trim();
 
   return (
-    <Card className="mb-6">
-      <CardHeader 
-        className="pb-3 cursor-pointer hover:bg-gray-50 transition-colors"
+    <div>
+      <button
         onClick={() => setIsExpanded(!isExpanded)}
+        className="flex w-full items-center gap-2 rounded-lg border border-[#373740] bg-[rgba(79,79,89,0.16)] px-4 py-2"
+        style={{
+            padding: '8px 12px 8px 16px',
+        }}
       >
-        <CardTitle className="text-lg flex items-center justify-between">
-          <div className="flex items-center space-x-2">
-            <Search className="w-5 h-5 text-blue-600" />
-            <span>Фильтры</span>
-            {hasActiveFilters && (
-              <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full">
-                Активны
-              </span>
-            )}
-          </div>
-          {isExpanded ? (
-            <ChevronUp className="w-5 h-5 text-gray-400" />
-          ) : (
-            <ChevronDown className="w-5 h-5 text-gray-400" />
-          )}
-        </CardTitle>
-      </CardHeader>
-      
+        <span
+          className="font-sans text-base font-normal leading-6 tracking-[-0.128px]"
+          style={{ color: 'var(---input-placeholder, #6F6F7C)' }}
+        >
+          Поиск по фильтрам
+        </span>
+      </button>
+
       {isExpanded && (
-        <CardContent>
-          <div className="space-y-4">
-            {/* Фильтр по спикеру */}
-            <div>
-              <label htmlFor="speaker-filter" className="block text-sm font-medium text-gray-700 mb-2">
-                Поиск по спикеру
-              </label>
-              <div className="relative">
-                <User className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+        <Card className="mt-2 bg-[#1E1E22] border-[#373740] text-white">
+          <CardHeader>
+            <CardTitle>Фильтры</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              <div>
+                <label htmlFor="speaker-filter" className="block text-sm font-medium mb-2">
+                  Поиск по спикеру
+                </label>
                 <Input
                   id="speaker-filter"
                   type="text"
                   value={speakerFilter}
                   onChange={(e) => setSpeakerFilter(e.target.value)}
-                  placeholder="Например: Ибрагим, Антон Клевцов..."
-                  className="pl-10"
+                  placeholder="Имя спикера..."
+                  className="bg-transparent border-[#373740] text-white"
                 />
               </div>
-            </div>
 
-            {/* Фильтр по названию */}
-            <div>
-              <label htmlFor="title-filter" className="block text-sm font-medium text-gray-700 mb-2">
-                Поиск по названию или теме
-              </label>
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+              <div>
+                <label htmlFor="title-filter" className="block text-sm font-medium mb-2">
+                  Поиск по названию или теме
+                </label>
                 <Input
                   id="title-filter"
                   type="text"
                   value={titleFilter}
                   onChange={(e) => setTitleFilter(e.target.value)}
-                  placeholder="Например: Трейдинг, Криптовалюта, ФРС..."
-                  className="pl-10"
+                  placeholder="Тема выступления..."
+                  className="bg-transparent border-[#373740] text-white"
                 />
               </div>
             </div>
-
-            {/* Кнопка очистки */}
-            {hasActiveFilters && (
-              <div className="flex justify-end">
-                <Button
-                  variant="outline"
-                  onClick={clearFilters}
-                  size="sm"
-                >
-                  <X className="w-4 h-4 mr-1" />
-                  Очистить фильтры
-                </Button>
-              </div>
-            )}
-
-            {/* Информация о результатах */}
-            {hasActiveFilters && (
-              <div className="text-sm text-gray-600 bg-gray-50 p-3 rounded-lg">
-                <p className="text-xs text-gray-500">
-                  Поиск выполняется автоматически при вводе
-                </p>
-              </div>
-            )}
-          </div>
-        </CardContent>
+          </CardContent>
+        </Card>
       )}
-    </Card>
+    </div>
   );
 };
