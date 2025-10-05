@@ -24,13 +24,6 @@ export const BadgeModal = ({
 }: BadgeModalProps) => {
   if (!isOpen) return null;
 
-  // Debug information
-  console.log('BadgeModal - badge data:', badge);
-  console.log('BadgeModal - achieved:', badge.achieved);
-  console.log('BadgeModal - imgSrc:', badge.imgSrc);
-  console.log('BadgeModal - grayImgSrc:', badge.grayImgSrc);
-  console.log('BadgeModal - selected image:', badge.achieved ? badge.imgSrc : badge.grayImgSrc);
-
   return (
     <div className="fixed inset-0 z-50 bg-black bg-opacity-50">
       {/* Main modal container */}

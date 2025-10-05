@@ -173,20 +173,14 @@ export const HomePage: React.FC = () => {
     description?: string;
     howToEarn?: string;
   }) => {
-    console.log('handleBadgeClick - original badge:', badge);
-    
-    const selectedBadgeData = {
+    setSelectedBadge({
       imgSrc: badge.imgSrc,
       grayImgSrc: badge.grayImgSrc,
       title: badge.displayTitle,
       achieved: badge.achieved,
       description: badge.description,
       howToEarn: badge.howToEarn
-    };
-    
-    console.log('handleBadgeClick - selectedBadgeData:', selectedBadgeData);
-    
-    setSelectedBadge(selectedBadgeData);
+    });
     setIsModalOpen(true);
   };
 
@@ -199,37 +193,27 @@ export const HomePage: React.FC = () => {
   const getUserBadges = () => {
     const userBadges: string[] = [];
     
-    console.log('getUserBadges - user data:', user);
-    console.log('getUserBadges - user.credentials:', user.credentials);
-    console.log('getUserBadges - user.scannedZones:', user.scannedZones);
-    console.log('getUserBadges - telegramQuestCompleted:', telegramQuestCompleted);
-    
     // Бейдж "Исследователь" - за заполнение профиля (телефон + email)
     const profileCompleted = !!user.credentials?.phone && !!user.credentials?.email;
     if (profileCompleted) {
       userBadges.push('researcher');
-      console.log('getUserBadges - added researcher badge');
     }
     
     // Бейдж "Market Explorer" - за сканирование QR-кодов
     if (user.scannedZones && user.scannedZones.length > 0) {
       userBadges.push('market-explorer');
-      console.log('getUserBadges - added market-explorer badge');
     }
     
     // Бейдж "Risk Manager" - за выполнение Telegram квеста
     if (telegramQuestCompleted) {
       userBadges.push('risk-manager');
-      console.log('getUserBadges - added risk-manager badge');
     }
     
     // Бейдж "Algo Creator" - за выполнение всех заданий
     if (profileCompleted && user.scannedZones && user.scannedZones.length > 0 && telegramQuestCompleted) {
       userBadges.push('algo-creator');
-      console.log('getUserBadges - added algo-creator badge');
     }
     
-    console.log('getUserBadges - final userBadges:', userBadges);
     return userBadges;
   };
 
