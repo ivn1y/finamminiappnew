@@ -1,0 +1,202 @@
+'use client';
+
+import React from 'react';
+import Image from 'next/image';
+import { X } from 'lucide-react';
+
+interface BadgeModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  badge: {
+    imgSrc: string;
+    grayImgSrc: string;
+    title: string;
+    achieved: boolean;
+    description?: string;
+    howToEarn?: string;
+  };
+}
+
+export const BadgeModal = ({
+  isOpen,
+  onClose,
+  badge
+}: BadgeModalProps) => {
+  if (!isOpen) return null;
+
+  // Debug information
+  console.log('BadgeModal - badge data:', badge);
+  console.log('BadgeModal - achieved:', badge.achieved);
+  console.log('BadgeModal - imgSrc:', badge.imgSrc);
+  console.log('BadgeModal - grayImgSrc:', badge.grayImgSrc);
+  console.log('BadgeModal - selected image:', badge.achieved ? badge.imgSrc : badge.grayImgSrc);
+
+  return (
+    <div className="fixed inset-0 z-50 bg-black bg-opacity-50">
+      {/* Main modal container */}
+      <div 
+        className="absolute"
+        style={{
+          width: '353px',
+          height: '426px',
+          borderRadius: '10px',
+          background: 'var(--icon-base-default, #1A1A1F)',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)'
+        }}
+      >
+        {/* Badge image */}
+        <div
+          className="absolute"
+          style={{
+            top: '2px',
+            left: '116px',
+            width: '120px',
+            height: '120px',
+            aspectRatio: '1/1'
+          }}
+        >
+          <Image
+            src={badge.achieved ? badge.imgSrc : badge.grayImgSrc}
+            alt={badge.title}
+            width={120}
+            height={120}
+            className="w-full h-full object-cover"
+          />
+        </div>
+
+        {/* Close button */}
+        <button
+          onClick={onClose}
+          className="absolute"
+          style={{
+            top: '25px',
+            right: '25px',
+            width: '12px',
+            height: '12px',
+            background: 'none',
+            border: 'none',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}
+        >
+          <X 
+            size={12} 
+            className="text-[#6F6F7C]" 
+          />
+        </button>
+
+        {/* Badge title */}
+        <h2
+          className="absolute"
+          style={{
+            top: '126px',
+            left: '92px',
+            right: '91px',
+            color: '#FFF',
+            textAlign: 'center',
+            fontFamily: 'Inter',
+            fontSize: '28px',
+            fontStyle: 'normal',
+            fontWeight: '500',
+            lineHeight: '32px',
+            letterSpacing: '-0.504px',
+            whiteSpace: 'nowrap'
+          }}
+        >
+          {badge.title}
+        </h2>
+
+        {/* Badge description */}
+        <p
+          className="absolute"
+          style={{
+            top: '170px',
+            left: '19px',
+            right: '18px',
+            color: '#6F6F7C',
+            textAlign: 'center',
+            fontFamily: 'Inter',
+            fontSize: '17px',
+            fontStyle: 'normal',
+            fontWeight: '400',
+            lineHeight: '24px',
+            letterSpacing: '-0.17px'
+          }}
+        >
+          {badge.description || 'Описание бейджа'}
+        </p>
+
+        {/* How to earn badge block */}
+        <div
+          className="absolute"
+          style={{
+            top: '238px',
+            left: '19px',
+            right: '18px',
+            display: 'flex',
+            padding: '10px 0',
+            justifyContent: 'center',
+            alignItems: 'center',
+            borderRadius: '5px',
+            background: '#2F2F37'
+          }}
+        >
+          <p
+            style={{
+              color: '#FFF',
+              textAlign: 'center',
+              fontFamily: 'Inter',
+              fontSize: '17px',
+              fontStyle: 'normal',
+              fontWeight: '500',
+              lineHeight: '24px',
+              letterSpacing: '-0.17px',
+              padding: '10px 0',
+              margin: 0
+            }}
+          >
+            {badge.howToEarn || 'Как получить этот бейдж'}
+          </p>
+        </div>
+
+        {/* Done button */}
+        <button
+          onClick={onClose}
+          className="absolute"
+          style={{
+            top: '350px',
+            left: '20px',
+            right: '20px',
+            display: 'flex',
+            padding: '16px 24px',
+            justifyContent: 'center',
+            alignItems: 'center',
+            borderRadius: '8px',
+            background: 'rgba(79, 79, 89, 0.24)',
+            border: 'none',
+            cursor: 'pointer'
+          }}
+        >
+          <span
+            style={{
+              color: '#EBEBF2',
+              textAlign: 'center',
+              fontFamily: 'Inter',
+              fontSize: '17px',
+              fontStyle: 'normal',
+              fontWeight: '600',
+              lineHeight: '24px',
+              letterSpacing: '-0.204px'
+            }}
+          >
+            Готово
+          </span>
+        </button>
+      </div>
+    </div>
+  );
+};

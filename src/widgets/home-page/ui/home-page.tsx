@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import { useAppStore } from '@/shared/store/app-store';
 import { roleContent } from '@/shared/data/seed';
@@ -10,6 +10,7 @@ import {
   ArrowIcon,
   TelegramIcon,
 } from '@/shared/ui/icons';
+import { BadgeModal } from '@/shared/ui';
 import Image from 'next/image';
 
 const TaskButton = ({
@@ -50,21 +51,26 @@ const TaskButton = ({
 
 const Badge = ({
   imgSrc,
+  grayImgSrc,
   title,
   achieved,
+  onClick,
 }: {
   imgSrc: string;
+  grayImgSrc: string;
   title: string;
   achieved: boolean;
+  onClick?: () => void;
 }) => (
   <div
-    className={`relative flex w-[172px] h-[137px] p-[8px_16px] flex-col items-start gap-[10px] rounded-[8px] bg-[#1A1A1F] ${
+    className={`relative flex w-[172px] h-[137px] p-[8px_16px] flex-col items-start gap-[10px] rounded-[8px] bg-[#1A1A1F] cursor-pointer ${
       achieved ? 'border border-[#FDB938]' : ''
     }`}
+    onClick={onClick}
   >
     <div className="absolute top-[15px] left-1/2 -translate-x-1/2">
       <Image
-        src={imgSrc}
+        src={achieved ? imgSrc : grayImgSrc}
         alt={title}
         width={70}
         height={70}
@@ -102,6 +108,15 @@ const Badge = ({
 
 export const HomePage: React.FC = () => {
   const { user, telegramQuestCompleted, completeTelegramQuest } = useAppStore();
+  const [selectedBadge, setSelectedBadge] = useState<{
+    imgSrc: string;
+    grayImgSrc: string;
+    title: string;
+    achieved: boolean;
+    description?: string;
+    howToEarn?: string;
+  } | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   if (!user || !user.role) return null;
 
@@ -149,26 +164,113 @@ export const HomePage: React.FC = () => {
   const completedTasksCount = tasks.filter(task => task.completed).length;
   const progressPercentage = completedTasksCount * 25;
 
+  const handleBadgeClick = (badge: {
+    imgSrc: string;
+    grayImgSrc: string;
+    title: string;
+    displayTitle: string;
+    achieved: boolean;
+    description?: string;
+    howToEarn?: string;
+  }) => {
+    console.log('handleBadgeClick - original badge:', badge);
+    
+    const selectedBadgeData = {
+      imgSrc: badge.imgSrc,
+      grayImgSrc: badge.grayImgSrc,
+      title: badge.displayTitle,
+      achieved: badge.achieved,
+      description: badge.description,
+      howToEarn: badge.howToEarn
+    };
+    
+    console.log('handleBadgeClick - selectedBadgeData:', selectedBadgeData);
+    
+    setSelectedBadge(selectedBadgeData);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedBadge(null);
+  };
+
+  // Определяем полученные бейджи на основе данных пользователя
+  const getUserBadges = () => {
+    const userBadges: string[] = [];
+    
+    console.log('getUserBadges - user data:', user);
+    console.log('getUserBadges - user.credentials:', user.credentials);
+    console.log('getUserBadges - user.scannedZones:', user.scannedZones);
+    console.log('getUserBadges - telegramQuestCompleted:', telegramQuestCompleted);
+    
+    // Бейдж "Исследователь" - за заполнение профиля (телефон + email)
+    const profileCompleted = !!user.credentials?.phone && !!user.credentials?.email;
+    if (profileCompleted) {
+      userBadges.push('researcher');
+      console.log('getUserBadges - added researcher badge');
+    }
+    
+    // Бейдж "Market Explorer" - за сканирование QR-кодов
+    if (user.scannedZones && user.scannedZones.length > 0) {
+      userBadges.push('market-explorer');
+      console.log('getUserBadges - added market-explorer badge');
+    }
+    
+    // Бейдж "Risk Manager" - за выполнение Telegram квеста
+    if (telegramQuestCompleted) {
+      userBadges.push('risk-manager');
+      console.log('getUserBadges - added risk-manager badge');
+    }
+    
+    // Бейдж "Algo Creator" - за выполнение всех заданий
+    if (profileCompleted && user.scannedZones && user.scannedZones.length > 0 && telegramQuestCompleted) {
+      userBadges.push('algo-creator');
+      console.log('getUserBadges - added algo-creator badge');
+    }
+    
+    console.log('getUserBadges - final userBadges:', userBadges);
+    return userBadges;
+  };
+
+  const userBadges = getUserBadges();
+
   const badges = [
     {
       imgSrc: '/assets/badges/researcher.png',
+      grayImgSrc: '/assets/badges-gray/researcher gray.png',
       title: 'ИССЛЕДОВАТЕЛЬ',
-      achieved: true,
+      displayTitle: 'Исследователь',
+      achieved: userBadges.includes('researcher'),
+      description: 'За активное изучение новых технологий и подходов в трейдинге',
+      howToEarn: 'Заполните профиль полностью'
     },
     {
       imgSrc: '/assets/badges/market-explorer.png',
+      grayImgSrc: '/assets/badges-gray/market-explorer gray.png',
       title: 'MARKET EXPLORER',
-      achieved: true,
+      displayTitle: 'Market Explorer',
+      achieved: userBadges.includes('market-explorer'),
+      description: 'За исследование различных рынков и активов',
+      howToEarn: 'Отсканируйте QR-код на карте'
     },
     {
       imgSrc: '/assets/badges/risk-manager.png',
+      grayImgSrc: '/assets/badges-gray/risk-manager gray.png',
       title: 'RISK MANAGER',
-      achieved: false,
+      displayTitle: 'Risk Manager',
+      achieved: userBadges.includes('risk-manager'),
+      description: 'За эффективное управление рисками в торговле',
+      howToEarn: 'Выполните Telegram квест'
     },
     {
       imgSrc: '/assets/badges/algo-creator.png',
+      grayImgSrc: '/assets/badges-gray/algo-creator gray.png',
       title: 'ALGO CREATOR',
-      achieved: false,
+      displayTitle: 'Algo Creator',
+      achieved: userBadges.includes('algo-creator'),
+      description: 'За создание собственных торговых алгоритмов',
+      howToEarn: 'Выполните все задания'
     },
   ];
 
@@ -233,8 +335,10 @@ export const HomePage: React.FC = () => {
             <Badge
               key={index}
               imgSrc={badge.imgSrc}
+              grayImgSrc={badge.grayImgSrc}
               title={badge.title}
               achieved={badge.achieved}
+              onClick={() => handleBadgeClick(badge)}
             />
           ))}
         </div>
@@ -260,6 +364,15 @@ export const HomePage: React.FC = () => {
           </button>
         </div>
       </div>
+
+      {/* Badge Modal */}
+      {selectedBadge && (
+        <BadgeModal
+          isOpen={isModalOpen}
+          onClose={handleCloseModal}
+          badge={selectedBadge}
+        />
+      )}
     </div>
   );
 };
