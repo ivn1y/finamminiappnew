@@ -8,9 +8,10 @@ import { Button } from '@/shared/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/shared/ui/dialog';
 import { QRScanner } from '@/features/qr-scanner';
 import { QRScanResult } from '@/shared/types/qr';
+import { MapTour } from '@/features/app-tour';
 
 export const MapPage: React.FC = () => {
-  const { eventMode, setQRScanner, showQRScanner } = useAppStore();
+  const { eventMode, setQRScanner, showQRScanner, showMapTour, endMapTour } = useAppStore();
   const [redeemedZones, setRedeemedZones] = useState<string[]>([]);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [lastPrize, setLastPrize] = useState('');
@@ -72,6 +73,7 @@ export const MapPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 p-4 pb-24">
+       {showMapTour && <MapTour onComplete={endMapTour} />}
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-6 text-center">
