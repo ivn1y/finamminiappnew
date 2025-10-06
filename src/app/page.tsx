@@ -1,19 +1,21 @@
-import type { Metadata } from "next";
-import { redirect } from 'next/navigation';
+'use client';
 
-export const metadata: Metadata = {
-  title: "Finam Collab - Главная",
-  description: "Finam Collab - платформа для сотрудничества и общения",
-  keywords: "finam, collab, сотрудничество, общение, финансы",
-  openGraph: {
-    title: "Finam Collab",
-    description: "Платформа для сотрудничества и общения",
-    type: "website",
-    locale: "ru_RU",
-  },
-  robots: "index, follow",
-}
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { useAppStore } from '@/shared/store/app-store';
+import { Loader } from '@/shared/ui';
 
 export default function RootPage() {
-  redirect('/collab');
+  const router = useRouter();
+  const { isOnboardingComplete } = useAppStore();
+
+  useEffect(() => {
+    if (isOnboardingComplete) {
+      router.replace('/collab/home');
+    } else {
+      router.replace('/onboarding');
+    }
+  }, [isOnboardingComplete, router]);
+
+  return <Loader />;
 }

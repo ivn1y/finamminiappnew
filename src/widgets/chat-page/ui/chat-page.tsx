@@ -7,7 +7,6 @@ import { Button } from '@/shared/ui/button';
 import { Input } from '@/shared/ui/input';
 import { Avatar, AvatarFallback } from '@/shared/ui/avatar';
 import { useAppStore } from '@/shared/store/app-store';
-import { UserDataInputModal, type UserData } from '@/features/user-data-input';
 
 interface Message {
   id: string;
@@ -131,9 +130,10 @@ export const ChatPage: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputText, setInputText] = useState('');
   const [isTyping, setIsTyping] = useState(false);
-  const [isUserDataModalOpen, setIsUserDataModalOpen] = useState(false);
-  const [userData, setUserData] = useState<UserData | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // Проверяем, есть ли данные пользователя
+  const hasUserData = user && user.name && user.credentials?.email && user.credentials?.phone;
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -303,18 +303,6 @@ export const ChatPage: React.FC = () => {
     });
   };
 
-  const handleUserDataSave = (data: UserData) => {
-    setUserData(data);
-    // Здесь можно добавить логику сохранения данных пользователя
-    console.log('User data saved:', data);
-  };
-
-  const handleInputClick = () => {
-    if (!userData) {
-      setIsUserDataModalOpen(true);
-    }
-  };
-
   if (!hasUserMessages) {
 		return (
 			<>
@@ -349,12 +337,12 @@ export const ChatPage: React.FC = () => {
 									value={inputText}
 									onChange={e => setInputText(e.target.value)}
 									onKeyPress={handleKeyPress}
-									onClick={handleInputClick}
-									placeholder={userData ? 'Что такое Collab?' : 'Нажмите, чтобы заполнить данные'}
-									className='w-full rounded-[8px] border border-[#373740] bg-[rgba(79,79,89,0.16)] p-4 text-base font-normal leading-6 tracking-[-0.128px] text-white placeholder:text-[#6F6F7C] focus-visible:ring-offset-0 focus:outline-none cursor-pointer'
-									readOnly={!userData}
+									placeholder={hasUserData ? 'Что такое Collab?' : 'Сначала заполните данные в профиле'}
+									className='w-full rounded-[8px] border border-[#373740] bg-[rgba(79,79,89,0.16)] p-4 text-base font-normal leading-6 tracking-[-0.128px] text-white placeholder:text-[#6F6F7C] focus-visible:ring-offset-0 focus:outline-none'
+									readOnly={!hasUserData}
+									disabled={!hasUserData}
 								/>
-								{!userData && (
+								{!hasUserData && (
 									<div className='absolute right-3 top-1/2 -translate-y-1/2'>
 										<UserPlus className='w-5 h-5 text-[#6F6F7C]' />
 									</div>
@@ -364,13 +352,6 @@ export const ChatPage: React.FC = () => {
 					</div>
 				</div>
 
-				{/* User Data Input Modal */}
-				<UserDataInputModal
-					isOpen={isUserDataModalOpen}
-					onClose={() => setIsUserDataModalOpen(false)}
-					onSave={handleUserDataSave}
-					initialData={userData || undefined}
-				/>
 			</>
 		);
 	}
@@ -434,12 +415,11 @@ export const ChatPage: React.FC = () => {
 								value={inputText}
 								onChange={e => setInputText(e.target.value)}
 								onKeyPress={handleKeyPress}
-								onClick={handleInputClick}
-								placeholder={userData ? 'Что такое Collab?' : 'Нажмите, чтобы заполнить данные'}
-								className='w-full rounded-[8px] border border-[#373740] bg-[rgba(79,79,89,0.16)] p-4 text-base font-normal leading-6 tracking-[-0.128px] text-white placeholder:text-[#6F6F7C] focus-visible:ring-offset-0 focus:outline-none cursor-pointer'
-								readOnly={!userData}
+								placeholder={hasUserData ? 'Что такое Collab?' : 'Сначала заполните данные в профиле'}
+								className='w-full rounded-[8px] border border-[#373740] bg-[rgba(79,79,89,0.16)] p-4 text-base font-normal leading-6 tracking-[-0.128px] text-white placeholder:text-[#6F6F7C] focus-visible:ring-offset-0 focus:outline-none'
+								readOnly={!hasUserData}
 							/>
-							{!userData && (
+							{!hasUserData && (
 								<div className='absolute right-3 top-1/2 -translate-y-1/2'>
 									<UserPlus className='w-5 h-5 text-[#6F6F7C]' />
 								</div>
@@ -449,13 +429,6 @@ export const ChatPage: React.FC = () => {
 				</div>
 			</div>
 
-			{/* User Data Input Modal */}
-			<UserDataInputModal
-				isOpen={isUserDataModalOpen}
-				onClose={() => setIsUserDataModalOpen(false)}
-				onSave={handleUserDataSave}
-				initialData={userData || undefined}
-			/>
 		</>
 	);
 };

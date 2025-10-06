@@ -47,4 +47,5 @@ export * from './toast';
 export * from './toggle-group';
 export * from './toggle';
 export * from './tooltip';
+export * from './user-data-display';
 export * from './xp-tooltip';

@@ -9,6 +9,7 @@ import { logRoleSelected, logProfileSubmitted, logBadgeEarned, logQRScanned } fr
 interface AppStore extends Omit<AppState, 'currentTab'> {
   telegramQuestCompleted: boolean;
   showAppTour: boolean;
+  isUserDataInputModalOpen: boolean;
   // Actions
   setUser: (user: User) => void;
   updateUser: (updates: Partial<User>) => void;
@@ -17,9 +18,12 @@ interface AppStore extends Omit<AppState, 'currentTab'> {
   completeTelegramQuest: () => void;
   startAppTour: () => void;
   endAppTour: () => void;
+  openUserDataInputModal: () => void;
+  closeUserDataInputModal: () => void;
   addBadge: (badgeId: string) => void;
   incrementProgress: () => void;
   setQRScanner: (show: boolean) => void;
+  hideQRScanner: () => void;
   addScannedZone: (zoneId: string) => void;
   
   // Getters
@@ -93,6 +97,7 @@ export const useAppStore = create<AppStore>()(
       showQRScanner: false,
       telegramQuestCompleted: false,
       showAppTour: false,
+      isUserDataInputModalOpen: false,
 
       // Actions
       setUser: (user) => {
@@ -125,6 +130,8 @@ export const useAppStore = create<AppStore>()(
 
       startAppTour: () => set({ showAppTour: true }),
       endAppTour: () => set({ showAppTour: false }),
+      openUserDataInputModal: () => set({ isUserDataInputModalOpen: true }),
+      closeUserDataInputModal: () => set({ isUserDataInputModalOpen: false }),
       
       addBadge: (badgeId) => set((state) => {
         if (!state.user) return state;
@@ -154,6 +161,7 @@ export const useAppStore = create<AppStore>()(
       }),
       
       setQRScanner: (show) => set({ showQRScanner: show }),
+      hideQRScanner: () => set({ showQRScanner: false }),
       
       addScannedZone: (zoneId) => set((state) => {
         if (!state.user) return state;
