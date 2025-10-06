@@ -1,12 +1,13 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Send, Bot, User, MessageSquare } from 'lucide-react';
+import { Send, Bot, User, MessageSquare, UserPlus } from 'lucide-react';
 import chatKB from '@/shared/data/chat-kb.json';
 import { Button } from '@/shared/ui/button';
 import { Input } from '@/shared/ui/input';
 import { Avatar, AvatarFallback } from '@/shared/ui/avatar';
 import { useAppStore } from '@/shared/store/app-store';
+import { UserDataInputModal, type UserData } from '@/features/user-data-input';
 
 interface Message {
   id: string;
@@ -130,6 +131,8 @@ export const ChatPage: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputText, setInputText] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+  const [isUserDataModalOpen, setIsUserDataModalOpen] = useState(false);
+  const [userData, setUserData] = useState<UserData | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
@@ -300,109 +303,159 @@ export const ChatPage: React.FC = () => {
     });
   };
 
+  const handleUserDataSave = (data: UserData) => {
+    setUserData(data);
+    // Здесь можно добавить логику сохранения данных пользователя
+    console.log('User data saved:', data);
+  };
+
+  const handleInputClick = () => {
+    if (!userData) {
+      setIsUserDataModalOpen(true);
+    }
+  };
+
   if (!hasUserMessages) {
 		return (
-			<div className='flex flex-col items-center w-full h-screen bg-black overflow-hidden'>
-				<div className='relative w-full max-w-[393px] h-[866px] mx-auto'>
-					{/* Gradient Background */}
-					<div
-						className='absolute top-[324px] left-1/2 -translate-x-1/2 w-[284px] h-[205px] rounded-full opacity-50 blur-[120px]'
-						style={{
-							background:
-								'linear-gradient(305deg, #FEDA3B -2.67%, #EF5541 38.9%, #801FDB 77.17%, #7E2A89 98.46%)',
-						}}
-					/>
-
-					{/* Content Block */}
-					<div className='absolute top-[292px] left-1/2 -translate-x-1/2 flex flex-col items-center w-full'>
-						<FinamLogoIcon />
-						<h1 className='mt-[7px] w-[352px] font-inter-tight text-white text-[30px] font-normal leading-[110%] tracking-[-0.6px] text-center'>
-							Привет, я AI - Ассиcтент
-							<span className='block'>Finam</span>
-						</h1>
-						<p className='mt-[14px] w-[336px] text-[rgba(255,255,255,0.72)] font-sans text-[17px] font-normal leading-[24px] tracking-[-0.17px] text-center'>
-							Чему могу помочь?
-						</p>
-					</div>
-
-					{/* Input Block */}
-					<div className='absolute bottom-[104px] left-1/2 -translate-x-1/2 w-[351px]'>
-						<Input
-							type='text'
-							value={inputText}
-							onChange={e => setInputText(e.target.value)}
-							onKeyPress={handleKeyPress}
-							placeholder='Что такое Collab?'
-							className='w-full rounded-[8px] border border-[#373740] bg-[rgba(79,79,89,0.16)] p-4 text-base font-normal leading-6 tracking-[-0.128px] text-white placeholder:text-[#6F6F7C] focus-visible:ring-offset-0 focus:outline-none'
+			<>
+				<div className='flex flex-col items-center w-full h-screen bg-black overflow-hidden'>
+					<div className='relative w-full max-w-[393px] h-[866px] mx-auto'>
+						{/* Gradient Background */}
+						<div
+							className='absolute top-[324px] left-1/2 -translate-x-1/2 w-[284px] h-[205px] rounded-full opacity-50 blur-[120px]'
+							style={{
+								background:
+									'linear-gradient(305deg, #FEDA3B -2.67%, #EF5541 38.9%, #801FDB 77.17%, #7E2A89 98.46%)',
+							}}
 						/>
+
+						{/* Content Block */}
+						<div className='absolute top-[292px] left-1/2 -translate-x-1/2 flex flex-col items-center w-full'>
+							<FinamLogoIcon />
+							<h1 className='mt-[7px] w-[352px] font-inter-tight text-white text-[30px] font-normal leading-[110%] tracking-[-0.6px] text-center'>
+								Привет, я AI - Ассиcтент
+								<span className='block'>Finam</span>
+							</h1>
+							<p className='mt-[14px] w-[336px] text-[rgba(255,255,255,0.72)] font-sans text-[17px] font-normal leading-[24px] tracking-[-0.17px] text-center'>
+								Чему могу помочь?
+							</p>
+						</div>
+
+						{/* Input Block */}
+						<div className='absolute bottom-[104px] left-1/2 -translate-x-1/2 w-[351px]'>
+							<div className='relative'>
+								<Input
+									type='text'
+									value={inputText}
+									onChange={e => setInputText(e.target.value)}
+									onKeyPress={handleKeyPress}
+									onClick={handleInputClick}
+									placeholder={userData ? 'Что такое Collab?' : 'Нажмите, чтобы заполнить данные'}
+									className='w-full rounded-[8px] border border-[#373740] bg-[rgba(79,79,89,0.16)] p-4 text-base font-normal leading-6 tracking-[-0.128px] text-white placeholder:text-[#6F6F7C] focus-visible:ring-offset-0 focus:outline-none cursor-pointer'
+									readOnly={!userData}
+								/>
+								{!userData && (
+									<div className='absolute right-3 top-1/2 -translate-y-1/2'>
+										<UserPlus className='w-5 h-5 text-[#6F6F7C]' />
+									</div>
+								)}
+							</div>
+						</div>
 					</div>
 				</div>
-			</div>
+
+				{/* User Data Input Modal */}
+				<UserDataInputModal
+					isOpen={isUserDataModalOpen}
+					onClose={() => setIsUserDataModalOpen(false)}
+					onSave={handleUserDataSave}
+					initialData={userData || undefined}
+				/>
+			</>
 		);
 	}
 
 	return (
-		<div className='flex justify-center w-full h-screen bg-black overflow-hidden'>
-			<div className='relative w-full max-w-[393px] h-[866px]'>
-				{/* Messages Container */}
-				<div className='absolute top-0 left-0 right-0 bottom-[180px] overflow-y-auto'>
-					<div className='px-5 pt-[222px] pb-4 space-y-5'>
-						{messages.map(message => (
-							<div
-								key={message.id}
-								className={`flex ${
-									message.isUser ? 'justify-end' : 'justify-start'
-								}`}
-							>
+		<>
+			<div className='flex justify-center w-full h-screen bg-black overflow-hidden'>
+				<div className='relative w-full max-w-[393px] h-[866px]'>
+					{/* Messages Container */}
+					<div className='absolute top-0 left-0 right-0 bottom-[180px] overflow-y-auto'>
+						<div className='px-5 pt-[222px] pb-4 space-y-5'>
+							{messages.map(message => (
 								<div
-									className={`max-w-[314px] ${
-										message.isUser
-											? 'rounded-[20px_20px_4px_20px] bg-[#2F2F37] p-[14px_16px_16px_16px]'
-											: 'rounded-[20px_20px_20px_4px] bg-[#151519] p-4'
+									key={message.id}
+									className={`flex ${
+										message.isUser ? 'justify-end' : 'justify-start'
 									}`}
 								>
-									<p className='text-white font-sans text-sm font-normal leading-5 tracking-[-0.056px] whitespace-pre-line'>
-										{message.text}
-									</p>
-								</div>
-							</div>
-						))}
-
-						{/* Typing indicator */}
-						{isTyping && (
-							<div className='flex justify-start'>
-								<div className='max-w-[314px] rounded-[20px_20px_20px_4px] bg-[#151519] p-4'>
-									<div className='flex space-x-1'>
-										<div className='w-2 h-2 bg-gray-400 rounded-full animate-bounce' />
-										<div
-											className='w-2 h-2 bg-gray-400 rounded-full animate-bounce'
-											style={{ animationDelay: '0.1s' }}
-										/>
-										<div
-											className='w-2 h-2 bg-gray-400 rounded-full animate-bounce'
-											style={{ animationDelay: '0.2s' }}
-										/>
+									<div
+										className={`max-w-[314px] ${
+											message.isUser
+												? 'rounded-[20px_20px_4px_20px] bg-[#2F2F37] p-[14px_16px_16px_16px]'
+												: 'rounded-[20px_20px_20px_4px] bg-[#151519] p-4'
+										}`}
+									>
+										<p className='text-white font-sans text-sm font-normal leading-5 tracking-[-0.056px] whitespace-pre-line'>
+											{message.text}
+										</p>
 									</div>
 								</div>
-							</div>
-						)}
+							))}
 
-						<div ref={messagesEndRef} />
+							{/* Typing indicator */}
+							{isTyping && (
+								<div className='flex justify-start'>
+									<div className='max-w-[314px] rounded-[20px_20px_20px_4px] bg-[#151519] p-4'>
+										<div className='flex space-x-1'>
+											<div className='w-2 h-2 bg-gray-400 rounded-full animate-bounce' />
+											<div
+												className='w-2 h-2 bg-gray-400 rounded-full animate-bounce'
+												style={{ animationDelay: '0.1s' }}
+											/>
+											<div
+												className='w-2 h-2 bg-gray-400 rounded-full animate-bounce'
+												style={{ animationDelay: '0.2s' }}
+											/>
+										</div>
+									</div>
+								</div>
+							)}
+
+							<div ref={messagesEndRef} />
+						</div>
+					</div>
+
+					{/* Input Block */}
+					<div className='absolute bottom-[104px] left-0 right-0 px-5'>
+						<div className='relative'>
+							<Input
+								type='text'
+								value={inputText}
+								onChange={e => setInputText(e.target.value)}
+								onKeyPress={handleKeyPress}
+								onClick={handleInputClick}
+								placeholder={userData ? 'Что такое Collab?' : 'Нажмите, чтобы заполнить данные'}
+								className='w-full rounded-[8px] border border-[#373740] bg-[rgba(79,79,89,0.16)] p-4 text-base font-normal leading-6 tracking-[-0.128px] text-white placeholder:text-[#6F6F7C] focus-visible:ring-offset-0 focus:outline-none cursor-pointer'
+								readOnly={!userData}
+							/>
+							{!userData && (
+								<div className='absolute right-3 top-1/2 -translate-y-1/2'>
+									<UserPlus className='w-5 h-5 text-[#6F6F7C]' />
+								</div>
+							)}
+						</div>
 					</div>
 				</div>
-
-				{/* Input Block */}
-				<div className='absolute bottom-[104px] left-0 right-0 px-5'>
-					<Input
-						type='text'
-						value={inputText}
-						onChange={e => setInputText(e.target.value)}
-						onKeyPress={handleKeyPress}
-						placeholder='Что такое Collab?'
-						className='w-full rounded-[8px] border border-[#373740] bg-[rgba(79,79,89,0.16)] p-4 text-base font-normal leading-6 tracking-[-0.128px] text-white placeholder:text-[#6F6F7C] focus-visible:ring-offset-0 focus:outline-none'
-					/>
-				</div>
 			</div>
-		</div>
+
+			{/* User Data Input Modal */}
+			<UserDataInputModal
+				isOpen={isUserDataModalOpen}
+				onClose={() => setIsUserDataModalOpen(false)}
+				onSave={handleUserDataSave}
+				initialData={userData || undefined}
+			/>
+		</>
 	);
 };
