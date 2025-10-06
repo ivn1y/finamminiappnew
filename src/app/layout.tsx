@@ -3,6 +3,7 @@ import "@/app/globals.css"
 import { Inter, Inter_Tight } from "next/font/google"
 import type { Metadata } from "next"
 import { Toaster } from "@/shared/ui/sonner"
+import { Analytics } from '@vercel/analytics/react';
 
 const inter = Inter({
   subsets: ["latin", "latin-ext"],
@@ -60,6 +61,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           {children}
           <Toaster/>
         </Providers>
+        <Analytics />
       </body>
     </html>
   )

@@ -3,12 +3,14 @@
 import React from 'react';
 import Link from 'next/link';
 import './bottom-navigation.css';
+import { useAppStore } from '@/shared/store/app-store';
 
 interface BottomNavigationProps {
   activeTab: string;
 }
 
 export const BottomNavigation: React.FC<BottomNavigationProps> = ({ activeTab }) => {
+  const { setQRScanner } = useAppStore();
 
   const tabs = [
     { id: 'home', label: 'Главная', icon: '/assets/icons/main.png', href: '/collab/home' },
@@ -17,6 +19,10 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({ activeTab })
     { id: 'chat', label: 'Ассистент', icon: '/assets/icons/assistant.png', href: '/collab/chat' },
     { id: 'profile', label: 'Профиль', icon: '/assets/icons/profile.png', href: '/collab/profile' }
   ];
+
+  const handleLinkClick = () => {
+    setQRScanner(false);
+  };
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 flex justify-center pb-2">
@@ -28,6 +34,7 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({ activeTab })
             <Link
               key={tab.id}
               href={tab.href}
+              onClick={handleLinkClick}
               className={`flex flex-col items-center justify-center flex-1 text-center transition-colors ${
                 isActive 
                   ? 'text-white' 
