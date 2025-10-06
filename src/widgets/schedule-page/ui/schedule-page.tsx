@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { useAppStore } from '@/shared/store/app-store';
 import { scheduleData as mockScheduleData } from '@/shared/data/seed';
 import { ScheduleFilters } from '@/features/schedule-filters';
@@ -153,8 +154,15 @@ const EventCard = ({ event }: { event: (typeof mockScheduleData.events)[0] }) =>
 
 
 export const SchedulePage: React.FC = () => {
-  const { showScheduleTour, endScheduleTour } = useAppStore();
+  const { showScheduleTour, completeScheduleTourAndGoToAssistant, showAssistantTour } = useAppStore();
   const [filteredEvents, setFilteredEvents] = useState<ScheduleEvent[] | null>(null);
+  const router = useRouter();
+
+  useEffect(() => {
+    if (showAssistantTour) {
+      router.push('/collab/chat');
+    }
+  }, [showAssistantTour, router]);
 
   const handleFilterChange = (events: ScheduleEvent[] | null) => {
     setFilteredEvents(events);
@@ -167,7 +175,7 @@ export const SchedulePage: React.FC = () => {
       className="relative mx-auto font-sans pb-24"
       style={{ width: '393px', minHeight: '913px', background: '#000' }}
     >
-      {showScheduleTour && <ScheduleTour onComplete={endScheduleTour} />}
+      {showScheduleTour && <ScheduleTour onComplete={completeScheduleTourAndGoToAssistant} />}
       {/* Background Gradient */}
       <div
         className="absolute"
