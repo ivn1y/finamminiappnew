@@ -3,7 +3,6 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import Image from 'next/image';
 import './bottom-navigation.css';
 
 export const BottomNavigation: React.FC = () => {
@@ -34,11 +33,10 @@ export const BottomNavigation: React.FC = () => {
               }`}
             >
               <div className="icon-container">
-                <Image 
+                <img 
                   src={tab.icon} 
                   alt={tab.label} 
-                  fill
-                  style={{ objectFit: 'contain' }}
+                  className="nav-icon"
                 />
               </div>
               <span className="nav-item-label">
