@@ -11,6 +11,7 @@ interface UserDataInputModalProps {
   onClose: () => void;
   onSave: (data: UserData) => void;
   initialData?: Partial<UserData>;
+  onDataChange?: (data: Partial<UserData>) => void;
   title?: string;
   description?: string;
   showOptionalFields?: boolean;
@@ -32,6 +33,7 @@ export const UserDataInputModal: React.FC<UserDataInputModalProps> = ({
   onClose,
   onSave,
   initialData = {},
+  onDataChange,
   requiredFields = ['name', 'email'],
 }) => {
   const [formData, setFormData] = useState<UserData>({
@@ -62,7 +64,11 @@ export const UserDataInputModal: React.FC<UserDataInputModalProps> = ({
   }, [initialData]);
 
   const handleInputChange = (field: keyof UserData, value: string) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
+    const updatedFormData = { ...formData, [field]: value };
+    setFormData(updatedFormData);
+    if (onDataChange) {
+      onDataChange({ [field]: value });
+    }
     if (errors[field]) {
       setErrors((prev) => ({ ...prev, [field]: undefined }));
     }
