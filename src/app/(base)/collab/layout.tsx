@@ -4,6 +4,7 @@ import React from 'react';
 import { useAppStore } from '@/shared/store/app-store';
 import { Onboarding } from '@/entities/user/ui/onboarding';
 import { BottomNavigation } from '@/widgets/bottom-navigation';
+import { usePathname } from 'next/navigation';
 
 export default function CollabLayout({
   children,
@@ -17,12 +18,14 @@ export default function CollabLayout({
     return <Onboarding />;
   }
 
+  const pathname = usePathname();
+
   return (
     <div className="min-h-screen flex flex-col bg-black">
       <main className="flex-1">
         {children}
       </main>
-      <BottomNavigation />
+      <BottomNavigation activeTab={pathname} />
     </div>
   );
 }

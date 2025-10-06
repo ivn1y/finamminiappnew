@@ -8,12 +8,15 @@ import { logRoleSelected, logProfileSubmitted, logBadgeEarned, logQRScanned } fr
 
 interface AppStore extends Omit<AppState, 'currentTab'> {
   telegramQuestCompleted: boolean;
+  showAppTour: boolean;
   // Actions
   setUser: (user: User) => void;
   updateUser: (updates: Partial<User>) => void;
   setEventMode: (mode: boolean) => void;
   completeOnboarding: () => void;
   completeTelegramQuest: () => void;
+  startAppTour: () => void;
+  endAppTour: () => void;
   addBadge: (badgeId: string) => void;
   incrementProgress: () => void;
   setQRScanner: (show: boolean) => void;
@@ -89,6 +92,7 @@ export const useAppStore = create<AppStore>()(
       isOnboardingComplete: false,
       showQRScanner: false,
       telegramQuestCompleted: false,
+      showAppTour: false,
 
       // Actions
       setUser: (user) => {
@@ -118,6 +122,9 @@ export const useAppStore = create<AppStore>()(
       completeOnboarding: () => set({ isOnboardingComplete: true }),
 
       completeTelegramQuest: () => set({ telegramQuestCompleted: true }),
+
+      startAppTour: () => set({ showAppTour: true }),
+      endAppTour: () => set({ showAppTour: false }),
       
       addBadge: (badgeId) => set((state) => {
         if (!state.user) return state;
@@ -193,7 +200,8 @@ export const useAppStore = create<AppStore>()(
       partialize: (state) => ({
         user: state.user,
         eventMode: state.eventMode,
-        isOnboardingComplete: state.isOnboardingComplete
+        isOnboardingComplete: state.isOnboardingComplete,
+        showAppTour: state.showAppTour
       })
     }
   )

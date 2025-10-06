@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { useAppStore } from '@/shared/store/app-store';
 import { roleContent } from '@/shared/data/seed';
@@ -12,20 +12,17 @@ import {
 } from '@/shared/ui/icons';
 import { BadgeModal } from '@/shared/ui';
 import Image from 'next/image';
+import AppTour from '@/features/app-tour/ui/app-tour';
 
-const TaskButton = ({
-  href,
-  text,
-  completed,
-  onClick,
-}: {
+const TaskButton = React.forwardRef<HTMLDivElement, {
   href?: string;
   text: string;
   completed: boolean;
   onClick?: () => void;
-}) => {
+}>(({ href, text, completed, onClick }, ref) => {
   const content = (
     <div
+      ref={ref}
       className="relative flex w-[313px] h-[44px] items-center rounded-[4px] bg-[#1F1F25] pl-[10px]"
       onClick={onClick}
       style={{ cursor: onClick ? 'pointer' : 'default' }}
@@ -47,7 +44,8 @@ const TaskButton = ({
   }
 
   return content;
-};
+});
+TaskButton.displayName = 'TaskButton';
 
 const Badge = ({
   imgSrc,
@@ -107,7 +105,7 @@ const Badge = ({
 );
 
 export const HomePage: React.FC = () => {
-  const { user, telegramQuestCompleted, completeTelegramQuest } = useAppStore();
+  const { user, telegramQuestCompleted, completeTelegramQuest, showAppTour, endAppTour } = useAppStore();
   const [selectedBadge, setSelectedBadge] = useState<{
     imgSrc: string;
     grayImgSrc: string;
@@ -117,6 +115,32 @@ export const HomePage: React.FC = () => {
     howToEarn?: string;
   } | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const profileTaskRef = useRef<HTMLDivElement>(null);
+  const [highlightedButtonRect, setHighlightedButtonRect] = useState<DOMRect | null>(null);
+
+  useEffect(() => {
+    const updateRect = () => {
+      if (profileTaskRef.current) {
+        setHighlightedButtonRect(profileTaskRef.current.getBoundingClientRect());
+      }
+    };
+
+    if (showAppTour) {
+      const timer = setTimeout(() => {
+        updateRect();
+        window.addEventListener('scroll', updateRect, true);
+        window.addEventListener('resize', updateRect);
+      }, 100);
+
+      return () => {
+        clearTimeout(timer);
+        window.removeEventListener('scroll', updateRect, true);
+        window.removeEventListener('resize', updateRect);
+      };
+    } else {
+      setHighlightedButtonRect(null);
+    }
+  }, [showAppTour]);
 
   if (!user || !user.role) return null;
 
@@ -148,6 +172,8 @@ export const HomePage: React.FC = () => {
       completed:
         !!user.credentials?.phone && !!user.credentials?.email,
       href: '/collab/profile',
+      ref: profileTaskRef,
+      onClick: endAppTour,
     },
     {
       text: 'Выполни первый квест',
@@ -260,6 +286,12 @@ export const HomePage: React.FC = () => {
 
   return (
     <div className="w-full bg-black flex justify-center">
+      {showAppTour && highlightedButtonRect && (
+        <AppTour
+          highlightedElementRect={highlightedButtonRect}
+          onComplete={endAppTour}
+        />
+      )}
       <div className="relative w-[393px] h-[1279px] overflow-hidden">
         <div
           className="absolute top-[75px] left-1/2 -translate-x-1/2 w-[390px] h-[281px] rounded-[390px] opacity-50 blur-[80px]"
@@ -306,6 +338,7 @@ export const HomePage: React.FC = () => {
                 text={task.text}
                 completed={task.completed}
                 onClick={task.onClick}
+                ref={task.ref}
               />
             ))}
           </div>
