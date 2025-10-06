@@ -7,6 +7,7 @@
   },
   "scripts": {
     "dev": "next dev --port 3000",
+    "dev:all": "bash start-dev.sh",
     "dev:mobile": "next dev --port 3000 --hostname 0.0.0.0",
     "dev:local": "next dev --port 3000",
     "mobile": "node scripts/mobile-dev.js",
