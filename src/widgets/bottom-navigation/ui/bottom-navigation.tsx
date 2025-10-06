@@ -2,11 +2,13 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
 import './bottom-navigation.css';
 
-export const BottomNavigation: React.FC = () => {
-  const pathname = usePathname();
+interface BottomNavigationProps {
+  activeTab: string;
+}
+
+export const BottomNavigation: React.FC<BottomNavigationProps> = ({ activeTab }) => {
 
   const tabs = [
     { id: 'home', label: 'Главная', icon: '/assets/icons/main.png', href: '/collab/home' },
@@ -20,7 +22,7 @@ export const BottomNavigation: React.FC = () => {
     <nav className="fixed bottom-0 left-0 right-0 z-50 flex justify-center pb-2">
       <div className="bottom-nav-container">
         {tabs.map((tab) => {
-          const isActive = pathname === tab.href;
+          const isActive = activeTab === tab.href;
           
           return (
             <Link

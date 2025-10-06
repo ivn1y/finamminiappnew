@@ -82,7 +82,7 @@ const UnselectedIndicator = () => (
 
 export const Onboarding: React.FC = () => {
   const router = useRouter();
-  const { setUser, updateUser, completeOnboarding, eventMode } = useAppStore();
+  const { setUser, updateUser, completeOnboarding, startAppTour, eventMode } = useAppStore();
   const [currentStep, setCurrentStep] = useState(0);
   const [selectedRole, setSelectedRole] = useState<UserRole | null>('trader');
   const [profileData, setProfileData] = useState<Record<string, any>>({});
@@ -215,6 +215,7 @@ export const Onboarding: React.FC = () => {
 
     setUser(newUser);
     completeOnboarding();
+    startAppTour();
       
       // Увеличиваем задержку для завершения обновления состояния
       await new Promise(resolve => setTimeout(resolve, 300));
