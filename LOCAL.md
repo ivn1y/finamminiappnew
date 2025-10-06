@@ -66,3 +66,4 @@ kill -9 [PID]
 1. Проверьте версию Node.js: `node --version` (требуется >=18.0.0)
 2. Установите зависимости: `npm install`
 3. Очистите кэш: `npm run clean`
+

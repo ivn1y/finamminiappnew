@@ -18,7 +18,7 @@ export default function CollabLayout({
   }
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-black">
       <main className="flex-1">
         {children}
       </main>
