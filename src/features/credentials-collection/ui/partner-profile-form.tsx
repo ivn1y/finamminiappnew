@@ -112,22 +112,22 @@ export function PartnerProfileForm({ onBack, onNext }: PartnerProfileFormProps) 
 
         <div style={{ position: "absolute", top: "277px", width: "100%", padding: "0 16px", boxSizing: "border-box" }}>
           <div style={formElementStyle("package", "select")} onClick={() => setOpenDropdown(openDropdown === "package" ? null : "package")}>
-            <span style={{ color: partnerPackage ? "#FFF" : "#A4A4B2", fontSize: "16px" }}>
+            <span style={{ color: partnerPackage ? "#FFF" : "#A4A4B2", fontSize: "16px", fontFamily: "Inter" }}>
               {partnerPackage || "Что тебя интересует"}
             </span>
             <SelectArrowIcon />
           </div>
 
           <div style={formElementStyle("companyName", "input")}>
-            <input type="text" placeholder="Название компании" value={companyName} onChange={(e) => setCompanyName(e.target.value)} onFocus={() => setFocusedInput("companyName")} onBlur={() => setFocusedInput(null)} style={{ color: companyName ? "#FFF" : "#A4A4B2", background: "transparent", border: "none", outline: "none", width: "100%", fontSize: "16px" }}/>
+            <input type="text" placeholder="Название компании" value={companyName} onChange={(e) => setCompanyName(e.target.value)} onFocus={() => setFocusedInput("companyName")} onBlur={() => setFocusedInput(null)} style={{ color: companyName ? "#FFF" : "#A4A4B2", background: "transparent", border: "none", outline: "none", width: "100%", fontSize: "16px", fontFamily: "Inter" }}/>
           </div>
 
           <div style={formElementStyle("description", "input")}>
-            <input type="text" placeholder="Опиши свой продукт/услугу" value={productServiceDescription} onChange={(e) => setProductServiceDescription(e.target.value)} onFocus={() => setFocusedInput("description")} onBlur={() => setFocusedInput(null)} style={{ color: productServiceDescription ? "#FFF" : "#A4A4B2", background: "transparent", border: "none", outline: "none", width: "100%", fontSize: "16px" }}/>
+            <input type="text" placeholder="Опиши свой продукт/услугу" value={productServiceDescription} onChange={(e) => setProductServiceDescription(e.target.value)} onFocus={() => setFocusedInput("description")} onBlur={() => setFocusedInput(null)} style={{ color: productServiceDescription ? "#FFF" : "#A4A4B2", background: "transparent", border: "none", outline: "none", width: "100%", fontSize: "16px", fontFamily: "Inter" }}/>
           </div>
 
           <div style={formElementStyle("industry", "select")} onClick={() => setOpenDropdown(openDropdown === "industry" ? null : "industry")}>
-            <span style={{ color: companyIndustry ? "#FFF" : "#A4A4B2", fontSize: "16px" }}>
+            <span style={{ color: companyIndustry ? "#FFF" : "#A4A4B2", fontSize: "16px", fontFamily: "Inter" }}>
               {companyIndustry || "Сфера деятельности компании"}
             </span>
             <SelectArrowIcon />

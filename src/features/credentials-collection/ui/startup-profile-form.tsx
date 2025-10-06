@@ -139,14 +139,14 @@ export function StartupProfileForm({ onBack, onNext }: StartupProfileFormProps) 
           </div>
 
           <div style={formElementStyle("stage", "select")} onClick={() => setOpenDropdown(openDropdown === "stage" ? null : "stage")}>
-            <span style={{ color: projectStage ? "#FFF" : "#A4A4B2", fontSize: "16px", ...{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }}>
+            <span style={{ color: projectStage ? "#FFF" : "#A4A4B2", fontSize: "16px", fontFamily: "Inter", ...{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }}>
               {projectStage || "На какой стадии твой проект"}
             </span>
             <SelectArrowIcon />
           </div>
 
           <div style={formElementStyle("industry", "select")} onClick={() => setOpenDropdown(openDropdown === "industry" ? null : "industry")}>
-            <span style={{ color: industry ? "#FFF" : "#A4A4B2", fontSize: "16px", ...{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }}>
+            <span style={{ color: industry ? "#FFF" : "#A4A4B2", fontSize: "16px", fontFamily: "Inter", ...{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }}>
               {industry || "Сфера деятельности"}
             </span>
             <SelectArrowIcon />
