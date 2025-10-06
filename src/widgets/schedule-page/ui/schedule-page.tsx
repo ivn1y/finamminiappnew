@@ -1,8 +1,10 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useAppStore } from '@/shared/store/app-store';
 import { scheduleData as mockScheduleData } from '@/shared/data/seed';
 import { ScheduleFilters } from '@/features/schedule-filters';
+import { ScheduleTour } from '@/features/app-tour';
 import {
   Accordion,
   AccordionContent,
@@ -151,6 +153,7 @@ const EventCard = ({ event }: { event: (typeof mockScheduleData.events)[0] }) =>
 
 
 export const SchedulePage: React.FC = () => {
+  const { showScheduleTour, endScheduleTour } = useAppStore();
   const [filteredEvents, setFilteredEvents] = useState<ScheduleEvent[] | null>(null);
 
   const handleFilterChange = (events: ScheduleEvent[] | null) => {
@@ -164,6 +167,7 @@ export const SchedulePage: React.FC = () => {
       className="relative mx-auto font-sans pb-24"
       style={{ width: '393px', minHeight: '913px', background: '#000' }}
     >
+      {showScheduleTour && <ScheduleTour onComplete={endScheduleTour} />}
       {/* Background Gradient */}
       <div
         className="absolute"

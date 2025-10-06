@@ -11,6 +11,7 @@ interface AppStore extends Omit<AppState, 'currentTab'> {
   showAppTour: boolean;
   showProfileTour: boolean;
   showMapTour: boolean;
+  showScheduleTour: boolean;
   isUserDataInputModalOpen: boolean;
   // Actions
   setUser: (user: User) => void;
@@ -24,7 +25,10 @@ interface AppStore extends Omit<AppState, 'currentTab'> {
   endProfileTour: () => void;
   startMapTour: () => void;
   endMapTour: () => void;
+  startScheduleTour: () => void;
+  endScheduleTour: () => void;
   completeHomeTourAndGoToProfile: () => void;
+  completeMapTourAndGoToSchedule: () => void;
   openUserDataInputModal: () => void;
   closeUserDataInputModal: () => void;
   addBadge: (badgeId: string) => void;
@@ -106,6 +110,7 @@ export const useAppStore = create<AppStore>()(
       showAppTour: false,
       showProfileTour: false,
       showMapTour: false,
+      showScheduleTour: false,
       isUserDataInputModalOpen: false,
 
       // Actions
@@ -143,8 +148,11 @@ export const useAppStore = create<AppStore>()(
       endProfileTour: () => set({ showProfileTour: false }),
       startMapTour: () => set({ showMapTour: true }),
       endMapTour: () => set({ showMapTour: false }),
+      startScheduleTour: () => set({ showScheduleTour: true }),
+      endScheduleTour: () => set({ showScheduleTour: false }),
       completeHomeTourAndGoToProfile: () =>
         set({ showAppTour: false, showProfileTour: true }),
+      completeMapTourAndGoToSchedule: () => set({ showMapTour: false, showScheduleTour: true }),
       openUserDataInputModal: () => set({ isUserDataInputModalOpen: true }),
       closeUserDataInputModal: () => set({ isUserDataInputModalOpen: false }),
       
@@ -227,6 +235,7 @@ export const useAppStore = create<AppStore>()(
         showAppTour: state.showAppTour,
         showProfileTour: state.showProfileTour,
         showMapTour: state.showMapTour,
+        showScheduleTour: state.showScheduleTour,
       })
     }
   )
