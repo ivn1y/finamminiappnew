@@ -1,4 +1,4 @@
-import { Providers } from "./providers"
+import { GlobalProviders } from "./providers"
 import "@/app/globals.css"
 import { Inter, Inter_Tight } from "next/font/google"
 import type { Metadata } from "next"
@@ -57,10 +57,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body className="min-h-screen bg-background font-sans antialiased">
-        <Providers>
+        <GlobalProviders>
           {children}
           <Toaster/>
-        </Providers>
+        </GlobalProviders>
         <Analytics />
       </body>
     </html>

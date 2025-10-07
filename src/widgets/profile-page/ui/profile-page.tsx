@@ -420,7 +420,7 @@ export const ProfilePage: React.FC = () => {
       {showProfileTour && highlightedRect && (
         <ProfileTour
             highlightedElementRect={highlightedRect}
-            onComplete={openUserDataInputModal}
+            onComplete={endProfileTour}
         />
       )}
       <div className="relative" style={{ width: '393px', height: '1335px' }}>

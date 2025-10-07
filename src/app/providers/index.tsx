@@ -1,10 +1,11 @@
 'use client'
 
-import { ThemeProvider } from "next-themes"
-import { SessionProvider } from "next-auth/react"
-import { TelegramProvider } from "@/shared/lib/telegram/providers/telegram-provider"
+import { ThemeProvider } from 'next-themes'
+import { SessionProvider } from 'next-auth/react'
+import { TelegramProvider } from './telegram-provider'
+// import { OnboardingGuard } from '@/shared/components'
 
-export function Providers({ children }: { children: React.ReactNode }) {
+export function GlobalProviders({ children }: { children: React.ReactNode }) {
   return (
     <SessionProvider>
       <ThemeProvider
@@ -14,7 +15,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
         disableTransitionOnChange
       >
         <TelegramProvider>
-          {children}
+          {/* <OnboardingGuard> */}
+            {children}
+          {/* </OnboardingGuard> */}
         </TelegramProvider>
       </ThemeProvider>
     </SessionProvider>

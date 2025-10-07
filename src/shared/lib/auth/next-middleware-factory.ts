@@ -82,10 +82,11 @@ export function createMiddleware(config: MiddlewareConfig, auth: () => Promise<a
       return NextResponse.next()
     }
 
-    // Для Telegram WebApp на главной странице - редиректим на dashboard
+    // Для Telegram WebApp на главной странице - разрешаем доступ
+    // OnboardingGuard будет обрабатывать редиректы на основе состояния онбординга
     if (isTelegramWebApp && pathname === '/') {
-      console.log('[Middleware] Redirecting Telegram WebApp to dashboard')
-      return NextResponse.redirect(new URL(config.dashboardPath, request.url))
+      console.log('[Middleware] Allowing Telegram WebApp access to home page')
+      return NextResponse.next()
     }
 
     // Для обычных браузеров - стандартная логика авторизации
