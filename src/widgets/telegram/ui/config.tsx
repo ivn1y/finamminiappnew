@@ -50,6 +50,28 @@ export function WebAppConfigurator() {
       console.log('[TelegramWebApp] Theme:', webApp.themeParams)
       console.log('[TelegramWebApp] Is Dark Theme:', isDarkTheme)
       
+      // Проверяем, является ли это новым пользователем Telegram
+      const telegramUser = webApp.initDataUnsafe.user
+      if (telegramUser) {
+        // Проверяем localStorage на наличие данных предыдущего пользователя
+        const existingStorage = localStorage.getItem('finam-collab-storage')
+        if (existingStorage) {
+          try {
+            const parsedStorage = JSON.parse(existingStorage)
+            const existingUserId = parsedStorage.state?.user?.id
+            
+            // Если ID пользователя изменился, очищаем localStorage
+            if (existingUserId && !existingUserId.includes(telegramUser.id.toString())) {
+              console.log('[TelegramWebApp] New Telegram user detected, clearing localStorage')
+              localStorage.removeItem('finam-collab-storage')
+            }
+          } catch (error) {
+            console.error('[TelegramWebApp] Error parsing existing storage:', error)
+            localStorage.removeItem('finam-collab-storage')
+          }
+        }
+      }
+      
       // Обработчик изменения viewport
       webApp.onEvent('viewportChanged', () => {
         console.log('[TelegramWebApp] Viewport changed')

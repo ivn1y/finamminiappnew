@@ -7,15 +7,19 @@ import { Loader } from '@/shared/ui';
 
 export default function RootPage() {
   const router = useRouter();
-  const { isOnboardingComplete } = useAppStore();
+  const { isNewUser } = useAppStore();
 
   useEffect(() => {
-    if (isOnboardingComplete) {
-      router.replace('/collab/home');
-    } else {
-      router.replace('/onboarding');
-    }
-  }, [isOnboardingComplete, router]);
+    const checkUserStatus = () => {
+      if (isNewUser()) {
+        router.replace('/onboarding');
+      } else {
+        router.replace('/collab/home');
+      }
+    };
+
+    checkUserStatus();
+  }, [router]);
 
   return <Loader />;
 }
