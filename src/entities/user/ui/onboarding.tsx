@@ -363,41 +363,6 @@ export const Onboarding: React.FC = () => {
           </button>
       </div>
 
-      {/* Согласие на обработку данных */}
-      <div className="relative z-10 w-full flex justify-center" style={{ marginBottom: '28px' }}>
-        <div style={{ width: '321px' }}>
-          <p 
-            className="text-center"
-            style={{
-              color: 'rgba(255, 255, 255, 0.72)',
-              fontFamily: 'Inter',
-              fontSize: '12px',
-              fontStyle: 'normal',
-              fontWeight: 400,
-              lineHeight: '16px',
-            }}
-          >
-            Отправляя форму, я даю согласие на{' '}
-            <PrivacyPolicyLink>
-              <span 
-                style={{
-                  background: 'linear-gradient(90deg, #FDB938 6.62%, #DE6D4B 53.31%, #A55AFF 100%)',
-                  backgroundClip: 'text',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                  fontFamily: 'Inter',
-                  fontSize: '12px',
-                  fontStyle: 'normal',
-                  fontWeight: 400,
-                  lineHeight: '16px',
-                }}
-              >
-                обработку персональных данных
-              </span>
-            </PrivacyPolicyLink>
-          </p>
-        </div>
-      </div>
     </div>
   );
 

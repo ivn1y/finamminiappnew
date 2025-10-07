@@ -7,6 +7,7 @@ import { WebAppLoader } from '@/widgets/telegram/ui/loader';
 import { BottomNavigation } from '@/widgets/bottom-navigation';
 import { usePathname } from 'next/navigation';
 import { useAppStore } from '@/shared/store/app-store';
+import { QRScanner } from '@/features/qr-scanner';
 
 export default function BaseLayout({
   children,
@@ -14,10 +15,11 @@ export default function BaseLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
-  const { showQRScanner, showAppTour, isOnboardingComplete } = useAppStore();
+  const { showQRScanner, hideQRScanner, isUserDataInputModalOpen, showAppTour } = useAppStore();
 
-  const noNavPaths = ['/onboarding', '/auth'];
-  const showNav = isOnboardingComplete && !noNavPaths.some(p => pathname.startsWith(p));
+  const noNavPaths = ['/auth', '/onboarding', '/qr-test', '/privacy-policy'];
+
+  const showNav = !noNavPaths.some(path => pathname.startsWith(path)) && !isUserDataInputModalOpen;
 
   const mainContentClass = showQRScanner
     ? 'h-screen overflow-hidden'
@@ -33,7 +35,7 @@ export default function BaseLayout({
       >
         {children}
       </main>
-      {!showQRScanner && showNav && <BottomNavigation activeTab={pathname} />}
+      {showNav && <BottomNavigation activeTab={pathname} />}
     </div>
   );
 }
