@@ -2,12 +2,12 @@
 import Image from 'next/image';
 import React, { useState, useEffect } from 'react';
 
-interface ProfileTourProps {
+interface HomeTourProps {
   highlightedElementRect: DOMRect;
   onComplete: () => void;
 }
 
-const ProfileTour: React.FC<ProfileTourProps> = ({
+const HomeTour: React.FC<HomeTourProps> = ({
   highlightedElementRect,
   onComplete,
 }) => {
@@ -81,7 +81,6 @@ const ProfileTour: React.FC<ProfileTourProps> = ({
           right: '20px',
           zIndex: 10000,
         }}
-        onClick={onComplete}
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -154,7 +153,12 @@ const ProfileTour: React.FC<ProfileTourProps> = ({
             }}
           >
             <p style={{ margin: 0 }}>
-              Расскажи о себе, странник. Коснись руны самопознания, и мы узнаем тебя ближе. Мы ищем соратников, разделяющих наши цели. Что привело тебя к нам? Какие испытания ты преодолел? Чем готов пожертвовать ради общего дела?
+              Привет тебе, отважный искатель приключений! Добро пожаловать в
+              нашу таверну, где путники обретают отдых и новые задания!
+            </p>
+            <p style={{ marginTop: '13px' }}>
+              Мы знаем, что ты — герой, готовый к испытаниям. Расскажи нам о
+              своём происхождении
             </p>
           </div>
         </div>
@@ -163,4 +167,4 @@ const ProfileTour: React.FC<ProfileTourProps> = ({
   );
 };
 
-export { ProfileTour };
+export { HomeTour };

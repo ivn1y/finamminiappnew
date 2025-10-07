@@ -12,7 +12,7 @@ import {
 } from '@/shared/ui/icons';
 import { BadgeModal } from '@/shared/ui';
 import Image from 'next/image';
-import AppTour from '@/features/app-tour/ui/app-tour';
+import { HomeTour } from '@/features/app-tour';
 
 const TaskButton = React.forwardRef<HTMLDivElement, {
   href?: string;
@@ -287,7 +287,7 @@ export const HomePage: React.FC = () => {
   return (
     <div className="w-full bg-black flex justify-center">
       {showAppTour && highlightedButtonRect && (
-        <AppTour
+        <HomeTour
           highlightedElementRect={highlightedButtonRect}
           onComplete={completeHomeTourAndGoToProfile}
         />

@@ -10,6 +10,7 @@ interface AppStore extends Omit<AppState, 'currentTab'> {
   telegramQuestCompleted: boolean;
   showAppTour: boolean;
   showProfileTour: boolean;
+  showMapTour: boolean;
   isUserDataInputModalOpen: boolean;
   // Actions
   setUser: (user: User) => void;
@@ -21,6 +22,8 @@ interface AppStore extends Omit<AppState, 'currentTab'> {
   endAppTour: () => void;
   startProfileTour: () => void;
   endProfileTour: () => void;
+  startMapTour: () => void;
+  endMapTour: () => void;
   completeHomeTourAndGoToProfile: () => void;
   openUserDataInputModal: () => void;
   closeUserDataInputModal: () => void;
@@ -102,6 +105,7 @@ export const useAppStore = create<AppStore>()(
       telegramQuestCompleted: false,
       showAppTour: false,
       showProfileTour: false,
+      showMapTour: false,
       isUserDataInputModalOpen: false,
 
       // Actions
@@ -137,6 +141,8 @@ export const useAppStore = create<AppStore>()(
       endAppTour: () => set({ showAppTour: false }),
       startProfileTour: () => set({ showProfileTour: true }),
       endProfileTour: () => set({ showProfileTour: false }),
+      startMapTour: () => set({ showMapTour: true }),
+      endMapTour: () => set({ showMapTour: false }),
       completeHomeTourAndGoToProfile: () =>
         set({ showAppTour: false, showProfileTour: true }),
       openUserDataInputModal: () => set({ isUserDataInputModalOpen: true }),
@@ -220,6 +226,7 @@ export const useAppStore = create<AppStore>()(
         isOnboardingComplete: state.isOnboardingComplete,
         showAppTour: state.showAppTour,
         showProfileTour: state.showProfileTour,
+        showMapTour: state.showMapTour,
       })
     }
   )

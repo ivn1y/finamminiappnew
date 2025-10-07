@@ -38,7 +38,8 @@ import { TelegramCommunityCTA } from '@/shared/ui/telegram-community-cta';
 import { CuratorContacts } from '@/features/curator-contacts';
 import { User } from '@/shared/types/app';
 import Image from 'next/image';
-import ProfileTour from '@/features/app-tour/ui/profile-tour';
+import { ProfileTour } from '@/features/app-tour';
+import { useRouter } from 'next/navigation';
 
 
 const FirstQuest = () => {
@@ -137,7 +138,7 @@ const FirstQuest = () => {
 };
 
 export const ProfilePage: React.FC = () => {
-  const { user, getAllBadges, getProgressPercentage, showProfileTour, endProfileTour, openUserDataInputModal } = useAppStore();
+  const { user, getAllBadges, getProgressPercentage, showProfileTour, endProfileTour, startMapTour, openUserDataInputModal } = useAppStore();
   const { syncWithApi, isLoading: isProfileLoading } = useProfile();
   const { 
     updateProfile, 
@@ -151,6 +152,7 @@ export const ProfilePage: React.FC = () => {
   const [showAvatarCustomization, setShowAvatarCustomization] = useState(false);
   const credentialsFormRef = React.useRef<HTMLDivElement>(null);
   const [highlightedRect, setHighlightedRect] = useState<DOMRect | null>(null);
+  const router = useRouter();
 
   React.useEffect(() => {
     const updateRect = () => {
@@ -400,6 +402,8 @@ export const ProfilePage: React.FC = () => {
       updatedUser.credentials?.email
     ) {
       endProfileTour();
+      startMapTour();
+      router.push('/collab/map');
     }
   };
 
