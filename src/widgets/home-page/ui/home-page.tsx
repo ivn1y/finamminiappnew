@@ -126,11 +126,12 @@ export const HomePage: React.FC = () => {
     };
 
     if (showAppTour) {
+      // Увеличиваем задержку, чтобы компонент успел отрендериться
       const timer = setTimeout(() => {
         updateRect();
         window.addEventListener('scroll', updateRect, true);
         window.addEventListener('resize', updateRect);
-      }, 100);
+      }, 500); // Увеличиваем с 100ms до 500ms
 
       return () => {
         clearTimeout(timer);

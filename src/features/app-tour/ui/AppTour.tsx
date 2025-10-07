@@ -58,7 +58,7 @@ export const AppTour: React.FC<AppTourProps> = ({
         width: '100%',
         height: '100%',
         background: 'transparent', // The shadow creates the overlay effect
-        zIndex: 1000,
+        zIndex: 9998,
       }}
     >
       {highlightBox && (
@@ -75,7 +75,7 @@ export const AppTour: React.FC<AppTourProps> = ({
             background: '#1F1F25',
             boxShadow: '0 0 0 9999px rgba(0, 0, 0, 0.7)',
             cursor: 'pointer',
-            zIndex: 1001,
+            zIndex: 9999,
           }}
         />
       )}

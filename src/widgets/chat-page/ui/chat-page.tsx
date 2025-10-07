@@ -7,6 +7,7 @@ import { Button } from '@/shared/ui/button';
 import { Input } from '@/shared/ui/input';
 import { Avatar, AvatarFallback } from '@/shared/ui/avatar';
 import { useAppStore } from '@/shared/store/app-store';
+import { AssistantTour } from '@/features/app-tour';
 
 interface Message {
   id: string;
@@ -124,7 +125,7 @@ const FinamLogoIcon = () => (
 );
 
 export const ChatPage: React.FC = () => {
-  const { user } = useAppStore();
+  const { user, showAssistantTour, endAssistantTour } = useAppStore();
   const kb = chatKB as ChatKB;
   
   const [messages, setMessages] = useState<Message[]>([]);
@@ -306,6 +307,7 @@ export const ChatPage: React.FC = () => {
   if (!hasUserMessages) {
 		return (
 			<>
+        {showAssistantTour && <AssistantTour onComplete={endAssistantTour} />}
 				<div className='flex flex-col items-center w-full h-screen bg-black overflow-hidden'>
 					<div className='relative w-full max-w-[393px] h-[866px] mx-auto'>
 						{/* Gradient Background */}
@@ -358,6 +360,7 @@ export const ChatPage: React.FC = () => {
 
 	return (
 		<>
+			{showAssistantTour && <AssistantTour onComplete={endAssistantTour} />}
 			<div className='flex justify-center w-full h-screen bg-black overflow-hidden'>
 				<div className='relative w-full max-w-[393px] h-[866px]'>
 					{/* Messages Container */}

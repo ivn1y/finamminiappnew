@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { useAppStore } from '@/shared/store/app-store';
 import { eventData } from '@/shared/data/seed';
 import { QrCode, CheckCircle } from 'lucide-react';
@@ -11,11 +12,18 @@ import { QRScanResult } from '@/shared/types/qr';
 import { MapTour } from '@/features/app-tour';
 
 export const MapPage: React.FC = () => {
-  const { eventMode, setQRScanner, showQRScanner, showMapTour, endMapTour } = useAppStore();
+  const router = useRouter();
+  const { eventMode, setQRScanner, showQRScanner, showMapTour, completeMapTourAndGoToSchedule, showScheduleTour } = useAppStore();
   const [redeemedZones, setRedeemedZones] = useState<string[]>([]);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [lastPrize, setLastPrize] = useState('');
   const [selectedZone, setSelectedZone] = useState<any>(null);
+
+  useEffect(() => {
+    if (showScheduleTour) {
+      router.push('/collab/schedule');
+    }
+  }, [showScheduleTour, router]);
 
   if (!eventMode) {
     return (
@@ -73,7 +81,7 @@ export const MapPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 p-4 pb-24">
-       {showMapTour && <MapTour onComplete={endMapTour} />}
+       {showMapTour && <MapTour onComplete={completeMapTourAndGoToSchedule} />}
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-6 text-center">
