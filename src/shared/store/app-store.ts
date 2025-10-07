@@ -45,6 +45,7 @@ interface AppStore extends Omit<AppState, 'currentTab'> {
   getRoleContent: (role: UserRole) => any;
   getAllBadges: () => any[];
   getProgressPercentage: () => number;
+  isNewUser: () => boolean;
 }
 
 const createInitialUser = (): User => ({
@@ -106,7 +107,7 @@ export const useAppStore = create<AppStore>()(
   persist(
     (set, get) => ({
       // Initial state
-      user: createInitialUser(),
+      user: null, // Не создаем пользователя по умолчанию
       eventMode: true,
       isOnboardingComplete: false,
       showQRScanner: false,
@@ -227,6 +228,14 @@ export const useAppStore = create<AppStore>()(
       getProgressPercentage: () => {
         const { user } = get();
         return user ? (user.progressSteps / 5) * 100 : 0;
+      },
+      
+      isNewUser: () => {
+        const { user, isOnboardingComplete } = get();
+        // Пользователь считается новым, если:
+        // 1. Нет пользователя в store
+        // 2. Онбординг не завершен
+        return !user || !isOnboardingComplete;
       }
     }),
     {
