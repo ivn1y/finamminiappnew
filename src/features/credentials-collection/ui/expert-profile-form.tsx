@@ -112,14 +112,14 @@ export function ExpertProfileForm({ onBack, onNext }: ExpertProfileFormProps) {
 
         <div style={{ position: "absolute", top: "277px", width: "100%", padding: "0 16px", boxSizing: "border-box" }}>
           <div style={formElementStyle("role", "select")} onClick={() => setOpenDropdown(openDropdown === "role" ? null : "role")}>
-            <span style={{ color: expertRole ? "#FFF" : "#A4A4B2", fontSize: "16px", ...{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }}>
+            <span style={{ color: expertRole ? "#FFF" : "#A4A4B2", fontSize: "16px", fontFamily: "Inter", ...{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }}>
               {expertRole || "Кем ты хочешь быть в Collab"}
             </span>
             <SelectArrowIcon />
           </div>
 
           <div style={formElementStyle("experience", "select")} onClick={() => setOpenDropdown(openDropdown === "experience" ? null : "experience")}>
-            <span style={{ color: experience ? "#FFF" : "#A4A4B2", fontSize: "16px", ...{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }}>
+            <span style={{ color: experience ? "#FFF" : "#A4A4B2", fontSize: "16px", fontFamily: "Inter", ...{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }}>
               {experience || "Сколько лет опыта в этой области"}
             </span>
             <SelectArrowIcon />

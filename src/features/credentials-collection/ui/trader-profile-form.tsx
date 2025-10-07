@@ -38,7 +38,7 @@ const SelectArrowIcon = () => (
 
 export interface TraderProfileFormProps {
   onBack: () => void;
-  onNext: () => void;
+  onNext: (data: any) => void;
 }
 
 export function TraderProfileForm({ onBack, onNext }: TraderProfileFormProps) {
@@ -93,7 +93,19 @@ export function TraderProfileForm({ onBack, onNext }: TraderProfileFormProps) {
   };
 
   const isFormValid =
-    selectedExperience !== null && selectedMarkets.length > 0;
+    selectedExperience !== null &&
+    selectedMarkets.length > 0 &&
+    selectedRiskProfile !== null;
+
+  const handleNext = () => {
+    if (isFormValid) {
+      onNext({
+        experience: selectedExperience,
+        markets: selectedMarkets,
+        riskProfile: selectedRiskProfile,
+      });
+    }
+  };
 
   const selectBoxStyle = (name: string) => ({
     display: "flex",
@@ -208,6 +220,7 @@ export function TraderProfileForm({ onBack, onNext }: TraderProfileFormProps) {
               style={{
                 color: selectedExperience ? "#EBEBF2" : "#A4A4B2",
                 fontSize: "16px",
+                fontFamily: "Inter",
                 fontStyle: "normal",
                 fontWeight: 400,
                 lineHeight: "24px",
@@ -258,6 +271,7 @@ export function TraderProfileForm({ onBack, onNext }: TraderProfileFormProps) {
               style={{
                 color: selectedRiskProfile ? "#EBEBF2" : "#A4A4B2",
                 fontSize: "16px",
+                fontFamily: "Inter",
                 fontStyle: "normal",
                 fontWeight: 400,
                 lineHeight: "24px",
@@ -556,7 +570,7 @@ export function TraderProfileForm({ onBack, onNext }: TraderProfileFormProps) {
           }}
         >
           <button
-            onClick={onNext}
+            onClick={handleNext}
             disabled={!isFormValid}
             style={{
               display: "flex",

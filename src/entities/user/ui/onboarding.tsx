@@ -134,62 +134,67 @@ export const Onboarding: React.FC = () => {
   };
 
   const handleProfileNext = async (data?: any) => {
+    const newProfileData = { ...profileData, ...data };
+    setProfileData(newProfileData);
+
     // Валидация для трейдера
-    // if (selectedRole === 'trader') {
-    //   if (!profileData.experience) {
-    //     setErrors({...errors, experience: 'Выберите опыт торговли'});
-    //     return;
-    //   }
-    //   if (!profileData.markets || profileData.markets.length === 0) {
-    //     setErrors({...errors, markets: 'Выберите хотя бы один рынок'});
-    //     return;
-    //   }
-    // }
+    if (selectedRole === 'trader') {
+      if (!newProfileData.experience) {
+        setErrors({ ...errors, experience: 'Выберите опыт торговли' });
+        return;
+      }
+      if (!newProfileData.markets || newProfileData.markets.length === 0) {
+        setErrors({ ...errors, markets: 'Выберите хотя бы один рынок' });
+        return;
+      }
+    }
 
     if (data) {
-      setProfileData(data);
+      setProfileData(newProfileData);
+    } else {
+      setProfileData(profileData);
     }
     
     // Валидация для стартапа
-    // if (selectedRole === 'startup') {
-    //   if (!profileData.projectStage) {
-    //     setErrors({...errors, projectStage: 'Выберите стадию проекта'});
-    //     return;
-    //   }
-    //   if (!profileData.productDescription || profileData.productDescription.trim() === '') {
-    //     setErrors({...errors, productDescription: 'Опишите свой продукт в трех словах'});
-    //     return;
-    //   }
-    // }
+    if (selectedRole === 'startup') {
+      if (!newProfileData.projectStage) {
+        setErrors({ ...errors, projectStage: 'Выберите стадию проекта' });
+        return;
+      }
+      if (!newProfileData.productDescription || newProfileData.productDescription.trim() === '') {
+        setErrors({ ...errors, productDescription: 'Опишите свой продукт в трех словах' });
+        return;
+      }
+    }
     
     // Валидация для эксперта
-    // if (selectedRole === 'expert') {
-    //   if (!profileData.expertRole) {
-    //     setErrors({...errors, expertRole: 'Выберите роль в Collab'});
-    //     return;
-    //   }
-    //   if (!profileData.expertise || profileData.expertise.trim() === '') {
-    //     setErrors({...errors, expertise: 'Укажите область вашей экспертизы'});
-    //     return;
-    //   }
-    //   if (!profileData.experience) {
-    //     setErrors({...errors, experience: 'Выберите опыт работы'});
-    //     return;
-    //   }
-    // }
+    if (selectedRole === 'expert') {
+      if (!newProfileData.expertRole) {
+        setErrors({ ...errors, expertRole: 'Выберите роль в Collab' });
+        return;
+      }
+      if (!newProfileData.expertise || newProfileData.expertise.trim() === '') {
+        setErrors({ ...errors, expertise: 'Укажите область вашей экспертизы' });
+        return;
+      }
+      if (!newProfileData.experience) {
+        setErrors({ ...errors, experience: 'Выберите опыт работы' });
+        return;
+      }
+    }
     
     // Валидация для партнера
-    // if (selectedRole === 'partner') {
-    //   if (!profileData.partnerPackage) {
-    //     setErrors({...errors, partnerPackage: 'Выберите что вас интересует'});
-    //     return;
-    //   }
-    // }
+    if (selectedRole === 'partner') {
+      if (!newProfileData.partnerPackage) {
+        setErrors({ ...errors, partnerPackage: 'Выберите что вас интересует' });
+        return;
+      }
+    }
     
-      await handleFinalSubmit();
+      await handleFinalSubmit(newProfileData);
   };
 
-  const handleFinalSubmit = async () => {
+  const handleFinalSubmit = async (finalProfileData: any) => {
     if (!selectedRole) {
       console.error('No selected role');
       return;
@@ -203,7 +208,7 @@ export const Onboarding: React.FC = () => {
       id: `user_${Date.now()}`,
       createdAt: new Date().toISOString(),
       role: selectedRole,
-        profile: selectedRole === 'guest' ? {} : { [selectedRole]: profileData || {} },
+        profile: selectedRole === 'guest' ? {} : { [selectedRole]: finalProfileData || {} },
       badges: ['explorer'],
       xp: 100,
       progressSteps: 1,
