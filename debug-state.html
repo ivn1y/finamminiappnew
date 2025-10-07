@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Debug App State</title>
+</head>
+<body>
+    <h1>Debug App State</h1>
+    <div id="output"></div>
+    
+    <script>
+        // Проверяем localStorage
+        const storage = localStorage.getItem('finam-collab-storage');
+        const output = document.getElementById('output');
+        
+        if (storage) {
+            try {
+                const parsed = JSON.parse(storage);
+                output.innerHTML = '<h2>Current State:</h2><pre>' + JSON.stringify(parsed, null, 2) + '</pre>';
+            } catch (e) {
+                output.innerHTML = '<h2>Error parsing storage:</h2><p>' + e.message + '</p>';
+            }
+        } else {
+            output.innerHTML = '<h2>No storage found</h2>';
+        }
+        
+        // Кнопка для очистки storage
+        const clearBtn = document.createElement('button');
+        clearBtn.textContent = 'Clear Storage';
+        clearBtn.onclick = () => {
+            localStorage.removeItem('finam-collab-storage');
+            location.reload();
+        };
+        document.body.appendChild(clearBtn);
+        
+        // Кнопка для установки onboarding complete
+        const completeBtn = document.createElement('button');
+        completeBtn.textContent = 'Set Onboarding Complete';
+        completeBtn.onclick = () => {
+            const currentState = storage ? JSON.parse(storage) : {};
+            currentState.state = {
+                ...currentState.state,
+                isOnboardingComplete: true
+            };
+            localStorage.setItem('finam-collab-storage', JSON.stringify(currentState));
+            location.reload();
+        };
+        document.body.appendChild(completeBtn);
+    </script>
+</body>
+</html>
