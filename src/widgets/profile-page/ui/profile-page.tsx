@@ -38,6 +38,8 @@ import { TelegramCommunityCTA } from '@/shared/ui/telegram-community-cta';
 import { CuratorContacts } from '@/features/curator-contacts';
 import { User } from '@/shared/types/app';
 import Image from 'next/image';
+import ProfileTour from '@/features/app-tour/ui/profile-tour';
+
 
 const FirstQuest = () => {
   const handleTelegramClick = () => {
@@ -135,7 +137,7 @@ const FirstQuest = () => {
 };
 
 export const ProfilePage: React.FC = () => {
-  const { user, getAllBadges, getProgressPercentage } = useAppStore();
+  const { user, getAllBadges, getProgressPercentage, showProfileTour, endProfileTour, openUserDataInputModal } = useAppStore();
   const { syncWithApi, isLoading: isProfileLoading } = useProfile();
   const { 
     updateProfile, 
@@ -147,6 +149,32 @@ export const ProfilePage: React.FC = () => {
   const [showEditModal, setShowEditModal] = useState(false);
   const [showAdvancedEdit, setShowAdvancedEdit] = useState(false);
   const [showAvatarCustomization, setShowAvatarCustomization] = useState(false);
+  const credentialsFormRef = React.useRef<HTMLDivElement>(null);
+  const [highlightedRect, setHighlightedRect] = useState<DOMRect | null>(null);
+
+  React.useEffect(() => {
+    const updateRect = () => {
+      if (credentialsFormRef.current) {
+        setHighlightedRect(credentialsFormRef.current.getBoundingClientRect());
+      }
+    };
+
+    if (showProfileTour) {
+      const timer = setTimeout(() => {
+        updateRect();
+        window.addEventListener('scroll', updateRect, true);
+        window.addEventListener('resize', updateRect);
+      }, 100);
+
+      return () => {
+        clearTimeout(timer);
+        window.removeEventListener('scroll', updateRect, true);
+        window.removeEventListener('resize', updateRect);
+      };
+    } else {
+      setHighlightedRect(null);
+    }
+  }, [showProfileTour]);
 
   const handleResetData = () => {
     // Reset user data to initial state
@@ -364,6 +392,15 @@ export const ProfilePage: React.FC = () => {
       }
     };
     useAppStore.getState().setUser(updatedUser);
+
+    if (
+      showProfileTour &&
+      updatedUser.name &&
+      updatedUser.credentials?.phone &&
+      updatedUser.credentials?.email
+    ) {
+      endProfileTour();
+    }
   };
 
 
@@ -376,6 +413,12 @@ export const ProfilePage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-black flex justify-center items-start">
+      {showProfileTour && highlightedRect && (
+        <ProfileTour
+            highlightedElementRect={highlightedRect}
+            onComplete={openUserDataInputModal}
+        />
+      )}
       <div className="relative" style={{ width: '393px', height: '1335px' }}>
         {/* Avatar */}
         <div
@@ -459,6 +502,7 @@ export const ProfilePage: React.FC = () => {
 
         {/* User Credentials Section */}
         <div
+          ref={credentialsFormRef}
           style={{
             position: 'absolute',
             top: '418px',

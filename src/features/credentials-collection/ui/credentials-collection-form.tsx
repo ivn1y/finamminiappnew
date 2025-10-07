@@ -17,6 +17,20 @@ interface CredentialsCollectionFormProps {
 export const CredentialsCollectionForm: React.FC<CredentialsCollectionFormProps> = ({ user, onSave, role }) => {
   const { isUserDataInputModalOpen, openUserDataInputModal, closeUserDataInputModal } = useAppStore();
 
+  const [formData, setFormData] = useState({
+    name: user.name || '',
+    phone: user.credentials?.phone || '',
+    email: user.credentials?.email || '',
+  });
+
+  useEffect(() => {
+    setFormData({
+      name: user.name || '',
+      phone: user.credentials?.phone || '',
+      email: user.credentials?.email || '',
+    });
+  }, [user]);
+  
   const handleUserDataSave = (data: UserData) => {
     // Сохраняем через родительский компонент
     onSave({
@@ -67,7 +81,7 @@ export const CredentialsCollectionForm: React.FC<CredentialsCollectionFormProps>
             lineHeight: '24px',
             letterSpacing: '-0.128px',
             margin: '6px 0 0 0',
-          }}>{user.name || 'Введите имя...'}</p>
+          }}>{formData.name || 'Введите имя...'}</p>
         </div>
 
         {/* Phone Field */}
@@ -89,7 +103,7 @@ export const CredentialsCollectionForm: React.FC<CredentialsCollectionFormProps>
             lineHeight: '24px',
             letterSpacing: '-0.128px',
             margin: '6px 0 0 0',
-          }}>{user.credentials?.phone || 'Введите номер телефона...'}</p>
+          }}>{formData.phone || 'Введите номер телефона...'}</p>
         </div>
 
         {/* Email Field */}
@@ -111,7 +125,7 @@ export const CredentialsCollectionForm: React.FC<CredentialsCollectionFormProps>
             lineHeight: '24px',
             letterSpacing: '-0.128px',
             margin: '6px 0 0 0',
-          }}>{user.credentials?.email || 'Введите свой E-mail'}</p>
+          }}>{formData.email || 'Введите свой E-mail'}</p>
         </div>
 
         {/* Role Field */}
@@ -143,14 +157,16 @@ export const CredentialsCollectionForm: React.FC<CredentialsCollectionFormProps>
         onClose={closeUserDataInputModal}
         onSave={handleUserDataSave}
         initialData={{
-          name: user.name || '',
-          email: user.credentials?.email || '',
-          phone: user.credentials?.phone || '',
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phone,
           company: '',
           position: '',
           goals: '',
           interests: '',
         }}
+        onDataChange={(newData) => setFormData(prev => ({...prev, ...newData}))}
+        requiredFields={['name', 'email', 'phone']}
       />
     </>
   );

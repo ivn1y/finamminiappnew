@@ -9,6 +9,7 @@ import { logRoleSelected, logProfileSubmitted, logBadgeEarned, logQRScanned } fr
 interface AppStore extends Omit<AppState, 'currentTab'> {
   telegramQuestCompleted: boolean;
   showAppTour: boolean;
+  showProfileTour: boolean;
   isUserDataInputModalOpen: boolean;
   // Actions
   setUser: (user: User) => void;
@@ -18,6 +19,9 @@ interface AppStore extends Omit<AppState, 'currentTab'> {
   completeTelegramQuest: () => void;
   startAppTour: () => void;
   endAppTour: () => void;
+  startProfileTour: () => void;
+  endProfileTour: () => void;
+  completeHomeTourAndGoToProfile: () => void;
   openUserDataInputModal: () => void;
   closeUserDataInputModal: () => void;
   addBadge: (badgeId: string) => void;
@@ -97,6 +101,7 @@ export const useAppStore = create<AppStore>()(
       showQRScanner: false,
       telegramQuestCompleted: false,
       showAppTour: false,
+      showProfileTour: false,
       isUserDataInputModalOpen: false,
 
       // Actions
@@ -130,6 +135,10 @@ export const useAppStore = create<AppStore>()(
 
       startAppTour: () => set({ showAppTour: true }),
       endAppTour: () => set({ showAppTour: false }),
+      startProfileTour: () => set({ showProfileTour: true }),
+      endProfileTour: () => set({ showProfileTour: false }),
+      completeHomeTourAndGoToProfile: () =>
+        set({ showAppTour: false, showProfileTour: true }),
       openUserDataInputModal: () => set({ isUserDataInputModalOpen: true }),
       closeUserDataInputModal: () => set({ isUserDataInputModalOpen: false }),
       
@@ -209,7 +218,8 @@ export const useAppStore = create<AppStore>()(
         user: state.user,
         eventMode: state.eventMode,
         isOnboardingComplete: state.isOnboardingComplete,
-        showAppTour: state.showAppTour
+        showAppTour: state.showAppTour,
+        showProfileTour: state.showProfileTour,
       })
     }
   )

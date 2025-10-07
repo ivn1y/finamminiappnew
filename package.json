@@ -11,6 +11,7 @@
     "dev:local": "next dev --port 3000",
     "mobile": "node scripts/mobile-dev.js",
     "local": "next dev --port 3000",
+    "start-local": "./start-local.sh",
     "build": "next build",
     "build:local": "next build",
     "start": "next start --port 3000",

@@ -105,7 +105,7 @@ const Badge = ({
 );
 
 export const HomePage: React.FC = () => {
-  const { user, telegramQuestCompleted, completeTelegramQuest, showAppTour, endAppTour } = useAppStore();
+  const { user, telegramQuestCompleted, completeTelegramQuest, showAppTour, endAppTour, completeHomeTourAndGoToProfile } = useAppStore();
   const [selectedBadge, setSelectedBadge] = useState<{
     imgSrc: string;
     grayImgSrc: string;
@@ -173,7 +173,7 @@ export const HomePage: React.FC = () => {
         !!user.credentials?.phone && !!user.credentials?.email,
       href: '/collab/profile',
       ref: profileTaskRef,
-      onClick: endAppTour,
+      onClick: completeHomeTourAndGoToProfile,
     },
     {
       text: 'Выполни первый квест',
@@ -289,7 +289,7 @@ export const HomePage: React.FC = () => {
       {showAppTour && highlightedButtonRect && (
         <AppTour
           highlightedElementRect={highlightedButtonRect}
-          onComplete={endAppTour}
+          onComplete={completeHomeTourAndGoToProfile}
         />
       )}
       <div className="relative w-[393px] h-[1279px] overflow-hidden">
