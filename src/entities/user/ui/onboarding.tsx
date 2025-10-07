@@ -126,7 +126,12 @@ export const Onboarding: React.FC = () => {
 
   const handleRoleNext = () => {
     if (selectedRole) {
-      setCurrentStep(2);
+      // Для роли "Гость" сразу завершаем онбординг без показа формы профиля
+      if (selectedRole === 'guest') {
+        handleProfileNext();
+      } else {
+        setCurrentStep(2);
+      }
     } else {
       // Если роль не выбрана, показываем ошибку
       setErrors({...errors, role: 'Выберите роль'});
@@ -473,10 +478,13 @@ export const Onboarding: React.FC = () => {
     const role = roleContent.find(r => r.id === selectedRole);
     if (!role) return null;
 
-    // Рендерим форму в зависимости от выбранной роли
+    // Для роли "Гость" не показываем форму профиля
     if (selectedRole === 'guest') {
-      return renderGuestProfile();
-    } else if (selectedRole === 'trader') {
+      return null;
+    }
+
+    // Рендерим форму в зависимости от выбранной роли
+    if (selectedRole === 'trader') {
       return renderTraderProfile();
     } else if (selectedRole === 'startup') {
       return renderStartupProfile();
@@ -489,51 +497,6 @@ export const Onboarding: React.FC = () => {
     return null;
   };
 
-  const renderGuestProfile = () => (
-      <div className="min-h-screen bg-gray-50 p-6">
-        <div className="max-w-md mx-auto lg:max-w-4xl xl:max-w-6xl">
-          <div className="text-center mb-8">
-            <h1 className="text-2xl font-bold text-gray-900 mb-2">Быстрый профиль</h1>
-            <p className="text-gray-600">Расскажи о себе в нескольких словах</p>
-            </div>
-          
-          <div className="bg-white rounded-lg p-6 mb-6">
-            <div className="text-center py-8">
-              <div className="mb-6">
-                <User className="w-16 h-16 mx-auto text-blue-600 mb-4" />
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">Добро пожаловать!</h3>
-                <p className="text-gray-600">
-                  Как гость, вы можете изучать платформу Collab, знакомиться с сообществом и находить интересные проекты.
-                </p>
-              </div>
-              <div className="bg-blue-50 rounded-lg p-4">
-                <p className="text-sm text-blue-800">
-                  Вы можете в любой момент выбрать конкретную роль и заполнить профиль для получения дополнительных возможностей.
-                </p>
-              </div>
-            </div>
-          </div>
-          
-          {/* Navigation buttons */}
-          <div className="flex space-x-3">
-            <button
-              onClick={() => setCurrentStep(1)}
-              className="flex-1 bg-gray-200 text-gray-700 hover:bg-gray-300 py-3 px-6 rounded-lg font-medium transition-colors flex items-center justify-center"
-            >
-              <ChevronLeft className="w-5 h-5 mr-2" />
-              Назад
-            </button>
-            <button
-              onClick={handleProfileNext}
-              className="flex-1 bg-blue-600 text-white hover:bg-blue-700 py-3 px-6 rounded-lg font-medium transition-colors flex items-center justify-center"
-            >
-              Далее
-              <ChevronRight className="w-5 h-5 ml-2" />
-            </button>
-          </div>
-        </div>
-      </div>
-    );
 
   const renderTraderProfile = () => <TraderProfileForm onBack={() => setCurrentStep(1)} onNext={handleProfileNext} />;
 
@@ -549,6 +512,10 @@ export const Onboarding: React.FC = () => {
     case 1:
       return renderRoleSelection();
     case 2:
+      // Для роли "Гость" не показываем форму профиля
+      if (selectedRole === 'guest') {
+        return null; // Этот case не должен выполняться для гостя
+      }
       return renderProfileForm();
     default:
       return renderWelcomeScreen();
