@@ -239,7 +239,7 @@ export const Onboarding: React.FC = () => {
   };
 
   const renderWelcomeScreen = () => (
-    <div className="relative w-full min-h-screen bg-[#000] overflow-hidden flex flex-col items-center px-4 py-8 sm:px-6 md:px-8">
+    <div className="relative w-full h-full bg-[#000] flex flex-col items-center px-4 py-8 sm:px-6 md:px-8">
       {/* Эллипс на заднем фоне */}
       <div 
         className="absolute left-1 top-1/2 transform -translate-y-1/2 w-[387px] h-[268px] rounded-full sm:w-[300px] sm:h-[200px] md:w-[350px] md:h-[240px]"

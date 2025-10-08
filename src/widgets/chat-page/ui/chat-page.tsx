@@ -128,6 +128,7 @@ export const ChatPage: React.FC = () => {
   const { user, showAssistantTour, endAssistantTour } = useAppStore();
   const kb = chatKB as ChatKB;
   
+  
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputText, setInputText] = useState('');
   const [isTyping, setIsTyping] = useState(false);
@@ -221,6 +222,11 @@ export const ChatPage: React.FC = () => {
     const button = kb.quickButtons.find(b => b.id === buttonId);
     if (!button) return;
 
+    // Завершаем AssistantTour при нажатии на быструю кнопку
+    if (showAssistantTour && messages.filter(m => m.isUser).length === 0) {
+      endAssistantTour();
+    }
+
     const userMessage: Message = {
       id: Date.now().toString(),
       text: button.text,
@@ -255,6 +261,11 @@ export const ChatPage: React.FC = () => {
 
   const handleSendMessage = () => {
     if (!inputText.trim()) return;
+
+    // Завершаем AssistantTour при отправке первого сообщения
+    if (showAssistantTour && messages.filter(m => m.isUser).length === 0) {
+      endAssistantTour();
+    }
 
     const query = inputText.trim();
     const userMessage: Message = {

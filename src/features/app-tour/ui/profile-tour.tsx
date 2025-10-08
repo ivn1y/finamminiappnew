@@ -52,10 +52,26 @@ const ProfileTour: React.FC<ProfileTourProps> = ({
   return (
     <div className="fixed inset-0 z-50 pointer-events-none">
       {/* 4-part overlay */}
-      <div style={{ ...overlayStyle, top: 0, left: 0, width: '100%', height: highlightedElementRect.top }} />
-      <div style={{ ...overlayStyle, top: highlightedElementRect.bottom, left: 0, width: '100%', bottom: 0 }} />
-      <div style={{ ...overlayStyle, top: highlightedElementRect.top, left: 0, width: highlightedElementRect.left, height: highlightedElementRect.height }} />
-      <div style={{ ...overlayStyle, top: highlightedElementRect.top, left: highlightedElementRect.right, right: 0, height: highlightedElementRect.height }} />
+      <div 
+        style={{ ...overlayStyle, top: 0, left: 0, width: '100%', height: highlightedElementRect.top }} 
+        onClick={onComplete}
+        className="pointer-events-auto cursor-pointer"
+      />
+      <div 
+        style={{ ...overlayStyle, top: highlightedElementRect.bottom, left: 0, width: '100%', bottom: 0 }} 
+        onClick={onComplete}
+        className="pointer-events-auto cursor-pointer"
+      />
+      <div 
+        style={{ ...overlayStyle, top: highlightedElementRect.top, left: 0, width: highlightedElementRect.left, height: highlightedElementRect.height }} 
+        onClick={onComplete}
+        className="pointer-events-auto cursor-pointer"
+      />
+      <div 
+        style={{ ...overlayStyle, top: highlightedElementRect.top, left: highlightedElementRect.right, right: 0, height: highlightedElementRect.height }} 
+        onClick={onComplete}
+        className="pointer-events-auto cursor-pointer"
+      />
 
 
       <div
