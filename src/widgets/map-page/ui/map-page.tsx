@@ -11,6 +11,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/shared/ui/di
 import { QRScanner } from '@/features/qr-scanner';
 import { QRScanResult } from '@/shared/types/qr';
 import { MapTour } from '@/features/app-tour';
+import { SchedulePage } from '@/widgets/schedule-page';
 
 const LegendItem: React.FC<{
   gradient: string;
@@ -45,12 +46,13 @@ export const MapPage: React.FC = () => {
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [lastPrize, setLastPrize] = useState('');
   const [selectedZone, setSelectedZone] = useState<any>(null);
+  const [activeTab, setActiveTab] = useState<'map' | 'schedule'>('map');
 
   useEffect(() => {
     if (showScheduleTour) {
-      router.push('/collab/schedule');
+      setActiveTab('schedule');
     }
-  }, [showScheduleTour, router]);
+  }, [showScheduleTour]);
 
   if (!eventMode) {
     return (
@@ -94,63 +96,101 @@ export const MapPage: React.FC = () => {
   };
 
   return (
-    <div className="bg-black w-[393px] h-[903px] mx-auto relative font-sans text-white">
+    <div className="bg-black w-[393px] h-[842px] mx-auto relative font-sans text-white">
       {showMapTour && <MapTour onComplete={completeMapTourAndGoToSchedule} />}
       
-      <h1 className="absolute text-center font-inter-tight text-[30px] font-normal leading-[110%] tracking-[-0.6px]"
-          style={{ top: 100, left: 19, right: 20, width: 354 }}
+      {/* Tab Switcher */}
+      <div
+        className="absolute flex w-[353px] h-12 p-1 items-center justify-center rounded-[4px] border border-solid border-[#9799A1] bg-[#151519]"
+        style={{ top: '110px', left: '20px' }}
       >
-        Карта
-      </h1>
-      
-      <p className="absolute text-center text-[rgba(255,255,255,0.72)] font-sans text-[17px] font-normal leading-[24px] tracking-[-0.17px]"
-         style={{ top: 147, left: 38, right: 39, width: 316 }}>
-        Найди зоны и отсканируй QR-коды
-      </p>
-
-      <div className="absolute flex items-center gap-x-2 rounded-[8px] border border-solid border-[#373740] bg-[rgba(79,79,89,0.16)]"
-           style={{ top: 201, left: 20, width: 353, padding: '8px 12px 8px 16px' }}>
-        <p className="text-[#6F6F7C] font-sans text-[16px] font-normal leading-[24px] tracking-[-0.128px]">
-          Поиск по фильтрам
-        </p>
-      </div>
-      
-      <div className="absolute" style={{ top: 271, left: 20, width: 353, height: 199 }}>
-        <Image
-          src="/assets/images/event-map.png"
-          alt="Карта мероприятия"
-          width={353}
-          height={199}
-          className="object-cover"
-        />
-      </div>
-
-      <h2 className="absolute font-inter-tight text-[30px] font-normal leading-[110%] tracking-[-0.6px]"
-          style={{ top: 480, left: 40, width: 302 }}>
-        Условные обозначения
-      </h2>
-      
-      <div className="absolute flex justify-between" style={{ top: 533, left: 31, width: 334 }}>
-        <LegendItem gradient="linear-gradient(180deg, #832CE7 0%, #BE37D3 100%)" text="VIP зал" rotated />
-        <LegendItem gradient="linear-gradient(180deg, #8521D6 0%, #A230AD 30.29%, #E7514D 66.35%, #FDD23B 100%)" text="сцена" rotated />
-        <LegendItem gradient="linear-gradient(90deg, #7627AD 0%, #C44D43 100%)" text="вход" />
-        <LegendItem gradient="#2F0A49" text="стенды" />
-        <LegendItem gradient="linear-gradient(180deg, #F06141 0%, #FDD33C 100%)" text="бар" rotated />
+        <button
+          onClick={() => setActiveTab('map')}
+          className={`flex w-[177px] h-10 py-[3px] px-[10px] justify-center items-center rounded-lg transition-all text-white text-center`}
+          style={{
+            background: activeTab === 'map'
+              ? 'linear-gradient(305deg, #FEDA3B -2.67%, #EF5541 38.9%, #801FDB 77.17%, #7E2A89 98.46%)'
+              : 'transparent',
+            boxShadow: activeTab === 'map' ? '0 2px 20px 0 rgba(0, 0, 0, 0.06)' : 'none',
+            fontFamily: '"Inter Tight"',
+            fontSize: '14px',
+            fontWeight: 590,
+            lineHeight: '18px',
+            letterSpacing: '-0.08px',
+          }}
+        >
+          Карта
+        </button>
+        <button
+          onClick={() => setActiveTab('schedule')}
+          className={`flex w-[177px] h-10 py-[3px] px-[10px] justify-center items-center rounded-lg transition-all text-white text-center`}
+          style={{
+            background: activeTab === 'schedule'
+              ? 'linear-gradient(305deg, #FEDA3B -2.67%, #EF5541 38.9%, #801FDB 77.17%, #7E2A89 98.46%)'
+              : 'transparent',
+            boxShadow: activeTab === 'schedule' ? '0 2px 20px 0 rgba(0, 0, 0, 0.06)' : 'none',
+            fontFamily: '"Inter Tight"',
+            fontSize: '14px',
+            fontWeight: 590,
+            lineHeight: '18px',
+            letterSpacing: '-0.08px',
+          }}
+        >
+          Расписание
+        </button>
       </div>
 
-      <button
-        onClick={() => setQRScanner(true)}
-        className="absolute flex justify-center items-center rounded-[8px] text-center font-sans text-[17px] font-semibold leading-[24px] tracking-[-0.204px] text-white"
-        style={{ 
-          top: 707, 
-          left: 20, 
-          width: 353, 
-          padding: '16px 24px',
-          background: 'linear-gradient(305deg, #FEDA3B -2.67%, #EF5541 38.9%, #801FDB 77.17%, #7E2A89 98.46%)'
-        }}
-      >
-        Отсканировать QR-код
-      </button>
+      {activeTab === 'map' ? (
+        <>
+          <div className="absolute flex items-center gap-x-2 rounded-[8px] border border-solid border-[#373740] bg-[rgba(79,79,89,0.16)]"
+               style={{ top: 188, left: 20, width: 353, padding: '8px 12px 8px 16px' }}>
+            <p className="text-[#6F6F7C] font-sans text-[16px] font-normal leading-[24px] tracking-[-0.128px]">
+              Поиск по фильтрам
+            </p>
+          </div>
+          
+          <div className="absolute" style={{ top: 271, left: 20, width: 353, height: 199 }}>
+            <Image
+              src="/assets/images/event-map.png"
+              alt="Карта мероприятия"
+              width={353}
+              height={199}
+              className="object-cover"
+            />
+          </div>
+
+          <h2 className="absolute font-inter-tight text-[30px] font-normal leading-[110%] tracking-[-0.6px]"
+              style={{ top: 480, left: 40, width: 302 }}>
+            Условные обозначения
+          </h2>
+          
+          <div className="absolute flex justify-between" style={{ top: 533, left: 31, width: 334 }}>
+            <LegendItem gradient="linear-gradient(180deg, #832CE7 0%, #BE37D3 100%)" text="VIP зал" rotated />
+            <LegendItem gradient="linear-gradient(180deg, #8521D6 0%, #A230AD 30.29%, #E7514D 66.35%, #FDD23B 100%)" text="сцена" rotated />
+            <LegendItem gradient="linear-gradient(90deg, #7627AD 0%, #C44D43 100%)" text="вход" />
+            <LegendItem gradient="#2F0A49" text="стенды" />
+            <LegendItem gradient="linear-gradient(180deg, #F06141 0%, #FDD33C 100%)" text="бар" rotated />
+          </div>
+
+          <button
+            onClick={() => setQRScanner(true)}
+            className="absolute flex justify-center items-center rounded-[8px] text-center font-sans text-[17px] font-semibold leading-[24px] tracking-[-0.204px] text-white"
+            style={{ 
+              top: 646, 
+              left: 20, 
+              width: 353, 
+              padding: '16px 24px',
+              background: 'linear-gradient(305deg, #FEDA3B -2.67%, #EF5541 38.9%, #801FDB 77.17%, #7E2A89 98.46%)'
+            }}
+          >
+            Отсканировать QR-код
+          </button>
+        </>
+      ) : (
+        <div className="absolute" style={{ top: 158, left: 0, right: 0, bottom: 0 }}>
+          <SchedulePage />
+        </div>
+      )}
 
       {showQRScanner && (
         <QRScanner

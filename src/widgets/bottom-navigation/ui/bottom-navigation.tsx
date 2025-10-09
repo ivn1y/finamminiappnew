@@ -15,7 +15,7 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({ activeTab, i
   const tabs = [
     { id: 'home', label: 'Главная', icon: '/assets/icons/main.png?v=2', href: '/collab/home' },
     { id: 'map', label: 'Карта', icon: '/assets/icons/map.png?v=2', href: '/collab/map' },
-    { id: 'schedule', label: 'Расписание', icon: '/assets/icons/schedule.png?v=2', href: '/collab/schedule' },
+    { id: 'products', label: 'Продукты', icon: '/assets/icons/products.png?v=2', href: '/collab/products' },
     { id: 'chat', label: 'Ассистент', icon: '/assets/icons/assistant.png?v=2', href: '/collab/chat' },
     { id: 'profile', label: 'Профиль', icon: '/assets/icons/profile.png?v=2', href: '/collab/profile' }
   ];
