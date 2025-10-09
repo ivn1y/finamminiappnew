@@ -16,112 +16,63 @@ export const ScheduleFilters: React.FC<ScheduleFiltersProps> = ({
   events,
   onFilterChange
 }) => {
-  const [speakerFilter, setSpeakerFilter] = useState('');
-  const [titleFilter, setTitleFilter] = useState('');
-  const [isExpanded, setIsExpanded] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [isFocused, setIsFocused] = useState(false);
 
   const applyFilters = useCallback(() => {
-    const speakerQuery = speakerFilter.toLowerCase().trim();
-    const titleQuery = titleFilter.toLowerCase().trim();
+    const query = searchTerm.toLowerCase().trim();
 
-    if (!speakerQuery && !titleQuery) {
+    if (!query) {
       onFilterChange(null);
       return;
     }
 
-    let filteredEvents = events;
-
-    // Фильтр по спикеру
-    if (speakerQuery) {
-      filteredEvents = filteredEvents.filter(event =>
-        event.speakers.some(speaker =>
-          speaker.toLowerCase().includes(speakerQuery)
-        )
-      );
-    }
-
-    // Фильтр по названию и описанию
-    if (titleQuery) {
-      filteredEvents = filteredEvents.filter(event =>
-        event.title.toLowerCase().includes(titleQuery) ||
-        (event.description && event.description.toLowerCase().includes(titleQuery))
-      );
-    }
+    const filteredEvents = events.filter(event =>
+      event.speakers.some(speaker =>
+        speaker.toLowerCase().includes(query)
+      ) ||
+      event.title.toLowerCase().includes(query) ||
+      (event.description && event.description.toLowerCase().includes(query))
+    );
 
     onFilterChange(filteredEvents);
-  }, [events, onFilterChange, speakerFilter, titleFilter]);
+  }, [events, onFilterChange, searchTerm]);
 
-  // Автоматический поиск при изменении фильтров
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       applyFilters();
-    }, 300); // Задержка 300мс для избежания слишком частых поисков
+    }, 300);
 
     return () => clearTimeout(timeoutId);
   }, [applyFilters]);
 
-  const clearFilters = () => {
-    setSpeakerFilter('');
-    setTitleFilter('');
-  };
-
-  const hasActiveFilters = speakerFilter.trim() || titleFilter.trim();
+  const dynamicStyles = isFocused
+    ? {
+        border: '1px solid #FFE479',
+        background: 'rgba(79, 79, 89, 0.00)',
+      }
+    : {
+        border: '1px solid #373740',
+        background: 'rgba(79, 79, 89, 0.16)',
+      };
 
   return (
-    <div>
-      <button
-        onClick={() => setIsExpanded(!isExpanded)}
-        className="flex w-full items-center gap-2 rounded-lg border border-[#373740] bg-[rgba(79,79,89,0.16)] px-4 py-2"
+    <div className="relative flex w-full items-center">
+      <Input
+        type="text"
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        onFocus={() => setIsFocused(true)}
+        onBlur={() => setIsFocused(false)}
+        placeholder="Поиск по фильтрам"
+        className="w-full bg-transparent rounded-lg text-white px-4 py-2"
         style={{
-            padding: '8px 12px 8px 16px',
+          ...dynamicStyles,
+          padding: '8px 12px 8px 16px',
+          color: 'var(---input-placeholder, #6F6F7C)',
+          borderRadius: '8px',
         }}
-      >
-        <span
-          className="font-sans text-base font-normal leading-6 tracking-[-0.128px]"
-          style={{ color: 'var(---input-placeholder, #6F6F7C)' }}
-        >
-          Поиск по фильтрам
-        </span>
-      </button>
-
-      {isExpanded && (
-        <Card className="mt-2 bg-[#1E1E22] border-[#373740] text-white">
-          <CardHeader>
-            <CardTitle>Фильтры</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <div>
-                <label htmlFor="speaker-filter" className="block text-sm font-medium mb-2">
-                  Поиск по спикеру
-                </label>
-                <Input
-                  id="speaker-filter"
-                  type="text"
-                  value={speakerFilter}
-                  onChange={(e) => setSpeakerFilter(e.target.value)}
-                  placeholder="Имя спикера..."
-                  className="bg-transparent border-[#373740] text-white"
-                />
-              </div>
-
-              <div>
-                <label htmlFor="title-filter" className="block text-sm font-medium mb-2">
-                  Поиск по названию или теме
-                </label>
-                <Input
-                  id="title-filter"
-                  type="text"
-                  value={titleFilter}
-                  onChange={(e) => setTitleFilter(e.target.value)}
-                  placeholder="Тема выступления..."
-                  className="bg-transparent border-[#373740] text-white"
-                />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      )}
+      />
     </div>
   );
 };

@@ -194,39 +194,8 @@ export const SchedulePage: React.FC = () => {
       />
       
       <div className="relative z-10 p-4">
-        <h1
-          className="text-white text-center font-inter-tight"
-          style={{
-            fontSize: '30px',
-            fontWeight: 400,
-            lineHeight: '110%',
-            letterSpacing: '-0.6px',
-            marginTop: '120px',
-            marginLeft: '28.23px',
-            marginRight: '28.77px',
-          }}
-        >
-          Расписание
-        </h1>
-
-        <p
-          className="text-center"
-          style={{
-            color: 'rgba(255, 255, 255, 0.72)',
-            fontSize: '17px',
-            fontWeight: 400,
-            lineHeight: '24px',
-            letterSpacing: '-0.17px',
-            marginTop: '13px', // 153px from top - 120px - h1 height approx
-            marginLeft: '38.23px',
-            marginRight: '38.77px'
-          }}
-        >
-          Найди зону и отсканируй QR-код
-        </p>
-        
         <div style={{
-            marginTop: '67px', // 220px from top
+            marginTop: '30px',
             marginLeft: '16px',
             marginRight: '16px'
         }}>
