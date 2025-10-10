@@ -108,7 +108,7 @@ export const useAppStore = create<AppStore>()(
       // Initial state
       user: createInitialUser(),
       eventMode: true,
-      isOnboardingComplete: false,
+      isOnboardingComplete: true,
       showQRScanner: false,
       telegramQuestCompleted: false,
       showAppTour: false,
