@@ -56,11 +56,11 @@ const createInitialUser = (): User => ({
     phone: '',
     email: ''
   },
-  badges: ['explorer', 'qr_scanner_badge'],
-  xp: 300,
-  progressSteps: 2,
-  scannedZones: ['finam-a', 'startup-zone'], // Добавляем тестовые зоны для демонстрации
-  intent7d: 'Получить доступ к платформе автоследования',
+  badges: ['explorer'], // Убираем qr_scanner_badge - он должен зарабатываться
+  xp: 100, // Начальный XP
+  progressSteps: 1, // Начальный прогресс
+  scannedZones: [], // Убираем предзаполненные зоны
+  intent7d: 'Изучить возможности платформы',
   goalProgress: {
     current: 10,
     target: 100,
@@ -108,7 +108,7 @@ export const useAppStore = create<AppStore>()(
       // Initial state
       user: createInitialUser(),
       eventMode: true,
-      isOnboardingComplete: true,
+      isOnboardingComplete: false, // Новые пользователи должны проходить онбординг
       showQRScanner: false,
       telegramQuestCompleted: false,
       showAppTour: false,
@@ -157,8 +157,10 @@ export const useAppStore = create<AppStore>()(
       endScheduleTour: () => set({ showScheduleTour: false }),
       startAssistantTour: () => set({ showAssistantTour: true }),
       endAssistantTour: () => set({ showAssistantTour: false }),
-      completeHomeTourAndGoToProfile: () =>
-        set({ showAppTour: false, showProfileTour: true }),
+      completeHomeTourAndGoToProfile: () => {
+        set({ showAppTour: false, showProfileTour: true });
+        // Навигация будет обработана в компоненте
+      },
       completeMapTourAndGoToSchedule: () => set({ showMapTour: false, showScheduleTour: true }),
       completeScheduleTourAndGoToAssistant: () => set({ showScheduleTour: false, showAssistantTour: true }),
       openUserDataInputModal: () => set({ isUserDataInputModalOpen: true }),

@@ -49,8 +49,14 @@ const HomeTour: React.FC<HomeTourProps> = ({
     pointerEvents: 'auto',
   };
 
+  const handleOverlayClick = (e: React.MouseEvent) => {
+    // Блокируем клики по overlay - тур нельзя пропустить
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
   return (
-    <div className="fixed inset-0 z-50 pointer-events-none">
+    <div className="fixed inset-0 z-50 pointer-events-auto" onClick={handleOverlayClick}>
       {/* 4-part overlay */}
       <div style={{ ...overlayStyle, top: 0, left: 0, width: '100%', height: highlightedElementRect.top }} />
       <div style={{ ...overlayStyle, top: highlightedElementRect.bottom, left: 0, width: '100%', bottom: 0 }} />
@@ -59,7 +65,7 @@ const HomeTour: React.FC<HomeTourProps> = ({
 
 
       <div
-        className="absolute pointer-events-none"
+        className="absolute pointer-events-auto cursor-pointer"
         style={{
           width: highlightedElementRect.width,
           height: highlightedElementRect.height,
@@ -68,6 +74,10 @@ const HomeTour: React.FC<HomeTourProps> = ({
           borderRadius: '4px',
           border: '2px solid #2DACE7',
           zIndex: 9999,
+        }}
+        onClick={(e) => {
+          e.stopPropagation();
+          onComplete();
         }}
       />
 

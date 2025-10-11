@@ -2,6 +2,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useAppStore } from '@/shared/store/app-store';
 import { roleContent } from '@/shared/data/seed';
 import {
@@ -20,12 +21,19 @@ const TaskButton = React.forwardRef<HTMLDivElement, {
   completed: boolean;
   onClick?: () => void;
 }>(({ href, text, completed, onClick }, ref) => {
+  const handleClick = (e: React.MouseEvent) => {
+    if (onClick) {
+      e.preventDefault();
+      onClick();
+    }
+  };
+
   const content = (
     <div
       ref={ref}
       className="relative flex w-[313px] h-[44px] items-center rounded-[4px] bg-[#1F1F25] pl-[10px]"
-      onClick={onClick}
-      style={{ cursor: onClick ? 'pointer' : 'default' }}
+      onClick={handleClick}
+      style={{ cursor: (onClick || href) ? 'pointer' : 'default' }}
     >
       <div className="flex items-center gap-[14px]">
         {completed ? <CheckFilledIcon /> : <CheckUnfilledIcon />}
@@ -39,7 +47,7 @@ const TaskButton = React.forwardRef<HTMLDivElement, {
     </div>
   );
 
-  if (href) {
+  if (href && !onClick) {
     return <Link href={href}>{content}</Link>;
   }
 
@@ -106,6 +114,7 @@ const Badge = ({
 
 export const HomePage: React.FC = () => {
   const { user, telegramQuestCompleted, completeTelegramQuest, showAppTour, endAppTour, completeHomeTourAndGoToProfile } = useAppStore();
+  const router = useRouter();
   const [selectedBadge, setSelectedBadge] = useState<{
     imgSrc: string;
     grayImgSrc: string;
@@ -117,6 +126,11 @@ export const HomePage: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const profileTaskRef = useRef<HTMLDivElement>(null);
   const [highlightedButtonRect, setHighlightedButtonRect] = useState<DOMRect | null>(null);
+
+  const handleProfileTaskClick = () => {
+    completeHomeTourAndGoToProfile();
+    router.push('/collab/profile');
+  };
 
   useEffect(() => {
     const updateRect = () => {
@@ -172,9 +186,8 @@ export const HomePage: React.FC = () => {
       text: 'Заполни свой профиль',
       completed:
         !!user.credentials?.phone && !!user.credentials?.email,
-      href: '/collab/profile',
       ref: profileTaskRef,
-      onClick: completeHomeTourAndGoToProfile,
+      onClick: handleProfileTaskClick,
     },
     {
       text: 'Выполни первый квест',
@@ -290,7 +303,7 @@ export const HomePage: React.FC = () => {
       {showAppTour && highlightedButtonRect && (
         <HomeTour
           highlightedElementRect={highlightedButtonRect}
-          onComplete={completeHomeTourAndGoToProfile}
+          onComplete={handleProfileTaskClick}
         />
       )}
       <div className="relative w-[393px] h-[1279px] overflow-hidden">
