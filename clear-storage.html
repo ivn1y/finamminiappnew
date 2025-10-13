@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Очистка состояния приложения</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #000;
+            color: #fff;
+        }
+        .container {
+            text-align: center;
+        }
+        h1 {
+            color: #FEDA3B;
+            margin-bottom: 30px;
+        }
+        button {
+            background: linear-gradient(305deg, #FEDA3B -2.67%, #EF5541 38.9%, #801FDB 77.17%, #7E2A89 98.46%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin: 10px;
+            transition: opacity 0.2s;
+        }
+        button:hover {
+            opacity: 0.9;
+        }
+        .info {
+            background: #1a1a1a;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            text-align: left;
+        }
+        .status {
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 8px;
+            font-weight: 500;
+        }
+        .success {
+            background: #1a4d1a;
+            border: 1px solid #4ade80;
+        }
+        .error {
+            background: #4d1a1a;
+            border: 1px solid #f87171;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 Очистка состояния приложения</h1>
+        
+        <div class="info">
+            <h3>📱 Для тестирования онбординга:</h3>
+            <p>Если вы уже запускали приложение, то в браузере сохранилось состояние с завершенным онбордингом. Нажмите кнопку ниже, чтобы очистить все данные и начать заново.</p>
+        </div>
+
+        <button onclick="clearStorage()">🗑️ Очистить все данные</button>
+        <button onclick="goToApp()">🚀 Перейти в приложение</button>
+        
+        <div id="status"></div>
+        
+        <div class="info">
+            <h3>ℹ️ Что произойдет:</h3>
+            <ul>
+                <li>Очистится localStorage и sessionStorage</li>
+                <li>Приложение вернется к начальному состоянию</li>
+                <li>Вы увидите экраны онбординга: "Привет!", "Выбор роли", "Быстрый профиль"</li>
+                <li>После завершения онбординга запустится AppTour</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        function showStatus(message, isSuccess = true) {
+            const statusDiv = document.getElementById('status');
+            statusDiv.innerHTML = `<div class="status ${isSuccess ? 'success' : 'error'}">${message}</div>`;
+        }
+
+        function clearStorage() {
+            try {
+                // Очищаем все хранилище
+                localStorage.clear();
+                sessionStorage.clear();
+                
+                // Также очищаем конкретный ключ приложения
+                localStorage.removeItem('finam-collab-storage');
+                
+                showStatus('✅ Все данные очищены! Теперь можно переходить в приложение.', true);
+                
+                // Показываем кнопку для перехода
+                setTimeout(() => {
+                    const goBtn = document.createElement('button');
+                    goBtn.textContent = '🚀 Перейти в приложение';
+                    goBtn.onclick = goToApp;
+                    goBtn.style.marginTop = '10px';
+                    document.getElementById('status').appendChild(goBtn);
+                }, 1000);
+                
+            } catch (error) {
+                showStatus('❌ Ошибка при очистке: ' + error.message, false);
+            }
+        }
+
+        function goToApp() {
+            // Определяем URL в зависимости от окружения
+            const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+            const baseUrl = isLocalhost ? 'http://localhost:3000' : window.location.origin;
+            window.location.href = baseUrl;
+        }
+
+        // Проверяем текущее состояние
+        window.onload = function() {
+            const storage = localStorage.getItem('finam-collab-storage');
+            if (storage) {
+                try {
+                    const parsed = JSON.parse(storage);
+                    const isOnboardingComplete = parsed.state?.isOnboardingComplete;
+                    if (isOnboardingComplete) {
+                        showStatus('⚠️ Обнаружено завершенное состояние онбординга. Рекомендуется очистить данные.', false);
+                    }
+                } catch (e) {
+                    showStatus('⚠️ Обнаружены данные в localStorage. Рекомендуется очистить.', false);
+                }
+            } else {
+                showStatus('✅ localStorage пуст. Можно переходить в приложение.', true);
+            }
+        };
+    </script>
+</body>
+</html>

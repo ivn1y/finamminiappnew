@@ -49,28 +49,34 @@ const ProfileTour: React.FC<ProfileTourProps> = ({
     pointerEvents: 'auto',
   };
 
+  const handleOverlayClick = (e: React.MouseEvent) => {
+    // Блокируем клики по overlay - тур нельзя пропустить
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
   return (
     <div className="fixed inset-0 z-50 pointer-events-none">
       {/* 4-part overlay */}
       <div 
         style={{ ...overlayStyle, top: 0, left: 0, width: '100%', height: highlightedElementRect.top }} 
-        onClick={onComplete}
-        className="pointer-events-auto cursor-pointer"
+        className="pointer-events-auto"
+        onClick={handleOverlayClick}
       />
       <div 
         style={{ ...overlayStyle, top: highlightedElementRect.bottom, left: 0, width: '100%', bottom: 0 }} 
-        onClick={onComplete}
-        className="pointer-events-auto cursor-pointer"
+        className="pointer-events-auto"
+        onClick={handleOverlayClick}
       />
       <div 
         style={{ ...overlayStyle, top: highlightedElementRect.top, left: 0, width: highlightedElementRect.left, height: highlightedElementRect.height }} 
-        onClick={onComplete}
-        className="pointer-events-auto cursor-pointer"
+        className="pointer-events-auto"
+        onClick={handleOverlayClick}
       />
       <div 
         style={{ ...overlayStyle, top: highlightedElementRect.top, left: highlightedElementRect.right, right: 0, height: highlightedElementRect.height }} 
-        onClick={onComplete}
-        className="pointer-events-auto cursor-pointer"
+        className="pointer-events-auto"
+        onClick={handleOverlayClick}
       />
 
 
@@ -97,7 +103,6 @@ const ProfileTour: React.FC<ProfileTourProps> = ({
           right: '20px',
           zIndex: 10000,
         }}
-        onClick={onComplete}
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
