@@ -14,6 +14,7 @@ interface AppStore extends Omit<AppState, 'currentTab'> {
   showScheduleTour: boolean;
   showAssistantTour: boolean;
   isUserDataInputModalOpen: boolean;
+  isProductModalOpen: boolean;
   // Actions
   setUser: (user: User) => void;
   updateUser: (updates: Partial<User>) => void;
@@ -35,6 +36,8 @@ interface AppStore extends Omit<AppState, 'currentTab'> {
   completeScheduleTourAndGoToAssistant: () => void;
   openUserDataInputModal: () => void;
   closeUserDataInputModal: () => void;
+  openProductModal: () => void;
+  closeProductModal: () => void;
   addBadge: (badgeId: string) => void;
   incrementProgress: () => void;
   setQRScanner: (show: boolean) => void;
@@ -117,6 +120,7 @@ export const useAppStore = create<AppStore>()(
       showScheduleTour: false,
       showAssistantTour: false,
       isUserDataInputModalOpen: false,
+      isProductModalOpen: false,
 
       // Actions
       setUser: (user) => {
@@ -165,6 +169,8 @@ export const useAppStore = create<AppStore>()(
       completeScheduleTourAndGoToAssistant: () => set({ showScheduleTour: false, showAssistantTour: true }),
       openUserDataInputModal: () => set({ isUserDataInputModalOpen: true }),
       closeUserDataInputModal: () => set({ isUserDataInputModalOpen: false }),
+      openProductModal: () => set({ isProductModalOpen: true }),
+      closeProductModal: () => set({ isProductModalOpen: false }),
       
       addBadge: (badgeId) => set((state) => {
         if (!state.user) return state;

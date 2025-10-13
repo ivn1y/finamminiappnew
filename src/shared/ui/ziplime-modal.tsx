@@ -11,8 +11,11 @@ export const ZipLimeModal: React.FC<ZipLimeModalProps> = ({ isOpen, onClose }) =
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 overflow-y-auto">
-      <div className="bg-[#1a1a1f] rounded-[8px] w-[353px] relative mx-4 my-auto pb-[90px]">
+    <div className="fixed inset-0 bg-black bg-opacity-70 flex items-end justify-center z-50 px-4">
+      <div 
+        className="bg-[#1a1a1f] rounded-[8px] w-full max-w-[353px] relative mb-[22px] overflow-y-auto"
+        style={{ maxHeight: 'calc(100% - 140px)' }}
+      >
         {/* Close button */}
         <button
           onClick={onClose}
@@ -41,7 +44,7 @@ export const ZipLimeModal: React.FC<ZipLimeModalProps> = ({ isOpen, onClose }) =
         <div className="flex justify-center pt-[12px] pb-[7px] px-[7px]">
           <div className="w-[120px] h-[120px] relative">
             <img
-              src="/assets/products/ZipLime.png"
+              src="/assets/products/ZipLime.png?v=2"
               alt="ZipLime"
               className="w-full h-full object-cover rounded-lg"
             />
@@ -49,14 +52,14 @@ export const ZipLimeModal: React.FC<ZipLimeModalProps> = ({ isOpen, onClose }) =
         </div>
 
         {/* Title */}
-        <div className="flex justify-center mt-[29px]">
+        <div className="flex justify-center mt-[3px]">
           <h2 className="text-[28px] font-medium text-white text-center leading-[32px] tracking-[-0.504px] font-sans">
             ZipLime
           </h2>
         </div>
 
         {/* Content */}
-        <div className="px-[20px] mt-[51px] space-y-[9px]">
+        <div className="px-[20px] mt-[35px] space-y-[9px]">
           {/* Description */}
           <div className="bg-[#2f2f37] rounded-[5px] p-[12px]">
             <p className="text-[17px] font-medium text-white leading-[24px] tracking-[-0.17px] font-sans">
@@ -80,7 +83,7 @@ export const ZipLimeModal: React.FC<ZipLimeModalProps> = ({ isOpen, onClose }) =
         </div>
 
         {/* Done button */}
-        <div className="px-[20px] pt-[41px] pb-[20px]">
+        <div className="px-[20px] pt-[85px] pb-[20px]">
           <button
             onClick={onClose}
             className="w-full h-[56px] bg-[rgba(79,79,89,0.24)] rounded-[8px] flex items-center justify-center hover:bg-[rgba(79,79,89,0.4)] transition-colors"

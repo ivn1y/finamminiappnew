@@ -15,7 +15,7 @@ export default function BaseLayout({
 }) {
   const pathname = usePathname();
   const router = useRouter();
-  const { showQRScanner, hideQRScanner, isUserDataInputModalOpen, showAppTour, showProfileTour, showMapTour, showScheduleTour, showAssistantTour, isOnboardingComplete } = useAppStore();
+  const { showQRScanner, hideQRScanner, isUserDataInputModalOpen, showAppTour, showProfileTour, showMapTour, showScheduleTour, showAssistantTour, isOnboardingComplete, isProductModalOpen } = useAppStore();
 
   // Проверяем, что какой-то tour действительно показывается
   const isAnyTourActive = (showProfileTour || showMapTour || showScheduleTour || showAssistantTour) ||
@@ -24,7 +24,8 @@ export default function BaseLayout({
   // Показываем навигацию только на страницах приложения (/collab/*), 
   // но НЕ на экранах онбординга и НЕ когда открыт модальный диалог
   const showNav = pathname.startsWith('/collab') && 
-                  !isUserDataInputModalOpen;
+                  !isUserDataInputModalOpen &&
+                  !isProductModalOpen;
 
 
   // Проверка онбординга

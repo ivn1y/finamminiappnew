@@ -1,51 +1,60 @@
 #!/bin/bash
 
-# Скрипт для запуска локальных версий приложения
+# Простой и надежный скрипт для локального тестирования
 # Автор: AI Assistant
-# Дата: $(date)
 
-echo "🚀 Запуск локальных версий приложения..."
+echo "🚀 Запуск локальной версии для мобилки и компа"
+echo "=============================================="
 echo ""
 
-# Получаем IP-адрес
-IP=$(ifconfig | grep "inet " | grep -v 127.0.0.1 | head -1 | awk '{print $2}')
-
-echo "📱 Мобильная версия (для телефона):"
-echo "   http://$IP:3000"
-echo ""
-echo "💻 Локальная версия (для компьютера):"
-echo "   http://localhost:3000"
+# Получаем IP адрес
+LOCAL_IP=$(ifconfig | grep "inet " | grep -v 127.0.0.1 | head -1 | awk '{print $2}')
+echo "🌐 IP адрес: $LOCAL_IP"
 echo ""
 
-# Проверяем, свободен ли порт
-if lsof -Pi :3000 -sTCP:LISTEN -t >/dev/null ; then
-    echo "⚠️  Порт 3000 занят. Останавливаем процессы..."
-    lsof -ti:3000 | xargs kill -9
-    sleep 2
-fi
+# Очищаем порты
+echo "🧹 Очищаем порты..."
+lsof -ti:3000 | xargs kill -9 2>/dev/null || true
+lsof -ti:3001 | xargs kill -9 2>/dev/null || true
+sleep 2
 
-echo "🔄 Запускаем серверы..."
+echo "📱 Доступные адреса:"
+echo "   💻 Компьютер: http://localhost:3000"
+echo "   📱 Мобильный: http://$LOCAL_IP:3000"
+echo "   🔧 Mock API:   http://localhost:3001"
 echo ""
 
-# Запускаем мобильную версию в фоне
-echo "📱 Запуск мобильной версии..."
-npm run mobile &
-MOBILE_PID=$!
+echo "🎯 Тестовые QR коды:"
+echo "   TRADER_001  - получение бейджа"
+echo "   CONTENT_001 - разблокировка контента"
+echo ""
 
-# Ждем немного
+# Функция для обработки сигналов
+cleanup() {
+    echo ""
+    echo "🛑 Останавливаем серверы..."
+    kill $MOCK_PID 2>/dev/null || true
+    kill $NEXT_PID 2>/dev/null || true
+    exit 0
+}
+
+# Устанавливаем обработчик сигналов
+trap cleanup SIGINT SIGTERM
+
+echo "🔄 Запускаем Mock API..."
+node simple-mock-server.js &
+MOCK_PID=$!
+
+# Ждем запуска Mock API
 sleep 3
 
-echo "✅ Серверы запущены!"
-echo ""
-echo "🌐 Доступ к приложению:"
-echo "   Компьютер: http://localhost:3000"
-echo "   Телефон:   http://$IP:3000"
-echo ""
+echo "🔄 Запускаем основное приложение..."
 echo "⚠️  Для остановки нажмите Ctrl+C"
 echo ""
 
-# Ждем сигнала завершения
-trap "echo '🛑 Останавливаем серверы...'; kill $MOBILE_PID 2>/dev/null; exit" INT
+# Запускаем Next.js с правильными параметрами
+npx next dev --port 3000 --hostname 0.0.0.0 &
+NEXT_PID=$!
 
-# Ждем
-wait
+# Ждем завершения
+wait $NEXT_PID
