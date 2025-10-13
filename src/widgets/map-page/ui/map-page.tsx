@@ -174,7 +174,7 @@ export const MapPage: React.FC = () => {
 
           <button
             onClick={() => setQRScanner(true)}
-            className="absolute flex justify-center items-center rounded-[8px] text-center font-sans text-[17px] font-semibold leading-[24px] tracking-[-0.204px] text-white"
+            className="absolute flex justify-center items-center rounded-[8px] text-center font-sans text-[17px] font-semibold leading-[24px] tracking-[-0.204px] text-white z-40 mb-24"
             style={{ 
               top: 646, 
               left: 20, 
