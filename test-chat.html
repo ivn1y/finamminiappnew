@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тест чата - Finam Collab</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #000;
+            color: #fff;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .container {
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+        }
+        h1 {
+            color: #fff;
+            margin-bottom: 30px;
+        }
+        button {
+            background: #7E2A89;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 10px;
+            width: 100%;
+            max-width: 300px;
+        }
+        button:hover {
+            background: #9A3A9A;
+        }
+        .info {
+            background: #1A1A1F;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            text-align: left;
+        }
+        .role-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin: 20px 0;
+        }
+        .role-buttons .role-btn:nth-child(5) {
+            grid-column: 1 / -1;
+        }
+        .role-btn {
+            background: #59307c;
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        .role-btn:hover {
+            background: #6B3A8C;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>💬 Тест чата с аватарами</h1>
+        
+        <div class="info">
+            <h3>🎯 Выберите роль пользователя:</h3>
+            <div class="role-buttons">
+                <button class="role-btn" onclick="setUserRole('trader')">📈 Трейдер</button>
+                <button class="role-btn" onclick="setUserRole('expert')">🎓 Эксперт</button>
+                <button class="role-btn" onclick="setUserRole('startup')">🚀 Стартапер</button>
+                <button class="role-btn" onclick="setUserRole('partner')">🤝 Партнер</button>
+                <button class="role-btn" onclick="setUserRole('guest')">👤 Гость</button>
+            </div>
+        </div>
+
+        <button onclick="setupTestUser()">👤 Создать тестового пользователя</button>
+        <button onclick="goToChat()">💬 Перейти в чат</button>
+        <button onclick="resetState()">🔄 Сбросить состояние</button>
+
+        <div class="info">
+            <h3>ℹ️ Что тестируем:</h3>
+            <p>• ✅ Иконки пользователей по ролям</p>
+            <p>• ✅ Иконка бота (логотип Finam)</p>
+            <p>• ✅ Стили сообщений из Figma</p>
+            <p>• ✅ Компоновка с аватарами</p>
+        </div>
+    </div>
+
+    <script>
+        let selectedRole = 'trader';
+
+        function setUserRole(role) {
+            selectedRole = role;
+            document.querySelectorAll('.role-btn').forEach(btn => {
+                btn.style.background = '#59307c';
+            });
+            event.target.style.background = '#7E2A89';
+        }
+
+        function setupTestUser() {
+            const testUser = {
+                id: `test_user_${Date.now()}`,
+                createdAt: new Date().toISOString(),
+                role: selectedRole,
+                profile: selectedRole === 'guest' ? {} : {
+                    [selectedRole]: {
+                        // Базовые данные для каждой роли
+                        trader: { years: 3, markets: ['Акции', 'Облигации'], risk: 'medium' },
+                        expert: { domain: 'Финансы', availabilityHrs: 20, mode: 'mentor' },
+                        startup: { stage: 'MVP', pitch3: 'Инновационное решение', site: 'example.com' },
+                        partner: { type: 'business', interest: 'api' }
+                    }
+                },
+                credentials: {
+                    phone: '+7 (999) 123-45-67',
+                    email: 'test@example.com'
+                },
+                badges: ['explorer', 'researcher'],
+                xp: 250,
+                progressSteps: 3,
+                name: `Тестовый ${selectedRole}`,
+                intent7d: 'Тестирование чата',
+                scannedZones: ['zone1', 'zone2'],
+                avatar: {
+                    characterId: selectedRole,
+                    frameId: 'frame1',
+                    accessories: ['accessory1']
+                }
+            };
+
+            // Сохраняем пользователя в localStorage
+            localStorage.setItem('app-store', JSON.stringify({
+                state: {
+                    user: testUser,
+                    isOnboardingComplete: true,
+                    eventMode: true,
+                    showQRScanner: false,
+                    telegramQuestCompleted: true,
+                    showAppTour: false,
+                    showProfileTour: false,
+                    showMapTour: false,
+                    showScheduleTour: false,
+                    showAssistantTour: false,
+                    isUserDataInputModalOpen: false
+                },
+                version: 0
+            }));
+
+            alert(`✅ Тестовый пользователь "${testUser.name}" создан!`);
+        }
+
+        function goToChat() {
+            window.location.href = 'http://localhost:3000/collab/chat';
+        }
+
+        function resetState() {
+            localStorage.clear();
+            sessionStorage.clear();
+            alert('✅ Состояние приложения сброшено!');
+        }
+    </script>
+</body>
+</html>

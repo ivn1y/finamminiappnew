@@ -1,13 +1,13 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Send, Bot, User, MessageSquare, UserPlus } from 'lucide-react';
+import { Send, User, MessageSquare, UserPlus } from 'lucide-react';
 import chatKB from '@/shared/data/chat-kb.json';
 import { Button } from '@/shared/ui/button';
 import { Input } from '@/shared/ui/input';
-import { Avatar, AvatarFallback } from '@/shared/ui/avatar';
 import { useAppStore } from '@/shared/store/app-store';
 import { AssistantTour } from '@/features/app-tour';
+import Image from 'next/image';
 
 interface Message {
   id: string;
@@ -123,6 +123,53 @@ const FinamLogoIcon = () => (
 		</defs>
 	</svg>
 );
+
+const SendIcon: React.FC = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="18" viewBox="0 0 16 18" fill="none">
+    <path d="M7 17C7 17.5523 7.44772 18 8 18C8.55228 18 9 17.5523 9 17H8H7ZM8.70711 0.292893C8.31658 -0.0976311 7.68342 -0.0976311 7.29289 0.292893L0.928932 6.65685C0.538408 7.04738 0.538408 7.68054 0.928932 8.07107C1.31946 8.46159 1.95262 8.46159 2.34315 8.07107L8 2.41421L13.6569 8.07107C14.0474 8.46159 14.6805 8.46159 15.0711 8.07107C15.4616 7.68054 15.4616 7.04738 15.0711 6.65685L8.70711 0.292893ZM8 17H9L9 1H8H7L7 17H8Z" fill="white"/>
+  </svg>
+);
+
+// Компонент аватара пользователя
+const UserAvatar: React.FC<{ userRole: string }> = ({ userRole }) => {
+  const roleImageMapping: Record<string, string> = {
+    trader: '/assets/roles/trader.png',
+    startup: '/assets/roles/startaper.png',
+    partner: '/assets/roles/partner.png',
+    guest: '/assets/roles/guest.jpg',
+    expert: '/assets/roles/expert.png',
+  };
+
+  const roleImage = roleImageMapping[userRole] || '/assets/roles/guest.jpg';
+  
+  return (
+    <div className="w-8 h-8 rounded-[12px] border border-[#7b36b7] overflow-hidden">
+      <Image
+        src={roleImage}
+        alt={`${userRole} avatar`}
+        width={32}
+        height={32}
+        className="w-full h-full object-cover"
+      />
+    </div>
+  );
+};
+
+// Компонент аватара бота
+const BotAvatar: React.FC = () => {
+  return (
+    <div className="w-8 h-8 rounded-[12px] border border-[#7b36b7] overflow-hidden flex items-center justify-center">
+      <Image
+        src="/assets/logos/logo.png"
+        alt="Finam AI Assistant"
+        width={22.584}
+        height={20.8}
+        style={{ flexShrink: 0 }}
+      />
+    </div>
+  );
+};
+
 
 export const ChatPage: React.FC = () => {
   const { user, showAssistantTour, endAssistantTour } = useAppStore();
@@ -343,22 +390,26 @@ export const ChatPage: React.FC = () => {
 						</div>
 
 						{/* Input Block */}
-						<div className='absolute bottom-[104px] left-1/2 -translate-x-1/2 w-[351px]'>
-							<div className='relative'>
+						<div className='absolute bottom-[104px] left-1/2 -translate-x-1/2 w-[353px]'>
+							<div className='relative w-full h-[56px]'>
 								<Input
 									type='text'
 									value={inputText}
 									onChange={e => setInputText(e.target.value)}
 									onKeyPress={handleKeyPress}
 									placeholder={hasUserData ? 'Что такое Collab?' : 'Сначала заполните данные в профиле'}
-									className='w-full rounded-[8px] border border-[#373740] bg-[rgba(79,79,89,0.16)] p-4 text-base font-normal leading-6 tracking-[-0.128px] text-white placeholder:text-[#6F6F7C] focus-visible:ring-offset-0 focus:outline-none'
+									className='w-full h-full rounded-[8px] border border-[#373740] bg-[rgba(79,79,89,0.16)] p-4 pr-[56px] text-base font-normal leading-6 tracking-[-0.128px] text-white placeholder:text-[#6F6F7C] focus-visible:ring-offset-0 focus:outline-none focus:border-[#FFE479]'
 									readOnly={!hasUserData}
 									disabled={!hasUserData}
 								/>
-								{!hasUserData && (
-									<div className='absolute right-3 top-1/2 -translate-y-1/2'>
-										<UserPlus className='w-5 h-5 text-[#6F6F7C]' />
-									</div>
+								{inputText.trim() && hasUserData && (
+									<button
+										type="button"
+										onClick={handleSendMessage}
+										className="absolute right-[10px] top-1/2 -translate-y-1/2 w-[36px] h-[36px] flex-shrink-0 rounded-[12px] bg-[#59307C] flex items-center justify-center"
+									>
+										<SendIcon />
+									</button>
 								)}
 							</div>
 						</div>
@@ -384,24 +435,45 @@ export const ChatPage: React.FC = () => {
 										message.isUser ? 'justify-end' : 'justify-start'
 									}`}
 								>
-									<div
-										className={`max-w-[314px] ${
-											message.isUser
-												? 'rounded-[20px_20px_4px_20px] bg-[#2F2F37] p-[14px_16px_16px_16px]'
-												: 'rounded-[20px_20px_20px_4px] bg-[#151519] p-4'
-										}`}
-									>
-										<p className='text-white font-sans text-sm font-normal leading-5 tracking-[-0.056px] whitespace-pre-line'>
-											{message.text}
-										</p>
-									</div>
+									{/* Аватар для сообщений бота */}
+									{!message.isUser && (
+										<div className="flex-shrink-0 mr-3 self-end">
+											<BotAvatar />
+										</div>
+									)}
+									
+							<div
+								className={
+									message.isUser
+										? 'flex max-w-[257px] bg-[#59307c] rounded-[12px_4px_12px_12px] p-[12px_10px_10px_10px] justify-center items-center gap-2.5'
+										: 'flex max-w-[262px] items-center justify-center gap-2.5 rounded-[12px] bg-[#151519] p-[12px_10px]'
+								}
+							>
+								<p className={`text-white font-inter-tight font-normal tracking-[-0.056px] whitespace-pre-line ${
+									message.isUser 
+										? 'text-[14px] leading-[20px]' 
+										: 'text-sm leading-5'
+								}`}>
+									{message.text}
+								</p>
+							</div>
+
+									{/* Аватар для сообщений пользователя */}
+									{message.isUser && user?.role && (
+										<div className="flex-shrink-0 ml-3 self-end">
+											<UserAvatar userRole={user.role} />
+										</div>
+									)}
 								</div>
 							))}
 
 							{/* Typing indicator */}
 							{isTyping && (
 								<div className='flex justify-start'>
-									<div className='max-w-[314px] rounded-[20px_20px_20px_4px] bg-[#151519] p-4'>
+									<div className="flex-shrink-0 mr-3 self-end">
+										<BotAvatar />
+									</div>
+									<div className='max-w-[257px] rounded-[12px] bg-[#151519] p-[12px_10px]'>
 										<div className='flex space-x-1'>
 											<div className='w-2 h-2 bg-gray-400 rounded-full animate-bounce' />
 											<div
@@ -423,20 +495,24 @@ export const ChatPage: React.FC = () => {
 
 					{/* Input Block */}
 					<div className='absolute bottom-[104px] left-0 right-0 px-5'>
-						<div className='relative'>
+						<div className='relative w-full h-[56px]'>
 							<Input
 								type='text'
 								value={inputText}
 								onChange={e => setInputText(e.target.value)}
 								onKeyPress={handleKeyPress}
 								placeholder={hasUserData ? 'Что такое Collab?' : 'Сначала заполните данные в профиле'}
-								className='w-full rounded-[8px] border border-[#373740] bg-[rgba(79,79,89,0.16)] p-4 text-base font-normal leading-6 tracking-[-0.128px] text-white placeholder:text-[#6F6F7C] focus-visible:ring-offset-0 focus:outline-none'
+								className='w-full h-full rounded-[8px] border border-[#373740] bg-[rgba(79,79,89,0.16)] p-4 pr-[56px] text-base font-normal leading-6 tracking-[-0.128px] text-white placeholder:text-[#6F6F7C] focus-visible:ring-offset-0 focus:outline-none focus:border-[#FFE479]'
 								readOnly={!hasUserData}
 							/>
-							{!hasUserData && (
-								<div className='absolute right-3 top-1/2 -translate-y-1/2'>
-									<UserPlus className='w-5 h-5 text-[#6F6F7C]' />
-								</div>
+							{inputText.trim() && hasUserData && (
+								<button
+									type="button"
+									onClick={handleSendMessage}
+									className="absolute right-[10px] top-1/2 -translate-y-1/2 w-[36px] h-[36px] flex-shrink-0 rounded-[12px] bg-[#59307C] flex items-center justify-center"
+								>
+									<SendIcon />
+								</button>
 							)}
 						</div>
 					</div>
