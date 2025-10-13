@@ -1,124 +1,99 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
-    <title>Reset App State</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Сброс состояния - Finam Collab</title>
     <style>
-        body { font-family: Arial, sans-serif; padding: 20px; background: #f5f5f5; }
-        .container { max-width: 600px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; }
-        button { background: #007bff; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; margin: 5px; }
-        button:hover { background: #0056b3; }
-        .danger { background: #dc3545; }
-        .danger:hover { background: #c82333; }
-        pre { background: #f8f9fa; padding: 10px; border-radius: 4px; overflow-x: auto; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #000;
+            color: #fff;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .container {
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+        }
+        h1 {
+            color: #fff;
+            margin-bottom: 30px;
+        }
+        button {
+            background: #7E2A89;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 10px;
+            width: 100%;
+            max-width: 300px;
+        }
+        button:hover {
+            background: #9A3A9A;
+        }
+        .info {
+            background: #1A1A1F;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            text-align: left;
+        }
+        .url {
+            background: #2A2A2F;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: monospace;
+            word-break: break-all;
+            margin: 10px 0;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Reset App State</h1>
+        <h1>🔧 Сброс состояния</h1>
         
-        <div id="current-state">
-            <h3>Current State:</h3>
-            <pre id="state-display">Loading...</pre>
+        <div class="info">
+            <h3>📱 Для мобильного тестирования:</h3>
+            <p>Убедитесь, что ваш телефон подключен к той же Wi-Fi сети, что и компьютер.</p>
+            <div class="url">http://192.168.1.12:3000</div>
         </div>
-        
-        <div>
-            <button onclick="resetState()">Reset to Initial State</button>
-            <button onclick="setOnboardingComplete()" class="danger">Set Onboarding Complete</button>
-            <button onclick="clearAll()" class="danger">Clear All Storage</button>
-        </div>
-        
-        <div>
-            <h3>Quick Actions:</h3>
-            <button onclick="goToOnboarding()">Go to Onboarding</button>
-            <button onclick="goToHome()">Go to Home</button>
+
+        <button onclick="resetState()">🔄 Сбросить состояние приложения</button>
+        <button onclick="goToApp()">🚀 Перейти в приложение</button>
+        <button onclick="goToProducts()">📦 Перейти к продуктам</button>
+
+        <div class="info">
+            <h3>ℹ️ Информация:</h3>
+            <p>• Сервер запущен на порту 3000</p>
+            <p>• Все страницы работают корректно</p>
+            <p>• Навигация между разделами активна</p>
         </div>
     </div>
-    
+
     <script>
-        function getCurrentState() {
-            const storage = localStorage.getItem('finam-collab-storage');
-            if (storage) {
-                try {
-                    return JSON.parse(storage);
-                } catch (e) {
-                    return { error: 'Invalid JSON: ' + e.message };
-                }
-            }
-            return null;
-        }
-        
-        function updateDisplay() {
-            const state = getCurrentState();
-            document.getElementById('state-display').textContent = 
-                state ? JSON.stringify(state, null, 2) : 'No state found';
-        }
-        
         function resetState() {
-            const initialState = {
-                state: {
-                    user: {
-                        id: `user_${Date.now()}`,
-                        createdAt: new Date().toISOString(),
-                        role: 'trader',
-                        profile: {},
-                        credentials: { phone: '', email: '' },
-                        badges: ['explorer'],
-                        xp: 100,
-                        progressSteps: 0,
-                        scannedZones: [],
-                        intent7d: '',
-                        goalProgress: {
-                            current: 0,
-                            target: 100,
-                            daysLeft: 7,
-                            notes: [],
-                            milestones: []
-                        }
-                    },
-                    eventMode: true,
-                    isOnboardingComplete: false,
-                    showAppTour: false,
-                    showProfileTour: false,
-                    showMapTour: false,
-                    showScheduleTour: false,
-                    showAssistantTour: false
-                },
-                version: 0
-            };
-            
-            localStorage.setItem('finam-collab-storage', JSON.stringify(initialState));
-            updateDisplay();
-            alert('State reset to initial values');
+            localStorage.clear();
+            sessionStorage.clear();
+            alert('✅ Состояние приложения сброшено!');
         }
-        
-        function setOnboardingComplete() {
-            const currentState = getCurrentState();
-            if (currentState && currentState.state) {
-                currentState.state.isOnboardingComplete = true;
-                localStorage.setItem('finam-collab-storage', JSON.stringify(currentState));
-                updateDisplay();
-                alert('Onboarding marked as complete');
-            } else {
-                alert('No state found to update');
-            }
+
+        function goToApp() {
+            window.location.href = 'http://192.168.1.12:3000/collab/home';
         }
-        
-        function clearAll() {
-            localStorage.removeItem('finam-collab-storage');
-            updateDisplay();
-            alert('All storage cleared');
+
+        function goToProducts() {
+            window.location.href = 'http://192.168.1.12:3000/collab/products';
         }
-        
-        function goToOnboarding() {
-            window.location.href = '/onboarding';
-        }
-        
-        function goToHome() {
-            window.location.href = '/collab/home';
-        }
-        
-        // Update display on load
-        updateDisplay();
     </script>
 </body>
 </html>
