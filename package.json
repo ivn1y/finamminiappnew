@@ -23,6 +23,8 @@
     "test-mobile": "./test-mobile.sh",
     "test-all": "./test-all.sh",
     "diagnose-mobile": "./diagnose-mobile.sh",
+    "start-test": "./start-test.sh",
+    "start-stable": "./start-stable.sh",
     "start-local": "./start-local.sh",
     "quick-start": "./quick-start.sh",
     "auto-restart": "./auto-restart.sh",

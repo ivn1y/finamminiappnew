@@ -71,3 +71,4 @@ echo ""
 
 echo -e "${GREEN}✅ Готово к использованию!${NC}"
 echo "   Запустите: npm run start-universal"
+
