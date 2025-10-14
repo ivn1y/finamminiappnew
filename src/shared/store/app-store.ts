@@ -15,6 +15,8 @@ interface AppStore extends Omit<AppState, 'currentTab'> {
   showAssistantTour: boolean;
   isUserDataInputModalOpen: boolean;
   isProductModalOpen: boolean;
+  isScheduleModalOpen: boolean;
+  selectedScheduleEvent: any;
   // Actions
   setUser: (user: User) => void;
   updateUser: (updates: Partial<User>) => void;
@@ -38,6 +40,8 @@ interface AppStore extends Omit<AppState, 'currentTab'> {
   closeUserDataInputModal: () => void;
   openProductModal: () => void;
   closeProductModal: () => void;
+  openScheduleModal: (event: any) => void;
+  closeScheduleModal: () => void;
   addBadge: (badgeId: string) => void;
   incrementProgress: () => void;
   setQRScanner: (show: boolean) => void;
@@ -121,6 +125,8 @@ export const useAppStore = create<AppStore>()(
       showAssistantTour: false,
       isUserDataInputModalOpen: false,
       isProductModalOpen: false,
+      isScheduleModalOpen: false,
+      selectedScheduleEvent: null,
 
       // Actions
       setUser: (user) => {
@@ -171,6 +177,8 @@ export const useAppStore = create<AppStore>()(
       closeUserDataInputModal: () => set({ isUserDataInputModalOpen: false }),
       openProductModal: () => set({ isProductModalOpen: true }),
       closeProductModal: () => set({ isProductModalOpen: false }),
+      openScheduleModal: (event) => set({ isScheduleModalOpen: true, selectedScheduleEvent: event }),
+      closeScheduleModal: () => set({ isScheduleModalOpen: false, selectedScheduleEvent: null }),
       
       addBadge: (badgeId) => set((state) => {
         if (!state.user) return state;

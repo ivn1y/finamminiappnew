@@ -61,39 +61,41 @@ const calculateDuration = (time: string) => {
   return `${duration} минут`;
 };
 
-const EventDetailsDialogContent = ({ event }: { event: (typeof mockScheduleData.events)[0] }) => {
+const EventDetailsDialogContent = ({ event, onClose }: { event: (typeof mockScheduleData.events)[0], onClose: () => void }) => {
   const duration = calculateDuration(event.time);
   const [startTime, endTime] = event.time.split(' - ');
 
   return (
     <div className="w-[352px] h-[435px] bg-[#1A1A1F] rounded-[10px] p-5 flex flex-col text-white">
-      <div className="flex justify-between items-center mb-6">
+      <div className="flex justify-between items-center mb-[28px]">
         <h3 className="font-inter text-[#6F6F7C] text-[18px] font-semibold leading-6 tracking-[-0.216px]">
           {event.format}
         </h3>
-        <DialogClose asChild>
-          <button>
-            <CloseIcon />
-          </button>
-        </DialogClose>
+        <button onClick={onClose}>
+          <CloseIcon />
+        </button>
       </div>
 
       <div className="flex items-start gap-2 mb-8">
-        <DocumentIcon className="w-[15.6px] h-[19.6px] flex-shrink-0 mt-1" />
+        <div className="w-6 flex-shrink-0 flex justify-center">
+          <DocumentIcon className="w-[15.6px] h-[19.6px] mt-[3px]" />
+        </div>
         <p className="font-inter text-[18px] font-medium leading-6 tracking-[-0.216px]">
           {event.title}
         </p>
       </div>
 
       <div className="flex items-start gap-2 mb-8">
-        <ClockIcon className="w-6 h-6 flex-shrink-0" />
+        <div className="w-6 flex-shrink-0 flex justify-center">
+          <ClockIcon className="w-6 h-6" />
+        </div>
         <div className="flex-grow">
           <p className="font-inter-tight text-[16px] font-medium leading-[110%] tracking-[0.96px]">
             Вторник 12 Ноября
           </p>
           <div className="flex items-center mt-2">
             <p className="font-inter-tight text-[16px] font-medium leading-[110%] tracking-[0.96px]">{startTime}</p>
-            {endTime && <TimeArrowIcon className="mx-2 w-[15.6px] h-[11.6px]" />}
+            {endTime && <TimeArrowIcon className="ml-[79px] mr-[25px] w-[15.6px] h-[11.6px]" />}
             {endTime && <p className="font-inter-tight text-[16px] font-medium leading-[110%] tracking-[0.96px]">{endTime}</p>}
             {duration && <p className="ml-auto font-inter-tight text-[#6F6F7C] text-[11px] font-medium leading-[110%] tracking-[0.66px]">{duration}</p>}
           </div>
@@ -102,7 +104,9 @@ const EventDetailsDialogContent = ({ event }: { event: (typeof mockScheduleData.
 
       {event.speakers.length > 0 && (
         <div className="flex items-start gap-2">
-          <SpeakerIcon className="w-6 h-6 flex-shrink-0" />
+          <div className="w-6 flex-shrink-0 flex justify-center">
+            <SpeakerIcon className="w-6 h-6" />
+          </div>
           <div>
             <p className="font-inter-tight text-[16px] font-medium leading-[110%] tracking-[0.96px]">
               Спикер:
@@ -114,27 +118,38 @@ const EventDetailsDialogContent = ({ event }: { event: (typeof mockScheduleData.
         </div>
       )}
       
-      <DialogClose asChild>
-        <button className="mt-auto w-full bg-[rgba(79,79,89,0.24)] rounded-lg py-4 text-[#EBEBF2] text-center font-inter text-[17px] font-semibold leading-6 tracking-[-0.204px]">
-          Готово
-        </button>
-      </DialogClose>
+      <button onClick={onClose} className="mt-auto w-full bg-[rgba(79,79,89,0.24)] rounded-lg py-4 text-[#EBEBF2] text-center font-inter text-[17px] font-semibold leading-6 tracking-[-0.204px]">
+        Готово
+      </button>
     </div>
   );
 };
 
 
-const EventCard = ({ event }: { event: (typeof mockScheduleData.events)[0] }) => (
-  <Dialog>
-    <DialogTrigger asChild>
-      <button className="w-full text-left bg-[#151519] rounded-lg p-4 flex justify-between items-center">
-        <div className="flex flex-col">
+const EventCard = ({ event }: { event: (typeof mockScheduleData.events)[0] }) => {
+  const { openScheduleModal } = useAppStore();
+  const duration = calculateDuration(event.time);
+
+  return (
+    <>
+      <button 
+        onClick={() => openScheduleModal(event)}
+        className="w-full text-left bg-[#151519] rounded-lg p-4 flex justify-between items-center"
+      >
+        <div className="flex flex-col flex-grow mr-4">
           <span className="font-inter text-white text-base font-medium leading-6 tracking-[-0.128px]">
             {event.title}
           </span>
-          <span className="font-inter-tight text-[#FDB938] text-base font-medium leading-[110%] tracking-[0.96px] mt-2">
-            {event.time}
-          </span>
+          <div className="flex items-center mt-2">
+            <span className="font-inter-tight text-[#FDB938] text-base font-medium leading-[110%] tracking-[0.96px]">
+              {event.time}
+            </span>
+            {duration && (
+              <span className="ml-auto font-inter-tight text-sm font-medium leading-[110%] text-[#6F6F7C]">
+                {duration}
+              </span>
+            )}
+          </div>
           {event.speakers.length > 0 && (
             <span className="font-inter text-white text-base font-normal leading-6 tracking-[-0.128px] mt-1">
               Спикер: {event.speakers.join(', ')}
@@ -143,18 +158,13 @@ const EventCard = ({ event }: { event: (typeof mockScheduleData.events)[0] }) =>
         </div>
         <AccordionChevronIcon className="h-[6px] w-[13px] shrink-0 -rotate-90" />
       </button>
-    </DialogTrigger>
-    <DialogContent className="bg-transparent border-none p-0 m-0 flex items-end justify-center">
-      <div className="mb-2">
-        <EventDetailsDialogContent event={event} />
-      </div>
-    </DialogContent>
-  </Dialog>
-);
+    </>
+  );
+};
 
 
 export const SchedulePage: React.FC = () => {
-  const { showScheduleTour, completeScheduleTourAndGoToAssistant, showAssistantTour } = useAppStore();
+  const { showScheduleTour, completeScheduleTourAndGoToAssistant, showAssistantTour, isScheduleModalOpen, closeScheduleModal, selectedScheduleEvent } = useAppStore();
   const [filteredEvents, setFilteredEvents] = useState<ScheduleEvent[] | null>(null);
   const router = useRouter();
 
@@ -249,6 +259,18 @@ export const SchedulePage: React.FC = () => {
           )}
         </div>
       </div>
+      
+      {/* Schedule Modal */}
+      {isScheduleModalOpen && selectedScheduleEvent && (
+        <div className="fixed inset-0 bg-black bg-opacity-70 flex items-end justify-center z-[99999] px-4">
+          <div className="mb-[20px]">
+            <EventDetailsDialogContent 
+              event={selectedScheduleEvent} 
+              onClose={closeScheduleModal} 
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 };
