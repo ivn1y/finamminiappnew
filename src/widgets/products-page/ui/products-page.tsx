@@ -9,52 +9,68 @@ import { AIScreenerModal } from '@/shared/ui/aiscreener-modal';
 import { HypeRadarModal } from '@/shared/ui/hyperadar-modal';
 import { ManagementCompanyModal } from '@/shared/ui/management-company-modal';
 import { InternationalMarketsModal } from '@/shared/ui/international-markets-modal';
+import { useAppStore } from '@/shared/store/app-store';
+
+type ModalType = 
+  | 'traderDiary'
+  | 'zipLime'
+  | 'tradeAPI'
+  | 'aiScreener'
+  | 'hypeRadar'
+  | 'managementCompany'
+  | 'internationalMarkets'
+  | null;
 
 export const ProductsPage: React.FC = () => {
-  const [isTraderDiaryModalOpen, setIsTraderDiaryModalOpen] = useState(false);
-  const [isZipLimeModalOpen, setIsZipLimeModalOpen] = useState(false);
-  const [isTradeAPIModalOpen, setIsTradeAPIModalOpen] = useState(false);
-  const [isAIScreenerModalOpen, setIsAIScreenerModalOpen] = useState(false);
-  const [isHypeRadarModalOpen, setIsHypeRadarModalOpen] = useState(false);
-  const [isManagementCompanyModalOpen, setIsManagementCompanyModalOpen] = useState(false);
-  const [isInternationalMarketsModalOpen, setIsInternationalMarketsModalOpen] = useState(false);
+  const [activeModal, setActiveModal] = useState<ModalType>(null);
+  const { openProductModal, closeProductModal } = useAppStore();
+
+  const handleOpenModal = (modal: ModalType) => {
+    setActiveModal(modal);
+    openProductModal();
+  };
+
+  const handleCloseModal = () => {
+    setActiveModal(null);
+    closeProductModal();
+  };
 
   const products = [
     { 
       title: 'Дневник трейдера', 
-      onClick: () => setIsTraderDiaryModalOpen(true)
+      onClick: () => handleOpenModal('traderDiary')
     },
     { 
       title: 'ZipLime', 
-      onClick: () => setIsZipLimeModalOpen(true)
+      onClick: () => handleOpenModal('zipLime')
     },
     { 
       title: 'TradeAPI', 
-      onClick: () => setIsTradeAPIModalOpen(true)
+      onClick: () => handleOpenModal('tradeAPI')
     },
     { 
       title: 'AI-скринер', 
-      onClick: () => setIsAIScreenerModalOpen(true)
+      onClick: () => handleOpenModal('aiScreener')
     },
     { 
       title: 'Hype Radar', 
-      onClick: () => setIsHypeRadarModalOpen(true)
+      onClick: () => handleOpenModal('hypeRadar')
     },
     { 
       title: 'Управляющая компания', 
-      onClick: () => setIsManagementCompanyModalOpen(true)
+      onClick: () => handleOpenModal('managementCompany')
     },
     { 
       title: 'Международные рынки', 
-      onClick: () => setIsInternationalMarketsModalOpen(true)
+      onClick: () => handleOpenModal('internationalMarkets')
     },
   ];
 
   return (
-    <div className="w-full bg-black flex justify-center min-h-screen">
-      <div className="relative w-full max-w-[393px] min-h-screen px-4 sm:px-0">
+    <div className="w-full bg-black flex justify-center">
+      <div className="relative w-full max-w-[393px] h-screen">
         {/* Background gradient ellipse */}
-        <div className="absolute h-[536px] left-[calc(50%+0.5px)] top-[calc(50%+88.5px)] translate-x-[-50%] translate-y-[-50%] w-[454px]">
+        <div className="absolute h-[536px] left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[454px]">
           <div 
             className="absolute inset-[-29.85%_-35.24%]"
             style={{ 
@@ -65,73 +81,114 @@ export const ProductsPage: React.FC = () => {
           />
         </div>
 
-        {/* Header */}
-        <div className="absolute box-border content-stretch flex flex-col gap-[32px] items-center left-[16px] px-[10px] py-0 top-[120px] w-[361px] sm:left-1/2 sm:-translate-x-1/2 sm:w-[calc(100%-32px)]">
-          <div className="content-stretch flex flex-col items-center justify-center max-w-[336px] relative shrink-0 w-full">
-            <div className="flex flex-col font-inter-tight justify-center leading-[0] not-italic relative shrink-0 text-[30px] text-center text-white tracking-[-0.6px] w-full">
-              <p className="leading-[1.1] whitespace-pre-wrap">Наши продукты</p>
+        {/* Scrollable content */}
+        <div className="relative overflow-y-auto px-4" style={{ scrollBehavior: 'smooth', height: 'calc(100vh - 80px)' }}>
+          {/* Header */}
+          <div className="mt-[120px] text-center">
+            <h1 className="text-[30px] font-inter-tight text-white leading-tight tracking-[-0.6px]">
+              Наши продукты
+            </h1>
+          </div>
+
+          {/* Products container */}
+          <div className="mt-[32px] bg-[#151519] rounded-[8px] p-5">
+            <h2 className="font-inter-tight text-[24px] text-white tracking-[-0.48px] leading-tight mb-3">
+              Сервисы
+            </h2>
+            <div className="flex flex-col gap-3">
+              {products.map((product, index) => (
+                <ProductItem
+                  key={index}
+                  title={product.title}
+                  onClick={product.onClick}
+                />
+              ))}
             </div>
           </div>
-        </div>
 
-        {/* Products container */}
-        <div className="absolute bg-[#151519] box-border content-stretch flex flex-col gap-[12px] h-[510px] items-start left-1/2 pl-[20px] pr-0 py-[20px] rounded-[8px] top-[213px] translate-x-[-50%] w-[353px] sm:w-[calc(100%-32px)]">
-          <div className="flex flex-col font-inter-tight justify-center leading-[0] not-italic relative shrink-0 text-[24px] text-white tracking-[-0.48px] whitespace-nowrap">
-            <p className="leading-[1.1]">Сервисы</p>
+          {/* Finam Collab Block */}
+          <div className="mt-5 bg-[#1a1a1f] rounded-lg p-4">
+            <h2 className="font-inter-tight text-[24px] text-white tracking-[-0.48px] leading-tight mb-2">
+              Финам Collab
+            </h2>
+            <p className="font-inter text-[14px] text-white tracking-[-0.056px] leading-5 mb-2 w-[285px]">
+              Узнай про все продукты Finam Collab
+            </p>
+            <button 
+              onClick={() => window.open('https://collab.finam.ru/', '_blank')}
+              className="w-full h-12 bg-[rgba(79,79,89,0.24)] rounded-lg flex items-center justify-center hover:bg-[rgba(79,79,89,0.4)] transition-colors"
+            >
+              <span className="font-inter font-semibold text-[#ebebf2] text-[17px] text-center tracking-[-0.204px] leading-6">
+                Перейти
+              </span>
+            </button>
           </div>
-          
-          <div className="flex flex-col gap-[12px] w-full">
-            {products.map((product, index) => (
-              <ProductItem
-                key={index}
-                title={product.title}
-                onClick={product.onClick}
-              />
-            ))}
+
+          {/* Telegram Channel Block */}
+          <div className="mt-5 bg-[#1a1a1f] rounded-lg p-4">
+            <h2 className="font-inter-tight text-[24px] text-white tracking-[-0.48px] leading-tight mb-2">
+              Telegram канал
+            </h2>
+            <p className="font-inter text-[14px] text-white tracking-[-0.056px] leading-5 mb-2 w-[285px]">
+              Присоединиться к нашему Telegram коммьюнити
+            </p>
+            <button 
+              onClick={() => window.open('https://t.me/finam_invest', '_blank')}
+              className="w-full h-12 bg-[rgba(79,79,89,0.24)] rounded-lg flex items-center justify-center hover:bg-[rgba(79,79,89,0.4)] transition-colors"
+            >
+              <span className="font-inter font-semibold text-[#ebebf2] text-[17px] text-center tracking-[-0.204px] leading-6">
+                Перейти
+              </span>
+            </button>
           </div>
+
+          {/* Bottom spacer */}
+          <div className="h-[139px]" />
         </div>
       </div>
       
+      {/* --- Modals --- */}
+
       {/* Trader Diary Modal */}
       <TraderDiaryModal
-        isOpen={isTraderDiaryModalOpen}
-        onClose={() => setIsTraderDiaryModalOpen(false)}
+        isOpen={activeModal === 'traderDiary'}
+        onClose={handleCloseModal}
       />
       
       {/* ZipLime Modal */}
       <ZipLimeModal
-        isOpen={isZipLimeModalOpen}
-        onClose={() => setIsZipLimeModalOpen(false)}
+        isOpen={activeModal === 'zipLime'}
+        onClose={handleCloseModal}
       />
       
       {/* TradeAPI Modal */}
       <TradeAPIModal
-        isOpen={isTradeAPIModalOpen}
-        onClose={() => setIsTradeAPIModalOpen(false)}
+        isOpen={activeModal === 'tradeAPI'}
+        onClose={handleCloseModal}
       />
       
       {/* AI Screener Modal */}
       <AIScreenerModal
-        isOpen={isAIScreenerModalOpen}
-        onClose={() => setIsAIScreenerModalOpen(false)}
+        isOpen={activeModal === 'aiScreener'}
+        onClose={handleCloseModal}
       />
       
       {/* Hype Radar Modal */}
       <HypeRadarModal
-        isOpen={isHypeRadarModalOpen}
-        onClose={() => setIsHypeRadarModalOpen(false)}
+        isOpen={activeModal === 'hypeRadar'}
+        onClose={handleCloseModal}
       />
       
       {/* Management Company Modal */}
       <ManagementCompanyModal
-        isOpen={isManagementCompanyModalOpen}
-        onClose={() => setIsManagementCompanyModalOpen(false)}
+        isOpen={activeModal === 'managementCompany'}
+        onClose={handleCloseModal}
       />
       
       {/* International Markets Modal */}
       <InternationalMarketsModal
-        isOpen={isInternationalMarketsModalOpen}
-        onClose={() => setIsInternationalMarketsModalOpen(false)}
+        isOpen={activeModal === 'internationalMarkets'}
+        onClose={handleCloseModal}
       />
     </div>
   );
