@@ -25,9 +25,18 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({ activeTab, i
   };
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 flex justify-center pb-2">
+    <nav 
+      className="bottom-navigation fixed bottom-0 left-0 right-0 z-50 flex justify-center pb-2" 
+      style={{ 
+        position: 'fixed',
+        bottom: 0,
+        left: 0,
+        right: 0,
+        zIndex: 50
+      }}
+    >
       <div 
-        className="flex w-[353px] h-[69px] justify-around items-center rounded-[20px] bg-[#1A1A1F] py-[6px] px-3"
+        className="flex w-[353px] h-[69px] justify-center items-center flex-shrink-0 rounded-[12px] bg-[#0D0512] pt-[2px] px-[12px] pb-[10px]"
         style={{
           opacity: isBlocked ? 0.5 : 1
         }}
