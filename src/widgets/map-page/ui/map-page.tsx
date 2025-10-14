@@ -96,7 +96,8 @@ export const MapPage: React.FC = () => {
   };
 
   return (
-    <div className="bg-black w-[393px] h-[842px] mx-auto relative font-sans text-white">
+    <div className="w-full bg-black flex justify-center overflow-x-hidden">
+      <div className="bg-black w-[393px] h-[842px] relative font-sans text-white">
       {showMapTour && <MapTour onComplete={completeMapTourAndGoToSchedule} />}
       
       {/* Tab Switcher */}
@@ -222,6 +223,7 @@ export const MapPage: React.FC = () => {
           </Button>
         </DialogContent>
       </Dialog>
+      </div>
     </div>
   );
 };

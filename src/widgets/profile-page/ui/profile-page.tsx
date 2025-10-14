@@ -416,7 +416,7 @@ export const ProfilePage: React.FC = () => {
   }, [trackScreenView]);
 
   return (
-    <div className="min-h-screen bg-black flex justify-center items-start">
+    <div className="w-full bg-black flex justify-center overflow-x-hidden">
       {showProfileTour && highlightedRect && (
         <ProfileTour
             highlightedElementRect={highlightedRect}
