@@ -61,3 +61,4 @@ echo "🚀 Для запуска используйте:"
 echo "   npm run start-universal"
 echo "   или"
 echo "   ./start-universal.sh"
+

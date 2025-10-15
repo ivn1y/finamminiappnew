@@ -391,7 +391,6 @@ export const HomePage: React.FC = () => {
             <span className="text-[#EBEBF2] text-center font-inter text-[17px] font-semibold leading-[24px] tracking-[-0.204px]">
               Перейти
             </span>
-            <TelegramIcon />
           </button>
         </div>
       </div>
