@@ -26,6 +26,7 @@
     "start-local": "./start-local.sh",
     "quick-start": "./quick-start.sh",
     "auto-restart": "./auto-restart.sh",
+    "demo-universal": "./demo-universal.sh",
     "dev:secure": "npm run dev:all & ngrok http 3000",
     "build": "next build",
     "build:local": "next build",
@@ -36,7 +37,7 @@
     "check-types": "tsc --noEmit",
     "type-check": "tsc --noEmit",
     "clean": "rm -rf .next",
-    "mock-api": "node simple-mock-server.js"
+    "mock-api": "node mock-server.js"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",

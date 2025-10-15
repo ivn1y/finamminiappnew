@@ -12,16 +12,27 @@ const nextConfig = {
         protocol: "https",
         hostname: "**",
       },
+      {
+        protocol: "http",
+        hostname: "localhost",
+        port: "3001",
+        pathname: "/**",
+      },
     ],
   },
-  // Production optimizations
-  compress: true,
+  // Development optimizations
+  compress: false, // Отключаем сжатие для разработки
   poweredByHeader: false,
-  generateEtags: true,
+  generateEtags: false, // Отключаем ETags для разработки
   // Build optimizations
   swcMinify: true,
   experimental: {
     // optimizeCss: true,
+  },
+  // Development server settings
+  devIndicators: {
+    buildActivity: true,
+    buildActivityPosition: 'bottom-right',
   },
   // Mobile development settings
   async headers() {
@@ -36,6 +47,18 @@ const nextConfig = {
           {
             key: 'X-Content-Type-Options',
             value: 'nosniff',
+          },
+          {
+            key: 'Access-Control-Allow-Origin',
+            value: '*',
+          },
+          {
+            key: 'Access-Control-Allow-Methods',
+            value: 'GET, POST, PUT, DELETE, OPTIONS',
+          },
+          {
+            key: 'Access-Control-Allow-Headers',
+            value: 'Content-Type, Authorization',
           },
         ],
       },

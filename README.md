@@ -1,184 +1,207 @@
-# Nutriya - Telegram WebApp
+# 🚀 Finam Collab Mini App - Качественная локальная версия
 
-Система авторизации для Telegram WebApp с интеграцией в централизованный сервис управления пользователями (User-Gate) через NextAuth.
+## ✅ ГОТОВО К ИСПОЛЬЗОВАНИЮ
 
-## Возможности
+Локальная версия приложения полностью настроена и протестирована. Работает как на компьютере, так и на мобильном устройстве.
 
-- ✅ Автоматическое определение запуска в Telegram WebApp
-- ✅ Получение данных пользователя из Telegram WebApp API
-- ✅ Проверка подписи Telegram данных
-- ✅ Создание/обновление пользователя в User-Gate
-- ✅ Создание NextAuth сессии
-- ✅ HMAC подпись всех запросов к User-Gate API
-- ✅ Синхронизация данных пользователя
-- ✅ Получение информации о подписке
-- ✅ Отображение данных пользователя с revalidate каждые 15 секунд
-
-## Настройка
-
-### 1. Переменные окружения
-
-Создайте файл `.env.local` в корне проекта:
-
-```env
-# NextAuth
-NEXTAUTH_SECRET=your-nextauth-secret-key
-NEXTAUTH_URL=http://localhost:3000
-
-# Telegram Bot
-TELEGRAM_BOT_TOKEN=your-telegram-bot-token
-
-# User-Gate API
-USER_GATE_BASE_URL=http://localhost:8000
-USER_GATE_CLIENT_ID=your-client-id
-USER_GATE_SECRET_KEY=your-secret-key
-```
-
-### 2. Настройка Telegram Bot
-
-1. Создайте бота через @BotFather
-2. Получите токен бота
-3. Настройте WebApp в боте:
-   ```
-   /setmenubutton
-   /newapp
-   ```
-
-### 3. Настройка User-Gate
-
-1. Убедитесь, что User-Gate сервис запущен
-2. Создайте клиента в User-Gate с получением `client_id` и `secret_key`
-3. Настройте схему данных для пользователей
-
-## Архитектура
-
-### SDK для User-Gate API
-
-```typescript
-// apps/web/src/shared/lib/user-gate-sdk.ts
-export class UserGateSDK {
-  // HMAC подпись запросов
-  // Retry логика
-  // Методы для работы с пользователями и подписками
-}
-```
-
-### Telegram WebApp утилиты
-
-```typescript
-// apps/web/src/shared/lib/telegram-webapp.ts
-export function validateTelegramSignature(initData: string, botToken: string): boolean
-export function parseInitData(initData: string): TelegramWebAppInitData | null
-export function isTelegramWebApp(): boolean
-```
-
-### NextAuth конфигурация
-
-```typescript
-// apps/web/src/auth.ts
-export const { handlers, auth, signIn, signOut } = NextAuth({
-  providers: [
-    {
-      id: 'telegram',
-      // Кастомный провайдер для Telegram WebApp
-    }
-  ]
-})
-```
-
-## Поток авторизации
-
-1. Пользователь запускает WebApp в Telegram
-2. Получение `initData` от Telegram WebApp
-3. Проверка подписи Telegram данных
-4. Запрос к User-Gate для создания/обновления пользователя
-5. Создание NextAuth сессии
-6. Загрузка данных пользователя и подписки
-
-## API Endpoints
-
-### `/api/auth/[...nextauth]`
-- NextAuth роуты для авторизации
-
-### `/api/user-data`
-- GET: Получение данных пользователя (revalidate: 15s)
-- POST: Сохранение данных пользователя
-
-## Компоненты
-
-### TelegramAuthButton
-```typescript
-// apps/web/src/features/telegram-auth/ui/telegram-auth-button.tsx
-export function TelegramAuthButton() {
-  // Авторизация через Telegram WebApp
-}
-```
-
-### DashboardContent
-```typescript
-// apps/web/src/app/(base)/dashboard/dashboard-content.tsx
-export function DashboardContent() {
-  // Интерфейс по референсу дизайна
-  // Отображение данных пользователя и подписки
-}
-```
-
-## Безопасность
-
-- ✅ Проверка подписи Telegram WebApp данных
-- ✅ HMAC подпись для User-Gate API
-- ✅ Валидация временных меток запросов
-- ✅ Защита от replay-атак
-- ✅ Graceful degradation при недоступности User-Gate
-- ✅ Retry логика для API запросов
-- ✅ Логирование ошибок
-
-## Запуск
+## ⚡ Быстрый запуск
 
 ```bash
-# Установка зависимостей
-pnpm install
+# Запуск приложения
+./start-local.sh
 
-# Запуск в режиме разработки
-pnpm dev
+# Тестирование
+./test-local.sh
 
-# Сборка для продакшена
-pnpm build
-pnpm start
+# Только Mock API
+npm run mock-api
 ```
 
-## Структура проекта
+## 📱 Доступные адреса
 
+- **💻 Компьютер**: `http://localhost:3000`
+- **📱 Мобильный**: `http://192.168.1.3:3000` (IP может отличаться)
+- **🔧 Mock API**: `http://localhost:3001`
+
+## 🎯 Тестовые данные
+
+### QR коды для тестирования:
+- `TRADER_001` - получение бейджа "first_trade" (+100 XP)
+- `CONTENT_001` - разблокировка контента (+25 XP)
+
+### Тестовый пользователь:
+- **ID**: `user_123`
+- **Роль**: `trader`
+- **XP**: 150
+- **Бейджи**: `explorer`
+
+## 🔧 Основные функции
+
+### ✅ Реализованные возможности:
+- **Аутентификация через Telegram** - полная интеграция
+- **Выбор роли пользователя** - trader, expert, partner, startup
+- **Система бейджей и XP** - геймификация
+- **QR сканер** - получение наград и разблокировка контента
+- **Профиль пользователя** - настройка и просмотр
+- **Карта событий** - интерактивная карта конференции
+- **Продукты и услуги** - каталог продуктов Finam
+- **Чат с ассистентом** - AI-помощник
+- **Расписание** - программа конференции
+- **Аналитика** - отслеживание активности
+
+### 🔧 API эндпоинты:
+- `GET /api/users` - список пользователей
+- `GET /api/users/:id` - данные пользователя
+- `POST /api/createUser` - создание пользователя
+- `PUT /api/updateUser/:id` - обновление пользователя
+- `POST /api/redeemQR` - использование QR кода
+- `POST /api/logEvent` - логирование событий
+- `GET /api/events/:userId` - события пользователя
+- `GET /api/getContent` - получение контента
+- `GET /api/health` - проверка здоровья API
+
+## 🛠️ Команды
+
+### Основные команды:
+```bash
+./start-local.sh        # Запуск приложения
+./test-local.sh         # Тестирование
+npm run mock-api         # Только Mock API
 ```
-apps/web/src/
-├── app/
-│   ├── api/
-│   │   ├── auth/[...nextauth]/route.ts
-│   │   └── user-data/route.ts
-│   ├── (base)/
-│   │   ├── auth/
-│   │   │   └── auth-form.tsx
-│   │   └── dashboard/
-│   │       ├── page.tsx
-│   │       └── dashboard-content.tsx
-│   └── providers/
-│       └── index.tsx
-├── features/
-│   └── telegram-auth/
-│       └── ui/
-│           └── telegram-auth-button.tsx
-├── shared/
-│   ├── lib/
-│   │   ├── telegram-webapp.ts
-│   │   ├── telegram-provider.ts
-│   │   └── user-gate-sdk.ts
-│   └── ui/
-└── auth.ts
+
+### Альтернативные команды:
+```bash
+npm run start-local      # Альтернативный запуск
+npm run dev:local        # Только для компьютера
+npm run dev:mobile       # Только для мобильного
+npm run dev:all          # Полный запуск
 ```
 
-## Тестирование
+### Утилиты:
+```bash
+npm run clean            # Очистка кэша
+npm run lint             # Проверка кода
+npm run type-check       # Проверка типов
+npm run build            # Сборка для продакшена
+```
 
-1. Откройте приложение в Telegram WebApp
-2. Проверьте авторизацию через Telegram
-3. Убедитесь, что данные синхронизируются с User-Gate
-4. Проверьте отображение подписки и данных пользователя
+## 📱 Мобильное тестирование
+
+### Требования:
+1. **Wi-Fi сеть**: Мобильное устройство должно быть подключено к той же Wi-Fi сети, что и компьютер
+2. **Браузер**: Любой современный браузер (Chrome, Safari, Firefox)
+3. **IP адрес**: Убедитесь, что IP адрес в адресной строке соответствует вашему компьютеру
+
+### Проверка IP адреса:
+```bash
+ifconfig | grep "inet " | grep -v 127.0.0.1
+```
+
+### Если мобильное устройство не подключается:
+1. Проверьте, что устройства в одной сети
+2. Убедитесь, что брандмауэр не блокирует порт 3000
+3. Попробуйте отключить VPN на мобильном устройстве
+4. Проверьте, что IP адрес правильный
+
+## 🔍 Отладка
+
+### Проверка статуса серверов:
+```bash
+lsof -i :3000  # Основное приложение
+lsof -i :3001  # Mock API
+```
+
+### Остановка серверов:
+```bash
+killall node
+```
+
+### Очистка кэша:
+```bash
+npm run clean
+rm -rf .next
+rm -rf node_modules
+npm install
+```
+
+### Проверка логов:
+```bash
+# Логи Mock API
+tail -f mock-api.log
+
+# Логи Next.js
+tail -f .next/server.log
+```
+
+## ⚠️ Важные замечания
+
+1. **Порты**: Убедитесь, что порты 3000 и 3001 свободны
+2. **Node.js**: Требуется версия 18.0.0 или выше
+3. **Зависимости**: Все зависимости установлены автоматически
+4. **Остановка**: Используйте `Ctrl+C` для корректной остановки
+5. **Кэш**: При проблемах очистите кэш командой `npm run clean`
+
+## 🆘 Решение проблем
+
+### Если порт занят:
+```bash
+# Найти процесс
+lsof -i :3000
+
+# Остановить процесс
+kill -9 [PID]
+```
+
+### Если страница не загружается:
+1. Проверьте статус серверов: `lsof -i :3000`
+2. Откройте `http://localhost:3000` на компьютере
+3. Проверьте консоль браузера на ошибки
+4. Проверьте логи сервера
+
+### Если мобильное устройство не подключается:
+1. Проверьте IP адрес: `ifconfig`
+2. Убедитесь, что устройства в одной сети
+3. Попробуйте другой браузер на мобильном
+4. Проверьте настройки брандмауэра
+
+### Если API не работает:
+1. Проверьте Mock API: `curl http://localhost:3001/api/health`
+2. Проверьте логи Mock API
+3. Перезапустите Mock API: `npm run mock-api`
+
+## 📚 Архитектура
+
+### Структура проекта:
+```
+src/
+├── app/                 # Next.js App Router
+├── entities/            # Бизнес-сущности
+├── features/            # Функциональности
+├── shared/             # Общие компоненты
+└── widgets/             # Виджеты
+```
+
+### Технологии:
+- **Next.js 14** - React фреймворк
+- **TypeScript** - типизация
+- **Tailwind CSS** - стилизация
+- **Radix UI** - компоненты
+- **Zustand** - состояние
+- **React Query** - кэширование
+- **Next Auth** - аутентификация
+
+## 📞 Поддержка
+
+При возникновении проблем:
+1. Запустите диагностику: `./test-local.sh`
+2. Проверьте версию Node.js: `node --version`
+3. Переустановите зависимости: `npm install`
+4. Очистите кэш: `npm run clean`
+
+## 🎉 Готово к использованию!
+
+Локальная версия полностью настроена и протестирована. Все функции работают корректно как на компьютере, так и на мобильном устройстве.
+
+---
+
+*Создано для качественной локальной разработки и тестирования*

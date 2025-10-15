@@ -299,14 +299,14 @@ export const HomePage: React.FC = () => {
   ];
 
   return (
-    <div className="w-full bg-black flex justify-center">
+    <div className="w-full bg-black flex justify-center overflow-x-hidden">
       {showAppTour && highlightedButtonRect && (
         <HomeTour
           highlightedElementRect={highlightedButtonRect}
           onComplete={handleProfileTaskClick}
         />
       )}
-      <div className="relative w-[393px] h-[1279px] overflow-hidden">
+      <div className="relative w-[393px] h-[1279px]">
         <div
           className="absolute top-[75px] left-1/2 -translate-x-1/2 w-[390px] h-[281px] rounded-[390px] opacity-50 blur-[80px]"
           style={{

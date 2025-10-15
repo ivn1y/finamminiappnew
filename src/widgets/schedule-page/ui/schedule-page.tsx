@@ -181,38 +181,34 @@ export const SchedulePage: React.FC = () => {
   const isFiltering = filteredEvents !== null;
 
   return (
-    <div
-      className="relative mx-auto font-sans pb-24"
-      style={{ width: '393px', minHeight: '913px', background: '#000' }}
-    >
+    <div className="w-full bg-black flex justify-center overflow-x-hidden">
+      <div
+        className="relative font-sans pb-24"
+        style={{ width: '393px', minHeight: '913px', background: '#000' }}
+      >
       {showScheduleTour && <ScheduleTour onComplete={completeScheduleTourAndGoToAssistant} />}
       {/* Background Gradient */}
       <div
-        className="absolute"
+        className="absolute overflow-hidden"
         style={{
-          width: '454px',
+          width: '393px',
           height: '536px',
           borderRadius: '536px',
           background: 'var(--gradients-bg-01-end, #7E2A89)',
           filter: 'blur(80px)',
           opacity: '0.25',
           top: '277px',
-          left: '50%',
-          transform: 'translateX(-50%)',
+          left: '0',
           zIndex: 0,
         }}
       />
       
-      <div className="relative z-10 p-4">
-        <div style={{
-            marginTop: '30px',
-            marginLeft: '16px',
-            marginRight: '16px'
-        }}>
+      <div className="relative z-10 px-4">
+        <div className="mt-8">
             <ScheduleFilters events={mockScheduleData.events} onFilterChange={handleFilterChange} />
         </div>
 
-        <div className="mt-8 px-4">
+        <div className="mt-8">
           {isFiltering ? (
             <>
               {filteredEvents.length > 0 ? (
@@ -271,6 +267,7 @@ export const SchedulePage: React.FC = () => {
           </div>
         </div>
       )}
+      </div>
     </div>
   );
 };

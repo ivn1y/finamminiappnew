@@ -67,10 +67,10 @@ export const ProductsPage: React.FC = () => {
   ];
 
   return (
-    <div className="w-full bg-black flex justify-center">
-      <div className="relative w-full max-w-[393px] h-screen">
+    <div className="w-full bg-black flex justify-center overflow-x-hidden">
+      <div className="relative w-[393px] h-screen">
         {/* Background gradient ellipse */}
-        <div className="absolute h-[536px] left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[454px]">
+        <div className="absolute h-[536px] left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[393px] overflow-hidden">
           <div 
             className="absolute inset-[-29.85%_-35.24%]"
             style={{ 

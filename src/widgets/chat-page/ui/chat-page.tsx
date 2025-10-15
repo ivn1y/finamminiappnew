@@ -366,7 +366,8 @@ export const ChatPage: React.FC = () => {
 		return (
 			<>
         {showAssistantTour && <AssistantTour onComplete={endAssistantTour} />}
-				<div className='bg-black w-[393px] h-[866px] mx-auto relative font-sans text-white'>
+				<div className='w-full bg-black flex justify-center overflow-x-hidden'>
+					<div className='bg-black w-[393px] h-[866px] relative font-sans text-white'>
 						{/* Gradient Background */}
 						<div
 							className='absolute top-[324px] left-1/2 -translate-x-1/2 w-[284px] h-[205px] rounded-full opacity-50 blur-[120px]'
@@ -413,6 +414,7 @@ export const ChatPage: React.FC = () => {
 							</div>
 						</div>
 					</div>
+				</div>
 
 			</>
 		);
@@ -421,7 +423,8 @@ export const ChatPage: React.FC = () => {
 	return (
 		<>
 			{showAssistantTour && <AssistantTour onComplete={endAssistantTour} />}
-			<div className='bg-black w-[393px] h-[866px] mx-auto relative font-sans text-white'>
+			<div className='w-full bg-black flex justify-center overflow-x-hidden'>
+				<div className='bg-black w-[393px] h-[866px] relative font-sans text-white overflow-x-hidden'>
 					{/* Messages Container */}
 					<div className='absolute top-0 left-0 right-0 bottom-[180px] overflow-y-auto'>
 						<div className='px-5 pt-[222px] pb-4 space-y-5'>
@@ -513,6 +516,7 @@ export const ChatPage: React.FC = () => {
 							)}
 						</div>
 					</div>
+				</div>
 			</div>
 
 		</>

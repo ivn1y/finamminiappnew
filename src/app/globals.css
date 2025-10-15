@@ -22,6 +22,9 @@
   body {
     @apply bg-background text-foreground;
   }
+  html {
+    /* Prevent horizontal scrolling but allow vertical scrolling */
+  }
 }
 
 /* App-specific styles */
