@@ -101,7 +101,7 @@ export const MapPage: React.FC = () => {
       
       {/* Tab Switcher */}
       <div
-        className="absolute flex w-[353px] h-12 p-1 items-center justify-center rounded-[4px] border border-solid border-[#9799A1] bg-[#151519]"
+        className="absolute flex w-[353px] h-12 p-1 items-center justify-center rounded-[4px] bg-[#151519]"
         style={{ top: '110px', left: '20px' }}
       >
         <button

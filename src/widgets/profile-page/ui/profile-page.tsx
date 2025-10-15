@@ -271,9 +271,9 @@ export const ProfilePage: React.FC = () => {
 
   const roleImageMapping: Record<string, string> = {
     trader: '/assets/roles/trader.png',
-    startup: '/assets/roles/startaper.png',
+    startup: '/assets/roles/startaper.jpg',
     partner: '/assets/roles/partner.png',
-    guest: '/assets/roles/guest.jpg',
+    guest: '/assets/roles/guest.png',
     expert: '/assets/roles/expert.png',
   };
 

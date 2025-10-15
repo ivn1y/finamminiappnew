@@ -61,7 +61,7 @@ export const roleContent: RoleContent[] = [
     id: 'startup',
     title: 'Стартап',
     subtitle: 'Изобретатель будущего',
-    image: '/assets/roles/startaper.png',
+    image: '/assets/roles/startaper.jpg',
     description: 'Боец первой линии, который идёт в лоб на рынок с верой в свой продукт. Его каждый удар мечом открывает путь для команды и инвесторов.',
     goals7d: [
       'Найти пилота с Финам',
@@ -184,7 +184,7 @@ export const roleContent: RoleContent[] = [
     id: 'guest',
     title: 'Гость',
     subtitle: 'Исследователь возможностей',
-    image: '/assets/roles/guest.jpg',
+    image: '/assets/roles/guest.png',
     description: 'Это тень среди людей, незаметный наблюдатель, который видит больше, чем кажется. Он слушает молча, выбирает момент и уходит так же тихо.',
     goals7d: [
       'Изучить платформу Collab',
