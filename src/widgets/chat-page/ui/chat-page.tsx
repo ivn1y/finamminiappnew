@@ -384,7 +384,7 @@ export const ChatPage: React.FC = () => {
 								Привет, я AI - Ассиcтент
 								<span className='block'>Finam</span>
 							</h1>
-							<p className='mt-[14px] w-[336px] text-[rgba(255,255,255,0.72)] font-sans text-[17px] font-normal leading-[24px] tracking-[-0.17px] text-center'>
+							<p className='mt-[14px] w-[336px] text-[rgba(255,255,255,0.72)] font-inter text-[17px] font-normal leading-[24px] tracking-[-0.17px] text-center'>
 								Чему могу помочь?
 							</p>
 						</div>
@@ -398,7 +398,7 @@ export const ChatPage: React.FC = () => {
 									onChange={e => setInputText(e.target.value)}
 									onKeyPress={handleKeyPress}
 									placeholder={hasUserData ? 'Что такое Collab?' : 'Сначала заполните данные в профиле'}
-									className='w-full h-full rounded-[8px] border border-[#373740] bg-[rgba(79,79,89,0.16)] p-4 pr-[56px] text-base font-normal leading-6 tracking-[-0.128px] text-white placeholder:text-[#6F6F7C] focus-visible:ring-offset-0 focus:outline-none focus:border-[#FFE479]'
+									className='w-full h-full rounded-[8px] border border-[#373740] bg-[rgba(79,79,89,0.16)] p-4 pr-[56px] text-base font-normal leading-6 tracking-[-0.128px] text-white placeholder:text-[#6F6F7C] focus-visible:ring-offset-0 focus:outline-none focus:border-[#FFE479] font-inter'
 									readOnly={!hasUserData}
 									disabled={!hasUserData}
 								/>
@@ -449,7 +449,7 @@ export const ChatPage: React.FC = () => {
 										: 'flex max-w-[262px] items-center justify-center gap-2.5 rounded-[12px] bg-[#151519] p-[12px_10px]'
 								}
 							>
-								<p className={`text-white font-inter-tight font-normal tracking-[-0.056px] whitespace-pre-line ${
+								<p className={`text-white font-inter font-normal tracking-[-0.056px] whitespace-pre-line ${
 									message.isUser 
 										? 'text-[14px] leading-[20px]' 
 										: 'text-sm leading-5'
@@ -502,7 +502,7 @@ export const ChatPage: React.FC = () => {
 								onChange={e => setInputText(e.target.value)}
 								onKeyPress={handleKeyPress}
 								placeholder={hasUserData ? 'Что такое Collab?' : 'Сначала заполните данные в профиле'}
-								className='w-full h-full rounded-[8px] border border-[#373740] bg-[rgba(79,79,89,0.16)] p-4 pr-[56px] text-base font-normal leading-6 tracking-[-0.128px] text-white placeholder:text-[#6F6F7C] focus-visible:ring-offset-0 focus:outline-none focus:border-[#FFE479]'
+								className='w-full h-full rounded-[8px] border border-[#373740] bg-[rgba(79,79,89,0.16)] p-4 pr-[56px] text-base font-normal leading-6 tracking-[-0.128px] text-white placeholder:text-[#6F6F7C] focus-visible:ring-offset-0 focus:outline-none focus:border-[#FFE479] font-inter'
 								readOnly={!hasUserData}
 							/>
 							{inputText.trim() && hasUserData && (

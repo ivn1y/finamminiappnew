@@ -107,34 +107,24 @@ export const MapPage: React.FC = () => {
       >
         <button
           onClick={() => setActiveTab('map')}
-          className={`flex w-[177px] h-10 py-[3px] px-[10px] justify-center items-center rounded-lg transition-all text-white text-center`}
+          className={`flex w-[177px] h-10 py-[3px] px-[10px] justify-center items-center rounded-lg transition-all text-white text-center font-inter text-[14px] font-medium leading-[18px] tracking-[-0.08px]`}
           style={{
             background: activeTab === 'map'
               ? 'linear-gradient(305deg, #FEDA3B -2.67%, #EF5541 38.9%, #801FDB 77.17%, #7E2A89 98.46%)'
               : 'transparent',
             boxShadow: activeTab === 'map' ? '0 2px 20px 0 rgba(0, 0, 0, 0.06)' : 'none',
-            fontFamily: '"Inter Tight"',
-            fontSize: '14px',
-            fontWeight: 590,
-            lineHeight: '18px',
-            letterSpacing: '-0.08px',
           }}
         >
           Карта
         </button>
         <button
           onClick={() => setActiveTab('schedule')}
-          className={`flex w-[177px] h-10 py-[3px] px-[10px] justify-center items-center rounded-lg transition-all text-white text-center`}
+          className={`flex w-[177px] h-10 py-[3px] px-[10px] justify-center items-center rounded-lg transition-all text-white text-center font-inter text-[14px] font-medium leading-[18px] tracking-[-0.08px]`}
           style={{
             background: activeTab === 'schedule'
               ? 'linear-gradient(305deg, #FEDA3B -2.67%, #EF5541 38.9%, #801FDB 77.17%, #7E2A89 98.46%)'
               : 'transparent',
             boxShadow: activeTab === 'schedule' ? '0 2px 20px 0 rgba(0, 0, 0, 0.06)' : 'none',
-            fontFamily: '"Inter Tight"',
-            fontSize: '14px',
-            fontWeight: 590,
-            lineHeight: '18px',
-            letterSpacing: '-0.08px',
           }}
         >
           Расписание
@@ -145,7 +135,7 @@ export const MapPage: React.FC = () => {
         <>
           <div className="absolute flex items-center gap-x-2 rounded-[8px] border border-solid border-[#373740] bg-[rgba(79,79,89,0.16)]"
                style={{ top: 188, left: 20, width: 353, padding: '8px 12px 8px 16px' }}>
-            <p className="text-[#6F6F7C] font-sans text-[16px] font-normal leading-[24px] tracking-[-0.128px]">
+            <p className="text-[#6F6F7C] font-inter text-[16px] font-normal leading-[24px] tracking-[-0.128px]">
               Поиск по фильтрам
             </p>
           </div>
@@ -175,7 +165,7 @@ export const MapPage: React.FC = () => {
 
           <button
             onClick={() => setQRScanner(true)}
-            className="absolute flex justify-center items-center rounded-[8px] text-center font-sans text-[17px] font-semibold leading-[24px] tracking-[-0.204px] text-white z-40 mb-24"
+            className="absolute flex justify-center items-center rounded-[8px] text-center font-inter text-[17px] font-semibold leading-[24px] tracking-[-0.204px] text-white z-40 mb-24"
             style={{ 
               top: 646, 
               left: 20, 

@@ -132,7 +132,7 @@ export const QRScanner: React.FC<QRScannerProps> = ({ onSuccess, onClose }) => {
             {`Наведите камеру\nна QR-код\nили введи код ниже`}
           </h1>
 
-          <p className="absolute text-center text-[rgba(255,255,255,0.72)] font-sans text-[17px] font-normal leading-[24px] tracking-[-0.17px]"
+          <p className="absolute text-center text-[rgba(255,255,255,0.72)] font-inter text-[17px] font-normal leading-[24px] tracking-[-0.17px]"
              style={{ top: 153, left: 28, width: 336 }}>
             QR-код должен быть в рамке
           </p>
@@ -167,7 +167,7 @@ export const QRScanner: React.FC<QRScannerProps> = ({ onSuccess, onClose }) => {
               value={inputValue}
               onChange={handleInputChange}
               placeholder="Введите код"
-              className="w-full bg-transparent text-white placeholder:text-[#6F6F7C] font-sans text-[16px] leading-[24px] tracking-[-0.128px] focus:outline-none"
+              className="w-full bg-transparent text-white placeholder:text-[#6F6F7C] font-inter text-[16px] leading-[24px] tracking-[-0.128px] focus:outline-none"
             />
             <Button
               onClick={() => handleSuccess(`FINAM:${inputValue}`)}
