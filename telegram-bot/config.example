@@ -1,0 +1,5 @@
+# Пример конфигурации для Telegram бота
+# Скопируйте этот файл в .env и заполните реальными значениями
+
+TELEGRAM_BOT_TOKEN=your_bot_token_from_botfather
+MINI_APP_URL=https://your-mini-app-url.com
