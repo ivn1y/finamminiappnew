@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { Checkbox } from '@/shared/ui/checkbox';
 import styles from './user-data-input-modal.module.css';
 import { useAppStore } from '@/shared/store/app-store';
+import { validateUserForm, validateEmail, validatePhone, validateName } from '@/shared/lib/validation';
 
 interface UserDataInputModalProps {
   isOpen: boolean;
@@ -48,6 +49,7 @@ export const UserDataInputModal: React.FC<UserDataInputModalProps> = ({
 
   const [agreedToPolicy, setAgreedToPolicy] = useState(false);
   const [errors, setErrors] = useState<Partial<Record<keyof UserData | 'policy', string>>>({});
+  const [phoneCountry, setPhoneCountry] = useState<string>('');
 
   useEffect(() => {
     if (initialData) {
@@ -69,30 +71,56 @@ export const UserDataInputModal: React.FC<UserDataInputModalProps> = ({
     if (onDataChange) {
       onDataChange({ [field]: value });
     }
+    
+    // Очищаем ошибку при изменении поля
     if (errors[field]) {
       setErrors((prev) => ({ ...prev, [field]: undefined }));
+    }
+
+    // Валидация в реальном времени для лучшего UX
+    validateField(field, value);
+  };
+
+  const validateField = (field: keyof UserData, value: string) => {
+    let validationResult: { isValid: boolean; error?: string; formatted?: string; country?: string } = { isValid: true };
+
+    switch (field) {
+      case 'name':
+        validationResult = validateName(value);
+        break;
+      case 'email':
+        validationResult = validateEmail(value);
+        break;
+      case 'phone':
+        validationResult = validatePhone(value);
+        // Автоматически форматируем номер при вводе
+        if (validationResult.isValid && validationResult.formatted) {
+          setFormData(prev => ({ ...prev, phone: validationResult.formatted! }));
+          setPhoneCountry(validationResult.country || '');
+        } else {
+          setPhoneCountry('');
+        }
+        break;
+    }
+
+    if (!validationResult.isValid && value.trim() !== '') {
+      setErrors((prev) => ({ ...prev, [field]: validationResult.error }));
     }
   };
 
   const validateForm = (): boolean => {
-    const newErrors: Partial<Record<keyof UserData | 'policy', string>> = {};
-
-    requiredFields.forEach((field) => {
-      if (!formData[field as keyof UserData]?.trim()) {
-        newErrors[field as keyof UserData] = 'Это обязательное поле';
-      }
-    });
-
-    if (formData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = 'Введите корректный email';
-    }
+    const validationResult = validateUserForm(formData, requiredFields);
+    
+    const newErrors: Partial<Record<keyof UserData | 'policy', string>> = {
+      ...validationResult.errors
+    };
 
     if (!agreedToPolicy) {
       newErrors.policy = 'Необходимо согласиться с политикой обработки персональных данных';
     }
 
     setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+    return validationResult.isValid && agreedToPolicy;
   };
 
   const handleSave = () => {
@@ -120,7 +148,7 @@ export const UserDataInputModal: React.FC<UserDataInputModalProps> = ({
               value={formData.name}
               onChange={(e) => handleInputChange('name', e.target.value)}
               placeholder="Имя, Фамилия*"
-              className={styles.input}
+              className={`${styles.input} ${errors.name ? styles.error : ''}`}
             />
             {errors.name && <p style={{ color: 'red', fontSize: '12px', marginTop: '4px' }}>{errors.name}</p>}
           </div>
@@ -131,9 +159,15 @@ export const UserDataInputModal: React.FC<UserDataInputModalProps> = ({
               type="tel"
               value={formData.phone}
               onChange={(e) => handleInputChange('phone', e.target.value)}
-              placeholder="Телефон"
-              className={styles.input}
+              placeholder="+7 912 345-67-89 или +971 50 123-45-67"
+              className={`${styles.input} ${errors.phone ? styles.error : ''}`}
             />
+            {errors.phone && <p style={{ color: 'red', fontSize: '12px', marginTop: '4px' }}>{errors.phone}</p>}
+            {phoneCountry && !errors.phone && (
+              <p style={{ color: '#6F6F7C', fontSize: '12px', marginTop: '4px' }}>
+                Страна: {phoneCountry}
+              </p>
+            )}
           </div>
 
           <div className={`${styles.inputGroup} ${styles.emailInput}`}>
@@ -143,7 +177,7 @@ export const UserDataInputModal: React.FC<UserDataInputModalProps> = ({
               value={formData.email}
               onChange={(e) => handleInputChange('email', e.target.value)}
               placeholder="E-mail*"
-              className={styles.input}
+              className={`${styles.input} ${errors.email ? styles.error : ''}`}
             />
             {errors.email && <p style={{ color: 'red', fontSize: '12px', marginTop: '4px' }}>{errors.email}</p>}
           </div>
