@@ -133,7 +133,7 @@ export const ProductsPage: React.FC = () => {
               Присоединиться к нашему Telegram коммьюнити
             </p>
             <button 
-              onClick={() => window.open('https://t.me/finam_invest', '_blank')}
+              onClick={() => window.open('https://t.me/finam_collab', '_blank')}
               className="w-full h-12 bg-[rgba(79,79,89,0.24)] rounded-lg flex items-center justify-center hover:bg-[rgba(79,79,89,0.4)] transition-colors"
             >
               <span className="font-inter font-semibold text-[#ebebf2] text-[17px] text-center tracking-[-0.204px] leading-6">

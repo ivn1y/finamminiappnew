@@ -44,7 +44,7 @@ import { useRouter } from 'next/navigation';
 
 const FirstQuest = () => {
   const handleTelegramClick = () => {
-    window.open('https://t.me/finam_invest', '_blank');
+    window.open('https://t.me/finam_collab', '_blank');
   };
 
   return (
