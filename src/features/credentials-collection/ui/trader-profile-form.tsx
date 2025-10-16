@@ -162,26 +162,20 @@ export function TraderProfileForm({ onBack, onNext }: TraderProfileFormProps) {
         />
 
         <div
+          className="text-white text-center font-inter-tight text-[30px] font-normal leading-[110%] tracking-[-0.6px]"
           style={{
             position: "absolute",
             top: "171px",
             left: "50%",
             transform: "translateX(-50%)",
             width: "361px",
-            color: "#FFF",
-            textAlign: "center",
-            fontFamily: '"Inter Tight", sans-serif',
-            fontSize: "30px",
-            fontStyle: "normal",
-            fontWeight: 400,
-            lineHeight: "110%",
-            letterSpacing: "-0.6px",
           }}
         >
           Быстрый профиль
         </div>
 
         <div
+          className="text-center font-inter text-[17px] font-normal leading-[24px] tracking-[-0.17px]"
           style={{
             position: "absolute",
             top: "204px",
@@ -189,12 +183,6 @@ export function TraderProfileForm({ onBack, onNext }: TraderProfileFormProps) {
             transform: "translateX(-50%)",
             width: "361px",
             color: "rgba(255, 255, 255, 0.72)",
-            textAlign: "center",
-            fontSize: "17px",
-            fontStyle: "normal",
-            fontWeight: 400,
-            lineHeight: "24px",
-            letterSpacing: "-0.17px",
           }}
         >
           Расскажи о себе в нескольких словах
@@ -217,14 +205,9 @@ export function TraderProfileForm({ onBack, onNext }: TraderProfileFormProps) {
             }
           >
             <span
+              className="font-inter text-[16px] font-normal leading-[24px] tracking-[-0.128px]"
               style={{
                 color: selectedExperience ? "#EBEBF2" : "#A4A4B2",
-                fontSize: "16px",
-                fontFamily: "Inter",
-                fontStyle: "normal",
-                fontWeight: 400,
-                lineHeight: "24px",
-                letterSpacing: "-0.128px",
               }}
             >
               {selectedExperience || "Сколько лет в трейдинге"}
@@ -239,17 +222,9 @@ export function TraderProfileForm({ onBack, onNext }: TraderProfileFormProps) {
             }
           >
             <span
+              className="font-inter text-[16px] font-normal leading-[24px] tracking-[-0.128px] whitespace-nowrap overflow-hidden text-ellipsis"
               style={{
                 color: selectedMarkets.length > 0 ? "#FFF" : "#A4A4B2",
-                fontSize: "16px",
-                fontFamily: "Inter",
-                fontStyle: "normal",
-                fontWeight: 400,
-                lineHeight: "24px",
-                letterSpacing: "-0.128px",
-                whiteSpace: "nowrap",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
               }}
             >
               {selectedMarkets.length > 0
@@ -268,14 +243,9 @@ export function TraderProfileForm({ onBack, onNext }: TraderProfileFormProps) {
             }
           >
             <span
+              className="font-inter text-[16px] font-normal leading-[24px] tracking-[-0.128px]"
               style={{
                 color: selectedRiskProfile ? "#EBEBF2" : "#A4A4B2",
-                fontSize: "16px",
-                fontFamily: "Inter",
-                fontStyle: "normal",
-                fontWeight: 400,
-                lineHeight: "24px",
-                letterSpacing: "-0.128px",
               }}
             >
               {selectedRiskProfile || "Твой риск профиль"}
@@ -347,16 +317,7 @@ export function TraderProfileForm({ onBack, onNext }: TraderProfileFormProps) {
                   )}
                 </span>
                 <span
-                  style={{
-                    flex: "1 0 0",
-                    color: "#EBEBF2",
-                    fontFamily: "Inter",
-                    fontSize: "14px",
-                    fontStyle: "normal",
-                    fontWeight: 400,
-                    lineHeight: "20px",
-                    letterSpacing: "-0.056px",
-                  }}
+                  className="flex-1 text-[#EBEBF2] font-inter text-[14px] font-normal leading-[20px] tracking-[-0.056px]"
                 >
                   {option}
                 </span>
@@ -437,16 +398,7 @@ export function TraderProfileForm({ onBack, onNext }: TraderProfileFormProps) {
                   )}
                 </span>
                 <span
-                  style={{
-                    flex: "1 0 0",
-                    color: "#EBEBF2",
-                    fontFamily: "Inter",
-                    fontSize: "14px",
-                    fontStyle: "normal",
-                    fontWeight: 400,
-                    lineHeight: "20px",
-                    letterSpacing: "-0.056px",
-                  }}
+                  className="flex-1 text-[#EBEBF2] font-inter text-[14px] font-normal leading-[20px] tracking-[-0.056px]"
                 >
                   {option}
                 </span>
@@ -517,16 +469,7 @@ export function TraderProfileForm({ onBack, onNext }: TraderProfileFormProps) {
                   )}
                 </span>
                 <span
-                  style={{
-                    flex: "1 0 0",
-                    color: "#EBEBF2",
-                    fontFamily: "Inter",
-                    fontSize: "14px",
-                    fontStyle: "normal",
-                    fontWeight: 400,
-                    lineHeight: "20px",
-                    letterSpacing: "-0.056px",
-                  }}
+                  className="flex-1 text-[#EBEBF2] font-inter text-[14px] font-normal leading-[20px] tracking-[-0.056px]"
                 >
                   {option}
                 </span>

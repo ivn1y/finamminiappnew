@@ -144,11 +144,6 @@ const EventCard = ({ event }: { event: (typeof mockScheduleData.events)[0] }) =>
             <span className="font-inter-tight text-[#FDB938] text-base font-medium leading-[110%] tracking-[0.96px]">
               {event.time}
             </span>
-            {duration && (
-              <span className="ml-auto font-inter-tight text-sm font-medium leading-[110%] text-[#6F6F7C]">
-                {duration}
-              </span>
-            )}
           </div>
           {event.speakers.length > 0 && (
             <span className="font-inter text-white text-base font-normal leading-6 tracking-[-0.128px] mt-1">
@@ -231,7 +226,7 @@ export const SchedulePage: React.FC = () => {
                 >
                   <AccordionTrigger className="h-[80px] p-4">
                     <div className="flex flex-col items-start text-left">
-                      <span className="text-white font-normal font-inter-tight text-[20px] leading-6 tracking-[-0.28px]">
+                      <span className="text-white font-normal font-inter text-[20px] leading-6 tracking-[-0.28px]">
                         {item.block}
                       </span>
                       <span

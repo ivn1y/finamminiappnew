@@ -84,20 +84,11 @@ export const BadgeModal = ({
 
         {/* Badge title */}
         <h2
-          className="absolute"
+          className="absolute font-inter-tight text-[28px] font-medium leading-[32px] tracking-[-0.504px] text-white text-center whitespace-nowrap"
           style={{
             top: '126px',
             left: '92px',
             right: '91px',
-            color: '#FFF',
-            textAlign: 'center',
-            fontFamily: 'Inter',
-            fontSize: '28px',
-            fontStyle: 'normal',
-            fontWeight: '500',
-            lineHeight: '32px',
-            letterSpacing: '-0.504px',
-            whiteSpace: 'nowrap'
           }}
         >
           {badge.title}
@@ -105,19 +96,11 @@ export const BadgeModal = ({
 
         {/* Badge description */}
         <p
-          className="absolute"
+          className="absolute font-inter text-[17px] font-normal leading-[24px] tracking-[-0.17px] text-[#6F6F7C] text-center"
           style={{
             top: '170px',
             left: '19px',
             right: '18px',
-            color: '#6F6F7C',
-            textAlign: 'center',
-            fontFamily: 'Inter',
-            fontSize: '17px',
-            fontStyle: 'normal',
-            fontWeight: '400',
-            lineHeight: '24px',
-            letterSpacing: '-0.17px'
           }}
         >
           {badge.description || 'Описание бейджа'}
@@ -139,15 +122,8 @@ export const BadgeModal = ({
           }}
         >
           <p
+            className="font-inter text-[17px] font-medium leading-[24px] tracking-[-0.17px] text-white text-center"
             style={{
-              color: '#FFF',
-              textAlign: 'center',
-              fontFamily: 'Inter',
-              fontSize: '17px',
-              fontStyle: 'normal',
-              fontWeight: '500',
-              lineHeight: '24px',
-              letterSpacing: '-0.17px',
               padding: '10px 0',
               margin: 0
             }}
@@ -174,18 +150,7 @@ export const BadgeModal = ({
             cursor: 'pointer'
           }}
         >
-          <span
-            style={{
-              color: '#EBEBF2',
-              textAlign: 'center',
-              fontFamily: 'Inter',
-              fontSize: '17px',
-              fontStyle: 'normal',
-              fontWeight: '600',
-              lineHeight: '24px',
-              letterSpacing: '-0.204px'
-            }}
-          >
+          <span className="font-inter text-[17px] font-semibold leading-[24px] tracking-[-0.204px] text-[#EBEBF2] text-center">
             Готово
           </span>
         </button>

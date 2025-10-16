@@ -105,11 +105,11 @@ export function StartupProfileForm({ onBack, onNext }: StartupProfileFormProps) 
       <div style={{ width: "393px", height: "852px", backgroundColor: "#000", position: "relative", overflow: "hidden" }}>
         <div style={{ position: "absolute", top: "104px", left: "50%", transform: "translateX(-50%)", width: "284px", height: "205px", borderRadius: "284px", opacity: 0.5, background: "#59307C", filter: "blur(80px)", flexShrink: 0 }} />
 
-        <div style={{ position: "absolute", top: "171px", left: "50%", transform: "translateX(-50%)", width: "361px", color: "#FFF", textAlign: "center", fontFamily: '"Inter Tight", sans-serif', fontSize: "30px", fontStyle: "normal", fontWeight: 400, lineHeight: "110%", letterSpacing: "-0.6px" }}>
+        <div className="text-white text-center font-inter-tight text-[30px] font-normal leading-[110%] tracking-[-0.6px]" style={{ position: "absolute", top: "171px", left: "50%", transform: "translateX(-50%)", width: "361px" }}>
           Быстрый профиль
         </div>
 
-        <div style={{ position: "absolute", top: "204px", left: "50%", transform: "translateX(-50%)", width: "361px", color: "rgba(255, 255, 255, 0.72)", textAlign: "center", fontSize: "17px", fontStyle: "normal", fontWeight: 400, lineHeight: "24px", letterSpacing: "-0.17px" }}>
+        <div className="text-center font-inter text-[17px] font-normal leading-[24px] tracking-[-0.17px]" style={{ position: "absolute", top: "204px", left: "50%", transform: "translateX(-50%)", width: "361px", color: "rgba(255, 255, 255, 0.72)" }}>
           Расскажи о себе в нескольких словах
         </div>
 
@@ -139,14 +139,14 @@ export function StartupProfileForm({ onBack, onNext }: StartupProfileFormProps) 
           </div>
 
           <div style={formElementStyle("stage", "select")} onClick={() => setOpenDropdown(openDropdown === "stage" ? null : "stage")}>
-            <span style={{ color: projectStage ? "#FFF" : "#A4A4B2", fontSize: "16px", fontFamily: "Inter", ...{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }}>
+            <span className="font-inter text-[16px] font-normal leading-[24px] tracking-[-0.128px] whitespace-nowrap overflow-hidden text-ellipsis" style={{ color: projectStage ? "#FFF" : "#A4A4B2" }}>
               {projectStage || "На какой стадии твой проект"}
             </span>
             <SelectArrowIcon />
           </div>
 
           <div style={formElementStyle("industry", "select")} onClick={() => setOpenDropdown(openDropdown === "industry" ? null : "industry")}>
-            <span style={{ color: industry ? "#FFF" : "#A4A4B2", fontSize: "16px", fontFamily: "Inter", ...{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }}>
+            <span className="font-inter text-[16px] font-normal leading-[24px] tracking-[-0.128px] whitespace-nowrap overflow-hidden text-ellipsis" style={{ color: industry ? "#FFF" : "#A4A4B2" }}>
               {industry || "Сфера деятельности"}
             </span>
             <SelectArrowIcon />
@@ -161,7 +161,7 @@ export function StartupProfileForm({ onBack, onNext }: StartupProfileFormProps) 
                 <span style={{ width: "20px", height: "20px", borderRadius: "50%", border: projectStage === option ? "1.5px solid #A55AFF" : "1.5px solid #A4A4B2", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
                   {projectStage === option && (<span style={{ width: "10px", height: "10px", borderRadius: "50%", background: "#A55AFF" }} />)}
                 </span>
-                <span style={{ flex: "1 0 0", color: "#EBEBF2", fontFamily: "Inter", fontSize: "14px", fontWeight: 400, lineHeight: "20px" }}>{option}</span>
+                <span className="flex-1 text-[#EBEBF2] font-inter text-[14px] font-normal leading-[20px]">{option}</span>
               </label>
             ))}
           </div>
@@ -175,7 +175,7 @@ export function StartupProfileForm({ onBack, onNext }: StartupProfileFormProps) 
                 <span style={{ width: "20px", height: "20px", borderRadius: "50%", border: industry === option ? "1.5px solid #A55AFF" : "1.5px solid #A4A4B2", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
                   {industry === option && (<span style={{ width: "10px", height: "10px", borderRadius: "50%", background: "#A55AFF" }} />)}
                 </span>
-                <span style={{ flex: "1 0 0", color: "#EBEBF2", fontFamily: "Inter", fontSize: "14px", fontWeight: 400, lineHeight: "20px" }}>{option}</span>
+                <span className="flex-1 text-[#EBEBF2] font-inter text-[14px] font-normal leading-[20px]">{option}</span>
               </label>
             ))}
           </div>

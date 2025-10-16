@@ -102,32 +102,32 @@ export function PartnerProfileForm({ onBack, onNext }: PartnerProfileFormProps) 
       <div style={{ width: "393px", height: "852px", backgroundColor: "#000", position: "relative", overflow: "hidden" }}>
         <div style={{ position: "absolute", top: "104px", left: "50%", transform: "translateX(-50%)", width: "284px", height: "205px", borderRadius: "284px", opacity: 0.5, background: "#59307C", filter: "blur(80px)", flexShrink: 0 }} />
 
-        <div style={{ position: "absolute", top: "171px", left: "50%", transform: "translateX(-50%)", width: "361px", color: "#FFF", textAlign: "center", fontFamily: '"Inter Tight", sans-serif', fontSize: "30px" }}>
+        <div className="text-white text-center font-inter-tight text-[30px] font-normal leading-[110%] tracking-[-0.6px]" style={{ position: "absolute", top: "171px", left: "50%", transform: "translateX(-50%)", width: "361px" }}>
           Быстрый профиль
         </div>
 
-        <div style={{ position: "absolute", top: "204px", left: "50%", transform: "translateX(-50%)", width: "361px", color: "rgba(255, 255, 255, 0.72)", textAlign: "center", fontSize: "17px" }}>
+        <div className="text-center font-inter text-[17px] font-normal leading-[24px] tracking-[-0.17px]" style={{ position: "absolute", top: "204px", left: "50%", transform: "translateX(-50%)", width: "361px", color: "rgba(255, 255, 255, 0.72)" }}>
           Расскажи о себе в нескольких словах
         </div>
 
         <div style={{ position: "absolute", top: "277px", width: "100%", padding: "0 16px", boxSizing: "border-box" }}>
           <div style={formElementStyle("package", "select")} onClick={() => setOpenDropdown(openDropdown === "package" ? null : "package")}>
-            <span style={{ color: partnerPackage ? "#FFF" : "#A4A4B2", fontSize: "16px", fontFamily: "Inter" }}>
+            <span className="font-inter text-[16px] font-normal leading-[24px] tracking-[-0.128px]" style={{ color: partnerPackage ? "#FFF" : "#A4A4B2" }}>
               {partnerPackage || "Что тебя интересует"}
             </span>
             <SelectArrowIcon />
           </div>
 
           <div style={formElementStyle("companyName", "input")}>
-            <input type="text" placeholder="Название компании" value={companyName} onChange={(e) => setCompanyName(e.target.value)} onFocus={() => setFocusedInput("companyName")} onBlur={() => setFocusedInput(null)} style={{ color: companyName ? "#FFF" : "#A4A4B2", background: "transparent", border: "none", outline: "none", width: "100%", fontSize: "16px", fontFamily: "Inter" }}/>
+            <input type="text" placeholder="Название компании" value={companyName} onChange={(e) => setCompanyName(e.target.value)} onFocus={() => setFocusedInput("companyName")} onBlur={() => setFocusedInput(null)} className="font-inter text-[16px] font-normal leading-[24px] tracking-[-0.128px]" style={{ color: companyName ? "#FFF" : "#A4A4B2", background: "transparent", border: "none", outline: "none", width: "100%" }}/>
           </div>
 
           <div style={formElementStyle("description", "input")}>
-            <input type="text" placeholder="Опиши свой продукт/услугу" value={productServiceDescription} onChange={(e) => setProductServiceDescription(e.target.value)} onFocus={() => setFocusedInput("description")} onBlur={() => setFocusedInput(null)} style={{ color: productServiceDescription ? "#FFF" : "#A4A4B2", background: "transparent", border: "none", outline: "none", width: "100%", fontSize: "16px", fontFamily: "Inter" }}/>
+            <input type="text" placeholder="Опиши свой продукт/услугу" value={productServiceDescription} onChange={(e) => setProductServiceDescription(e.target.value)} onFocus={() => setFocusedInput("description")} onBlur={() => setFocusedInput(null)} className="font-inter text-[16px] font-normal leading-[24px] tracking-[-0.128px]" style={{ color: productServiceDescription ? "#FFF" : "#A4A4B2", background: "transparent", border: "none", outline: "none", width: "100%" }}/>
           </div>
 
           <div style={formElementStyle("industry", "select")} onClick={() => setOpenDropdown(openDropdown === "industry" ? null : "industry")}>
-            <span style={{ color: companyIndustry ? "#FFF" : "#A4A4B2", fontSize: "16px", fontFamily: "Inter" }}>
+            <span className="font-inter text-[16px] font-normal leading-[24px] tracking-[-0.128px]" style={{ color: companyIndustry ? "#FFF" : "#A4A4B2" }}>
               {companyIndustry || "Сфера деятельности компании"}
             </span>
             <SelectArrowIcon />
@@ -142,7 +142,7 @@ export function PartnerProfileForm({ onBack, onNext }: PartnerProfileFormProps) 
                         <span style={{ width: "20px", height: "20px", borderRadius: "50%", border: partnerPackage === option ? "1.5px solid #A55AFF" : "1.5px solid #A4A4B2", display: "flex", alignItems: "center", justifyContent: "center" }}>
                             {partnerPackage === option && <span style={{ width: "10px", height: "10px", borderRadius: "50%", background: "#A55AFF" }} />}
                         </span>
-                        <span style={{ color: "#EBEBF2", fontSize: "14px" }}>{option}</span>
+                        <span className="font-inter text-[14px] font-normal leading-[20px] tracking-[-0.056px]" style={{ color: "#EBEBF2" }}>{option}</span>
                     </label>
                 ))}
             </div>
@@ -156,7 +156,7 @@ export function PartnerProfileForm({ onBack, onNext }: PartnerProfileFormProps) 
                         <span style={{ width: "20px", height: "20px", borderRadius: "50%", border: companyIndustry === option ? "1.5px solid #A55AFF" : "1.5px solid #A4A4B2", display: "flex", alignItems: "center", justifyContent: "center" }}>
                             {companyIndustry === option && <span style={{ width: "10px", height: "10px", borderRadius: "50%", background: "#A55AFF" }} />}
                         </span>
-                        <span style={{ color: "#EBEBF2", fontSize: "14px" }}>{option}</span>
+                        <span className="font-inter text-[14px] font-normal leading-[20px] tracking-[-0.056px]" style={{ color: "#EBEBF2" }}>{option}</span>
                     </label>
                 ))}
             </div>

@@ -260,7 +260,7 @@ export const Onboarding: React.FC = () => {
       {/* Текст "Привет!" */}
       <div className="relative z-10" style={{ marginBottom: '13px' }}>
         <h1 
-          className="text-white text-center font-inter-tight text-[30px] font-normal leading-[110%] tracking-[-0.6px] sm:text-[28px] md:text-[32px]"
+          className="text-white text-center font-inter-tight text-[30px] font-normal leading-[110%] tracking-[-0.6px]"
         >
           Привет!
         </h1>
@@ -269,26 +269,19 @@ export const Onboarding: React.FC = () => {
       {/* Описательный текст */}
       <div className="relative z-10 max-w-sm sm:max-w-md md:max-w-lg" style={{ marginBottom: '30.5px' }}>
         <p 
-          className="text-center text-[17px] font-normal leading-6 tracking-[-0.17px] sm:text-[16px] md:text-[18px]"
+          className="text-center text-[17px] font-normal leading-6 tracking-[-0.17px] font-inter"
           style={{
             color: 'rgba(255, 255, 255, 0.72)',
-            fontFamily: 'Inter',
           }}
         >
           Наше мини приложение для конференции{' '}
             <span 
-              className="text-[17px] font-normal tracking-[-0.17px]"
+              className="text-[17px] font-normal tracking-[-0.17px] font-inter"
               style={{
                 background: 'linear-gradient(305deg, #FEDA3B -2.67%, #EF5541 38.9%, #801FDB 77.17%, #7E2A89 98.46%)',
                 backgroundClip: 'text',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
-                fontFamily: 'Inter',
-                fontSize: '17px',
-                fontStyle: 'normal',
-                fontWeight: 400,
-                lineHeight: '24px',
-                letterSpacing: '-0.17px',
               }}
             >
             TradeId
@@ -309,16 +302,7 @@ export const Onboarding: React.FC = () => {
             }}
           >
             <span 
-              className="text-center text-[14px] font-medium leading-[140%] tracking-[-0.196px] sm:text-[13px] md:text-[15px]"
-              style={{
-                color: '#FFF',
-                fontFamily: 'Inter Tight',
-                fontSize: '14px',
-                fontStyle: 'normal',
-                fontWeight: 500,
-                lineHeight: '140%',
-                letterSpacing: '-0.196px',
-              }}
+              className="text-white text-center font-inter text-[14px] font-medium leading-[140%] tracking-[-0.196px] whitespace-nowrap"
             >
               Посмотреть карту и расписание
             </span>
@@ -335,16 +319,7 @@ export const Onboarding: React.FC = () => {
             }}
           >
             <span 
-              className="text-center text-[14px] font-medium leading-[140%] tracking-[-0.196px] sm:text-[13px] md:text-[15px]"
-              style={{
-                color: '#FFF',
-                fontFamily: 'Inter Tight',
-                fontSize: '14px',
-                fontStyle: 'normal',
-                fontWeight: 500,
-                lineHeight: '140%',
-                letterSpacing: '-0.196px',
-              }}
+              className="text-white text-center font-inter text-[14px] font-medium leading-[140%] tracking-[-0.196px]"
             >
               Проходить квесты и получать бонусы
             </span>
@@ -363,10 +338,7 @@ export const Onboarding: React.FC = () => {
           }}
         >
           <span 
-            className="text-white text-center text-[17px] font-semibold leading-6 tracking-[-0.204px] sm:text-[16px] md:text-[18px]"
-            style={{
-              fontFamily: 'Inter',
-            }}
+            className="text-white text-center font-inter text-[17px] font-medium leading-[24px] tracking-[-0.204px]"
           >
             Поехали
           </span>
@@ -380,16 +352,14 @@ export const Onboarding: React.FC = () => {
     <div className="relative w-full h-screen bg-black flex flex-col items-center px-4 pt-[120px] overflow-hidden">
       <div className="w-full text-center mb-[15px]">
         <h1
-          className="text-white text-[30px] font-normal leading-[110%] tracking-[-0.6px]"
-          style={{ fontFamily: '"Inter Tight", sans-serif' }}
+          className="text-white text-[30px] font-normal leading-[110%] tracking-[-0.6px] font-inter-tight"
         >
           Кто ты?
         </h1>
         <p
-          className="text-[17px] font-normal leading-6 tracking-[-0.17px] mt-[13px]"
+          className="text-[17px] font-normal leading-6 tracking-[-0.17px] mt-[13px] font-inter"
           style={{
             color: 'rgba(255, 255, 255, 0.72)',
-            fontFamily: 'Inter, sans-serif',
           }}
         >
           Выбери свою роль в экосистеме
@@ -406,14 +376,12 @@ export const Onboarding: React.FC = () => {
       
       <div className="w-full text-center mt-[15px]">
         <h2 
-          className="text-white text-[24px] font-normal leading-[110%] tracking-[-0.48px]"
-          style={{ fontFamily: '"Inter Tight", sans-serif' }}
+          className="text-white text-[24px] font-normal leading-[110%] tracking-[-0.48px] font-inter-tight"
         >
           {selectedRole ? roleContent.find(r => r.id === selectedRole)?.title : ''}
         </h2>
         <p 
-          className="text-[#6F6F7C] text-[14px] font-normal leading-[120%] tracking-[-0.14px] mt-[6px] max-w-[353px] mx-auto"
-          style={{ fontFamily: '"Inter Tight", sans-serif' }}
+          className="text-[#6F6F7C] text-[14px] font-normal leading-[120%] tracking-[-0.14px] mt-[6px] max-w-[353px] mx-auto font-inter"
         >
           {selectedRole ? roleContent.find(r => r.id === selectedRole)?.description : ''}
         </p>
@@ -454,16 +422,7 @@ export const Onboarding: React.FC = () => {
           }}
         >
           <span
-            style={{
-              color: '#FFF',
-              textAlign: 'center',
-              fontFamily: 'Inter, sans-serif',
-              fontSize: '17px',
-              fontStyle: 'normal',
-              fontWeight: 600,
-              lineHeight: '24px',
-              letterSpacing: '-0.204px',
-            }}
+            className="text-white text-center font-inter text-[17px] font-semibold leading-[24px] tracking-[-0.204px]"
           >
             Поехали
           </span>

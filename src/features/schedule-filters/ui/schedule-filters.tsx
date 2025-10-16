@@ -65,7 +65,7 @@ export const ScheduleFilters: React.FC<ScheduleFiltersProps> = ({
         onFocus={() => setIsFocused(true)}
         onBlur={() => setIsFocused(false)}
         placeholder="Поиск по фильтрам"
-        className="w-full bg-transparent rounded-lg text-white px-4 py-2"
+        className="w-full bg-transparent rounded-lg text-white px-4 py-2 font-inter"
         style={{
           ...dynamicStyles,
           padding: '8px 12px 8px 16px',
