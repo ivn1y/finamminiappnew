@@ -178,8 +178,8 @@ export const SchedulePage: React.FC = () => {
   return (
     <div className="w-full bg-black flex justify-center overflow-x-hidden">
       <div
-        className="relative font-sans pb-24"
-        style={{ width: '393px', minHeight: '913px', background: '#000' }}
+        className="relative font-sans"
+        style={{ width: '393px', background: '#000', paddingBottom: '109px', height: '900px' }}
       >
       {showScheduleTour && <ScheduleTour onComplete={completeScheduleTourAndGoToAssistant} />}
       {/* Background Gradient */}
@@ -192,7 +192,7 @@ export const SchedulePage: React.FC = () => {
           background: 'var(--gradients-bg-01-end, #7E2A89)',
           filter: 'blur(80px)',
           opacity: '0.25',
-          top: '277px',
+          top: '217px',
           left: '0',
           zIndex: 0,
         }}

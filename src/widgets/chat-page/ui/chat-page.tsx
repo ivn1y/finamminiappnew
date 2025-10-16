@@ -367,10 +367,10 @@ export const ChatPage: React.FC = () => {
 			<>
         {showAssistantTour && <AssistantTour onComplete={endAssistantTour} />}
 				<div className='w-full bg-black flex justify-center overflow-x-hidden'>
-					<div className='bg-black w-[393px] h-[866px] relative font-sans text-white'>
+					<div className='bg-black w-[393px] relative font-sans text-white' style={{ height: '816px' }}>
 						{/* Gradient Background */}
 						<div
-							className='absolute top-[324px] left-1/2 -translate-x-1/2 w-[284px] h-[205px] rounded-full opacity-50 blur-[120px]'
+							className='absolute top-[274px] left-1/2 -translate-x-1/2 w-[284px] h-[205px] rounded-full opacity-50 blur-[120px]'
 							style={{
 								background:
 									'linear-gradient(305deg, #FEDA3B -2.67%, #EF5541 38.9%, #801FDB 77.17%, #7E2A89 98.46%)',
@@ -378,7 +378,7 @@ export const ChatPage: React.FC = () => {
 						/>
 
 						{/* Content Block */}
-						<div className='absolute top-[292px] left-1/2 -translate-x-1/2 flex flex-col items-center w-full'>
+						<div className='absolute top-[242px] left-1/2 -translate-x-1/2 flex flex-col items-center w-full'>
 							<FinamLogoIcon />
 							<h1 className='mt-[7px] w-[352px] font-inter-tight text-white text-[30px] font-normal leading-[110%] tracking-[-0.6px] text-center'>
 								Привет, я AI - Ассиcтент
@@ -390,7 +390,7 @@ export const ChatPage: React.FC = () => {
 						</div>
 
 						{/* Input Block */}
-						<div className='absolute bottom-[104px] left-1/2 -translate-x-1/2 w-[353px]'>
+						<div className='absolute bottom-[109px] left-1/2 -translate-x-1/2 w-[353px]'>
 							<div className='relative w-full h-[56px]'>
 								<Input
 									type='text'
@@ -424,10 +424,10 @@ export const ChatPage: React.FC = () => {
 		<>
 			{showAssistantTour && <AssistantTour onComplete={endAssistantTour} />}
 			<div className='w-full bg-black flex justify-center overflow-x-hidden'>
-				<div className='bg-black w-[393px] h-[866px] relative font-sans text-white overflow-x-hidden'>
+				<div className='bg-black w-[393px] relative font-sans text-white overflow-x-hidden' style={{ height: '816px' }}>
 					{/* Messages Container */}
 					<div className='absolute top-0 left-0 right-0 bottom-[180px] overflow-y-auto'>
-						<div className='px-5 pt-[222px] pb-4 space-y-5'>
+						<div className='px-5 pt-[172px] pb-4 space-y-5'>
 							{messages.map(message => (
 								<div
 									key={message.id}
@@ -494,7 +494,7 @@ export const ChatPage: React.FC = () => {
 					</div>
 
 					{/* Input Block */}
-					<div className='absolute bottom-[104px] left-0 right-0 px-5'>
+					<div className='absolute bottom-[109px] left-0 right-0 px-5'>
 						<div className='relative w-full h-[56px]'>
 							<Input
 								type='text'

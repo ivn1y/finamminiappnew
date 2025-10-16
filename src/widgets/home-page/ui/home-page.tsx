@@ -299,35 +299,35 @@ export const HomePage: React.FC = () => {
   ];
 
   return (
-    <div className="w-full bg-black flex justify-center overflow-x-hidden">
+    <div className="w-full bg-black flex justify-center">
       {showAppTour && highlightedButtonRect && (
         <HomeTour
           highlightedElementRect={highlightedButtonRect}
           onComplete={handleProfileTaskClick}
         />
       )}
-      <div className="relative w-[393px] h-[1279px]">
+      <div className="relative w-[393px]" style={{ height: '1193px' }}>
         <div
-          className="absolute top-[75px] left-1/2 -translate-x-1/2 w-[390px] h-[281px] rounded-[390px] opacity-50 blur-[80px]"
+          className="absolute top-[15px] left-1/2 -translate-x-1/2 w-[390px] h-[281px] rounded-[390px] opacity-50 blur-[80px]"
           style={{
             background:
               'linear-gradient(315deg, #FAF1E6 -0.45%, #F9DEC0 15.8%, #ED9FA6 32.05%, #994B69 48.29%, rgba(51, 22, 86, 0.00) 64.54%)',
           }}
         ></div>
 
-        <div className="absolute top-[140px] w-full">
+        <div className="absolute top-[80px] w-full">
           <h1 className="text-white text-center font-inter-tight text-[30px] font-normal leading-[110%] tracking-[-0.6px]">
             Привет, {role.title}!
           </h1>
         </div>
 
-        <div className="absolute top-[180px] w-full px-[38.5px]">
+        <div className="absolute top-[120px] w-full px-[38.5px]">
           <p className="text-[rgba(255,255,255,0.72)] text-center font-inter text-[17px] font-normal leading-[24px] tracking-[-0.17px]">
             Ты прошел {completedTasksCount} из 4 шагов до своей первой коллаборации
           </p>
         </div>
 
-        <div className="absolute top-[241px] left-1/2 -translate-x-1/2 flex w-[353px] pt-[12px] pb-[20px] flex-col items-center rounded-[8px] bg-[#151519]">
+        <div className="absolute top-[181px] left-1/2 -translate-x-1/2 flex w-[353px] pt-[12px] pb-[20px] flex-col items-center rounded-[8px] bg-[#151519]">
           <h2 className="font-inter-tight text-[24px] font-normal leading-[110%] tracking-[-0.48px] text-white">
             Выполни задания
           </h2>
@@ -358,10 +358,10 @@ export const HomePage: React.FC = () => {
           </div>
         </div>
 
-        <h2 className="absolute top-[625px] left-[20px] font-inter-tight text-[24px] font-normal leading-[110%] tracking-[-0.48px] text-white">
+        <h2 className="absolute top-[565px] left-[20px] font-inter-tight text-[24px] font-normal leading-[110%] tracking-[-0.48px] text-white">
           Мои бейджи
         </h2>
-        <div className="absolute top-[667px] left-[20px] grid grid-cols-2 gap-x-[9px] gap-y-[9px]">
+        <div className="absolute top-[607px] left-[20px] grid grid-cols-2 gap-x-[9px] gap-y-[9px]">
           {badges.map((badge, index) => (
             <Badge
               key={index}
@@ -376,7 +376,7 @@ export const HomePage: React.FC = () => {
 
         <div
           id="telegram-quest"
-          className="absolute top-[970px] left-1/2 -translate-x-1/2 w-[353px] h-[174px] p-[8px_16px_20px_16px] rounded-[8px] bg-[#1A1A1F] flex flex-col items-start"
+          className="absolute top-[910px] left-1/2 -translate-x-1/2 w-[353px] h-[174px] p-[8px_16px_20px_16px] rounded-[8px] bg-[#1A1A1F] flex flex-col items-start"
         >
           <h3 className="mt-[8px] font-inter-tight text-[24px] text-white font-normal leading-[110%] tracking-[-0.48px]">
             Твой первый квест

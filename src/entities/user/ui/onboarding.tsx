@@ -349,7 +349,7 @@ export const Onboarding: React.FC = () => {
   );
 
   const renderRoleSelection = () => (
-    <div className="relative w-full h-screen bg-black flex flex-col items-center px-4 pt-[120px] overflow-hidden">
+    <div className="relative w-full h-screen bg-black flex flex-col items-center px-4 pt-[60px] overflow-hidden">
       <div className="w-full text-center mb-[15px]">
         <h1
           className="text-white text-[30px] font-normal leading-[110%] tracking-[-0.6px] font-inter-tight"
@@ -398,7 +398,7 @@ export const Onboarding: React.FC = () => {
       <div
         style={{
           position: 'absolute',
-          top: '706px',
+          top: '646px',
           bottom: '90px',
           left: '20px',
           right: '20px',

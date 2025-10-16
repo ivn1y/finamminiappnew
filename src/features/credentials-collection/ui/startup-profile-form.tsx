@@ -103,17 +103,17 @@ export function StartupProfileForm({ onBack, onNext }: StartupProfileFormProps) 
   return (
     <div style={{ width: "100%", minHeight: "100vh", backgroundColor: "#000", display: "flex", justifyContent: "center", alignItems: "center", fontFamily: "Inter, sans-serif" }}>
       <div style={{ width: "393px", height: "852px", backgroundColor: "#000", position: "relative", overflow: "hidden" }}>
-        <div style={{ position: "absolute", top: "104px", left: "50%", transform: "translateX(-50%)", width: "284px", height: "205px", borderRadius: "284px", opacity: 0.5, background: "#59307C", filter: "blur(80px)", flexShrink: 0 }} />
+        <div style={{ position: "absolute", top: "44px", left: "50%", transform: "translateX(-50%)", width: "284px", height: "205px", borderRadius: "284px", opacity: 0.5, background: "#59307C", filter: "blur(80px)", flexShrink: 0 }} />
 
-        <div className="text-white text-center font-inter-tight text-[30px] font-normal leading-[110%] tracking-[-0.6px]" style={{ position: "absolute", top: "171px", left: "50%", transform: "translateX(-50%)", width: "361px" }}>
+        <div className="text-white text-center font-inter-tight text-[30px] font-normal leading-[110%] tracking-[-0.6px]" style={{ position: "absolute", top: "111px", left: "50%", transform: "translateX(-50%)", width: "361px" }}>
           Быстрый профиль
         </div>
 
-        <div className="text-center font-inter text-[17px] font-normal leading-[24px] tracking-[-0.17px]" style={{ position: "absolute", top: "204px", left: "50%", transform: "translateX(-50%)", width: "361px", color: "rgba(255, 255, 255, 0.72)" }}>
+        <div className="text-center font-inter text-[17px] font-normal leading-[24px] tracking-[-0.17px]" style={{ position: "absolute", top: "144px", left: "50%", transform: "translateX(-50%)", width: "361px", color: "rgba(255, 255, 255, 0.72)" }}>
           Расскажи о себе в нескольких словах
         </div>
 
-        <div style={{ position: "absolute", top: "277px", width: "100%", padding: "0 16px", boxSizing: "border-box" }}>
+        <div style={{ position: "absolute", top: "217px", width: "100%", padding: "0 16px", boxSizing: "border-box" }}>
           <div style={formElementStyle("description", "input")}>
             <input
               type="text"
@@ -154,7 +154,7 @@ export function StartupProfileForm({ onBack, onNext }: StartupProfileFormProps) 
         </div>
 
         {openDropdown === "stage" && (
-          <div style={{ position: "absolute", top: "443px", left: "20px", right: "20px", borderRadius: "8px", background: "#242426", padding: "20px", boxSizing: "border-box", display: "flex", flexDirection: "column", gap: "20px", zIndex: 10 }}>
+          <div style={{ position: "absolute", top: "383px", left: "20px", right: "20px", borderRadius: "8px", background: "#242426", padding: "20px", boxSizing: "border-box", display: "flex", flexDirection: "column", gap: "20px", zIndex: 10 }}>
             {stageOptions.map((option) => (
               <label key={option} style={{ display: "flex", alignItems: "center", gap: "10px", cursor: "pointer" }}>
                 <input type="radio" name="stage" value={option} checked={projectStage === option} onChange={() => handleSelectStage(option)} style={{ display: "none" }} />
@@ -168,7 +168,7 @@ export function StartupProfileForm({ onBack, onNext }: StartupProfileFormProps) 
         )}
 
         {openDropdown === "industry" && (
-          <div style={{ position: "absolute", top: "515px", left: "20px", right: "20px", borderRadius: "8px", background: "#242426", padding: "20px", boxSizing: "border-box", display: "flex", flexDirection: "column", gap: "20px", zIndex: 10 }}>
+          <div style={{ position: "absolute", top: "455px", left: "20px", right: "20px", borderRadius: "8px", background: "#242426", padding: "20px", boxSizing: "border-box", display: "flex", flexDirection: "column", gap: "20px", zIndex: 10 }}>
             {industryOptions.map((option) => (
               <label key={option} style={{ display: "flex", alignItems: "center", gap: "10px", cursor: "pointer" }}>
                 <input type="radio" name="industry" value={option} checked={industry === option} onChange={() => handleSelectIndustry(option)} style={{ display: "none" }} />
@@ -181,13 +181,13 @@ export function StartupProfileForm({ onBack, onNext }: StartupProfileFormProps) 
           </div>
         )}
 
-        <div style={{ position: "absolute", bottom: "90px", left: "20px" }}>
+        <div style={{ position: "absolute", bottom: "150px", left: "20px" }}>
           <button onClick={onBack} style={{ display: "flex", width: "56px", height: "56px", padding: "16px 24px", justifyContent: "center", alignItems: "center", borderRadius: "8px", background: "#242426", border: "none", cursor: "pointer" }}>
             <BackArrowIcon />
           </button>
         </div>
 
-        <div style={{ position: "absolute", bottom: "90px", left: "93px", right: "20px" }}>
+        <div style={{ position: "absolute", bottom: "150px", left: "93px", right: "20px" }}>
           <button onClick={handleNext} disabled={!isFormValid} style={{ display: "flex", width: "100%", padding: "16px 24px", justifyContent: "center", alignItems: "center", borderRadius: "8px", background: isFormValid ? "linear-gradient(305deg, #FEDA3B -2.67%, #EF5541 38.9%, #801FDB 77.17%, #7E2A89 98.46%)" : "rgba(192, 192, 204, 0.16)", color: isFormValid ? "#FFF" : "#C0C0CC", textAlign: "center", fontSize: "17px", fontWeight: 600, lineHeight: "24px", letterSpacing: "-0.204px", border: "none", cursor: isFormValid ? "pointer" : "not-allowed", transition: "background 0.3s ease-in-out, color 0.3s ease-in-out" }}>
             Готово
           </button>

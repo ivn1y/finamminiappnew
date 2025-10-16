@@ -100,17 +100,17 @@ export function PartnerProfileForm({ onBack, onNext }: PartnerProfileFormProps) 
   return (
     <div style={{ width: "100%", minHeight: "100vh", backgroundColor: "#000", display: "flex", justifyContent: "center", alignItems: "center", fontFamily: "Inter, sans-serif" }}>
       <div style={{ width: "393px", height: "852px", backgroundColor: "#000", position: "relative", overflow: "hidden" }}>
-        <div style={{ position: "absolute", top: "104px", left: "50%", transform: "translateX(-50%)", width: "284px", height: "205px", borderRadius: "284px", opacity: 0.5, background: "#59307C", filter: "blur(80px)", flexShrink: 0 }} />
+        <div style={{ position: "absolute", top: "44px", left: "50%", transform: "translateX(-50%)", width: "284px", height: "205px", borderRadius: "284px", opacity: 0.5, background: "#59307C", filter: "blur(80px)", flexShrink: 0 }} />
 
-        <div className="text-white text-center font-inter-tight text-[30px] font-normal leading-[110%] tracking-[-0.6px]" style={{ position: "absolute", top: "171px", left: "50%", transform: "translateX(-50%)", width: "361px" }}>
+        <div className="text-white text-center font-inter-tight text-[30px] font-normal leading-[110%] tracking-[-0.6px]" style={{ position: "absolute", top: "111px", left: "50%", transform: "translateX(-50%)", width: "361px" }}>
           Быстрый профиль
         </div>
 
-        <div className="text-center font-inter text-[17px] font-normal leading-[24px] tracking-[-0.17px]" style={{ position: "absolute", top: "204px", left: "50%", transform: "translateX(-50%)", width: "361px", color: "rgba(255, 255, 255, 0.72)" }}>
+        <div className="text-center font-inter text-[17px] font-normal leading-[24px] tracking-[-0.17px]" style={{ position: "absolute", top: "144px", left: "50%", transform: "translateX(-50%)", width: "361px", color: "rgba(255, 255, 255, 0.72)" }}>
           Расскажи о себе в нескольких словах
         </div>
 
-        <div style={{ position: "absolute", top: "277px", width: "100%", padding: "0 16px", boxSizing: "border-box" }}>
+        <div style={{ position: "absolute", top: "217px", width: "100%", padding: "0 16px", boxSizing: "border-box" }}>
           <div style={formElementStyle("package", "select")} onClick={() => setOpenDropdown(openDropdown === "package" ? null : "package")}>
             <span className="font-inter text-[16px] font-normal leading-[24px] tracking-[-0.128px]" style={{ color: partnerPackage ? "#FFF" : "#A4A4B2" }}>
               {partnerPackage || "Что тебя интересует"}
@@ -135,7 +135,7 @@ export function PartnerProfileForm({ onBack, onNext }: PartnerProfileFormProps) 
         </div>
         
         {openDropdown === "package" && (
-            <div style={{ position: "absolute", top: "371px", left: "20px", right: "20px", borderRadius: "8px", background: "#242426", padding: "20px", zIndex: 10, display: "flex", flexDirection: "column", gap: "20px" }}>
+            <div style={{ position: "absolute", top: "311px", left: "20px", right: "20px", borderRadius: "8px", background: "#242426", padding: "20px", zIndex: 10, display: "flex", flexDirection: "column", gap: "20px" }}>
                 {packageOptions.map(option => (
                     <label key={option} style={{ display: "flex", alignItems: "center", gap: "10px", cursor: "pointer" }}>
                         <input type="radio" name="package" value={option} checked={partnerPackage === option} onChange={() => handleSelectPackage(option)} style={{ display: "none" }} />
@@ -149,7 +149,7 @@ export function PartnerProfileForm({ onBack, onNext }: PartnerProfileFormProps) 
         )}
 
         {openDropdown === "industry" && (
-            <div style={{ position: "absolute", top: "599px", left: "20px", right: "20px", borderRadius: "8px", background: "#242426", padding: "20px", zIndex: 10, display: "flex", flexDirection: "column", gap: "20px" }}>
+            <div style={{ position: "absolute", top: "539px", left: "20px", right: "20px", borderRadius: "8px", background: "#242426", padding: "20px", zIndex: 10, display: "flex", flexDirection: "column", gap: "20px" }}>
                 {industryOptions.map(option => (
                     <label key={option} style={{ display: "flex", alignItems: "center", gap: "10px", cursor: "pointer" }}>
                         <input type="radio" name="industry" value={option} checked={companyIndustry === option} onChange={() => handleSelectIndustry(option)} style={{ display: "none" }} />
@@ -162,10 +162,10 @@ export function PartnerProfileForm({ onBack, onNext }: PartnerProfileFormProps) 
             </div>
         )}
 
-        <div style={{ position: "absolute", bottom: "90px", left: "20px" }}>
+        <div style={{ position: "absolute", bottom: "150px", left: "20px" }}>
             <button onClick={onBack} style={{ display: "flex", width: "56px", height: "56px", justifyContent: "center", alignItems: "center", borderRadius: "8px", background: "#242426", border: "none", cursor: "pointer", padding: "16px 24px" }}><BackArrowIcon /></button>
         </div>
-        <div style={{ position: "absolute", bottom: "90px", left: "93px", right: "20px" }}>
+        <div style={{ position: "absolute", bottom: "150px", left: "93px", right: "20px" }}>
             <button onClick={handleNext} disabled={!isFormValid} style={{ display: "flex", width: "100%", padding: "16px 24px", justifyContent: "center", alignItems: "center", borderRadius: "8px", background: isFormValid ? "linear-gradient(305deg, #FEDA3B, #EF5541, #801FDB, #7E2A89)" : "rgba(192, 192, 204, 0.16)", color: isFormValid ? "#FFF" : "#C0C0CC", border: "none", cursor: isFormValid ? "pointer" : "not-allowed", fontSize: "17px", fontWeight: 600, transition: "background 0.3s ease" }}>Готово</button>
         </div>
       </div>
