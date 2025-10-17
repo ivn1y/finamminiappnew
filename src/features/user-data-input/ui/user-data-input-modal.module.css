@@ -122,6 +122,17 @@
   border-radius: 8px; /* Required for border-image to respect radius */
 }
 
+.input.error {
+  border: 1px solid #ef5541;
+  background: rgba(239, 85, 65, 0.1);
+}
+
+.input.error:focus, .input.error:focus-visible {
+  border: 1px solid #ef5541;
+  background: rgba(239, 85, 65, 0.1);
+  border-image-source: none;
+}
+
 .input::placeholder {
   color: #a4a4b2;
 }
