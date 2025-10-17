@@ -148,7 +148,7 @@ export function TraderProfileForm({ onBack, onNext }: TraderProfileFormProps) {
         <div
           style={{
             position: "absolute",
-            top: "104px",
+            top: "44px",
             left: "50%",
             transform: "translateX(-50%)",
             width: "284px",
@@ -165,7 +165,7 @@ export function TraderProfileForm({ onBack, onNext }: TraderProfileFormProps) {
           className="text-white text-center font-inter-tight text-[30px] font-normal leading-[110%] tracking-[-0.6px]"
           style={{
             position: "absolute",
-            top: "171px",
+            top: "111px",
             left: "50%",
             transform: "translateX(-50%)",
             width: "361px",
@@ -178,7 +178,7 @@ export function TraderProfileForm({ onBack, onNext }: TraderProfileFormProps) {
           className="text-center font-inter text-[17px] font-normal leading-[24px] tracking-[-0.17px]"
           style={{
             position: "absolute",
-            top: "204px",
+            top: "144px",
             left: "50%",
             transform: "translateX(-50%)",
             width: "361px",
@@ -192,7 +192,7 @@ export function TraderProfileForm({ onBack, onNext }: TraderProfileFormProps) {
           className="space-y-8"
           style={{
             position: "absolute",
-            top: "309px",
+            top: "249px",
             width: "100%",
             padding: "0 16px",
             boxSizing: "border-box",
@@ -258,7 +258,7 @@ export function TraderProfileForm({ onBack, onNext }: TraderProfileFormProps) {
           <div
             style={{
               position: "absolute",
-              top: "371px",
+              top: "311px",
               left: "20px",
               right: "20px",
               height: "176px",
@@ -330,7 +330,7 @@ export function TraderProfileForm({ onBack, onNext }: TraderProfileFormProps) {
           <div
             style={{
               position: "absolute",
-              top: "443px",
+              top: "383px",
               left: "20px",
               right: "20px",
               borderRadius: "8px",
@@ -411,7 +411,7 @@ export function TraderProfileForm({ onBack, onNext }: TraderProfileFormProps) {
           <div
             style={{
               position: "absolute",
-              top: "515px",
+              top: "455px",
               left: "20px",
               right: "20px",
               borderRadius: "8px",
@@ -481,7 +481,7 @@ export function TraderProfileForm({ onBack, onNext }: TraderProfileFormProps) {
         <div
           style={{
             position: "absolute",
-            bottom: "90px",
+            bottom: "150px",
             left: "20px",
           }}
         >
@@ -507,7 +507,7 @@ export function TraderProfileForm({ onBack, onNext }: TraderProfileFormProps) {
         <div
           style={{
             position: "absolute",
-            bottom: "90px",
+            bottom: "150px",
             left: "93px",
             right: "20px",
           }}

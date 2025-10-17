@@ -97,13 +97,13 @@ export const MapPage: React.FC = () => {
 
   return (
     <div className="w-full bg-black flex justify-center overflow-x-hidden">
-      <div className="bg-black w-[393px] h-[842px] relative font-sans text-white">
+      <div className="bg-black w-[393px] relative font-sans text-white" style={{ height: '847px' }}>
       {showMapTour && <MapTour onComplete={completeMapTourAndGoToSchedule} />}
       
       {/* Tab Switcher */}
       <div
         className="absolute flex w-[353px] h-12 p-1 items-center justify-center rounded-[4px] bg-[#151519]"
-        style={{ top: '110px', left: '20px' }}
+        style={{ top: '50px', left: '20px' }}
       >
         <button
           onClick={() => setActiveTab('map')}
@@ -134,13 +134,13 @@ export const MapPage: React.FC = () => {
       {activeTab === 'map' ? (
         <>
           <div className="absolute flex items-center gap-x-2 rounded-[8px] border border-solid border-[#373740] bg-[rgba(79,79,89,0.16)]"
-               style={{ top: 188, left: 20, width: 353, padding: '8px 12px 8px 16px' }}>
+               style={{ top: 128, left: 20, width: 353, padding: '8px 12px 8px 16px' }}>
             <p className="text-[#6F6F7C] font-inter text-[16px] font-normal leading-[24px] tracking-[-0.128px]">
               Поиск по фильтрам
             </p>
           </div>
           
-          <div className="absolute" style={{ top: 271, left: 20, width: 353, height: 199 }}>
+          <div className="absolute" style={{ top: 211, left: 20, width: 353, height: 199 }}>
             <Image
               src="/assets/images/event-map.png"
               alt="Карта мероприятия"
@@ -151,11 +151,11 @@ export const MapPage: React.FC = () => {
           </div>
 
           <h2 className="absolute font-inter-tight text-[30px] font-normal leading-[110%] tracking-[-0.6px]"
-              style={{ top: 480, left: 40, width: 302 }}>
+              style={{ top: 420, left: 40, width: 302 }}>
             Условные обозначения
           </h2>
           
-          <div className="absolute flex justify-between" style={{ top: 533, left: 31, width: 334 }}>
+          <div className="absolute flex justify-between" style={{ top: 473, left: 31, width: 334 }}>
             <LegendItem gradient="linear-gradient(180deg, #832CE7 0%, #BE37D3 100%)" text="VIP зал" rotated />
             <LegendItem gradient="linear-gradient(180deg, #8521D6 0%, #A230AD 30.29%, #E7514D 66.35%, #FDD23B 100%)" text="сцена" rotated />
             <LegendItem gradient="linear-gradient(90deg, #7627AD 0%, #C44D43 100%)" text="вход" />
@@ -167,7 +167,7 @@ export const MapPage: React.FC = () => {
             onClick={() => setQRScanner(true)}
             className="absolute flex justify-center items-center rounded-[8px] text-center font-inter text-[17px] font-semibold leading-[24px] tracking-[-0.204px] text-white z-40 mb-24"
             style={{ 
-              top: 646, 
+              top: 586, 
               left: 20, 
               width: 353, 
               padding: '16px 24px',
@@ -178,7 +178,7 @@ export const MapPage: React.FC = () => {
           </button>
         </>
       ) : (
-        <div className="absolute" style={{ top: 158, left: 0, right: 0, bottom: 0 }}>
+        <div className="absolute" style={{ top: 98, left: 0, right: 0, bottom: 0 }}>
           <SchedulePage />
         </div>
       )}

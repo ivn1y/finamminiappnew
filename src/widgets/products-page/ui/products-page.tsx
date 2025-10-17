@@ -67,8 +67,8 @@ export const ProductsPage: React.FC = () => {
   ];
 
   return (
-    <div className="w-full bg-black flex justify-center overflow-x-hidden">
-      <div className="relative w-[393px] h-screen">
+    <div className="w-full bg-black flex justify-center overflow-x-hidden" style={{ paddingBottom: '109px' }}>
+      <div className="relative w-[393px]" style={{ minHeight: 'calc(100vh - 109px)' }}>
         {/* Background gradient ellipse */}
         <div className="absolute h-[536px] left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[393px] overflow-hidden">
           <div 
@@ -84,7 +84,7 @@ export const ProductsPage: React.FC = () => {
         {/* Scrollable content */}
         <div className="relative overflow-y-auto px-4" style={{ scrollBehavior: 'smooth', height: 'calc(100vh - 80px)' }}>
           {/* Header */}
-          <div className="mt-[120px] text-center">
+          <div className="mt-[60px] text-center">
             <h1 className="text-[30px] font-inter-tight text-white leading-tight tracking-[-0.6px]">
               Наши продукты
             </h1>

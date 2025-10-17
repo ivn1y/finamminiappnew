@@ -409,12 +409,12 @@ export const ProfilePage: React.FC = () => {
             onComplete={endProfileTour}
         />
       )}
-      <div className="relative" style={{ width: '393px', height: '1335px' }}>
+      <div className="relative" style={{ width: '393px', height: '1203px' }}>
         {/* Avatar */}
         <div
           style={{
             position: 'absolute',
-            top: '115px',
+            top: '55px',
             left: '126.8px',
             width: '139px',
             height: '184px',
@@ -437,7 +437,7 @@ export const ProfilePage: React.FC = () => {
         <div
           style={{
             position: 'absolute',
-            top: '98.41px',
+            top: '38.41px',
             left: '243.21px',
             width: '42.188px',
             height: '42.188px',
@@ -454,7 +454,7 @@ export const ProfilePage: React.FC = () => {
         <div
           style={{
             position: 'absolute',
-            top: '321px',
+            top: '261px',
             left: '27.8px',
             right: '29.2px',
             textAlign: 'center',
@@ -474,7 +474,7 @@ export const ProfilePage: React.FC = () => {
         <div
           style={{
             position: 'absolute',
-            top: '354px',
+            top: '294px',
             left: '27.8px',
             right: '29.2px',
             textAlign: 'center',
@@ -495,7 +495,7 @@ export const ProfilePage: React.FC = () => {
           ref={credentialsFormRef}
           style={{
             position: 'absolute',
-            top: '418px',
+            top: '358px',
             left: '20px',
             right: '20px',
           }}
@@ -507,7 +507,7 @@ export const ProfilePage: React.FC = () => {
         <div
           style={{
             position: 'absolute',
-            top: '758px',
+            top: '698px',
             left: '20px',
             right: '20px',
           }}
@@ -519,7 +519,7 @@ export const ProfilePage: React.FC = () => {
         <div
           style={{
             position: 'absolute',
-            top: '980px',
+            top: '920px',
             left: '20px',
             right: '20px',
           }}
