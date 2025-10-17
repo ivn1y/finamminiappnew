@@ -171,7 +171,7 @@ export const HomePage: React.FC = () => {
 
   const handleTelegramLinkClick = () => {
     completeTelegramQuest();
-    window.open('https://t.me/finam_invest', '_blank');
+    window.open('https://t.me/finam_collab', '_blank');
   };
 
   // Mock data for progress and badges, will be replaced with real data

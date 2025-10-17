@@ -15,7 +15,7 @@ export const TelegramCommunityCTA: React.FC<TelegramCommunityCTAProps> = ({
   variant = 'default'
 }) => {
   const handleJoinCommunity = () => {
-    window.open('https://t.me/finam_invest', '_blank');
+    window.open('https://t.me/finam_collab', '_blank');
   };
 
   if (variant === 'compact') {
