@@ -132,24 +132,24 @@ const SendIcon: React.FC = () => (
 
 // Компонент аватара пользователя
 const UserAvatar: React.FC<{ userRole: string }> = ({ userRole }) => {
-  const roleImageMapping: Record<string, string> = {
-    trader: '/assets/roles/trader.png',
-    startup: '/assets/roles/startaper.jpg',
-    partner: '/assets/roles/partner.png',
-    guest: '/assets/roles/guest.png',
-    expert: '/assets/roles/expert.png',
+  const roleIconMapping: Record<string, string> = {
+    trader: '/assets/icons/assistant/Trader.svg',
+    startup: '/assets/icons/assistant/Startuper.svg',
+    partner: '/assets/icons/assistant/Partner.svg',
+    guest: '/assets/icons/assistant/Guest.svg',
+    expert: '/assets/icons/assistant/Expert.svg',
   };
 
-  const roleImage = roleImageMapping[userRole] || '/assets/roles/guest.png';
+  const roleIcon = roleIconMapping[userRole] || '/assets/icons/assistant/Guest.svg';
   
   return (
-    <div className="w-8 h-8 rounded-[12px] border border-[#7b36b7] overflow-hidden">
+    <div className="w-8 h-8 rounded-[12px] border border-[#7b36b7] overflow-hidden bg-white flex items-center justify-center">
       <Image
-        src={roleImage}
+        src={roleIcon}
         alt={`${userRole} avatar`}
-        width={32}
-        height={32}
-        className="w-full h-full object-cover"
+        width={24}
+        height={24}
+        className="w-6 h-6"
       />
     </div>
   );
@@ -158,13 +158,13 @@ const UserAvatar: React.FC<{ userRole: string }> = ({ userRole }) => {
 // Компонент аватара бота
 const BotAvatar: React.FC = () => {
   return (
-    <div className="w-8 h-8 rounded-[12px] border border-[#7b36b7] overflow-hidden flex items-center justify-center">
+    <div className="w-8 h-8 rounded-[12px] border border-[#7b36b7] overflow-hidden bg-white flex items-center justify-center">
       <Image
-        src="/assets/logos/logo.png"
+        src="/assets/icons/assistant/Bot.svg"
         alt="Finam AI Assistant"
-        width={22.584}
-        height={20.8}
-        style={{ flexShrink: 0 }}
+        width={24}
+        height={24}
+        className="w-6 h-6"
       />
     </div>
   );

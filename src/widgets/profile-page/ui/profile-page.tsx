@@ -256,11 +256,11 @@ export const ProfilePage: React.FC = () => {
   if (!role) return null;
 
   const roleImageMapping: Record<string, string> = {
-    trader: '/assets/roles/trader.png',
-    startup: '/assets/roles/startaper.jpg',
-    partner: '/assets/roles/partner.png',
-    guest: '/assets/roles/guest.png',
-    expert: '/assets/roles/expert.png',
+    trader: '/assets/icons/assistant/Trader.svg',
+    startup: '/assets/icons/assistant/Startuper.svg',
+    partner: '/assets/icons/assistant/Partner.svg',
+    guest: '/assets/icons/assistant/Guest.svg',
+    expert: '/assets/icons/assistant/Expert.svg',
   };
 
   const roleImage = roleImageMapping[user.role] || '/assets/avatars/characters/placeholder.svg';
