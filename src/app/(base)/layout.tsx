@@ -27,8 +27,6 @@ export default function BaseLayout({
                   !isUserDataInputModalOpen &&
                   !isProductModalOpen;
 
-  const containerStyle = showNav ? { paddingBottom: '109px' } : undefined;
-
   // Проверка онбординга
   useEffect(() => {
     // Небольшая задержка для инициализации store
@@ -55,7 +53,7 @@ export default function BaseLayout({
   }, [isOnboardingComplete, pathname, router]);
 
   return (
-    <div className="relative min-h-screen bg-black text-white" style={containerStyle}>
+    <div className="relative min-h-screen bg-black text-white">
       {children}
       {showNav && <BottomNavigation activeTab={pathname} isBlocked={isAnyTourActive} />}
     </div>
