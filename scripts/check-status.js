@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 
-const { execSync } = require('child_process');
+const os = require('os');
 const fs = require('fs');
 const path = require('path');
-const os = require('os');
+const { execSync } = require('child_process');
 
 // Цвета для консоли
 const colors = {
@@ -35,154 +35,102 @@ function getLocalIP() {
 function checkPortStatus(port) {
   try {
     const output = execSync(`lsof -Pi :${port} -sTCP:LISTEN`, { encoding: 'utf8' });
-    return {
-      running: true,
-      process: output.trim()
-    };
+    return output.trim().length > 0;
   } catch (error) {
-    return {
-      running: false,
-      process: null
-    };
+    return false;
   }
 }
 
 function checkHTTPStatus(url) {
   try {
-    const output = execSync(`curl -s -o /dev/null -w "%{http_code}" "${url}"`, { encoding: 'utf8' });
-    return {
-      status: parseInt(output.trim()),
-      accessible: parseInt(output.trim()) < 400
-    };
+    const output = execSync(`curl -s -o /dev/null -w "%{http_code}" ${url}`, { encoding: 'utf8' });
+    return output.trim();
   } catch (error) {
-    return {
-      status: 0,
-      accessible: false
-    };
+    return '000';
   }
 }
 
 function loadStatusFile() {
   const statusPath = path.join(__dirname, '..', 'local-dev-status.json');
   try {
-    if (fs.existsSync(statusPath)) {
-      const content = fs.readFileSync(statusPath, 'utf8');
-      return JSON.parse(content);
-    }
+    const content = fs.readFileSync(statusPath, 'utf8');
+    return JSON.parse(content);
   } catch (error) {
-    // Игнорируем ошибки чтения файла
-  }
-  return null;
-}
-
-function formatStatus(status) {
-  if (status.running) {
-    return `${colors.green}✅ Запущен${colors.reset}`;
-  } else {
-    return `${colors.red}❌ Остановлен${colors.reset}`;
-  }
-}
-
-function formatHTTPStatus(httpStatus) {
-  if (httpStatus.accessible) {
-    return `${colors.green}✅ HTTP ${httpStatus.status}${colors.reset}`;
-  } else {
-    return `${colors.red}❌ Недоступен${colors.reset}`;
+    return null;
   }
 }
 
 function main() {
-  console.log(`${colors.bright}${colors.cyan}📊 Статус локальных сервисов${colors.reset}\n`);
+  console.log(`${colors.bright}${colors.cyan}🔍 Проверка статуса локального сервера${colors.reset}\n`);
   
   const ip = getLocalIP();
   const frontendPort = 3000;
   const apiPort = 3001;
   
-  // Проверяем статус портов
-  const frontendPortStatus = checkPortStatus(frontendPort);
-  const apiPortStatus = checkPortStatus(apiPort);
+  // Проверяем порты
+  const frontendRunning = checkPortStatus(frontendPort);
+  const apiRunning = checkPortStatus(apiPort);
   
   // Проверяем HTTP статус
-  const frontendHTTP = checkHTTPStatus(`http://localhost:${frontendPort}`);
-  const apiHTTP = checkHTTPStatus(`http://localhost:${apiPort}`);
+  const frontendStatus = frontendRunning ? checkHTTPStatus(`http://localhost:${frontendPort}`) : '000';
+  const apiStatus = apiRunning ? checkHTTPStatus(`http://localhost:${apiPort}/api/health`) : '000';
   
-  // Загружаем файл статуса
-  const statusFile = loadStatusFile();
+  console.log(`${colors.blue}📡 Сетевые адреса:${colors.reset}`);
+  console.log(`   💻 Локальный:     ${colors.green}http://localhost:${frontendPort}${colors.reset}`);
+  console.log(`   📱 Мобильный:     ${colors.green}http://${ip}:${frontendPort}${colors.reset}`);
+  console.log(`   🔌 API сервер:    ${colors.green}http://localhost:${apiPort}${colors.reset}`);
+  console.log("");
   
-  console.log(`${colors.blue}🔌 Статус портов:${colors.reset}`);
-  console.log(`   Frontend (${frontendPort}): ${formatStatus(frontendPortStatus)}`);
-  console.log(`   API (${apiPort}):         ${formatStatus(apiPortStatus)}`);
-  console.log('');
+  console.log(`${colors.blue}📊 Статус сервисов:${colors.reset}`);
   
-  console.log(`${colors.blue}🌐 HTTP статус:${colors.reset}`);
-  console.log(`   Frontend: ${formatHTTPStatus(frontendHTTP)}`);
-  console.log(`   API:      ${formatHTTPStatus(apiHTTP)}`);
-  console.log('');
-  
-  console.log(`${colors.blue}📡 Доступные адреса:${colors.reset}`);
-  console.log(`   💻 Локальный фронтенд:  ${colors.green}http://localhost:${frontendPort}${colors.reset}`);
-  console.log(`   📱 Мобильный фронтенд:  ${colors.green}http://${ip}:${frontendPort}${colors.reset}`);
-  console.log(`   🔌 API сервер:          ${colors.green}http://localhost:${apiPort}${colors.reset}`);
-  console.log('');
-  
-  if (statusFile) {
-    console.log(`${colors.blue}📄 Информация из файла статуса:${colors.reset}`);
-    console.log(`   Режим: ${statusFile.mode || 'неизвестно'}`);
-    console.log(`   Время запуска: ${statusFile.timestamp || 'неизвестно'}`);
-    console.log(`   Статус фронтенда: ${statusFile.frontend?.status || 'неизвестно'}`);
-    console.log(`   Статус API: ${statusFile.api?.status || 'неизвестно'}`);
-    console.log('');
+  // Фронтенд
+  if (frontendRunning) {
+    const statusColor = frontendStatus === '200' ? colors.green : colors.yellow;
+    console.log(`   🖥️  Фронтенд:      ${statusColor}✅ Запущен${colors.reset} (HTTP ${frontendStatus})`);
+  } else {
+    console.log(`   🖥️  Фронтенд:      ${colors.red}❌ Остановлен${colors.reset}`);
   }
   
-  // Проверяем процессы
-  if (frontendPortStatus.running) {
-    console.log(`${colors.blue}🔍 Процесс фронтенда:${colors.reset}`);
-    console.log(`   ${frontendPortStatus.process}`);
-    console.log('');
+  // API
+  if (apiRunning) {
+    const statusColor = apiStatus === '200' ? colors.green : colors.yellow;
+    console.log(`   🔌 API сервер:    ${statusColor}✅ Запущен${colors.reset} (HTTP ${apiStatus})`);
+  } else {
+    console.log(`   🔌 API сервер:    ${colors.red}❌ Остановлен${colors.reset}`);
   }
   
-  if (apiPortStatus.running) {
-    console.log(`${colors.blue}🔍 Процесс API:${colors.reset}`);
-    console.log(`   ${apiPortStatus.process}`);
-    console.log('');
+  console.log("");
+  
+  // Показываем информацию из файла статуса
+  const statusData = loadStatusFile();
+  if (statusData) {
+    console.log(`${colors.blue}📋 Информация о сессии:${colors.reset}`);
+    console.log(`   🕐 Время запуска:  ${colors.white}${new Date(statusData.timestamp).toLocaleString()}${colors.reset}`);
+    console.log(`   🔧 Режим:         ${colors.white}${statusData.mode || 'unknown'}${colors.reset}`);
+    console.log(`   📱 IP адрес:      ${colors.white}${statusData.network?.ip || ip}${colors.reset}`);
+    console.log("");
   }
   
   // Рекомендации
-  console.log(`${colors.yellow}💡 Рекомендации:${colors.reset}`);
-  
-  if (!frontendPortStatus.running) {
-    console.log(`   • Запустите фронтенд: ${colors.cyan}./start-local-universal.sh${colors.reset}`);
+  if (!frontendRunning || !apiRunning) {
+    console.log(`${colors.yellow}💡 Рекомендации:${colors.reset}`);
+    if (!frontendRunning) {
+      console.log(`   • Запустите фронтенд: ${colors.cyan}npm start${colors.reset}`);
+    }
+    if (!apiRunning) {
+      console.log(`   • Запустите API: ${colors.cyan}npm run mock-api${colors.reset}`);
+    }
+    console.log(`   • Или запустите все сразу: ${colors.cyan}npm start${colors.reset}`);
+  } else {
+    console.log(`${colors.green}🎉 Все сервисы работают!${colors.reset}`);
+    console.log(`${colors.white}📱 Для мобильного доступа отсканируйте QR код: ${colors.cyan}npm run qr${colors.reset}`);
   }
   
-  if (!apiPortStatus.running) {
-    console.log(`   • Запустите API: ${colors.cyan}npm run mock-api${colors.reset}`);
-  }
-  
-  if (frontendPortStatus.running && apiPortStatus.running) {
-    console.log(`   • Все сервисы запущены и готовы к работе!`);
-    console.log(`   • Для остановки используйте Ctrl+C в терминале с серверами`);
-  }
-  
-  console.log('');
-  
-  // Проверяем сетевые интерфейсы
-  console.log(`${colors.blue}🌐 Сетевые интерфейсы:${colors.reset}`);
-  const interfaces = os.networkInterfaces();
-  Object.keys(interfaces).forEach(name => {
-    const iface = interfaces[name];
-    iface.forEach(addr => {
-      if (addr.family === 'IPv4' && !addr.internal) {
-        console.log(`   ${name}: ${addr.address}`);
-      }
-    });
-  });
-  
-  console.log('');
+  console.log("");
 }
 
 if (require.main === module) {
   main();
 }
 
-module.exports = { checkPortStatus, checkHTTPStatus, getLocalIP };
-
+module.exports = { getLocalIP, checkPortStatus, checkHTTPStatus, loadStatusFile };

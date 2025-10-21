@@ -33,13 +33,12 @@ interface ChatKB {
   welcomeMessage: string;
 }
 
-const FinamLogoIcon = () => (
+const FinamLogoIcon = ({ className }: { className?: string }) => (
 	<svg
 		xmlns='http://www.w3.org/2000/svg'
-		width='60'
-		height='56'
 		viewBox='0 0 60 56'
 		fill='none'
+		className={className}
 	>
 		<path
 			d='M8.09302 24.5397C2.68642 29.1376 0.511628 34.0209 0 36.2518L6.27907 41.1318C6.7907 38.901 8.96549 34.0176 14.3721 29.4197C16.8515 27.3111 19.6377 26.2635 22.6284 25.1389C26.1591 23.8113 29.9747 22.3765 33.907 18.9625C42.4186 11.5727 44.5116 4.88005 44.5116 4.88005L38.2326 0C38.2326 0 36.1395 6.69264 27.6279 14.0824C23.6956 17.4964 19.88 18.9312 16.3493 20.2588C13.3587 21.3834 10.5725 22.4311 8.09302 24.5397Z'
@@ -133,23 +132,22 @@ const SendIcon: React.FC = () => (
 // Компонент аватара пользователя
 const UserAvatar: React.FC<{ userRole: string }> = ({ userRole }) => {
   const roleIconMapping: Record<string, string> = {
-    trader: '/assets/icons/assistant/Trader.svg',
-    startup: '/assets/icons/assistant/Startuper.svg',
-    partner: '/assets/icons/assistant/Partner.svg',
-    guest: '/assets/icons/assistant/Guest.svg',
-    expert: '/assets/icons/assistant/Expert.svg',
+    trader: '/assets/icons/assistant/Trader.png',
+    startup: '/assets/icons/assistant/Startuper.png',
+    partner: '/assets/icons/assistant/Partner.png',
+    guest: '/assets/icons/assistant/Guest.png',
+    expert: '/assets/icons/assistant/Expert.png',
   };
 
-  const roleIcon = roleIconMapping[userRole] || '/assets/icons/assistant/Guest.svg';
+  const roleIcon = roleIconMapping[userRole] || '/assets/icons/assistant/Guest.png';
   
   return (
-    <div className="w-8 h-8 rounded-[12px] border border-[#7b36b7] overflow-hidden bg-white flex items-center justify-center">
+    <div className="relative h-8 w-8 overflow-hidden rounded-[12px] border border-[#7b36b7] bg-[#151519]">
       <Image
         src={roleIcon}
         alt={`${userRole} avatar`}
-        width={24}
-        height={24}
-        className="w-6 h-6"
+        fill
+        className="object-cover"
       />
     </div>
   );
@@ -158,14 +156,8 @@ const UserAvatar: React.FC<{ userRole: string }> = ({ userRole }) => {
 // Компонент аватара бота
 const BotAvatar: React.FC = () => {
   return (
-    <div className="w-8 h-8 rounded-[12px] border border-[#7b36b7] overflow-hidden bg-white flex items-center justify-center">
-      <Image
-        src="/assets/icons/assistant/Bot.svg"
-        alt="Finam AI Assistant"
-        width={24}
-        height={24}
-        className="w-6 h-6"
-      />
+    <div className="flex h-8 w-8 items-center justify-center rounded-[12px] border border-solid border-[#CD81FF] bg-[#151519] p-1.5">
+      <FinamLogoIcon className="h-full w-full" />
     </div>
   );
 };
@@ -379,8 +371,8 @@ export const ChatPage: React.FC = () => {
 
 						{/* Content Block */}
 						<div className='absolute top-[242px] left-1/2 -translate-x-1/2 flex flex-col items-center w-full'>
-							<FinamLogoIcon />
-							<h1 className='mt-[7px] w-[352px] font-inter-tight text-white text-[30px] font-normal leading-[110%] tracking-[-0.6px] text-center'>
+							<FinamLogoIcon className="h-[56px] w-[60px]" />
+							<h1 className='mt-[7px] w-[352px] font-inter text-white text-[30px] font-normal leading-[110%] tracking-[-0.6px] text-center'>
 								Привет, я AI - Ассиcтент
 								<span className='block'>Finam</span>
 							</h1>
@@ -397,7 +389,7 @@ export const ChatPage: React.FC = () => {
 									value={inputText}
 									onChange={e => setInputText(e.target.value)}
 									onKeyPress={handleKeyPress}
-									placeholder={hasUserData ? 'Что такое Collab?' : 'Сначала заполните данные в профиле'}
+									placeholder={hasUserData ? 'Напишите сообщение...' : 'Сначала заполните данные в профиле'}
 									className='w-full h-full rounded-[8px] border border-[#373740] bg-[rgba(79,79,89,0.16)] p-4 pr-[56px] text-base font-normal leading-6 tracking-[-0.128px] text-white placeholder:text-[#6F6F7C] focus-visible:ring-offset-0 focus:outline-none focus:border-[#FFE479] font-inter'
 									readOnly={!hasUserData}
 									disabled={!hasUserData}
@@ -426,7 +418,7 @@ export const ChatPage: React.FC = () => {
 			<div className='w-full bg-black flex justify-center overflow-x-hidden'>
 				<div className='bg-black w-[393px] relative font-sans text-white overflow-x-hidden' style={{ height: '816px' }}>
 					{/* Messages Container */}
-					<div className='absolute top-0 left-0 right-0 bottom-[180px] overflow-y-auto'>
+					<div className='absolute top-0 left-0 right-0 bottom-[260px] overflow-y-auto'>
 						<div className='px-5 pt-[172px] pb-4 space-y-5'>
 							{messages.map(message => (
 								<div
@@ -445,11 +437,11 @@ export const ChatPage: React.FC = () => {
 							<div
 								className={
 									message.isUser
-										? 'flex max-w-[257px] bg-[#59307c] rounded-[12px_4px_12px_12px] p-[12px_10px_10px_10px] justify-center items-center gap-2.5'
-										: 'flex max-w-[262px] items-center justify-center gap-2.5 rounded-[12px] bg-[#151519] p-[12px_10px]'
+										? 'flex max-w-[248px] flex-col items-end gap-2.5 rounded-br-lg rounded-bl-lg rounded-tl-lg rounded-tr-sm bg-[#59307C] px-[14px] py-[10px]'
+										: 'flex max-w-[202px] items-center justify-center gap-2.5 rounded-tl-[4px] rounded-tr-[12px] rounded-br-[12px] rounded-bl-[12px] bg-[#151519] px-[10px] py-[12px]'
 								}
 							>
-								<p className={`text-white font-inter font-normal tracking-[-0.056px] whitespace-pre-line ${
+								<p className={`whitespace-pre-line font-normal tracking-[-0.056px] text-white ${
 									message.isUser 
 										? 'text-[14px] leading-[20px]' 
 										: 'text-sm leading-5'
@@ -494,15 +486,15 @@ export const ChatPage: React.FC = () => {
 					</div>
 
 					{/* Input Block */}
-					<div className='absolute bottom-[109px] left-0 right-0 px-5'>
+					<div className='absolute bottom-[129px] left-0 right-0 px-5'>
 						<div className='relative w-full h-[56px]'>
 							<Input
 								type='text'
 								value={inputText}
 								onChange={e => setInputText(e.target.value)}
 								onKeyPress={handleKeyPress}
-								placeholder={hasUserData ? 'Что такое Collab?' : 'Сначала заполните данные в профиле'}
-								className='w-full h-full rounded-[8px] border border-[#373740] bg-[rgba(79,79,89,0.16)] p-4 pr-[56px] text-base font-normal leading-6 tracking-[-0.128px] text-white placeholder:text-[#6F6F7C] focus-visible:ring-offset-0 focus:outline-none focus:border-[#FFE479] font-inter'
+								placeholder={hasUserData ? 'Напишите сообщение...' : 'Сначала заполните данные в профиле'}
+								className='w-full h-full rounded-[8px] border border-[#373740] bg-[rgba(79,79,89,0.16)] p-4 pr-[56px] text-base font-normal leading-6 tracking-[-0.128px] text-white placeholder:text-[#6F6F7C] focus-visible:ring-offset-0 focus:outline-none focus:border-[#FFE479]'
 								readOnly={!hasUserData}
 							/>
 							{inputText.trim() && hasUserData && (
