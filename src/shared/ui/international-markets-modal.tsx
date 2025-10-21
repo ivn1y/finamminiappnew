@@ -44,7 +44,7 @@ export const InternationalMarketsModal: React.FC<InternationalMarketsModalProps>
         <div className="flex justify-center pt-[27px] pb-[7px] px-[7px]">
           <div className="w-[120px] h-[120px] relative">
             <img
-              src="/assets/products/mezhdunarodnyerinki.png?v=2"
+              src="/assets/products/mezhdunarodnyerinki.png?v=3"
               alt="Международные рынки"
               className="w-full h-full object-cover rounded-lg"
             />

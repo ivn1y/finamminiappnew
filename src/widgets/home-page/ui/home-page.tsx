@@ -261,8 +261,8 @@ export const HomePage: React.FC = () => {
 
   const badges = [
     {
-      imgSrc: '/assets/badges/researcher.png',
-      grayImgSrc: '/assets/badges-gray/researcher gray.png',
+      imgSrc: '/assets/badges/researcher.png?v=2',
+      grayImgSrc: '/assets/badges-gray/researcher gray.png?v=2',
       title: 'ИССЛЕДОВАТЕЛЬ',
       displayTitle: 'Исследователь',
       achieved: userBadges.includes('researcher'),
@@ -270,8 +270,8 @@ export const HomePage: React.FC = () => {
       howToEarn: 'Заполните профиль полностью'
     },
     {
-      imgSrc: '/assets/badges/market-explorer.png',
-      grayImgSrc: '/assets/badges-gray/market-explorer gray.png',
+      imgSrc: '/assets/badges/market-explorer.png?v=2',
+      grayImgSrc: '/assets/badges-gray/market-explorer gray.png?v=2',
       title: 'MARKET EXPLORER',
       displayTitle: 'Market Explorer',
       achieved: userBadges.includes('market-explorer'),
@@ -279,8 +279,8 @@ export const HomePage: React.FC = () => {
       howToEarn: 'Отсканируйте QR-код на карте'
     },
     {
-      imgSrc: '/assets/badges/risk-manager.png',
-      grayImgSrc: '/assets/badges-gray/risk-manager gray.png',
+      imgSrc: '/assets/badges/risk-manager.png?v=2',
+      grayImgSrc: '/assets/badges-gray/risk-manager gray.png?v=2',
       title: 'RISK MANAGER',
       displayTitle: 'Risk Manager',
       achieved: userBadges.includes('risk-manager'),
@@ -288,8 +288,8 @@ export const HomePage: React.FC = () => {
       howToEarn: 'Выполните Telegram квест'
     },
     {
-      imgSrc: '/assets/badges/algo-creator.png',
-      grayImgSrc: '/assets/badges-gray/algo-creator gray.png',
+      imgSrc: '/assets/badges/algo-creator.png?v=2',
+      grayImgSrc: '/assets/badges-gray/algo-creator gray.png?v=2',
       title: 'ALGO CREATOR',
       displayTitle: 'Algo Creator',
       achieved: userBadges.includes('algo-creator'),

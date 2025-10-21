@@ -44,7 +44,7 @@ export const TraderDiaryModal: React.FC<TraderDiaryModalProps> = ({ isOpen, onCl
         <div className="flex justify-center pt-[12px] pb-[7px] px-[7px]">
           <div className="w-[120px] h-[120px] relative">
             <img
-              src="/assets/products/dnevniktradera.png?v=2"
+              src="/assets/products/dnevniktradera.png?v=3"
               alt="Дневник трейдера"
               className="w-full h-full object-cover rounded-lg"
             />
