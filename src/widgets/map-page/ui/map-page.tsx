@@ -56,7 +56,7 @@ export const MapPage: React.FC = () => {
 
   if (!eventMode) {
     return (
-      <div className="min-h-screen bg-black p-6 pb-24 flex items-center justify-center">
+      <div className="min-h-screen bg-black p-6 flex items-center justify-center">
         <div className="text-center">
           <QrCode className="w-16 h-16 text-gray-400 mx-auto mb-4" />
           <h2 className="text-xl font-semibold text-white mb-2">Карта недоступна</h2>

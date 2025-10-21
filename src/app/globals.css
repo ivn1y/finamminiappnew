@@ -50,6 +50,16 @@
   will-change: transform; /* Optimize for animations */
 }
 
+.text-gradient {
+  background: linear-gradient(90deg, var(--gradients-text-small-start) 6.62%, var(--gradients-text-small-end) 100%);
+  -webkit-background-clip: text;
+  -moz-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  -moz-text-fill-color: transparent;
+  text-fill-color: transparent;
+}
+
 /* Loading states */
 .loading-spinner {
   animation: spin 1s linear infinite;
