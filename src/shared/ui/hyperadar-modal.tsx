@@ -44,7 +44,7 @@ export const HypeRadarModal: React.FC<HypeRadarModalProps> = ({ isOpen, onClose 
         <div className="flex justify-center pt-[12px] pb-[7px] px-[7px]">
           <div className="w-[120px] h-[120px] relative">
             <img
-              src="/assets/products/HypeRadar.png?v=2"
+              src="/assets/products/HypeRadar.png?v=3"
               alt="Hype Radar"
               className="w-full h-full object-cover rounded-lg"
             />
