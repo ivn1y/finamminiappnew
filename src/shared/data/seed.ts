@@ -20,7 +20,7 @@ export const roleContent: RoleContent[] = [
     id: 'trader',
     title: 'Трейдер',
     subtitle: 'Охотник точной сделки',
-    image: '/assets/icons/assistant/Trader.svg',
+    image: '/assets/roles/trader.png',
     description: 'Его сила — в хладнокровии и точности, а слабость — если промахнулся, добыча уходит, и приходится ждать новый шанс.',
     goals7d: [
       'Запустить стратегию на капитале',
@@ -61,7 +61,7 @@ export const roleContent: RoleContent[] = [
     id: 'startup',
     title: 'Стартап',
     subtitle: 'Изобретатель будущего',
-    image: '/assets/icons/assistant/Startuper.svg',
+    image: '/assets/roles/startaper.jpg',
     description: 'Боец первой линии, который идёт в лоб на рынок с верой в свой продукт. Его каждый удар мечом открывает путь для команды и инвесторов.',
     goals7d: [
       'Найти пилота с Финам',
@@ -102,7 +102,7 @@ export const roleContent: RoleContent[] = [
     id: 'expert',
     title: 'Эксперт',
     subtitle: 'Мудрец-наставник',
-    image: '/assets/icons/assistant/Expert.svg',
+    image: '/assets/roles/expert.png',
     description: 'Визионер, чьи заклинания построены на опыте. Он читает скрытые знаки рынка и превращает данные в мощные заклинания.',
     goals7d: [
       'Стать ментором/трекером',
@@ -143,7 +143,7 @@ export const roleContent: RoleContent[] = [
     id: 'partner',
     title: 'Партнёр',
     subtitle: 'Строитель экосистемы',
-    image: '/assets/icons/assistant/Partner.svg',
+    image: '/assets/roles/partner.png',
     description: 'Это хранитель, который поддерживает светом и верой. Его сила в том, чтобы укреплять союз и давать команде шанс идти дальше.',
     goals7d: [
       'Запустить white-label/франшизу',
@@ -184,7 +184,7 @@ export const roleContent: RoleContent[] = [
     id: 'guest',
     title: 'Гость',
     subtitle: 'Исследователь возможностей',
-    image: '/assets/icons/assistant/Guest.svg',
+    image: '/assets/roles/guest.png',
     description: 'Это тень среди людей, незаметный наблюдатель, который видит больше, чем кажется. Он слушает молча, выбирает момент и уходит так же тихо.',
     goals7d: [
       'Изучить платформу Collab',

@@ -255,16 +255,6 @@ export const ProfilePage: React.FC = () => {
   const role = roleContent.find(r => r.id === user.role);
   if (!role) return null;
 
-  const roleImageMapping: Record<string, string> = {
-    trader: '/assets/icons/assistant/Trader.svg',
-    startup: '/assets/icons/assistant/Startuper.svg',
-    partner: '/assets/icons/assistant/Partner.svg',
-    guest: '/assets/icons/assistant/Guest.svg',
-    expert: '/assets/icons/assistant/Expert.svg',
-  };
-
-  const roleImage = roleImageMapping[user.role] || '/assets/avatars/characters/placeholder.svg';
-
   const allBadges = getAllBadges();
   const userBadges = allBadges.filter(badge => user.badges.includes(badge.id));
   const lockedBadges = allBadges.filter(badge => !user.badges.includes(badge.id));
@@ -425,7 +415,7 @@ export const ProfilePage: React.FC = () => {
           }}
         >
           <Image
-            src={roleImage}
+            src={role.image}
             alt={role.title}
             width={139}
             height={184}
