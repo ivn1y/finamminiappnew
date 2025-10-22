@@ -226,7 +226,7 @@ export const ProfilePage: React.FC = () => {
 
   if (!user || !user.role) {
     return (
-      <div className="min-h-screen bg-gray-50 p-6 pb-24 flex items-center justify-center">
+      <div className="min-h-screen bg-gray-50 p-6 flex items-center justify-center">
         <Card className="w-full max-w-md">
           <CardHeader>
             <CardTitle className="text-center">Пользователь не найден</CardTitle>

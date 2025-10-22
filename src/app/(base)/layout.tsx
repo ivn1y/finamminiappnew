@@ -27,7 +27,6 @@ export default function BaseLayout({
                   !isUserDataInputModalOpen &&
                   !isProductModalOpen;
 
-
   // Проверка онбординга
   useEffect(() => {
     // Небольшая задержка для инициализации store

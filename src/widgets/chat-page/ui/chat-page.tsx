@@ -418,7 +418,7 @@ export const ChatPage: React.FC = () => {
 			<div className='w-full bg-black flex justify-center overflow-x-hidden'>
 				<div className='bg-black w-[393px] relative font-sans text-white overflow-x-hidden' style={{ height: '816px' }}>
 					{/* Messages Container */}
-					<div className='absolute top-0 left-0 right-0 bottom-[260px] overflow-y-auto'>
+					<div className='absolute top-0 left-0 right-0 bottom-[220px] overflow-y-auto'>
 						<div className='px-5 pt-[172px] pb-4 space-y-5'>
 							{messages.map(message => (
 								<div
@@ -486,7 +486,7 @@ export const ChatPage: React.FC = () => {
 					</div>
 
 					{/* Input Block */}
-					<div className='absolute bottom-[129px] left-0 right-0 px-5'>
+					<div className='absolute bottom-[109px] left-1/2 -translate-x-1/2 w-[353px]'>
 						<div className='relative w-full h-[56px]'>
 							<Input
 								type='text'

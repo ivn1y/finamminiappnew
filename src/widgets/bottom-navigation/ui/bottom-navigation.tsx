@@ -31,17 +31,10 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({ activeTab, i
 
   return (
     <nav 
-      className="bottom-navigation fixed bottom-0 left-0 right-0 z-50 flex justify-center pb-2" 
-      style={{ 
-        position: 'fixed',
-        bottom: 0,
-        left: 0,
-        right: 0,
-        zIndex: 50
-      }}
+      className="bottom-navigation fixed bottom-0 left-0 right-0 z-50 flex justify-center"
     >
       <div 
-        className="flex w-[353px] h-[69px] justify-center items-center flex-shrink-0 rounded-[12px] bg-[#0D0512] pt-[2px] px-[12px] pb-[10px]"
+        className="flex w-[353px] h-[69px] items-center justify-between flex-shrink-0 rounded-[12px] bg-[#0D0512] pt-[2px] px-[12px] pb-[10px]"
         style={{
           opacity: isBlocked ? 0.5 : 1
         }}
@@ -53,20 +46,20 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({ activeTab, i
             return (
               <div
                 key={tab.id}
-                className={`flex flex-1 flex-col items-center justify-center text-center transition-colors cursor-not-allowed ${
+                className={`flex w-[50px] h-[57px] shrink-0 flex-col items-center justify-center text-center transition-colors cursor-not-allowed ${
                   isActive 
-                    ? 'text-white' 
+                    ? '' 
                     : 'text-gray-400'
                 }`}
               >
-                <div className="w-8 h-8 mb-0.5 flex items-center justify-center">
+                <div className="w-[50px] h-[50px] mb-[-5px] flex items-center justify-center">
                   <img 
                     src={tab.icon} 
                     alt={tab.label} 
-                    className="w-8 h-8 object-contain block"
+                    className="w-[80%] h-[80%] object-contain block"
                   />
                 </div>
-                <span className="text-[10px] font-normal leading-[14px] text-inherit">
+                <span className={`text-[9px] font-normal leading-[12px] ${isActive ? 'text-gradient' : 'text-inherit'}`}>
                   {tab.label}
                 </span>
               </div>
@@ -78,20 +71,20 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({ activeTab, i
               key={tab.id}
               href={tab.href}
               onClick={handleLinkClick}
-              className={`flex flex-1 flex-col items-center justify-center text-center transition-colors ${
+              className={`flex w-[50px] h-[57px] shrink-0 flex-col items-center justify-center text-center transition-colors ${
                 isActive 
-                  ? 'text-white' 
+                  ? '' 
                   : 'text-gray-400 hover:text-white'
               }`}
             >
-              <div className="w-8 h-8 mb-0.5 flex items-center justify-center">
+              <div className="w-[50px] h-[50px] mb-[-5px] flex items-center justify-center">
                 <img 
                   src={tab.icon} 
                   alt={tab.label} 
-                  className="w-8 h-8 object-contain block"
+                  className="w-[80%] h-[80%] object-contain block"
                 />
               </div>
-              <span className="text-[10px] font-normal leading-[14px] text-inherit">
+              <span className={`text-[9px] font-normal leading-[12px] ${isActive ? 'text-gradient' : 'text-inherit'}`}>
                 {tab.label}
               </span>
             </Link>
