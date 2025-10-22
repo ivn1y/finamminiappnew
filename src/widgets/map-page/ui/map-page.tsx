@@ -146,7 +146,7 @@ export const MapPage: React.FC = () => {
                 minScale={1}
                 maxScale={8}
                 panning={{
-                  wheel: false,
+                  wheelPanning: false,
                 }}
                 doubleClick={{
                   disabled: true,
