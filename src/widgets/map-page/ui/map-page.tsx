@@ -3,9 +3,10 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
+import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
 import { useAppStore } from '@/shared/store/app-store';
 import { eventData } from '@/shared/data/seed';
-import { QrCode, CheckCircle } from 'lucide-react';
+import { QrCode, CheckCircle, Maximize, X } from 'lucide-react';
 import { Button } from '@/shared/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/shared/ui/dialog';
 import { QRScanner } from '@/features/qr-scanner';
@@ -47,6 +48,7 @@ export const MapPage: React.FC = () => {
   const [lastPrize, setLastPrize] = useState('');
   const [selectedZone, setSelectedZone] = useState<any>(null);
   const [activeTab, setActiveTab] = useState<'map' | 'schedule'>('map');
+  const [isMapFullScreen, setIsMapFullScreen] = useState(false);
 
   useEffect(() => {
     if (showScheduleTour) {
@@ -97,7 +99,7 @@ export const MapPage: React.FC = () => {
 
   return (
     <div className="w-full bg-black flex justify-center overflow-x-hidden">
-      <div className="bg-black w-[393px] relative font-sans text-white" style={{ height: '847px' }}>
+      <div className="bg-black w-[393px] relative font-sans text-white" style={{ height: '824px' }}>
       {showMapTour && <MapTour onComplete={completeMapTourAndGoToSchedule} />}
       
       {/* Tab Switcher */}
@@ -133,41 +135,61 @@ export const MapPage: React.FC = () => {
 
       {activeTab === 'map' ? (
         <>
-          <div className="absolute flex items-center gap-x-2 rounded-[8px] border border-solid border-[#373740] bg-[rgba(79,79,89,0.16)]"
-               style={{ top: 128, left: 20, width: 353, padding: '8px 12px 8px 16px' }}>
-            <p className="text-[#6F6F7C] font-inter text-[16px] font-normal leading-[24px] tracking-[-0.128px]">
-              Поиск по фильтрам
-            </p>
-          </div>
-          
-          <div className="absolute" style={{ top: 211, left: 20, width: 353, height: 199 }}>
-            <Image
-              src="/assets/images/event-map.png"
-              alt="Карта мероприятия"
-              width={353}
-              height={199}
-              className="object-cover"
-            />
+          <div
+            className="absolute overflow-hidden rounded-lg border border-solid border-[#373740] cursor-grab active:cursor-grabbing"
+            style={{ top: 128, left: 20, width: 353, height: 199 }}
+          >
+            <TransformWrapper
+                initialScale={1.5}
+                initialPositionX={-350}
+                initialPositionY={-250}
+                minScale={1}
+                maxScale={8}
+                panning={{
+                  wheel: false,
+                }}
+                doubleClick={{
+                  disabled: true,
+                }}
+              >
+                <TransformComponent
+                  wrapperStyle={{ width: '100%', height: '100%' }}
+                >
+                  <Image
+                    src="/assets/images/event-map.png"
+                    alt="Карта мероприятия"
+                    width={706}
+                    height={398}
+                    quality={100}
+                  />
+                </TransformComponent>
+              </TransformWrapper>
+              <button
+              onClick={() => setIsMapFullScreen(true)}
+              className="absolute top-2 right-2 bg-black/50 p-1.5 rounded-md text-white z-10 hover:bg-black/75 transition-colors"
+              aria-label="Развернуть карту"
+            >
+              <Maximize className="w-5 h-5" />
+            </button>
           </div>
 
-          <h2 className="absolute font-inter-tight text-[30px] font-normal leading-[110%] tracking-[-0.6px]"
-              style={{ top: 420, left: 40, width: 302 }}>
+          <h2 className="absolute font-inter-tight text-[24px] font-normal leading-[110%] tracking-[-0.48px] text-white"
+              style={{ top: 397, left: 20, width: 302 }}>
             Условные обозначения
           </h2>
           
-          <div className="absolute flex justify-between" style={{ top: 473, left: 31, width: 334 }}>
-            <LegendItem gradient="linear-gradient(180deg, #832CE7 0%, #BE37D3 100%)" text="VIP зал" rotated />
-            <LegendItem gradient="linear-gradient(180deg, #8521D6 0%, #A230AD 30.29%, #E7514D 66.35%, #FDD23B 100%)" text="сцена" rotated />
-            <LegendItem gradient="linear-gradient(90deg, #7627AD 0%, #C44D43 100%)" text="вход" />
-            <LegendItem gradient="#2F0A49" text="стенды" />
-            <LegendItem gradient="linear-gradient(180deg, #F06141 0%, #FDD33C 100%)" text="бар" rotated />
+          <div className="absolute flex justify-between" style={{ top: 450, left: 20, width: 334 }}>
+            <LegendItem gradient="#551181" text="VIP зал" rotated />
+            <LegendItem gradient="#200b3a" text="Стенды" />
+            <LegendItem gradient="#cf8d2d" text="Финам" />
+            <LegendItem gradient="#7a412d" text="Бар" rotated />
           </div>
 
           <button
             onClick={() => setQRScanner(true)}
             className="absolute flex justify-center items-center rounded-[8px] text-center font-inter text-[17px] font-semibold leading-[24px] tracking-[-0.204px] text-white z-40 mb-24"
             style={{ 
-              top: 586, 
+              top: 563, 
               left: 20, 
               width: 353, 
               padding: '16px 24px',
@@ -193,6 +215,33 @@ export const MapPage: React.FC = () => {
           userId="demo-user"
         />
       )}
+
+      <Dialog open={isMapFullScreen} onOpenChange={setIsMapFullScreen}>
+        <DialogContent className="w-screen h-screen max-w-none sm:rounded-none p-0 bg-black/80 backdrop-blur-sm border-0">
+          <div
+            className="relative flex h-full w-full items-center justify-center p-4"
+            onClick={() => setIsMapFullScreen(false)}
+          >
+            <Image
+              src="/assets/images/event-map.png"
+              alt="Карта мероприятия"
+              fill
+              style={{ objectFit: 'contain' }}
+              quality={100}
+            />
+            <button
+              onClick={e => {
+                e.stopPropagation();
+                setIsMapFullScreen(false);
+              }}
+              className="absolute right-4 top-4 z-20 rounded-full bg-black/50 p-2 text-white transition-colors hover:bg-black/75"
+              aria-label="Закрыть карту"
+            >
+              <X className="h-6 w-6" />
+            </button>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       <Dialog open={showSuccessModal} onOpenChange={setShowSuccessModal}>
         <DialogContent className="w-full max-w-md text-center bg-gray-800 border-gray-700">
