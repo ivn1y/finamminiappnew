@@ -16,7 +16,7 @@
     "mobile:196": "node scripts/mobile-dev-196.js",
     "local": "next dev --port 3000",
     "localhost": "node scripts/localhost-dev.js",
-    "start": "npm run dev:universal",
+    "start": "next start --port 3000",
     "start-local": "./start-local.sh",
     "start-mobile-192": "./start-mobile-192.sh",
     "start-mobile-196": "./start-mobile-196.sh",
