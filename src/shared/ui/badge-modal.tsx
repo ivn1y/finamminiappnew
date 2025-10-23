@@ -2,7 +2,6 @@
 
 import React from 'react';
 import Image from 'next/image';
-import { X } from 'lucide-react';
 
 interface BadgeModalProps {
   isOpen: boolean;
@@ -62,24 +61,25 @@ export const BadgeModal = ({
         {/* Close button */}
         <button
           onClick={onClose}
-          className="absolute"
-          style={{
-            top: '25px',
-            right: '25px',
-            width: '12px',
-            height: '12px',
-            background: 'none',
-            border: 'none',
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center'
-          }}
+          className="absolute top-[15px] right-[15px] p-[4px] rounded-full hover:bg-gray-700 transition-colors"
         >
-          <X 
-            size={12} 
-            className="text-[#6F6F7C]" 
-          />
+          <div className="w-[20px] h-[20px] flex items-center justify-center">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 16 16"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M12 4L4 12M4 4L12 12"
+                stroke="white"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </div>
         </button>
 
         {/* Badge title */}
@@ -144,13 +144,13 @@ export const BadgeModal = ({
             padding: '16px 24px',
             justifyContent: 'center',
             alignItems: 'center',
-            borderRadius: '8px',
-            background: 'rgba(79, 79, 89, 0.24)',
+            borderRadius: 'var(--radius-buttonL, 8px)',
+            background: 'var(--Marketing-Gradient-BG-01, linear-gradient(305deg, var(--gradients-bg-01-start, #FEDA3B) -2.67%, var(--gradients-bg-01-middle1, #EF5541) 38.9%, var(--gradients-bg-01-middle2, #801FDB) 77.17%, var(--gradients-bg-01-end, #7E2A89) 98.46%))',
             border: 'none',
             cursor: 'pointer'
           }}
         >
-          <span className="font-inter text-[17px] font-semibold leading-[24px] tracking-[-0.204px] text-[#EBEBF2] text-center">
+          <span className="font-inter text-[17px] font-semibold leading-[24px] tracking-[-0.204px] text-white text-center">
             Готово
           </span>
         </button>

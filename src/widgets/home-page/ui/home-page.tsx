@@ -70,11 +70,21 @@ const Badge = ({
 }) => (
   <div
     className={`relative flex w-[172px] h-[137px] p-[8px_16px] flex-col items-start gap-[10px] rounded-[8px] bg-[#1A1A1F] cursor-pointer ${
-      achieved ? 'border border-[#FDB938]' : ''
+      achieved ? 'p-[1px]' : ''
     }`}
     onClick={onClick}
   >
-    <div className="absolute top-[15px] left-1/2 -translate-x-1/2">
+    {achieved && (
+      <div 
+        className="absolute inset-0 rounded-[8px] p-[1px]"
+        style={{
+          background: 'linear-gradient(305deg, #FEDA3B -2.67%, #EF5541 38.9%, #801FDB 77.17%, #7E2A89 98.46%)'
+        }}
+      >
+        <div className="w-full h-full rounded-[7px] bg-[#1A1A1F]"></div>
+      </div>
+    )}
+    <div className={`absolute top-[15px] left-1/2 -translate-x-1/2 ${achieved ? 'z-10' : ''}`}>
       <Image
         src={achieved ? imgSrc : grayImgSrc}
         alt={title}
@@ -86,7 +96,7 @@ const Badge = ({
 
     <span
       className={`absolute bottom-[19px] left-0 right-0 text-center font-inter text-[14px] font-medium leading-[20px] tracking-[-0.056px] ${
-        achieved ? 'text-white' : 'text-[#6F6F7C]'
+        achieved ? 'text-white z-10' : 'text-[#6F6F7C]'
       }`}
     >
       {title}
