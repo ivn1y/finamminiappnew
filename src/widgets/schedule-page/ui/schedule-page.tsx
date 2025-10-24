@@ -161,6 +161,7 @@ const EventCard = ({ event }: { event: (typeof mockScheduleData.events)[0] }) =>
 export const SchedulePage: React.FC = () => {
   const { showScheduleTour, completeScheduleTourAndGoToAssistant, showAssistantTour, isScheduleModalOpen, closeScheduleModal, selectedScheduleEvent } = useAppStore();
   const [filteredEvents, setFilteredEvents] = useState<ScheduleEvent[] | null>(null);
+  const [accordionValue, setAccordionValue] = useState<string>('');
   const router = useRouter();
 
   useEffect(() => {
@@ -173,37 +174,60 @@ export const SchedulePage: React.FC = () => {
     setFilteredEvents(events);
   };
   
+  const handleAccordionChange = (value: string) => {
+    setAccordionValue(value);
+  };
+  
   const isFiltering = filteredEvents !== null;
-
+  
+  // Динамически увеличиваем высоту при открытии аккордеона, но более разумно
+  const containerHeight = accordionValue ? '150vh' : '120vh';
+  
   return (
-    <div className="w-full bg-black flex justify-center overflow-x-hidden">
-      <div
-        className="relative font-sans"
-        style={{ width: '393px', background: '#000', paddingBottom: '109px', height: '900px' }}
-      >
+    <div className="w-full bg-black overflow-x-hidden" style={{ minHeight: containerHeight }}>
+      <div className="flex justify-center">
+        <div
+          className="relative font-sans"
+          style={{ 
+            width: '393px', 
+            background: '#000', 
+            paddingBottom: '191px'
+          }}
+        >
       {showScheduleTour && <ScheduleTour onComplete={completeScheduleTourAndGoToAssistant} />}
-      {/* Background Gradient */}
+      {/* Background Ellipse */}
       <div
-        className="absolute overflow-hidden"
+        className="absolute"
         style={{
-          width: '393px',
+          width: '454px',
           height: '536px',
-          borderRadius: '536px',
-          background: 'var(--gradients-bg-01-end, #7E2A89)',
-          filter: 'blur(80px)',
-          opacity: '0.25',
-          top: '217px',
-          left: '0',
+          top: 'calc(50% + 88.5px)',
+          left: 'calc(50% + 0.5px)',
+          transform: 'translate(-50%, -50%)',
           zIndex: 0,
         }}
-      />
+      >
+        <div 
+          className="absolute"
+          style={{
+            inset: '-29.85% -35.24%',
+            '--fill-0': 'rgba(126, 42, 137, 1)',
+          } as React.CSSProperties}
+        >
+          <img 
+            alt="" 
+            className="block max-w-none size-full" 
+            src="/assets/backgrounds/schedule-ellipse.png"
+          />
+        </div>
+      </div>
       
       <div className="relative z-10 px-4">
         <div className="mt-8">
             <ScheduleFilters events={mockScheduleData.events} onFilterChange={handleFilterChange} />
         </div>
 
-        <div className="mt-8">
+        <div className="mt-[30px]">
           {isFiltering ? (
             <>
               {filteredEvents.length > 0 ? (
@@ -217,12 +241,12 @@ export const SchedulePage: React.FC = () => {
               )}
             </>
           ) : (
-            <Accordion type="single" collapsible className="w-full space-y-4">
+            <Accordion type="single" collapsible className="w-full space-y-4" value={accordionValue} onValueChange={handleAccordionChange}>
               {initialScheduleData.map((item, index) => (
                 <AccordionItem
                   value={`item-${index}`}
                   key={index}
-                  className="border-none rounded-lg bg-[rgba(255,255,255,0.05)]"
+                  className="border-none"
                 >
                   <AccordionTrigger className="h-[80px] p-4">
                     <div className="flex flex-col items-start text-left">
@@ -237,7 +261,7 @@ export const SchedulePage: React.FC = () => {
                       </span>
                     </div>
                   </AccordionTrigger>
-                  <AccordionContent className="p-4 pt-0">
+                  <AccordionContent className="p-4 pt-0 data-[state=closed]:animate-none data-[state=open]:animate-none">
                     <div className="flex flex-col gap-2">
                       {item.events.map(event => (
                         <EventCard key={event.id} event={event} />
@@ -262,6 +286,7 @@ export const SchedulePage: React.FC = () => {
           </div>
         </div>
       )}
+        </div>
       </div>
     </div>
   );

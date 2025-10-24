@@ -18,6 +18,7 @@ export const ScheduleFilters: React.FC<ScheduleFiltersProps> = ({
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [isFocused, setIsFocused] = useState(false);
+  const [showGradient, setShowGradient] = useState(false);
 
   const applyFilters = useCallback(() => {
     const query = searchTerm.toLowerCase().trim();
@@ -46,18 +47,38 @@ export const ScheduleFilters: React.FC<ScheduleFiltersProps> = ({
     return () => clearTimeout(timeoutId);
   }, [applyFilters]);
 
-  const dynamicStyles = isFocused
-    ? {
-        border: '1px solid #FFE479',
-        background: 'rgba(79, 79, 89, 0.00)',
-      }
-    : {
-        border: '1px solid #373740',
-        background: 'rgba(79, 79, 89, 0.16)',
-      };
+  const baseStyles = {
+    background: 'rgba(79, 79, 89, 0.16)',
+    border: '1px solid #373740',
+  };
+
+  const focusedStyles = {
+    background: 'transparent',
+    border: '1px solid transparent',
+  };
+
+  const dynamicStyles = isFocused ? focusedStyles : baseStyles;
 
   return (
-    <div className="relative flex w-full items-center">
+    <div className="relative flex w-full items-center h-[56px]">
+      {isFocused && (
+        <div 
+          className="absolute inset-0"
+          style={{
+            background: 'linear-gradient(90deg, #FEDA3B, #EF5541, #801FDB, #7E2A89)',
+            borderRadius: '8px',
+            padding: '2px',
+          }}
+        >
+          <div 
+            className="w-full h-full"
+            style={{
+              backgroundColor: '#1A1A1F',
+              borderRadius: '6px',
+            }}
+          />
+        </div>
+      )}
       <Input
         type="text"
         value={searchTerm}
@@ -65,12 +86,11 @@ export const ScheduleFilters: React.FC<ScheduleFiltersProps> = ({
         onFocus={() => setIsFocused(true)}
         onBlur={() => setIsFocused(false)}
         placeholder="Поиск по фильтрам"
-        className="w-full bg-transparent rounded-lg text-white px-4 py-2 font-inter"
+        className="w-full h-[56px] bg-transparent rounded-[8px] text-white px-4 py-2 font-inter relative z-10"
         style={{
           ...dynamicStyles,
           padding: '8px 12px 8px 16px',
           color: 'var(---input-placeholder, #6F6F7C)',
-          borderRadius: '8px',
         }}
       />
     </div>
