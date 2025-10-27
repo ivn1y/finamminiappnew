@@ -107,22 +107,11 @@ export function TraderProfileForm({ onBack, onNext }: TraderProfileFormProps) {
     }
   };
 
-  const selectBoxStyle = (name: string) => ({
-    display: "flex",
-    padding: "8px 12px 8px 16px",
-    alignItems: "center",
-    gap: "8px",
-    alignSelf: "stretch",
-    borderRadius: "8px",
-    background: "rgba(79, 79, 89, 0.16)",
-    justifyContent: "space-between",
-    cursor: "pointer",
-    border:
-      openDropdown === name
-        ? "1px solid var(--Marketing-Gradient-Border-01, #A55AFF)"
-        : "1px solid transparent",
-    transition: "border 0.2s ease-in-out",
-  });
+  const selectBoxWrapperStyle = (name: string): React.CSSProperties => {
+    return {
+      position: "relative",
+    };
+  };
 
   return (
     <div
@@ -199,58 +188,166 @@ export function TraderProfileForm({ onBack, onNext }: TraderProfileFormProps) {
           }}
         >
           <div
-            style={selectBoxStyle("experience")}
-            onClick={() =>
-              setOpenDropdown(openDropdown === "experience" ? null : "experience")
-            }
+            style={selectBoxWrapperStyle("experience")}
           >
-            <span
-              className="font-inter text-[16px] font-normal leading-[24px] tracking-[-0.128px]"
+            {openDropdown === "experience" && (
+              <div 
+                style={{
+                  position: "absolute",
+                  inset: 0,
+                  background: "linear-gradient(305deg, #FEDA3B -2.67%, #EF5541 38.9%, #801FDB 77.17%, #7E2A89 98.46%)",
+                  borderRadius: "8px",
+                  padding: "2px",
+                }}
+              >
+                <div 
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    backgroundColor: "#1A1A1F",
+                    borderRadius: "6px",
+                  }}
+                />
+              </div>
+            )}
+            <div
               style={{
-                color: selectedExperience ? "#EBEBF2" : "#A4A4B2",
+                display: "flex",
+                padding: "8px 12px 8px 16px",
+                alignItems: "center",
+                gap: "8px",
+                borderRadius: "8px",
+                background: "rgba(79, 79, 89, 0.16)",
+                justifyContent: "space-between",
+                cursor: "pointer",
+                position: "relative",
+                zIndex: 10,
+                height: "56px",
               }}
+              onClick={() =>
+                setOpenDropdown(openDropdown === "experience" ? null : "experience")
+              }
             >
-              {selectedExperience || "Сколько лет в трейдинге"}
-            </span>
-            <SelectArrowIcon />
+              <span
+                className="font-inter text-[16px] font-normal leading-[24px] tracking-[-0.128px]"
+                style={{
+                  color: selectedExperience ? "#EBEBF2" : "#A4A4B2",
+                }}
+              >
+                {selectedExperience || "Сколько лет в трейдинге"}
+              </span>
+              <SelectArrowIcon />
+            </div>
           </div>
 
           <div
-            style={selectBoxStyle("markets")}
-            onClick={() =>
-              setOpenDropdown(openDropdown === "markets" ? null : "markets")
-            }
+            style={selectBoxWrapperStyle("markets")}
           >
-            <span
-              className="font-inter text-[16px] font-normal leading-[24px] tracking-[-0.128px] whitespace-nowrap overflow-hidden text-ellipsis"
+            {openDropdown === "markets" && (
+              <div 
+                style={{
+                  position: "absolute",
+                  inset: 0,
+                  background: "linear-gradient(305deg, #FEDA3B -2.67%, #EF5541 38.9%, #801FDB 77.17%, #7E2A89 98.46%)",
+                  borderRadius: "8px",
+                  padding: "2px",
+                }}
+              >
+                <div 
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    backgroundColor: "#1A1A1F",
+                    borderRadius: "6px",
+                  }}
+                />
+              </div>
+            )}
+            <div
               style={{
-                color: selectedMarkets.length > 0 ? "#FFF" : "#A4A4B2",
+                display: "flex",
+                padding: "8px 12px 8px 16px",
+                alignItems: "center",
+                gap: "8px",
+                borderRadius: "8px",
+                background: "rgba(79, 79, 89, 0.16)",
+                justifyContent: "space-between",
+                cursor: "pointer",
+                position: "relative",
+                zIndex: 10,
+                height: "56px",
               }}
+              onClick={() =>
+                setOpenDropdown(openDropdown === "markets" ? null : "markets")
+              }
             >
-              {selectedMarkets.length > 0
-                ? selectedMarkets.join(", ")
-                : "На каких рынках торгуешь?"}
-            </span>
-            <SelectArrowIcon />
+              <span
+                className="font-inter text-[16px] font-normal leading-[24px] tracking-[-0.128px] whitespace-nowrap overflow-hidden text-ellipsis"
+                style={{
+                  color: selectedMarkets.length > 0 ? "#FFF" : "#A4A4B2",
+                }}
+              >
+                {selectedMarkets.length > 0
+                  ? selectedMarkets.join(", ")
+                  : "На каких рынках торгуешь?"}
+              </span>
+              <SelectArrowIcon />
+            </div>
           </div>
 
           <div
-            style={selectBoxStyle("riskProfile")}
-            onClick={() =>
-              setOpenDropdown(
-                openDropdown === "riskProfile" ? null : "riskProfile"
-              )
-            }
+            style={selectBoxWrapperStyle("riskProfile")}
           >
-            <span
-              className="font-inter text-[16px] font-normal leading-[24px] tracking-[-0.128px]"
+            {openDropdown === "riskProfile" && (
+              <div 
+                style={{
+                  position: "absolute",
+                  inset: 0,
+                  background: "linear-gradient(305deg, #FEDA3B -2.67%, #EF5541 38.9%, #801FDB 77.17%, #7E2A89 98.46%)",
+                  borderRadius: "8px",
+                  padding: "2px",
+                }}
+              >
+                <div 
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    backgroundColor: "#1A1A1F",
+                    borderRadius: "6px",
+                  }}
+                />
+              </div>
+            )}
+            <div
               style={{
-                color: selectedRiskProfile ? "#EBEBF2" : "#A4A4B2",
+                display: "flex",
+                padding: "8px 12px 8px 16px",
+                alignItems: "center",
+                gap: "8px",
+                borderRadius: "8px",
+                background: "rgba(79, 79, 89, 0.16)",
+                justifyContent: "space-between",
+                cursor: "pointer",
+                position: "relative",
+                zIndex: 10,
+                height: "56px",
               }}
+              onClick={() =>
+                setOpenDropdown(
+                  openDropdown === "riskProfile" ? null : "riskProfile"
+                )
+              }
             >
-              {selectedRiskProfile || "Твой риск профиль"}
-            </span>
-            <SelectArrowIcon />
+              <span
+                className="font-inter text-[16px] font-normal leading-[24px] tracking-[-0.128px]"
+                style={{
+                  color: selectedRiskProfile ? "#EBEBF2" : "#A4A4B2",
+                }}
+              >
+                {selectedRiskProfile || "Твой риск профиль"}
+              </span>
+              <SelectArrowIcon />
+            </div>
           </div>
         </div>
 
@@ -258,9 +355,9 @@ export function TraderProfileForm({ onBack, onNext }: TraderProfileFormProps) {
           <div
             style={{
               position: "absolute",
-              top: "311px",
-              left: "20px",
-              right: "20px",
+              top: "309px",
+              left: "16px",
+              right: "16px",
               height: "176px",
               borderRadius: "8px",
               background: "#242426",
@@ -330,9 +427,9 @@ export function TraderProfileForm({ onBack, onNext }: TraderProfileFormProps) {
           <div
             style={{
               position: "absolute",
-              top: "383px",
-              left: "20px",
-              right: "20px",
+              top: "397px",
+              left: "16px",
+              right: "16px",
               borderRadius: "8px",
               background: "#242426",
               padding: "20px",
@@ -411,9 +508,9 @@ export function TraderProfileForm({ onBack, onNext }: TraderProfileFormProps) {
           <div
             style={{
               position: "absolute",
-              top: "455px",
-              left: "20px",
-              right: "20px",
+              top: "486px",
+              left: "16px",
+              right: "16px",
               borderRadius: "8px",
               background: "#242426",
               padding: "20px",

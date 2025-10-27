@@ -74,25 +74,9 @@ export function PartnerProfileForm({ onBack, onNext }: PartnerProfileFormProps) 
     }
   };
 
-  const formElementStyle = (name: string, type: "input" | "select") => {
-    const isFocused =
-      (type === "input" && focusedInput === name) ||
-      (type === "select" && openDropdown === name);
-
+  const formElementWrapperStyle = (name: string, type: "input" | "select"): React.CSSProperties => {
     return {
-      display: "flex",
-      padding: "8px 12px 8px 16px",
-      alignItems: "center",
-      gap: "8px",
-      alignSelf: "stretch",
-      borderRadius: "8px",
-      background: "rgba(79, 79, 89, 0.16)",
-      justifyContent: "space-between",
-      cursor: type === "select" ? "pointer" : "text",
-      border: isFocused
-        ? "1px solid var(--Marketing-Gradient-Border-01, #A55AFF)"
-        : "1px solid transparent",
-      transition: "border 0.2s ease-in-out",
+      position: "relative",
       marginTop: "32px",
     };
   };
@@ -111,31 +95,175 @@ export function PartnerProfileForm({ onBack, onNext }: PartnerProfileFormProps) 
         </div>
 
         <div style={{ position: "absolute", top: "217px", width: "100%", padding: "0 16px", boxSizing: "border-box" }}>
-          <div style={formElementStyle("package", "select")} onClick={() => setOpenDropdown(openDropdown === "package" ? null : "package")}>
-            <span className="font-inter text-[16px] font-normal leading-[24px] tracking-[-0.128px]" style={{ color: partnerPackage ? "#FFF" : "#A4A4B2" }}>
-              {partnerPackage || "Что тебя интересует"}
-            </span>
-            <SelectArrowIcon />
+          <div style={formElementWrapperStyle("package", "select")}>
+            {openDropdown === "package" && (
+              <div 
+                style={{
+                  position: "absolute",
+                  inset: 0,
+                  background: "linear-gradient(305deg, #FEDA3B -2.67%, #EF5541 38.9%, #801FDB 77.17%, #7E2A89 98.46%)",
+                  borderRadius: "8px",
+                  padding: "2px",
+                }}
+              >
+                <div 
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    backgroundColor: "#1A1A1F",
+                    borderRadius: "6px",
+                  }}
+                />
+              </div>
+            )}
+            <div
+              style={{
+                display: "flex",
+                padding: "8px 12px 8px 16px",
+                alignItems: "center",
+                gap: "8px",
+                borderRadius: "8px",
+                background: "rgba(79, 79, 89, 0.16)",
+                justifyContent: "space-between",
+                cursor: "pointer",
+                position: "relative",
+                zIndex: 10,
+                height: "56px",
+              }}
+              onClick={() => setOpenDropdown(openDropdown === "package" ? null : "package")}
+            >
+              <span className="font-inter text-[16px] font-normal leading-[24px] tracking-[-0.128px]" style={{ color: partnerPackage ? "#FFF" : "#A4A4B2" }}>
+                {partnerPackage || "Что тебя интересует"}
+              </span>
+              <SelectArrowIcon />
+            </div>
           </div>
 
-          <div style={formElementStyle("companyName", "input")}>
-            <input type="text" placeholder="Название компании" value={companyName} onChange={(e) => setCompanyName(e.target.value)} onFocus={() => setFocusedInput("companyName")} onBlur={() => setFocusedInput(null)} className="font-inter text-[16px] font-normal leading-[24px] tracking-[-0.128px]" style={{ color: companyName ? "#FFF" : "#A4A4B2", background: "transparent", border: "none", outline: "none", width: "100%" }}/>
+          <div style={formElementWrapperStyle("companyName", "input")}>
+            {focusedInput === "companyName" && (
+              <div 
+                style={{
+                  position: "absolute",
+                  inset: 0,
+                  background: "linear-gradient(305deg, #FEDA3B -2.67%, #EF5541 38.9%, #801FDB 77.17%, #7E2A89 98.46%)",
+                  borderRadius: "8px",
+                  padding: "2px",
+                }}
+              >
+                <div 
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    backgroundColor: "#1A1A1F",
+                    borderRadius: "6px",
+                  }}
+                />
+              </div>
+            )}
+            <div
+              style={{
+                display: "flex",
+                padding: "8px 12px 8px 16px",
+                alignItems: "center",
+                gap: "8px",
+                borderRadius: "8px",
+                background: "rgba(79, 79, 89, 0.16)",
+                justifyContent: "space-between",
+                position: "relative",
+                zIndex: 10,
+                height: "56px",
+              }}
+            >
+              <input type="text" placeholder="Название компании" value={companyName} onChange={(e) => setCompanyName(e.target.value)} onFocus={() => setFocusedInput("companyName")} onBlur={() => setFocusedInput(null)} className="font-inter text-[16px] font-normal leading-[24px] tracking-[-0.128px]" style={{ color: companyName ? "#FFF" : "#A4A4B2", background: "transparent", border: "none", outline: "none", width: "100%" }}/>
+            </div>
           </div>
 
-          <div style={formElementStyle("description", "input")}>
-            <input type="text" placeholder="Опиши свой продукт/услугу" value={productServiceDescription} onChange={(e) => setProductServiceDescription(e.target.value)} onFocus={() => setFocusedInput("description")} onBlur={() => setFocusedInput(null)} className="font-inter text-[16px] font-normal leading-[24px] tracking-[-0.128px]" style={{ color: productServiceDescription ? "#FFF" : "#A4A4B2", background: "transparent", border: "none", outline: "none", width: "100%" }}/>
+          <div style={formElementWrapperStyle("description", "input")}>
+            {focusedInput === "description" && (
+              <div 
+                style={{
+                  position: "absolute",
+                  inset: 0,
+                  background: "linear-gradient(305deg, #FEDA3B -2.67%, #EF5541 38.9%, #801FDB 77.17%, #7E2A89 98.46%)",
+                  borderRadius: "8px",
+                  padding: "2px",
+                }}
+              >
+                <div 
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    backgroundColor: "#1A1A1F",
+                    borderRadius: "6px",
+                  }}
+                />
+              </div>
+            )}
+            <div
+              style={{
+                display: "flex",
+                padding: "8px 12px 8px 16px",
+                alignItems: "center",
+                gap: "8px",
+                borderRadius: "8px",
+                background: "rgba(79, 79, 89, 0.16)",
+                justifyContent: "space-between",
+                position: "relative",
+                zIndex: 10,
+                height: "56px",
+              }}
+            >
+              <input type="text" placeholder="Опиши свой продукт/услугу" value={productServiceDescription} onChange={(e) => setProductServiceDescription(e.target.value)} onFocus={() => setFocusedInput("description")} onBlur={() => setFocusedInput(null)} className="font-inter text-[16px] font-normal leading-[24px] tracking-[-0.128px]" style={{ color: productServiceDescription ? "#FFF" : "#A4A4B2", background: "transparent", border: "none", outline: "none", width: "100%" }}/>
+            </div>
           </div>
 
-          <div style={formElementStyle("industry", "select")} onClick={() => setOpenDropdown(openDropdown === "industry" ? null : "industry")}>
-            <span className="font-inter text-[16px] font-normal leading-[24px] tracking-[-0.128px]" style={{ color: companyIndustry ? "#FFF" : "#A4A4B2" }}>
-              {companyIndustry || "Сфера деятельности компании"}
-            </span>
-            <SelectArrowIcon />
+          <div style={formElementWrapperStyle("industry", "select")}>
+            {openDropdown === "industry" && (
+              <div 
+                style={{
+                  position: "absolute",
+                  inset: 0,
+                  background: "linear-gradient(305deg, #FEDA3B -2.67%, #EF5541 38.9%, #801FDB 77.17%, #7E2A89 98.46%)",
+                  borderRadius: "8px",
+                  padding: "2px",
+                }}
+              >
+                <div 
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    backgroundColor: "#1A1A1F",
+                    borderRadius: "6px",
+                  }}
+                />
+              </div>
+            )}
+            <div
+              style={{
+                display: "flex",
+                padding: "8px 12px 8px 16px",
+                alignItems: "center",
+                gap: "8px",
+                borderRadius: "8px",
+                background: "rgba(79, 79, 89, 0.16)",
+                justifyContent: "space-between",
+                cursor: "pointer",
+                position: "relative",
+                zIndex: 10,
+                height: "56px",
+              }}
+              onClick={() => setOpenDropdown(openDropdown === "industry" ? null : "industry")}
+            >
+              <span className="font-inter text-[16px] font-normal leading-[24px] tracking-[-0.128px]" style={{ color: companyIndustry ? "#FFF" : "#A4A4B2" }}>
+                {companyIndustry || "Сфера деятельности компании"}
+              </span>
+              <SelectArrowIcon />
+            </div>
           </div>
         </div>
         
         {openDropdown === "package" && (
-            <div style={{ position: "absolute", top: "311px", left: "20px", right: "20px", borderRadius: "8px", background: "#242426", padding: "20px", zIndex: 10, display: "flex", flexDirection: "column", gap: "20px" }}>
+            <div style={{ position: "absolute", top: "312px", left: "16px", right: "16px", borderRadius: "8px", background: "#242426", padding: "20px", zIndex: 10, display: "flex", flexDirection: "column", gap: "20px" }}>
                 {packageOptions.map(option => (
                     <label key={option} style={{ display: "flex", alignItems: "center", gap: "10px", cursor: "pointer" }}>
                         <input type="radio" name="package" value={option} checked={partnerPackage === option} onChange={() => handleSelectPackage(option)} style={{ display: "none" }} />
@@ -149,7 +277,7 @@ export function PartnerProfileForm({ onBack, onNext }: PartnerProfileFormProps) 
         )}
 
         {openDropdown === "industry" && (
-            <div style={{ position: "absolute", top: "539px", left: "20px", right: "20px", borderRadius: "8px", background: "#242426", padding: "20px", zIndex: 10, display: "flex", flexDirection: "column", gap: "20px" }}>
+            <div style={{ position: "absolute", top: "575px", left: "16px", right: "16px", borderRadius: "8px", background: "#242426", padding: "20px", zIndex: 10, display: "flex", flexDirection: "column", gap: "20px" }}>
                 {industryOptions.map(option => (
                     <label key={option} style={{ display: "flex", alignItems: "center", gap: "10px", cursor: "pointer" }}>
                         <input type="radio" name="industry" value={option} checked={companyIndustry === option} onChange={() => handleSelectIndustry(option)} style={{ display: "none" }} />
