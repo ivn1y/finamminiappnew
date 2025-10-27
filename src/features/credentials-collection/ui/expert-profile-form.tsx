@@ -192,6 +192,7 @@ export function ExpertProfileForm({ onBack, onNext }: ExpertProfileFormProps) {
                   background: "linear-gradient(305deg, #FEDA3B -2.67%, #EF5541 38.9%, #801FDB 77.17%, #7E2A89 98.46%)",
                   borderRadius: "8px",
                   padding: "2px",
+                  zIndex: 0,
                 }}
               >
                 <div 
@@ -199,7 +200,7 @@ export function ExpertProfileForm({ onBack, onNext }: ExpertProfileFormProps) {
                     width: "100%",
                     height: "100%",
                     backgroundColor: "#1A1A1F",
-                    borderRadius: "6px",
+                    borderRadius: "calc(8px - 2px)",
                   }}
                 />
               </div>
@@ -211,7 +212,7 @@ export function ExpertProfileForm({ onBack, onNext }: ExpertProfileFormProps) {
                 alignItems: "center",
                 gap: "8px",
                 borderRadius: "8px",
-                background: "rgba(79, 79, 89, 0.16)",
+                background: focusedInput === "expertise" ? "transparent" : "rgba(79, 79, 89, 0.16)",
                 justifyContent: "space-between",
                 position: "relative",
                 zIndex: 10,

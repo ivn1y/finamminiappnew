@@ -50,6 +50,7 @@ export const UserDataInputModal: React.FC<UserDataInputModalProps> = ({
   const [agreedToPolicy, setAgreedToPolicy] = useState(false);
   const [errors, setErrors] = useState<Partial<Record<keyof UserData | 'policy', string>>>({});
   const [phoneCountry, setPhoneCountry] = useState<string>('');
+  const [focusedInput, setFocusedInput] = useState<string | null>(null);
 
   useEffect(() => {
     if (initialData) {
@@ -142,26 +143,44 @@ export const UserDataInputModal: React.FC<UserDataInputModalProps> = ({
         <h1 className={styles.title}>Профиль</h1>
         <form onSubmit={(e) => { e.preventDefault(); handleSave(); }} className={styles.form}>
           <div className={`${styles.inputGroup} ${styles.nameInput}`}>
-            <input
-              id="name"
-              type="text"
-              value={formData.name}
-              onChange={(e) => handleInputChange('name', e.target.value)}
-              placeholder="Имя, Фамилия*"
-              className={`${styles.input} ${errors.name ? styles.error : ''}`}
-            />
+            <div className={styles.inputWrapper}>
+              {focusedInput === 'name' && (
+                <div className={styles.gradientBorder}>
+                  <div className={styles.gradientBorderInner} />
+                </div>
+              )}
+              <input
+                id="name"
+                type="text"
+                value={formData.name}
+                onChange={(e) => handleInputChange('name', e.target.value)}
+                onFocus={() => setFocusedInput('name')}
+                onBlur={() => setFocusedInput(null)}
+                placeholder="Имя, Фамилия*"
+                className={`${styles.input} ${errors.name ? styles.error : ''}`}
+              />
+            </div>
             {errors.name && <p style={{ color: 'red', fontSize: '12px', marginTop: '4px' }}>{errors.name}</p>}
           </div>
 
           <div className={`${styles.inputGroup} ${styles.phoneInput}`}>
-            <input
-              id="phone"
-              type="tel"
-              value={formData.phone}
-              onChange={(e) => handleInputChange('phone', e.target.value)}
-              placeholder="+7 912 345-67-89 или +971 50 123-45-67"
-              className={`${styles.input} ${errors.phone ? styles.error : ''}`}
-            />
+            <div className={styles.inputWrapper}>
+              {focusedInput === 'phone' && (
+                <div className={styles.gradientBorder}>
+                  <div className={styles.gradientBorderInner} />
+                </div>
+              )}
+              <input
+                id="phone"
+                type="tel"
+                value={formData.phone}
+                onChange={(e) => handleInputChange('phone', e.target.value)}
+                onFocus={() => setFocusedInput('phone')}
+                onBlur={() => setFocusedInput(null)}
+                placeholder="+7 912 345-67-89 или +971 50 123-45-67"
+                className={`${styles.input} ${errors.phone ? styles.error : ''}`}
+              />
+            </div>
             {errors.phone && <p style={{ color: 'red', fontSize: '12px', marginTop: '4px' }}>{errors.phone}</p>}
             {phoneCountry && !errors.phone && (
               <p style={{ color: '#6F6F7C', fontSize: '12px', marginTop: '4px' }}>
@@ -171,14 +190,23 @@ export const UserDataInputModal: React.FC<UserDataInputModalProps> = ({
           </div>
 
           <div className={`${styles.inputGroup} ${styles.emailInput}`}>
-            <input
-              id="email"
-              type="email"
-              value={formData.email}
-              onChange={(e) => handleInputChange('email', e.target.value)}
-              placeholder="E-mail*"
-              className={`${styles.input} ${errors.email ? styles.error : ''}`}
-            />
+            <div className={styles.inputWrapper}>
+              {focusedInput === 'email' && (
+                <div className={styles.gradientBorder}>
+                  <div className={styles.gradientBorderInner} />
+                </div>
+              )}
+              <input
+                id="email"
+                type="email"
+                value={formData.email}
+                onChange={(e) => handleInputChange('email', e.target.value)}
+                onFocus={() => setFocusedInput('email')}
+                onBlur={() => setFocusedInput(null)}
+                placeholder="E-mail*"
+                className={`${styles.input} ${errors.email ? styles.error : ''}`}
+              />
+            </div>
             {errors.email && <p style={{ color: 'red', fontSize: '12px', marginTop: '4px' }}>{errors.email}</p>}
           </div>
 
