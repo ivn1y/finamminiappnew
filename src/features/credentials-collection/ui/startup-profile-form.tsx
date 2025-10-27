@@ -77,25 +77,9 @@ export function StartupProfileForm({ onBack, onNext }: StartupProfileFormProps) 
     }
   };
 
-  const formElementStyle = (name: string, type: "input" | "select") => {
-    const isFocused =
-      (type === "input" && focusedInput === name) ||
-      (type === "select" && openDropdown === name);
-
+  const formElementWrapperStyle = (name: string, type: "input" | "select"): React.CSSProperties => {
     return {
-      display: "flex",
-      padding: "8px 12px 8px 16px",
-      alignItems: "center",
-      gap: "8px",
-      alignSelf: "stretch",
-      borderRadius: "8px",
-      background: "rgba(79, 79, 89, 0.16)",
-      justifyContent: "space-between",
-      cursor: type === "select" ? "pointer" : "text",
-      border: isFocused
-        ? "1px solid var(--Marketing-Gradient-Border-01, #A55AFF)"
-        : "1px solid transparent",
-      transition: "border 0.2s ease-in-out",
+      position: "relative",
       marginTop: "32px",
     };
   };
@@ -114,47 +98,156 @@ export function StartupProfileForm({ onBack, onNext }: StartupProfileFormProps) 
         </div>
 
         <div style={{ position: "absolute", top: "217px", width: "100%", padding: "0 16px", boxSizing: "border-box" }}>
-          <div style={formElementStyle("description", "input")}>
-            <input
-              type="text"
-              placeholder="Опиши свой продукт в трех словах"
-              value={productDescription}
-              onChange={(e) => setProductDescription(e.target.value)}
-              onFocus={() => setFocusedInput("description")}
-              onBlur={() => setFocusedInput(null)}
+          <div style={formElementWrapperStyle("description", "input")}>
+            {focusedInput === "description" && (
+              <div 
+                style={{
+                  position: "absolute",
+                  inset: 0,
+                  background: "linear-gradient(305deg, #FEDA3B -2.67%, #EF5541 38.9%, #801FDB 77.17%, #7E2A89 98.46%)",
+                  borderRadius: "8px",
+                  padding: "2px",
+                }}
+              >
+                <div 
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    backgroundColor: "#1A1A1F",
+                    borderRadius: "6px",
+                  }}
+                />
+              </div>
+            )}
+            <div
               style={{
-                color: productDescription ? "#FFF" : "#A4A4B2",
-                background: "transparent",
-                border: "none",
-                outline: "none",
-                width: "100%",
-                fontFamily: "Inter",
-                fontSize: "16px",
-                fontStyle: "normal",
-                fontWeight: 400,
-                lineHeight: "24px",
-                letterSpacing: "-0.128px",
+                display: "flex",
+                padding: "8px 12px 8px 16px",
+                alignItems: "center",
+                gap: "8px",
+                borderRadius: "8px",
+                background: "rgba(79, 79, 89, 0.16)",
+                justifyContent: "space-between",
+                position: "relative",
+                zIndex: 10,
+                height: "56px",
               }}
-            />
+            >
+              <input
+                type="text"
+                placeholder="Опиши свой продукт в трех словах"
+                value={productDescription}
+                onChange={(e) => setProductDescription(e.target.value)}
+                onFocus={() => setFocusedInput("description")}
+                onBlur={() => setFocusedInput(null)}
+                style={{
+                  color: productDescription ? "#EBEBF2" : "#A4A4B2",
+                  background: "transparent",
+                  border: "none",
+                  outline: "none",
+                  width: "100%",
+                  fontFamily: "'Inter', sans-serif",
+                  fontSize: "16px",
+                  fontStyle: "normal",
+                  fontWeight: 400,
+                  lineHeight: "24px",
+                  letterSpacing: "-0.128px",
+                }}
+              />
+            </div>
           </div>
 
-          <div style={formElementStyle("stage", "select")} onClick={() => setOpenDropdown(openDropdown === "stage" ? null : "stage")}>
-            <span className="font-inter text-[16px] font-normal leading-[24px] tracking-[-0.128px] whitespace-nowrap overflow-hidden text-ellipsis" style={{ color: projectStage ? "#FFF" : "#A4A4B2" }}>
-              {projectStage || "На какой стадии твой проект"}
-            </span>
-            <SelectArrowIcon />
+          <div style={formElementWrapperStyle("stage", "select")}>
+            {openDropdown === "stage" && (
+              <div 
+                style={{
+                  position: "absolute",
+                  inset: 0,
+                  background: "linear-gradient(305deg, #FEDA3B -2.67%, #EF5541 38.9%, #801FDB 77.17%, #7E2A89 98.46%)",
+                  borderRadius: "8px",
+                  padding: "2px",
+                }}
+              >
+                <div 
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    backgroundColor: "#1A1A1F",
+                    borderRadius: "6px",
+                  }}
+                />
+              </div>
+            )}
+            <div
+              style={{
+                display: "flex",
+                padding: "8px 12px 8px 16px",
+                alignItems: "center",
+                gap: "8px",
+                borderRadius: "8px",
+                background: "rgba(79, 79, 89, 0.16)",
+                justifyContent: "space-between",
+                cursor: "pointer",
+                position: "relative",
+                zIndex: 10,
+                height: "56px",
+              }}
+              onClick={() => setOpenDropdown(openDropdown === "stage" ? null : "stage")}
+            >
+              <span className="font-inter text-[16px] font-normal leading-[24px] tracking-[-0.128px] whitespace-nowrap overflow-hidden text-ellipsis" style={{ color: projectStage ? "#EBEBF2" : "#A4A4B2" }}>
+                {projectStage || "На какой стадии твой проект"}
+              </span>
+              <SelectArrowIcon />
+            </div>
           </div>
 
-          <div style={formElementStyle("industry", "select")} onClick={() => setOpenDropdown(openDropdown === "industry" ? null : "industry")}>
-            <span className="font-inter text-[16px] font-normal leading-[24px] tracking-[-0.128px] whitespace-nowrap overflow-hidden text-ellipsis" style={{ color: industry ? "#FFF" : "#A4A4B2" }}>
-              {industry || "Сфера деятельности"}
-            </span>
-            <SelectArrowIcon />
+          <div style={formElementWrapperStyle("industry", "select")}>
+            {openDropdown === "industry" && (
+              <div 
+                style={{
+                  position: "absolute",
+                  inset: 0,
+                  background: "linear-gradient(305deg, #FEDA3B -2.67%, #EF5541 38.9%, #801FDB 77.17%, #7E2A89 98.46%)",
+                  borderRadius: "8px",
+                  padding: "2px",
+                }}
+              >
+                <div 
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    backgroundColor: "#1A1A1F",
+                    borderRadius: "6px",
+                  }}
+                />
+              </div>
+            )}
+            <div
+              style={{
+                display: "flex",
+                padding: "8px 12px 8px 16px",
+                alignItems: "center",
+                gap: "8px",
+                borderRadius: "8px",
+                background: "rgba(79, 79, 89, 0.16)",
+                justifyContent: "space-between",
+                cursor: "pointer",
+                position: "relative",
+                zIndex: 10,
+                height: "56px",
+              }}
+              onClick={() => setOpenDropdown(openDropdown === "industry" ? null : "industry")}
+            >
+              <span className="font-inter text-[16px] font-normal leading-[24px] tracking-[-0.128px] whitespace-nowrap overflow-hidden text-ellipsis" style={{ color: industry ? "#EBEBF2" : "#A4A4B2" }}>
+                {industry || "Сфера деятельности"}
+              </span>
+              <SelectArrowIcon />
+            </div>
           </div>
         </div>
 
         {openDropdown === "stage" && (
-          <div style={{ position: "absolute", top: "383px", left: "20px", right: "20px", borderRadius: "8px", background: "#242426", padding: "20px", boxSizing: "border-box", display: "flex", flexDirection: "column", gap: "20px", zIndex: 10 }}>
+          <div style={{ position: "absolute", top: "397px", left: "16px", right: "16px", borderRadius: "8px", background: "#242426", padding: "20px", boxSizing: "border-box", display: "flex", flexDirection: "column", gap: "20px", zIndex: 10 }}>
             {stageOptions.map((option) => (
               <label key={option} style={{ display: "flex", alignItems: "center", gap: "10px", cursor: "pointer" }}>
                 <input type="radio" name="stage" value={option} checked={projectStage === option} onChange={() => handleSelectStage(option)} style={{ display: "none" }} />
@@ -168,7 +261,7 @@ export function StartupProfileForm({ onBack, onNext }: StartupProfileFormProps) 
         )}
 
         {openDropdown === "industry" && (
-          <div style={{ position: "absolute", top: "455px", left: "20px", right: "20px", borderRadius: "8px", background: "#242426", padding: "20px", boxSizing: "border-box", display: "flex", flexDirection: "column", gap: "20px", zIndex: 10 }}>
+          <div style={{ position: "absolute", top: "485px", left: "16px", right: "16px", borderRadius: "8px", background: "#242426", padding: "20px", boxSizing: "border-box", display: "flex", flexDirection: "column", gap: "20px", zIndex: 10 }}>
             {industryOptions.map((option) => (
               <label key={option} style={{ display: "flex", alignItems: "center", gap: "10px", cursor: "pointer" }}>
                 <input type="radio" name="industry" value={option} checked={industry === option} onChange={() => handleSelectIndustry(option)} style={{ display: "none" }} />

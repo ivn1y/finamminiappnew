@@ -74,25 +74,9 @@ export function ExpertProfileForm({ onBack, onNext }: ExpertProfileFormProps) {
     }
   };
 
-  const formElementStyle = (name: string, type: "input" | "select") => {
-    const isFocused =
-      (type === "input" && focusedInput === name) ||
-      (type === "select" && openDropdown === name);
-
+  const formElementWrapperStyle = (name: string, type: "input" | "select"): React.CSSProperties => {
     return {
-      display: "flex",
-      padding: "8px 12px 8px 16px",
-      alignItems: "center",
-      gap: "8px",
-      alignSelf: "stretch",
-      borderRadius: "8px",
-      background: "rgba(79, 79, 89, 0.16)",
-      justifyContent: "space-between",
-      cursor: type === "select" ? "pointer" : "text",
-      border: isFocused
-        ? "1px solid var(--Marketing-Gradient-Border-01, #A55AFF)"
-        : "1px solid transparent",
-      transition: "border 0.2s ease-in-out",
+      position: "relative",
       marginTop: "32px",
     };
   };
@@ -111,47 +95,156 @@ export function ExpertProfileForm({ onBack, onNext }: ExpertProfileFormProps) {
         </div>
 
         <div style={{ position: "absolute", top: "217px", width: "100%", padding: "0 16px", boxSizing: "border-box" }}>
-          <div style={formElementStyle("role", "select")} onClick={() => setOpenDropdown(openDropdown === "role" ? null : "role")}>
-            <span className="font-inter text-[16px] font-normal leading-[24px] tracking-[-0.128px] whitespace-nowrap overflow-hidden text-ellipsis" style={{ color: expertRole ? "#FFF" : "#A4A4B2" }}>
-              {expertRole || "Кем ты хочешь быть в Collab"}
-            </span>
-            <SelectArrowIcon />
-          </div>
-
-          <div style={formElementStyle("experience", "select")} onClick={() => setOpenDropdown(openDropdown === "experience" ? null : "experience")}>
-            <span className="font-inter text-[16px] font-normal leading-[24px] tracking-[-0.128px] whitespace-nowrap overflow-hidden text-ellipsis" style={{ color: experience ? "#FFF" : "#A4A4B2" }}>
-              {experience || "Сколько лет опыта в этой области"}
-            </span>
-            <SelectArrowIcon />
-          </div>
-
-          <div style={formElementStyle("expertise", "input")}>
-            <input
-              type="text"
-              placeholder="В какой области твоя экспертиза?"
-              value={expertise}
-              onChange={(e) => setExpertise(e.target.value)}
-              onFocus={() => setFocusedInput("expertise")}
-              onBlur={() => setFocusedInput(null)}
+          <div style={formElementWrapperStyle("role", "select")}>
+            {openDropdown === "role" && (
+              <div 
+                style={{
+                  position: "absolute",
+                  inset: 0,
+                  background: "linear-gradient(305deg, #FEDA3B -2.67%, #EF5541 38.9%, #801FDB 77.17%, #7E2A89 98.46%)",
+                  borderRadius: "8px",
+                  padding: "2px",
+                }}
+              >
+                <div 
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    backgroundColor: "#1A1A1F",
+                    borderRadius: "6px",
+                  }}
+                />
+              </div>
+            )}
+            <div
               style={{
-                color: expertise ? "#FFF" : "#A4A4B2",
-                background: "transparent",
-                border: "none",
-                outline: "none",
-                width: "100%",
-                fontFamily: "Inter",
-                fontSize: "16px",
-                fontStyle: "normal",
-                fontWeight: 400,
-                lineHeight: "24px",
-                letterSpacing: "-0.128px",
+                display: "flex",
+                padding: "8px 12px 8px 16px",
+                alignItems: "center",
+                gap: "8px",
+                borderRadius: "8px",
+                background: "rgba(79, 79, 89, 0.16)",
+                justifyContent: "space-between",
+                cursor: "pointer",
+                position: "relative",
+                zIndex: 10,
+                height: "56px",
               }}
-            />
+              onClick={() => setOpenDropdown(openDropdown === "role" ? null : "role")}
+            >
+              <span className="font-inter text-[16px] font-normal leading-[24px] tracking-[-0.128px] whitespace-nowrap overflow-hidden text-ellipsis" style={{ color: expertRole ? "#FFF" : "#A4A4B2" }}>
+                {expertRole || "Кем ты хочешь быть в Collab"}
+              </span>
+              <SelectArrowIcon />
+            </div>
+          </div>
+
+          <div style={formElementWrapperStyle("experience", "select")}>
+            {openDropdown === "experience" && (
+              <div 
+                style={{
+                  position: "absolute",
+                  inset: 0,
+                  background: "linear-gradient(305deg, #FEDA3B -2.67%, #EF5541 38.9%, #801FDB 77.17%, #7E2A89 98.46%)",
+                  borderRadius: "8px",
+                  padding: "2px",
+                }}
+              >
+                <div 
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    backgroundColor: "#1A1A1F",
+                    borderRadius: "6px",
+                  }}
+                />
+              </div>
+            )}
+            <div
+              style={{
+                display: "flex",
+                padding: "8px 12px 8px 16px",
+                alignItems: "center",
+                gap: "8px",
+                borderRadius: "8px",
+                background: "rgba(79, 79, 89, 0.16)",
+                justifyContent: "space-between",
+                cursor: "pointer",
+                position: "relative",
+                zIndex: 10,
+                height: "56px",
+              }}
+              onClick={() => setOpenDropdown(openDropdown === "experience" ? null : "experience")}
+            >
+              <span className="font-inter text-[16px] font-normal leading-[24px] tracking-[-0.128px] whitespace-nowrap overflow-hidden text-ellipsis" style={{ color: experience ? "#FFF" : "#A4A4B2" }}>
+                {experience || "Сколько лет опыта в этой области"}
+              </span>
+              <SelectArrowIcon />
+            </div>
+          </div>
+
+          <div style={formElementWrapperStyle("expertise", "input")}>
+            {focusedInput === "expertise" && (
+              <div 
+                style={{
+                  position: "absolute",
+                  inset: 0,
+                  background: "linear-gradient(305deg, #FEDA3B -2.67%, #EF5541 38.9%, #801FDB 77.17%, #7E2A89 98.46%)",
+                  borderRadius: "8px",
+                  padding: "2px",
+                }}
+              >
+                <div 
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    backgroundColor: "#1A1A1F",
+                    borderRadius: "6px",
+                  }}
+                />
+              </div>
+            )}
+            <div
+              style={{
+                display: "flex",
+                padding: "8px 12px 8px 16px",
+                alignItems: "center",
+                gap: "8px",
+                borderRadius: "8px",
+                background: "rgba(79, 79, 89, 0.16)",
+                justifyContent: "space-between",
+                position: "relative",
+                zIndex: 10,
+                height: "56px",
+              }}
+            >
+              <input
+                type="text"
+                placeholder="В какой области твоя экспертиза?"
+                value={expertise}
+                onChange={(e) => setExpertise(e.target.value)}
+                onFocus={() => setFocusedInput("expertise")}
+                onBlur={() => setFocusedInput(null)}
+                style={{
+                  color: expertise ? "#EBEBF2" : "#A4A4B2",
+                  background: "transparent",
+                  border: "none",
+                  outline: "none",
+                  width: "100%",
+                  fontFamily: "'Inter', sans-serif",
+                  fontSize: "16px",
+                  fontStyle: "normal",
+                  fontWeight: 400,
+                  lineHeight: "24px",
+                  letterSpacing: "-0.128px",
+                }}
+              />
+            </div>
           </div>
         </div>
 
         {openDropdown === "role" && (
-          <div style={{ position: "absolute", top: "311px", left: "20px", right: "20px", borderRadius: "8px", background: "#242426", padding: "20px", boxSizing: "border-box", display: "flex", flexDirection: "column", gap: "20px", zIndex: 10 }}>
+          <div style={{ position: "absolute", top: "309px", left: "16px", right: "16px", borderRadius: "8px", background: "#242426", padding: "20px", boxSizing: "border-box", display: "flex", flexDirection: "column", gap: "20px", zIndex: 10 }}>
             {roleOptions.map((option) => (
               <label key={option} style={{ display: "flex", alignItems: "center", gap: "10px", cursor: "pointer" }}>
                 <input type="radio" name="role" value={option} checked={expertRole === option} onChange={() => handleSelectRole(option)} style={{ display: "none" }} />
@@ -165,7 +258,7 @@ export function ExpertProfileForm({ onBack, onNext }: ExpertProfileFormProps) {
         )}
 
         {openDropdown === "experience" && (
-          <div style={{ position: "absolute", top: "383px", left: "20px", right: "20px", borderRadius: "8px", background: "#242426", padding: "20px", boxSizing: "border-box", display: "flex", flexDirection: "column", gap: "20px", zIndex: 10 }}>
+          <div style={{ position: "absolute", top: "396px", left: "16px", right: "16px", borderRadius: "8px", background: "#242426", padding: "20px", boxSizing: "border-box", display: "flex", flexDirection: "column", gap: "20px", zIndex: 10 }}>
             {experienceOptions.map((option) => (
               <label key={option} style={{ display: "flex", alignItems: "center", gap: "10px", cursor: "pointer" }}>
                 <input type="radio" name="experience" value={option} checked={experience === option} onChange={() => handleSelectExperience(option)} style={{ display: "none" }} />

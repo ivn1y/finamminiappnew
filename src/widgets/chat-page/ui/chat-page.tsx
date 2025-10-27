@@ -171,6 +171,7 @@ export const ChatPage: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputText, setInputText] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+  const [isInputFocused, setIsInputFocused] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Проверяем, есть ли данные пользователя
@@ -384,21 +385,45 @@ export const ChatPage: React.FC = () => {
 						{/* Input Block */}
 						<div className='absolute bottom-[109px] left-1/2 -translate-x-1/2 w-[353px]'>
 							<div className='relative w-full h-[56px]'>
+								{isInputFocused && (
+									<div 
+										className="absolute inset-0"
+										style={{
+											background: 'linear-gradient(90deg, #FEDA3B, #EF5541, #801FDB, #7E2A89)',
+											borderRadius: '8px',
+											padding: '2px',
+										}}
+									>
+										<div 
+											className="w-full h-full"
+											style={{
+												backgroundColor: '#1A1A1F',
+												borderRadius: '6px',
+											}}
+										/>
+									</div>
+								)}
 								<Input
 									type='text'
 									value={inputText}
 									onChange={e => setInputText(e.target.value)}
 									onKeyPress={handleKeyPress}
+									onFocus={() => setIsInputFocused(true)}
+									onBlur={() => setIsInputFocused(false)}
 									placeholder={hasUserData ? 'Напишите сообщение...' : 'Сначала заполните данные в профиле'}
-									className='w-full h-full rounded-[8px] border border-[#373740] bg-[rgba(79,79,89,0.16)] p-4 pr-[56px] text-base font-normal leading-6 tracking-[-0.128px] text-white placeholder:text-[#6F6F7C] focus-visible:ring-offset-0 focus:outline-none focus:border-[#FFE479] font-inter'
+									className='w-full h-full rounded-[8px] border border-[#373740] bg-[rgba(79,79,89,0.16)] p-4 pr-[56px] text-base font-normal leading-6 tracking-[-0.128px] text-white placeholder:text-[#6F6F7C] focus-visible:ring-offset-0 focus:outline-none focus:border-transparent font-inter relative z-10'
 									readOnly={!hasUserData}
 									disabled={!hasUserData}
+									style={{
+										background: isInputFocused ? 'transparent' : 'rgba(79,79,89,0.16)',
+										border: isInputFocused ? '1px solid transparent' : '1px solid #373740',
+									}}
 								/>
 								{inputText.trim() && hasUserData && (
 									<button
 										type="button"
 										onClick={handleSendMessage}
-										className="absolute right-[10px] top-1/2 -translate-y-1/2 w-[36px] h-[36px] flex-shrink-0 rounded-[12px] bg-[#59307C] flex items-center justify-center"
+										className="absolute right-[10px] top-1/2 -translate-y-1/2 w-[36px] h-[36px] flex-shrink-0 rounded-[12px] bg-[#59307C] flex items-center justify-center z-20"
 									>
 										<SendIcon />
 									</button>
@@ -429,7 +454,7 @@ export const ChatPage: React.FC = () => {
 								>
 									{/* Аватар для сообщений бота */}
 									{!message.isUser && (
-										<div className="flex-shrink-0 mr-3 self-end">
+										<div className="flex-shrink-0 mr-3 self-start">
 											<BotAvatar />
 										</div>
 									)}
@@ -452,7 +477,7 @@ export const ChatPage: React.FC = () => {
 
 									{/* Аватар для сообщений пользователя */}
 									{message.isUser && user?.role && (
-										<div className="flex-shrink-0 ml-3 self-end">
+										<div className="flex-shrink-0 ml-3 self-start">
 											<UserAvatar userRole={user.role} />
 										</div>
 									)}
@@ -462,7 +487,7 @@ export const ChatPage: React.FC = () => {
 							{/* Typing indicator */}
 							{isTyping && (
 								<div className='flex justify-start'>
-									<div className="flex-shrink-0 mr-3 self-end">
+									<div className="flex-shrink-0 mr-3 self-start">
 										<BotAvatar />
 									</div>
 									<div className='max-w-[257px] rounded-[12px] bg-[#151519] p-[12px_10px]'>
@@ -488,20 +513,44 @@ export const ChatPage: React.FC = () => {
 					{/* Input Block */}
 					<div className='absolute bottom-[109px] left-1/2 -translate-x-1/2 w-[353px]'>
 						<div className='relative w-full h-[56px]'>
+							{isInputFocused && (
+								<div 
+									className="absolute inset-0"
+									style={{
+										background: 'linear-gradient(90deg, #FEDA3B, #EF5541, #801FDB, #7E2A89)',
+										borderRadius: '8px',
+										padding: '2px',
+									}}
+								>
+									<div 
+										className="w-full h-full"
+										style={{
+											backgroundColor: '#1A1A1F',
+											borderRadius: '6px',
+										}}
+									/>
+								</div>
+							)}
 							<Input
 								type='text'
 								value={inputText}
 								onChange={e => setInputText(e.target.value)}
 								onKeyPress={handleKeyPress}
+								onFocus={() => setIsInputFocused(true)}
+								onBlur={() => setIsInputFocused(false)}
 								placeholder={hasUserData ? 'Напишите сообщение...' : 'Сначала заполните данные в профиле'}
-								className='w-full h-full rounded-[8px] border border-[#373740] bg-[rgba(79,79,89,0.16)] p-4 pr-[56px] text-base font-normal leading-6 tracking-[-0.128px] text-white placeholder:text-[#6F6F7C] focus-visible:ring-offset-0 focus:outline-none focus:border-[#FFE479]'
+								className='w-full h-full rounded-[8px] border border-[#373740] bg-[rgba(79,79,89,0.16)] p-4 pr-[56px] text-base font-normal leading-6 tracking-[-0.128px] text-white placeholder:text-[#6F6F7C] focus-visible:ring-offset-0 focus:outline-none focus:border-transparent font-inter relative z-10'
 								readOnly={!hasUserData}
+								style={{
+									background: isInputFocused ? 'transparent' : 'rgba(79,79,89,0.16)',
+									border: isInputFocused ? '1px solid transparent' : '1px solid #373740',
+								}}
 							/>
 							{inputText.trim() && hasUserData && (
 								<button
 									type="button"
 									onClick={handleSendMessage}
-									className="absolute right-[10px] top-1/2 -translate-y-1/2 w-[36px] h-[36px] flex-shrink-0 rounded-[12px] bg-[#59307C] flex items-center justify-center"
+									className="absolute right-[10px] top-1/2 -translate-y-1/2 w-[36px] h-[36px] flex-shrink-0 rounded-[12px] bg-[#59307C] flex items-center justify-center z-20"
 								>
 									<SendIcon />
 								</button>
