@@ -10,10 +10,10 @@ interface BottomNavigationProps {
 }
 
 export const BottomNavigation: React.FC<BottomNavigationProps> = ({ activeTab, isBlocked = false }) => {
-  const { setQRScanner, isScheduleModalOpen } = useAppStore();
+  const { setQRScanner, isScheduleModalOpen, showQRScanner } = useAppStore();
 
-  // Скрываем навигацию, если открыто модальное окно расписания
-  if (isScheduleModalOpen) {
+  // Скрываем навигацию, если открыто модальное окно расписания или QR-сканер
+  if (isScheduleModalOpen || showQRScanner) {
     return null;
   }
 

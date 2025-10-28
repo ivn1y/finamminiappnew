@@ -8,7 +8,7 @@ import { useAppStore } from '@/shared/store/app-store';
 import { eventData } from '@/shared/data/seed';
 import { QrCode, CheckCircle, Maximize, X } from 'lucide-react';
 import { Button } from '@/shared/ui/button';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/shared/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from '@/shared/ui/dialog';
 import { QRScanner } from '@/features/qr-scanner';
 import { QRScanResult } from '@/shared/types/qr';
 import { MapTour } from '@/features/app-tour';
@@ -45,6 +45,7 @@ export const MapPage: React.FC = () => {
   } = useAppStore();
   const [redeemedZones, setRedeemedZones] = useState<string[]>([]);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [showSecretPhraseSuccessModal, setShowSecretPhraseSuccessModal] = useState(false);
   const [lastPrize, setLastPrize] = useState('');
   const [selectedZone, setSelectedZone] = useState<any>(null);
   const [activeTab, setActiveTab] = useState<'map' | 'schedule'>('map');
@@ -83,9 +84,8 @@ export const MapPage: React.FC = () => {
 
     // Проверяем секретную фразу "Финам Collab твои возможности"
     if (code.toLowerCase() === 'finam:финам collab твои возможности') {
-      setLastPrize('Секретный бонус');
-      setShowSuccessModal(true);
       setQRScanner(false);
+      setShowSecretPhraseSuccessModal(true);
       useAppStore.getState().addBadge('qr_scanner_badge');
       useAppStore.getState().incrementProgress();
       useAppStore.getState().addScannedZone('secret_phrase_zone');
@@ -271,6 +271,43 @@ export const MapPage: React.FC = () => {
           >
             Отлично!
           </Button>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={showSecretPhraseSuccessModal} onOpenChange={setShowSecretPhraseSuccessModal}>
+        <DialogContent className="p-0 border-0" style={{ width: 353, height: 358, borderRadius: 10, background: '#1A1A1F' }}>
+            <div className="relative w-full h-full flex flex-col items-center">
+              <div className="absolute" style={{ top: 14 }}>
+                  <Image src="/assets/gifts/gift.png" alt="Подарок" width={120} height={120} />
+              </div>
+              <h2 
+                className="absolute text-white text-center font-inter-tight font-normal"
+                style={{ top: 128, fontSize: 28, lineHeight: '32px', letterSpacing: '-0.504px' }}
+              >
+                Поздравляем!
+              </h2>
+              <p
+                className="absolute text-center"
+                style={{ top: 170, left: 19, right: 18, color: '#6F6F7C', fontFamily: 'Inter', fontSize: 17, fontStyle: 'normal', fontWeight: 400, lineHeight: '24px', letterSpacing: '-0.17px' }}
+              >
+                Теперь тебе нужно подойти к нашему стенду, чтобы стать участником розыгрыша лимитированного мерча.
+              </p>
+            </div>
+            <button
+              onClick={() => setShowSecretPhraseSuccessModal(false)}
+              className="absolute flex justify-center items-center rounded-lg text-white text-center font-inter text-[17px] font-semibold leading-[24px] tracking-[-0.204px]"
+              style={{
+                  bottom: 20,
+                  left: 19,
+                  right: 20,
+                  width: 'calc(100% - 38px)',
+                  padding: '16px 24px',
+                  background: 'linear-gradient(305deg, #FEDA3B -2.67%, #EF5541 38.9%, #801FDB 77.17%, #7E2A89 98.46%)',
+                  zIndex: 10
+              }}
+            >
+              Отлично!
+            </button>
         </DialogContent>
       </Dialog>
       </div>
