@@ -205,7 +205,7 @@ export const HomePage: React.FC = () => {
       onClick: handleTelegramQuestClick,
     },
     {
-      text: 'Выполни QR-квест',
+      text: 'Введи секретную фразу',
       completed: !!(user.scannedZones && user.scannedZones.length > 0),
       href: '/collab/map',
     },
@@ -277,7 +277,7 @@ export const HomePage: React.FC = () => {
       displayTitle: 'Исследователь',
       achieved: userBadges.includes('researcher'),
       description: 'За активное изучение новых технологий и подходов в трейдинге',
-      howToEarn: 'Заполните профиль полностью'
+      howToEarn: 'Заполни профиль полностью'
     },
     {
       imgSrc: '/assets/badges/market-explorer.png?v=2',
@@ -286,7 +286,7 @@ export const HomePage: React.FC = () => {
       displayTitle: 'Market Explorer',
       achieved: userBadges.includes('market-explorer'),
       description: 'За исследование различных рынков и активов',
-      howToEarn: 'Отсканируйте QR-код на карте'
+      howToEarn: 'Введи секретную фразу'
     },
     {
       imgSrc: '/assets/badges/risk-manager.png?v=2',
@@ -295,7 +295,7 @@ export const HomePage: React.FC = () => {
       displayTitle: 'Risk Manager',
       achieved: userBadges.includes('risk-manager'),
       description: 'За эффективное управление рисками в торговле',
-      howToEarn: 'Выполните Telegram квест'
+      howToEarn: 'Выполни Telegram квест'
     },
     {
       imgSrc: '/assets/badges/algo-creator.png?v=2',
@@ -304,7 +304,7 @@ export const HomePage: React.FC = () => {
       displayTitle: 'Algo Creator',
       achieved: userBadges.includes('algo-creator'),
       description: 'За создание собственных торговых алгоритмов',
-      howToEarn: 'Выполните все задания'
+      howToEarn: 'Выполни все задания'
     },
   ];
 
@@ -386,9 +386,9 @@ export const HomePage: React.FC = () => {
 
         <div
           id="telegram-quest"
-          className="absolute top-[910px] left-1/2 -translate-x-1/2 w-[353px] h-[174px] p-[8px_16px_20px_16px] rounded-[8px] bg-[#1A1A1F] flex flex-col items-start"
+          className="absolute top-[910px] left-1/2 -translate-x-1/2 w-[353px] h-[174px] rounded-[8px] bg-[#1A1A1F] flex flex-col items-start justify-start pl-[16px] pr-[16px] pt-[8px] pb-[20px]"
         >
-          <h3 className="mt-[8px] font-inter-tight text-[24px] text-white font-normal leading-[110%] tracking-[-0.48px]">
+          <h3 className="font-inter-tight text-[24px] text-white font-normal leading-[110%] tracking-[-0.48px]">
             Твой первый квест
           </h3>
           <p className="mt-[10px] w-[285px] text-white font-inter text-[14px] font-normal leading-[20px] tracking-[-0.056px]">
