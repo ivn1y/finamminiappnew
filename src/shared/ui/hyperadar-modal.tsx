@@ -63,19 +63,25 @@ export const HypeRadarModal: React.FC<HypeRadarModalProps> = ({ isOpen, onClose 
           {/* Description */}
           <div className="bg-[#2f2f37] rounded-[5px] p-[12px]">
             <p className="text-[17px] font-medium text-white leading-[24px] tracking-[-0.17px] font-inter">
-              Мы покажем инструменты на стыке крипты, ИИ и комьюнити, которые помогают трейдерам видеть зарождающиеся тренды и отрабатывать их быстрее рынка. Часть решений уже в закрытом тесте, часть — на подлёте.
+              Превращает хаос новостей и соцмедиа в инструмент прогнозирования: помогает находить тренды, анализировать их силу и действовать до того, как об этом узнает весь рынок.
             </p>
           </div>
 
           {/* Website button */}
-          <button className="w-full h-[56px] bg-[rgba(79,79,89,0.24)] rounded-[8px] flex items-center justify-center hover:bg-[rgba(79,79,89,0.4)] transition-colors">
+          <button 
+            onClick={() => window.open('https://telegra.ph/HypeRadar-10-28', '_blank')}
+            className="w-full h-[56px] bg-[rgba(79,79,89,0.24)] rounded-[8px] flex items-center justify-center hover:bg-[rgba(79,79,89,0.4)] transition-colors"
+          >
             <span className="text-[17px] font-semibold text-[#ebebf2] leading-[24px] tracking-[-0.204px] font-inter">
               Гайд по продукту
             </span>
           </button>
 
           {/* Speaker contact button */}
-          <button className="w-full h-[56px] btn-gradient transition-opacity hover:opacity-90">
+          <button 
+            onClick={() => window.open('https://t.me/kpistsov', '_blank')}
+            className="w-full h-[56px] btn-gradient transition-opacity hover:opacity-90"
+          >
             <span className="text-[17px] font-semibold text-white leading-[24px] tracking-[-0.204px] font-inter">
               Связь со спикером
             </span>

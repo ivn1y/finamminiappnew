@@ -63,21 +63,27 @@ export const TraderDiaryModal: React.FC<TraderDiaryModalProps> = ({ isOpen, onCl
           {/* Description */}
           <div className="bg-[#2f2f37] rounded-[5px] p-[12px]">
             <p className="text-[17px] font-medium text-white leading-[24px] tracking-[-0.17px] font-inter">
-              Новый сервис трейдера который создается на основании исследований трейдеров и для трейдеров
+              Инновационное веб-приложение, которое революционизирует подход к ведению торгового журнала, объединяя классические методы анализа с современными технологиями искусственного интеллекта
             </p>
           </div>
 
           {/* Website button */}
-          <button className="w-full h-[56px] bg-[rgba(79,79,89,0.24)] rounded-[8px] flex items-center justify-center hover:bg-[rgba(79,79,89,0.4)] transition-colors">
+          <button 
+            onClick={() => window.open('https://telegra.ph/Dnevnik-trejdera-10-28', '_blank')}
+            className="w-full h-[56px] bg-[rgba(79,79,89,0.24)] rounded-[8px] flex items-center justify-center hover:bg-[rgba(79,79,89,0.4)] transition-colors"
+          >
             <span className="text-[17px] font-semibold text-[#ebebf2] leading-[24px] tracking-[-0.204px] font-inter">
               Гайд по продукту
             </span>
           </button>
 
           {/* Survey button */}
-          <button className="w-full h-[56px] btn-gradient transition-opacity hover:opacity-90">
+          <button 
+            onClick={() => window.open('https://t.me/cyberriver', '_blank')}
+            className="w-full h-[56px] btn-gradient transition-opacity hover:opacity-90"
+          >
             <span className="text-[17px] font-semibold text-white leading-[24px] tracking-[-0.204px] font-inter">
-              Пройти опрос
+              Связь со спикером
             </span>
           </button>
         </div>
