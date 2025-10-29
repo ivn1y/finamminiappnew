@@ -63,19 +63,25 @@ export const ZipLimeModal: React.FC<ZipLimeModalProps> = ({ isOpen, onClose }) =
           {/* Description */}
           <div className="bg-[#2f2f37] rounded-[5px] p-[12px]">
             <p className="text-[17px] font-medium text-white leading-[24px] tracking-[-0.17px] font-inter">
-              ZipLime - это новый ИИ способ смотреть на классический путь торговой стратегии в крупных хеджфондах, начиная от поиска идеи и заканчивая ее фактической иплиментацией.
+              AI бектестер позволяющий легко проверять рыночные гипотезы
             </p>
           </div>
 
           {/* Website button */}
-          <button className="w-full h-[56px] bg-[rgba(79,79,89,0.24)] rounded-[8px] flex items-center justify-center hover:bg-[rgba(79,79,89,0.4)] transition-colors">
+          <button 
+            onClick={() => window.open('https://telegra.ph/ZipLime-10-28', '_blank')}
+            className="w-full h-[56px] bg-[rgba(79,79,89,0.24)] rounded-[8px] flex items-center justify-center hover:bg-[rgba(79,79,89,0.4)] transition-colors"
+          >
             <span className="text-[17px] font-semibold text-[#ebebf2] leading-[24px] tracking-[-0.204px] font-inter">
               Гайд по продукту
             </span>
           </button>
 
           {/* Speaker contact button */}
-          <button className="w-full h-[56px] btn-gradient transition-opacity hover:opacity-90">
+          <button 
+            onClick={() => window.open('https://t.me/arbuzovv', '_blank')}
+            className="w-full h-[56px] btn-gradient transition-opacity hover:opacity-90"
+          >
             <span className="text-[17px] font-semibold text-white leading-[24px] tracking-[-0.204px] font-inter">
               Связь со спикером
             </span>
