@@ -11,7 +11,7 @@ import {
   ArrowIcon,
   TelegramIcon,
 } from '@/shared/ui/icons';
-import { BadgeModal } from '@/shared/ui';
+import { BadgeModal, TelegramChannelBlock } from '@/shared/ui';
 import Image from 'next/image';
 import { HomeTour } from '@/features/app-tour';
 
@@ -386,22 +386,9 @@ export const HomePage: React.FC = () => {
 
         <div
           id="telegram-quest"
-          className="absolute top-[910px] left-1/2 -translate-x-1/2 w-[353px] h-[174px] rounded-[8px] bg-[#1A1A1F] flex flex-col items-start justify-start pl-[16px] pr-[16px] pt-[8px] pb-[20px]"
+          className="absolute top-[910px] left-1/2 -translate-x-1/2"
         >
-          <h3 className="font-inter-tight text-[24px] text-white font-normal leading-[110%] tracking-[-0.48px]">
-            Твой первый квест
-          </h3>
-          <p className="mt-[10px] w-[285px] text-white font-inter text-[14px] font-normal leading-[20px] tracking-[-0.056px]">
-            Присоединиться к нашему Telegram коммьюнити
-          </p>
-          <button
-            onClick={handleTelegramLinkClick}
-            className="mt-[14px] self-stretch p-[16px_24px] rounded-[8px] bg-[rgba(79,79,89,0.24)] flex justify-center items-center gap-[8px]"
-          >
-            <span className="text-[#EBEBF2] text-center font-inter text-[17px] font-semibold leading-[24px] tracking-[-0.204px]">
-              Перейти
-            </span>
-          </button>
+          <TelegramChannelBlock onClick={handleTelegramLinkClick} title="Твой первый квест" />
         </div>
       </div>
 

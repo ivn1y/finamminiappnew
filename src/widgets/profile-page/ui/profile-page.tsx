@@ -35,93 +35,12 @@ import { BadgeInfoTooltip } from '@/shared/ui/badge-info-tooltip';
 import { LevelProgressCircle } from '@/shared/ui/level-progress-circle';
 import { XPTooltip } from '@/shared/ui/xp-tooltip';
 import { TelegramCommunityCTA } from '@/shared/ui/telegram-community-cta';
+import { TelegramChannelBlock } from '@/shared/ui/telegram-channel-block';
 import { CuratorContacts } from '@/features/curator-contacts';
 import { User } from '@/shared/types/app';
 import Image from 'next/image';
 import { ProfileTour } from '@/features/app-tour';
 import { useRouter } from 'next/navigation';
-
-
-const FirstQuest = () => {
-  const handleTelegramClick = () => {
-    window.open('https://t.me/finam_collab', '_blank');
-  };
-
-  return (
-    <div
-      style={{
-        display: 'flex',
-        width: '354px',
-        height: '174px',
-        padding: '16px 20px 20px 20px',
-        flexDirection: 'column',
-        alignItems: 'flex-start',
-        gap: '16px',
-        borderRadius: '8px',
-        background: '#1A1A1F',
-      }}
-    >
-      <h3
-        style={{
-          color: '#FFF',
-          fontFamily: '"Inter Tight", sans-serif',
-          fontSize: '24px',
-          fontStyle: 'normal',
-          fontWeight: 400,
-          lineHeight: '110%',
-          letterSpacing: '-0.48px',
-          margin: 0,
-        }}
-      >
-        Твой первый квест
-      </h3>
-      <p
-        style={{
-          width: '329px',
-          color: '#FFF',
-          fontFamily: 'Inter, sans-serif',
-          fontSize: '14px',
-          fontStyle: 'normal',
-          fontWeight: 400,
-          lineHeight: '20px',
-          letterSpacing: '-0.056px',
-          margin: 0,
-        }}
-      >
-        Присоединиться к нашему Telegram коммьюнити
-      </p>
-      <button
-        onClick={handleTelegramClick}
-        style={{
-          display: 'flex',
-          width: '321px',
-          padding: '16px 24px',
-          justifyContent: 'center',
-          alignItems: 'center',
-          borderRadius: '8px',
-          background: 'rgba(79, 79, 89, 0.24)',
-          border: 'none',
-          cursor: 'pointer',
-        }}
-      >
-        <span
-          style={{
-            color: '#EBEBF2',
-            textAlign: 'center',
-            fontFamily: 'Inter, sans-serif',
-            fontSize: '17px',
-            fontStyle: 'normal',
-            fontWeight: 600,
-            lineHeight: '24px',
-            letterSpacing: '-0.204px',
-          }}
-        >
-          Перейти
-        </span>
-      </button>
-    </div>
-  );
-};
 
 export const ProfilePage: React.FC = () => {
   const { user, getAllBadges, getProgressPercentage, showProfileTour, endProfileTour, startMapTour, openUserDataInputModal } = useAppStore();
@@ -512,9 +431,11 @@ export const ProfilePage: React.FC = () => {
             top: '920px',
             left: '20px',
             right: '20px',
+            display: 'flex',
+            justifyContent: 'center',
           }}
         >
-          <FirstQuest />
+          <TelegramChannelBlock />
             </div>
             
         {/* Modals */}

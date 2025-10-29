@@ -41,6 +41,7 @@ export * from './switch';
 export * from './table';
 export * from './tabs';
 export * from './telegram-community-cta';
+export * from './telegram-channel-block';
 export * from './textarea';
 export * from './theme-toggle';
 export * from './toast';

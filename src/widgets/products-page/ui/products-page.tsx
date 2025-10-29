@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { ProductItem } from '@/shared/ui/product-item';
+import { TelegramChannelBlock } from '@/shared/ui/telegram-channel-block';
 import { TraderDiaryModal } from '@/shared/ui/trader-diary-modal';
 import { ZipLimeModal } from '@/shared/ui/ziplime-modal';
 import { TradeAPIModal } from '@/shared/ui/tradeapi-modal';
@@ -125,21 +126,8 @@ export const ProductsPage: React.FC = () => {
           </div>
 
           {/* Telegram Channel Block */}
-          <div className="mt-5 bg-[#1a1a1f] rounded-lg p-4">
-            <h2 className="font-inter-tight text-[24px] text-white tracking-[-0.48px] leading-tight mb-2">
-              Telegram канал
-            </h2>
-            <p className="font-inter text-[14px] text-white tracking-[-0.056px] leading-5 mb-2 w-[285px]">
-              Присоединиться к нашему Telegram коммьюнити
-            </p>
-            <button 
-              onClick={() => window.open('https://t.me/finam_collab', '_blank')}
-              className="w-full h-12 bg-[rgba(79,79,89,0.24)] rounded-lg flex items-center justify-center hover:bg-[rgba(79,79,89,0.4)] transition-colors"
-            >
-              <span className="font-inter font-semibold text-[#ebebf2] text-[17px] text-center tracking-[-0.204px] leading-6">
-                Перейти
-              </span>
-            </button>
+          <div className="mt-5">
+            <TelegramChannelBlock />
           </div>
 
           {/* Bottom spacer */}
