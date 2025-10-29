@@ -80,6 +80,17 @@ export const MapPage: React.FC = () => {
       useAppStore.getState().addScannedZone('manual_code_zone');
       return;
     }
+
+    // Проверяем секретную фразу "Финам Collab твои возможности"
+    if (code.toLowerCase() === 'finam:финам collab твои возможности') {
+      setLastPrize('Секретный бонус');
+      setShowSuccessModal(true);
+      setQRScanner(false);
+      useAppStore.getState().addBadge('qr_scanner_badge');
+      useAppStore.getState().incrementProgress();
+      useAppStore.getState().addScannedZone('secret_phrase_zone');
+      return;
+    }
     
     const zone = eventData.zones.find(z => z.qr === code);
     if (zone && !redeemedZones.includes(zone.id)) {
@@ -196,7 +207,7 @@ export const MapPage: React.FC = () => {
               background: 'linear-gradient(305deg, #FEDA3B -2.67%, #EF5541 38.9%, #801FDB 77.17%, #7E2A89 98.46%)'
             }}
           >
-            Отсканировать QR-код
+            Секретная фраза
           </button>
         </>
       ) : (
