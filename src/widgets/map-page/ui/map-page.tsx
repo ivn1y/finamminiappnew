@@ -169,8 +169,8 @@ export const MapPage: React.FC = () => {
                   <Image
                     src="/assets/images/event-map.png"
                     alt="Карта мероприятия"
-                    width={706}
-                    height={398}
+                    width={7680}
+                    height={4320}
                     quality={100}
                   />
                 </TransformComponent>
@@ -236,8 +236,9 @@ export const MapPage: React.FC = () => {
             <Image
               src="/assets/images/event-map.png"
               alt="Карта мероприятия"
-              fill
-              style={{ objectFit: 'contain' }}
+              width={7680}
+              height={4320}
+              style={{ objectFit: 'contain', maxWidth: '100%', maxHeight: '100%' }}
               quality={100}
             />
             <button
