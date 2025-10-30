@@ -16,7 +16,6 @@ export const CuratorContacts: React.FC = () => {
         flexDirection: 'column',
         alignItems: 'flex-start',
         gap: '16px',
-        alignSelf: 'stretch',
         borderRadius: '8px',
         background: '#1A1A1F',
       }}
