@@ -6,7 +6,7 @@ import Image from 'next/image';
 import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
 import { useAppStore } from '@/shared/store/app-store';
 import { eventData } from '@/shared/data/seed';
-import { QrCode, CheckCircle, Maximize, X } from 'lucide-react';
+import { QrCode, CheckCircle, Maximize } from 'lucide-react';
 import { Button } from '@/shared/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from '@/shared/ui/dialog';
 import { QRScanner } from '@/features/qr-scanner';
@@ -110,7 +110,7 @@ export const MapPage: React.FC = () => {
 
   return (
     <div className="w-full bg-black flex justify-center overflow-x-hidden">
-      <div className="bg-black w-[393px] relative font-sans text-white" style={{ height: '824px' }}>
+      <div className="bg-black w-[393px] relative font-sans text-white" style={{ height: '867px' }}>
       {showMapTour && <MapTour onComplete={completeMapTourAndGoToSchedule} />}
       
       {/* Tab Switcher */}
@@ -148,12 +148,12 @@ export const MapPage: React.FC = () => {
         <>
           <div
             className="absolute overflow-hidden rounded-lg border border-solid border-[#373740] cursor-grab active:cursor-grabbing"
-            style={{ top: 128, left: 20, width: 353, height: 199 }}
+            style={{ top: 128, left: 20, width: 353, height: 356 }}
           >
             <TransformWrapper
-                initialScale={1.5}
-                initialPositionX={-350}
-                initialPositionY={-250}
+                initialScale={2.2}
+                initialPositionX={-400}
+                initialPositionY={-300}
                 minScale={1}
                 maxScale={8}
                 panning={{
@@ -185,11 +185,11 @@ export const MapPage: React.FC = () => {
           </div>
 
           <h2 className="absolute font-inter-tight text-[24px] font-normal leading-[110%] tracking-[-0.48px] text-white"
-              style={{ top: 397, left: 20, width: 302 }}>
+              style={{ top: 516, left: 20, width: 302 }}>
             Условные обозначения
           </h2>
           
-          <div className="absolute flex justify-between" style={{ top: 450, left: 20, width: 334 }}>
+          <div className="absolute flex justify-between" style={{ top: 569, left: 20, width: 334 }}>
             <LegendItem gradient="#551181" text="VIP зал" rotated />
             <LegendItem gradient="#200b3a" text="Стенды" />
             <LegendItem gradient="#cf8d2d" text="Финам" />
@@ -200,7 +200,7 @@ export const MapPage: React.FC = () => {
             onClick={() => setQRScanner(true)}
             className="absolute flex justify-center items-center rounded-[8px] text-center font-inter text-[17px] font-semibold leading-[24px] tracking-[-0.204px] text-white z-40 mb-24"
             style={{ 
-              top: 563, 
+              top: 682, 
               left: 20, 
               width: 353, 
               padding: '16px 24px',
@@ -228,7 +228,7 @@ export const MapPage: React.FC = () => {
       )}
 
       <Dialog open={isMapFullScreen} onOpenChange={setIsMapFullScreen}>
-        <DialogContent className="w-screen h-screen max-w-none sm:rounded-none p-0 bg-black/80 backdrop-blur-sm border-0">
+        <DialogContent className="w-screen h-screen max-w-none sm:rounded-none p-0 bg-black/80 backdrop-blur-sm border-0 [&>button]:hidden">
           <div
             className="relative flex h-full w-full items-center justify-center p-4"
             onClick={() => setIsMapFullScreen(false)}
@@ -241,16 +241,6 @@ export const MapPage: React.FC = () => {
               style={{ objectFit: 'contain', maxWidth: '100%', maxHeight: '100%' }}
               quality={100}
             />
-            <button
-              onClick={e => {
-                e.stopPropagation();
-                setIsMapFullScreen(false);
-              }}
-              className="absolute right-4 top-4 z-20 rounded-full bg-black/50 p-2 text-white transition-colors hover:bg-black/75"
-              aria-label="Закрыть карту"
-            >
-              <X className="h-6 w-6" />
-            </button>
           </div>
         </DialogContent>
       </Dialog>
