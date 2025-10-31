@@ -35,19 +35,196 @@ export function validateEmail(email: string): { isValid: boolean; error?: string
 }
 
 /**
+ * Нормализация телефонного номера для разных форматов ввода
+ * Поддерживает альтернативные форматы для различных регионов
+ */
+function normalizePhoneNumber(phone: string): string[] {
+  // Убираем все пробелы, дефисы, скобки для получения только цифр
+  const digitsOnly = phone.replace(/[\s\-()]/g, '');
+  const trimmed = phone.trim();
+  
+  // Если номер уже начинается с +, возвращаем как есть
+  if (trimmed.startsWith('+')) {
+    return [trimmed];
+  }
+
+  const normalizedVariants: string[] = [];
+
+  // Россия (+7) и Казахстан (+7): варианты 8XXXXXXXXXX, 7XXXXXXXXXX
+  if (/^8\d{10}$/.test(digitsOnly)) {
+    normalizedVariants.push('+7' + digitsOnly.slice(1));
+  }
+  if (/^7\d{10}$/.test(digitsOnly)) {
+    normalizedVariants.push('+7' + digitsOnly.slice(1));
+  }
+
+  // Беларусь (+375): вариант 80XXXXXXXXX (11 цифр, начинается с 80)
+  if (/^80\d{9}$/.test(digitsOnly)) {
+    normalizedVariants.push('+375' + digitsOnly.slice(2));
+  }
+  // Беларусь (+375): вариант 375XXXXXXXXX (12 цифр, начинается с 375)
+  if (/^375\d{9}$/.test(digitsOnly)) {
+    normalizedVariants.push('+375' + digitsOnly.slice(3));
+  }
+
+  // Украина (+380): вариант 0XXXXXXXXX (10 цифр, начинается с 0)
+  if (/^0\d{9}$/.test(digitsOnly)) {
+    normalizedVariants.push('+380' + digitsOnly.slice(1));
+  }
+  // Украина (+380): вариант 380XXXXXXXXX (12 цифр, начинается с 380)
+  if (/^380\d{9}$/.test(digitsOnly)) {
+    normalizedVariants.push('+380' + digitsOnly.slice(3));
+  }
+
+  // Казахстан (+7): варианты уже обработаны выше вместе с Россией
+  // Но можно добавить специфичные варианты для Казахстана (если нужно)
+
+  // ОАЭ (+971): вариант 0XXXXXXXXX (10 цифр, начинается с 0)
+  // ОАЭ обычно имеет формат 05X XXX XXXX (9 цифр после 0)
+  if (/^0\d{9}$/.test(digitsOnly)) {
+    normalizedVariants.push('+971' + digitsOnly.slice(1));
+  }
+  // ОАЭ (+971): вариант 971XXXXXXXXX (12 цифр, начинается с 971)
+  if (/^971\d{9}$/.test(digitsOnly)) {
+    normalizedVariants.push('+971' + digitsOnly.slice(3));
+  }
+
+  // Саудовская Аравия (+966): вариант 0XXXXXXXXX (10 цифр, начинается с 0)
+  if (/^0\d{9}$/.test(digitsOnly)) {
+    normalizedVariants.push('+966' + digitsOnly.slice(1));
+  }
+  // Саудовская Аравия (+966): вариант 966XXXXXXXXX (12 цифр)
+  if (/^966\d{9}$/.test(digitsOnly)) {
+    normalizedVariants.push('+966' + digitsOnly.slice(3));
+  }
+
+  // Катар (+974): вариант 0XXXXXXXXX (10 цифр)
+  if (/^974\d{8}$/.test(digitsOnly)) {
+    normalizedVariants.push('+974' + digitsOnly.slice(3));
+  }
+
+  // Кувейт (+965): вариант 0XXXXXXXXX (10 цифр)
+  if (/^965\d{8}$/.test(digitsOnly)) {
+    normalizedVariants.push('+965' + digitsOnly.slice(3));
+  }
+
+  // Бахрейн (+973): вариант 0XXXXXXXXX (10 цифр)
+  if (/^973\d{8}$/.test(digitsOnly)) {
+    normalizedVariants.push('+973' + digitsOnly.slice(3));
+  }
+
+  // Оман (+968): вариант 0XXXXXXXXX (10 цифр)
+  if (/^968\d{8}$/.test(digitsOnly)) {
+    normalizedVariants.push('+968' + digitsOnly.slice(3));
+  }
+
+  // Иордания (+962): вариант 0XXXXXXXXX (10 цифр)
+  if (/^962\d{9}$/.test(digitsOnly)) {
+    normalizedVariants.push('+962' + digitsOnly.slice(3));
+  }
+
+  // Израиль (+972): вариант 0XXXXXXXXX (10 цифр)
+  if (/^972\d{8,9}$/.test(digitsOnly)) {
+    normalizedVariants.push('+972' + digitsOnly.slice(3));
+  }
+
+  // Турция (+90): вариант 0XXXXXXXXX (10 цифр)
+  if (/^90\d{10}$/.test(digitsOnly)) {
+    normalizedVariants.push('+90' + digitsOnly.slice(2));
+  }
+  if (/^0\d{10}$/.test(digitsOnly) && digitsOnly.length === 11) {
+    normalizedVariants.push('+90' + digitsOnly.slice(1));
+  }
+
+  // Армения (+374): вариант 0XXXXXXXXX (9 цифр после 0)
+  if (/^0\d{8}$/.test(digitsOnly) && digitsOnly.length === 9) {
+    normalizedVariants.push('+374' + digitsOnly.slice(1));
+  }
+  if (/^374\d{8}$/.test(digitsOnly)) {
+    normalizedVariants.push('+374' + digitsOnly.slice(3));
+  }
+
+  // Азербайджан (+994): вариант 0XXXXXXXXX (9 цифр после 0)
+  if (/^0\d{9}$/.test(digitsOnly) && digitsOnly.length === 10) {
+    normalizedVariants.push('+994' + digitsOnly.slice(1));
+  }
+  if (/^994\d{9}$/.test(digitsOnly)) {
+    normalizedVariants.push('+994' + digitsOnly.slice(3));
+  }
+
+  // Грузия (+995): вариант 0XXXXXXXXX (9 цифр после 0)
+  if (/^0\d{9}$/.test(digitsOnly) && digitsOnly.length === 10) {
+    normalizedVariants.push('+995' + digitsOnly.slice(1));
+  }
+  if (/^995\d{9}$/.test(digitsOnly)) {
+    normalizedVariants.push('+995' + digitsOnly.slice(3));
+  }
+
+  // Молдова (+373): вариант 0XXXXXXXXX (8-9 цифр после 0)
+  if (/^0\d{8,9}$/.test(digitsOnly)) {
+    normalizedVariants.push('+373' + digitsOnly.slice(1));
+  }
+  if (/^373\d{8,9}$/.test(digitsOnly)) {
+    normalizedVariants.push('+373' + digitsOnly.slice(3));
+  }
+
+  // США (+1): вариант 1XXXXXXXXXX (10 цифр после 1)
+  if (/^1\d{10}$/.test(digitsOnly)) {
+    normalizedVariants.push('+1' + digitsOnly.slice(1));
+  }
+
+  // Если есть варианты, возвращаем их, иначе возвращаем исходный номер
+  return normalizedVariants.length > 0 ? normalizedVariants : [trimmed];
+}
+
+/**
  * Валидация телефонного номера
  * Поддерживает международные номера из различных стран
+ * Принимает различные форматы ввода для разных регионов
  */
 export function validatePhone(phone: string): { isValid: boolean; error?: string; formatted?: string; country?: string } {
   if (!phone || phone.trim() === '') {
     return { isValid: false, error: 'Телефон обязателен для заполнения' };
   }
 
-  const cleanPhone = phone.trim();
+  // Получаем варианты нормализации
+  const normalizedVariants = normalizePhoneNumber(phone);
+  
+  // Список популярных стран для попытки парсинга
+  const defaultCountries: CountryCode[] = [
+    'RU', 'KZ', 'BY', 'UA', 'AM', 'AZ', 'GE', 'MD', // СНГ и Восточная Европа
+    'AE', 'SA', 'KW', 'QA', 'BH', 'OM', 'JO', 'IL', 'TR', // Ближний Восток
+    'US', 'GB', 'DE', 'FR', 'IT', 'ES', 'PL', 'CZ' // Западная Европа и США
+  ];
 
   try {
-    // Пытаемся распарсить номер как международный
-    const phoneNumber = parsePhoneNumberFromString(cleanPhone);
+    let phoneNumber: ReturnType<typeof parsePhoneNumberFromString> = undefined;
+    
+    // Пробуем каждый вариант нормализации
+    for (const normalizedPhone of normalizedVariants) {
+      // Сначала пробуем распарсить без указания страны
+      phoneNumber = parsePhoneNumberFromString(normalizedPhone);
+      
+      // Если получилось и номер валиден, используем его
+      if (phoneNumber && phoneNumber.isValid()) {
+        break;
+      }
+      
+      // Если не получилось, пробуем с разными дефолтными странами
+      if (!phoneNumber || !phoneNumber.isValid()) {
+        for (const country of defaultCountries) {
+          phoneNumber = parsePhoneNumberFromString(normalizedPhone, country);
+          if (phoneNumber && phoneNumber.isValid()) {
+            break;
+          }
+        }
+      }
+      
+      // Если нашли валидный номер, выходим из цикла
+      if (phoneNumber && phoneNumber.isValid()) {
+        break;
+      }
+    }
     
     if (!phoneNumber) {
       return { isValid: false, error: 'Неверный формат номера телефона' };
