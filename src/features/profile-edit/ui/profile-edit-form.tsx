@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { User, UserRole } from '@/shared/types/app';
 import { useProfile } from '@/shared/hooks/use-profile';
 import { useProfileAnalytics } from '@/shared/hooks/use-profile-analytics';
@@ -36,6 +36,8 @@ export const ProfileEditForm: React.FC<ProfileEditFormProps> = ({
   });
 
   const [hasChanges, setHasChanges] = useState(false);
+  const nameInputRef = useRef<HTMLInputElement>(null);
+  const intentTextareaRef = useRef<HTMLTextAreaElement>(null);
 
   // Отслеживаем изменения
   useEffect(() => {
@@ -98,6 +100,34 @@ export const ProfileEditForm: React.FC<ProfileEditFormProps> = ({
     }
   };
 
+  // Функция для прокрутки к полю ввода при фокусе (для мобильных устройств)
+  const handleInputFocus = (ref: React.RefObject<HTMLInputElement | HTMLTextAreaElement>) => {
+    requestAnimationFrame(() => {
+      setTimeout(() => {
+        if (ref.current) {
+          ref.current.scrollIntoView({ 
+            behavior: 'smooth', 
+            block: 'center',
+            inline: 'nearest'
+          });
+        }
+      }, 300); // Небольшая задержка для появления клавиатуры
+    });
+  };
+
+  // Универсальный обработчик фокуса для любого Input/Textarea элемента
+  const handleGenericInputFocus = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    requestAnimationFrame(() => {
+      setTimeout(() => {
+        e.target.scrollIntoView({ 
+          behavior: 'smooth', 
+          block: 'center',
+          inline: 'nearest'
+        });
+      }, 300);
+    });
+  };
+
   const renderRoleSpecificFields = () => {
     if (!user.role) return null;
 
@@ -121,6 +151,7 @@ export const ProfileEditForm: React.FC<ProfileEditFormProps> = ({
                 // так не делаем
                 value={(roleProfile as { years?: number })?.years || ''}
                 onChange={(e) => handleProfileChange('trader', 'years', parseInt(e.target.value) || 0)}
+                onFocus={handleGenericInputFocus}
                 placeholder="Введите количество лет"
                 className="mt-2"
               />
@@ -154,6 +185,7 @@ export const ProfileEditForm: React.FC<ProfileEditFormProps> = ({
                 type="text"
                 value={"markets" in roleProfile && Array.isArray(roleProfile?.markets) ? roleProfile?.markets.join(', ') : ''}
                 onChange={(e) => handleProfileChange('trader', 'markets', e.target.value.split(',').map(s => s.trim()).filter(Boolean))}
+                onFocus={handleGenericInputFocus}
                 placeholder="forex, crypto, stocks"
                 className="mt-2"
               />
@@ -196,6 +228,7 @@ export const ProfileEditForm: React.FC<ProfileEditFormProps> = ({
                 maxLength={100}
                 value={(roleProfile as { pitch3?: string })?.pitch3 || ''}
                 onChange={(e) => handleProfileChange('startup', 'pitch3', e.target.value)}
+                onFocus={handleGenericInputFocus}
                 placeholder="Опишите проект тремя словами"
                 className="mt-2"
               />
@@ -210,6 +243,7 @@ export const ProfileEditForm: React.FC<ProfileEditFormProps> = ({
                 type="url"
                 value={(roleProfile as { site?: string })?.site || ''}
                 onChange={(e) => handleProfileChange('startup', 'site', e.target.value)}
+                onFocus={handleGenericInputFocus}
                 placeholder="https://example.com"
                 className="mt-2"
               />
@@ -231,6 +265,7 @@ export const ProfileEditForm: React.FC<ProfileEditFormProps> = ({
                 type="text"
                 value={(roleProfile as { domain?: string })?.domain || ''}
                 onChange={(e) => handleProfileChange('expert', 'domain', e.target.value)}
+                onFocus={handleGenericInputFocus}
                 placeholder="Финансы, технологии, маркетинг..."
                 className="mt-2"
               />
@@ -247,6 +282,7 @@ export const ProfileEditForm: React.FC<ProfileEditFormProps> = ({
                 max="40"
                 value={(roleProfile as { availabilityHrs?: number })?.availabilityHrs || ''}
                 onChange={(e) => handleProfileChange('expert', 'availabilityHrs', parseInt(e.target.value) || 0)}
+                onFocus={handleGenericInputFocus}
                 placeholder="Введите количество часов"
                 className="mt-2"
               />
@@ -354,10 +390,12 @@ export const ProfileEditForm: React.FC<ProfileEditFormProps> = ({
                 Имя
               </Label>
               <Input
+                ref={nameInputRef}
                 id="name"
                 type="text"
                 value={formData.name}
                 onChange={(e) => handleInputChange('name', e.target.value)}
+                onFocus={() => handleInputFocus(nameInputRef)}
                 placeholder="Введите ваше имя"
                 className="mt-2"
               />
@@ -368,9 +406,11 @@ export const ProfileEditForm: React.FC<ProfileEditFormProps> = ({
                 Цель на 7 дней
               </Label>
               <Textarea
+                ref={intentTextareaRef}
                 id="intent7d"
                 value={formData.intent7d}
                 onChange={(e) => handleInputChange('intent7d', e.target.value)}
+                onFocus={() => handleInputFocus(intentTextareaRef)}
                 placeholder="Опишите вашу цель на ближайшие 7 дней"
                 className="mt-2"
                 rows={3}

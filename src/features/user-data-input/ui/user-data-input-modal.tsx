@@ -1,11 +1,14 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { Checkbox } from '@/shared/ui/checkbox';
 import styles from './user-data-input-modal.module.css';
 import { useAppStore } from '@/shared/store/app-store';
 import { validateUserForm, validateEmail, validatePhone, validateName } from '@/shared/lib/validation';
+import { RoleSelectionModal } from '@/features/role-carousel/ui/role-selection-modal';
+import { roleContent } from '@/shared/data/seed';
+import { UserRole } from '@/shared/types/app';
 
 interface UserDataInputModalProps {
   isOpen: boolean;
@@ -47,10 +50,20 @@ export const UserDataInputModal: React.FC<UserDataInputModalProps> = ({
     interests: initialData.interests || '',
   });
 
+  const { user, updateUser } = useAppStore();
   const [agreedToPolicy, setAgreedToPolicy] = useState(false);
   const [errors, setErrors] = useState<Partial<Record<keyof UserData | 'policy', string>>>({});
   const [phoneCountry, setPhoneCountry] = useState<string>('');
   const [focusedInput, setFocusedInput] = useState<string | null>(null);
+  const [showRoleModal, setShowRoleModal] = useState(false);
+  const inputRefs = {
+    name: useRef<HTMLInputElement>(null),
+    phone: useRef<HTMLInputElement>(null),
+    email: useRef<HTMLInputElement>(null),
+  };
+
+  const currentRole = user?.role || null;
+  const currentRoleTitle = currentRole ? roleContent.find(r => r.id === currentRole)?.title : 'Не выбрано';
 
   useEffect(() => {
     if (initialData) {
@@ -131,6 +144,38 @@ export const UserDataInputModal: React.FC<UserDataInputModalProps> = ({
     }
   };
 
+  const handleRoleSelect = (role: UserRole) => {
+    if (user) {
+      // Обновляем роль и аватар (персонаж)
+      updateUser({
+        role,
+        avatar: {
+          characterId: `${role}_v1`,
+          frameId: user.avatar?.frameId,
+          accessories: user.avatar?.accessories || [],
+        },
+      });
+    }
+  };
+
+  // Функция для прокрутки к полю ввода при фокусе (для мобильных устройств)
+  const handleInputFocus = (field: 'name' | 'phone' | 'email') => {
+    setFocusedInput(field);
+    // Используем requestAnimationFrame для того, чтобы скролл произошел после появления клавиатуры
+    requestAnimationFrame(() => {
+      setTimeout(() => {
+        const inputElement = inputRefs[field].current;
+        if (inputElement) {
+          inputElement.scrollIntoView({ 
+            behavior: 'smooth', 
+            block: 'center',
+            inline: 'nearest'
+          });
+        }
+      }, 300); // Небольшая задержка для появления клавиатуры
+    });
+  };
+
   if (!isOpen) {
     return null;
   }
@@ -150,17 +195,17 @@ export const UserDataInputModal: React.FC<UserDataInputModalProps> = ({
                 </div>
               )}
               <input
+                ref={inputRefs.name}
                 id="name"
                 type="text"
                 value={formData.name}
                 onChange={(e) => handleInputChange('name', e.target.value)}
-                onFocus={() => setFocusedInput('name')}
+                onFocus={() => handleInputFocus('name')}
                 onBlur={() => setFocusedInput(null)}
                 placeholder="Имя, Фамилия*"
                 className={`${styles.input} ${errors.name ? styles.error : ''}`}
               />
             </div>
-            {errors.name && <p style={{ color: 'red', fontSize: '12px', marginTop: '4px' }}>{errors.name}</p>}
           </div>
 
           <div className={`${styles.inputGroup} ${styles.phoneInput}`}>
@@ -171,17 +216,17 @@ export const UserDataInputModal: React.FC<UserDataInputModalProps> = ({
                 </div>
               )}
               <input
+                ref={inputRefs.phone}
                 id="phone"
                 type="tel"
                 value={formData.phone}
                 onChange={(e) => handleInputChange('phone', e.target.value)}
-                onFocus={() => setFocusedInput('phone')}
+                onFocus={() => handleInputFocus('phone')}
                 onBlur={() => setFocusedInput(null)}
                 placeholder="+7 912 345-67-89 или +971 50 123-45-67"
                 className={`${styles.input} ${errors.phone ? styles.error : ''}`}
               />
             </div>
-            {errors.phone && <p style={{ color: 'red', fontSize: '12px', marginTop: '4px' }}>{errors.phone}</p>}
             {phoneCountry && !errors.phone && (
               <p style={{ color: '#6F6F7C', fontSize: '12px', marginTop: '4px' }}>
                 Страна: {phoneCountry}
@@ -197,17 +242,30 @@ export const UserDataInputModal: React.FC<UserDataInputModalProps> = ({
                 </div>
               )}
               <input
+                ref={inputRefs.email}
                 id="email"
                 type="email"
                 value={formData.email}
                 onChange={(e) => handleInputChange('email', e.target.value)}
-                onFocus={() => setFocusedInput('email')}
+                onFocus={() => handleInputFocus('email')}
                 onBlur={() => setFocusedInput(null)}
                 placeholder="E-mail*"
                 className={`${styles.input} ${errors.email ? styles.error : ''}`}
               />
             </div>
-            {errors.email && <p style={{ color: 'red', fontSize: '12px', marginTop: '4px' }}>{errors.email}</p>}
+          </div>
+
+          <div className={`${styles.inputGroup} ${styles.roleInput}`}>
+            <div className={styles.inputWrapper}>
+              <button
+                type="button"
+                onClick={() => setShowRoleModal(true)}
+                className={`${styles.input} ${styles.roleButton}`}
+                style={{ cursor: 'pointer', textAlign: 'left' }}
+              >
+                {currentRoleTitle}
+              </button>
+            </div>
           </div>
 
           <button type="submit" className={styles.submitButton}>
@@ -228,9 +286,16 @@ export const UserDataInputModal: React.FC<UserDataInputModalProps> = ({
               </Link>
             </label>
           </div>
-          {errors.policy && <p style={{ color: 'red', fontSize: '12px', position: 'absolute', top: '510px', left: '28px' }}>{errors.policy}</p>}
+          {errors.policy && <p style={{ color: 'red', fontSize: '12px', position: 'absolute', top: '612px', left: '28px' }}>{errors.policy}</p>}
         </form>
       </div>
+
+      <RoleSelectionModal
+        isOpen={showRoleModal}
+        onClose={() => setShowRoleModal(false)}
+        onSelect={handleRoleSelect}
+        currentRole={currentRole}
+      />
     </div>
   );
 };

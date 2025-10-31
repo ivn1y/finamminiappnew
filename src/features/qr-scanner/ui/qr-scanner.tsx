@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useRef } from 'react'
 import Image from 'next/image'
 import { QRScanResult } from '@/shared/types/qr'
 
@@ -13,6 +13,7 @@ interface QRScannerProps {
 export const QRScanner: React.FC<QRScannerProps> = ({ onSuccess, onClose }) => {
   const [inputValue, setInputValue] = useState('')
   const [isInputFocused, setIsInputFocused] = useState(false)
+  const inputRef = useRef<HTMLInputElement>(null)
 
   const handleSuccess = (code: string) => {
     onSuccess({
@@ -51,6 +52,21 @@ export const QRScanner: React.FC<QRScannerProps> = ({ onSuccess, onClose }) => {
     if (e.key === 'Enter') {
       handleConfirm();
     }
+  }
+
+  // Функция для прокрутки к полю ввода при фокусе (для мобильных устройств)
+  const handleInputFocus = () => {
+    setIsInputFocused(true);
+    // Используем requestAnimationFrame для того, чтобы скролл произошел после появления клавиатуры
+    requestAnimationFrame(() => {
+      setTimeout(() => {
+        inputRef.current?.scrollIntoView({ 
+          behavior: 'smooth', 
+          block: 'center',
+          inline: 'nearest'
+        });
+      }, 300); // Небольшая задержка для появления клавиатуры
+    });
   }
 
   return (
@@ -119,11 +135,12 @@ export const QRScanner: React.FC<QRScannerProps> = ({ onSuccess, onClose }) => {
             className={`relative flex w-full h-full p-[8px_12px_8px_16px] items-center gap-x-2 rounded-lg border border-solid ${isInputFocused ? 'border-transparent bg-transparent' : 'border-[#373740] bg-[rgba(79,79,89,0.16)]'}`}
           >
             <input
+              ref={inputRef}
               type="text"
               value={inputValue}
               onChange={handleInputChange}
               onKeyPress={handleKeyPress}
-              onFocus={() => setIsInputFocused(true)}
+              onFocus={handleInputFocus}
               onBlur={() => setIsInputFocused(false)}
               placeholder="Введи фразу"
               className="w-full h-full bg-transparent text-white placeholder:text-[#6F6F7C] font-inter text-[16px] leading-[24px] tracking-[-0.128px] focus:outline-none relative z-10"

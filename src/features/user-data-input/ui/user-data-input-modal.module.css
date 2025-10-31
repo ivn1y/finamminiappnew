@@ -81,11 +81,15 @@
 }
 
 .phoneInput {
-  top: 226px;
+  top: 226px; /* 154 + 56 (высота name) + 16px (отступ) = 226px */
 }
 
 .emailInput {
-  top: 298px;
+  top: 298px; /* 226 + 56 (высота phone) + 16px (отступ) = 298px */
+}
+
+.roleInput {
+  top: 370px; /* 298 + 56 (высота email) + 16px (отступ) = 370px */
 }
 
 .inputWrapper {
@@ -161,7 +165,7 @@
 
 .submitButton {
   position: absolute;
-  top: 378px;
+  top: 446px; /* 370 + 56 (высота role) + 20px (отступ) = 446px */
   left: 28px;
   display: flex;
   width: 338px;
@@ -191,7 +195,7 @@
 
 .privacyContainer {
   position: absolute;
-  top: 476px;
+  top: 542px; /* 446 + 56 (высота кнопки) + 16px (отступ) + примерно 24px = 542px */
   left: 28px;
   right: 27px;
   display: flex;
@@ -230,4 +234,17 @@
   line-height: 22px;
   letter-spacing: -0.09px;
   text-decoration: none;
+}
+
+.roleButton {
+  cursor: pointer;
+  text-align: left;
+}
+
+.roleButton:hover {
+  background: rgba(79, 79, 89, 0.24);
+}
+
+.roleButton:active {
+  background: rgba(79, 79, 89, 0.32);
 }
