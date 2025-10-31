@@ -138,7 +138,7 @@ export const AppTour: React.FC<AppTourProps> = ({
             flexShrink: 0,
             aspectRatio: '9 / 8',
             background:
-              'url(/assets/images/assistant-bard.png) lightgray -0.09px -6.377px / 100% 113.007% no-repeat',
+              'url(/assets/images/assistant-bard.png?v=3) lightgray -0.09px -6.377px / 100% 113.007% no-repeat',
             backgroundSize: 'cover',
           }}
         />

@@ -67,16 +67,16 @@ const ScheduleTour: React.FC<ScheduleTourProps> = ({ onComplete }) => {
           <div
             className="absolute"
             style={{
-              top: '25px',
-              left: '0px',
-              width: '136px',
+              top: '23px',
+              left: '8px',
+              width: '146px',
               height: '153px',
             }}
           >
             <Image
-              src="/assets/images/bard.png"
+              src="/assets/images/bard.png?v=3"
               alt="Assistant"
-              width={136}
+              width={146}
               height={153}
               style={{ objectFit: 'cover' }}
             />

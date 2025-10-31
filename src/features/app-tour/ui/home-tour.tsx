@@ -133,16 +133,16 @@ const HomeTour: React.FC<HomeTourProps> = ({
           <div
             className="absolute"
             style={{
-              top: '25px',
-              left: '0px',
-              width: '136px',
+              top: '23px',
+              left: '8px',
+              width: '146px',
               height: '153px',
             }}
           >
             <Image
-              src="/assets/images/bard.png"
+              src="/assets/images/bard.png?v=3"
               alt="Assistant"
-              width={136}
+              width={146}
               height={153}
               style={{ objectFit: 'cover' }}
             />
@@ -163,12 +163,7 @@ const HomeTour: React.FC<HomeTourProps> = ({
             }}
           >
             <p style={{ margin: 0 }}>
-              Привет тебе, отважный искатель приключений! Добро пожаловать в
-              нашу таверну, где путники обретают отдых и новые задания!
-            </p>
-            <p style={{ marginTop: '13px' }}>
-              Мы знаем, что ты — герой, готовый к испытаниям. Расскажи нам о
-              своём происхождении
+              Приветствую тебя, путник сетевых миров!  Добро пожаловать в наш нейро-хаб, где кочевники данных отдыхают и получают новые миссии. Поделись своей историей загрузки — из какого узла ты прибыл и какой путь привёл тебя сюда?
             </p>
           </div>
         </div>
