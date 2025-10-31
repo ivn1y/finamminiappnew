@@ -14,6 +14,9 @@ import {
 import { BadgeModal, TelegramChannelBlock } from '@/shared/ui';
 import Image from 'next/image';
 import { HomeTour } from '@/features/app-tour';
+import { QRScanner } from '@/features/qr-scanner';
+import { QRScanResult } from '@/shared/types/qr';
+import { Dialog, DialogContent } from '@/shared/ui/dialog';
 
 const TaskButton = React.forwardRef<HTMLDivElement, {
   href?: string;
@@ -24,6 +27,7 @@ const TaskButton = React.forwardRef<HTMLDivElement, {
   const handleClick = (e: React.MouseEvent) => {
     if (onClick) {
       e.preventDefault();
+      e.stopPropagation();
       onClick();
     }
   };
@@ -123,7 +127,7 @@ const Badge = ({
 );
 
 export const HomePage: React.FC = () => {
-  const { user, telegramQuestCompleted, completeTelegramQuest, showAppTour, endAppTour, completeHomeTourAndGoToProfile } = useAppStore();
+  const { user, telegramQuestCompleted, completeTelegramQuest, showAppTour, endAppTour, completeHomeTourAndGoToProfile, showQRScanner, setQRScanner } = useAppStore();
   const router = useRouter();
   const [selectedBadge, setSelectedBadge] = useState<{
     imgSrc: string;
@@ -134,6 +138,7 @@ export const HomePage: React.FC = () => {
     howToEarn?: string;
   } | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [showSecretPhraseSuccessModal, setShowSecretPhraseSuccessModal] = useState(false);
   const profileTaskRef = useRef<HTMLDivElement>(null);
   const [highlightedButtonRect, setHighlightedButtonRect] = useState<DOMRect | null>(null);
 
@@ -184,6 +189,31 @@ export const HomePage: React.FC = () => {
     window.open('https://t.me/finam_collab', '_blank');
   };
 
+  const handleSecretPhraseClick = (e?: React.MouseEvent) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    setQRScanner(true);
+  };
+
+  const handleQRSuccess = (result: QRScanResult) => {
+    const code = result.code || '';
+
+    // Проверяем секретную фразу "Финам Collab твои возможности"
+    if (code.toLowerCase() === 'finam:финам collab твои возможности') {
+      setQRScanner(false);
+      setShowSecretPhraseSuccessModal(true);
+      useAppStore.getState().addBadge('qr_scanner_badge');
+      useAppStore.getState().incrementProgress();
+      useAppStore.getState().addScannedZone('secret_phrase_zone');
+      return;
+    }
+    
+    // Если это другой QR код, просто закрываем
+    setQRScanner(false);
+  };
+
   // Mock data for progress and badges, will be replaced with real data
   const progress = 25;
   const tasks = [
@@ -207,7 +237,8 @@ export const HomePage: React.FC = () => {
     {
       text: 'Введи секретную фразу',
       completed: !!(user.scannedZones && user.scannedZones.length > 0),
-      href: '/collab/map',
+      onClick: handleSecretPhraseClick,
+      href: undefined,
     },
   ];
 
@@ -358,7 +389,7 @@ export const HomePage: React.FC = () => {
             {tasks.map((task, index) => (
               <TaskButton
                 key={index}
-                href={task.href}
+                href={task.onClick ? undefined : task.href}
                 text={task.text}
                 completed={task.completed}
                 onClick={task.onClick}
@@ -400,6 +431,55 @@ export const HomePage: React.FC = () => {
           badge={selectedBadge}
         />
       )}
+
+      {/* QR Scanner */}
+      {showQRScanner && (
+        <QRScanner
+          onSuccess={handleQRSuccess}
+          onClose={() => {
+            setQRScanner(false);
+          }}
+          userId="demo-user"
+        />
+      )}
+
+      {/* Secret Phrase Success Modal */}
+      <Dialog open={showSecretPhraseSuccessModal} onOpenChange={setShowSecretPhraseSuccessModal}>
+        <DialogContent className="p-0 border-0" style={{ width: 353, height: 358, borderRadius: 10, background: '#1A1A1F' }}>
+          <div className="relative w-full h-full flex flex-col items-center">
+            <div className="absolute" style={{ top: 14 }}>
+              <Image src="/assets/gifts/gift.png" alt="Подарок" width={120} height={120} />
+            </div>
+            <h2 
+              className="absolute text-white text-center font-inter-tight font-normal"
+              style={{ top: 128, fontSize: 28, lineHeight: '32px', letterSpacing: '-0.504px' }}
+            >
+              Поздравляем!
+            </h2>
+            <p
+              className="absolute text-center"
+              style={{ top: 170, left: 19, right: 18, color: '#6F6F7C', fontFamily: 'Inter', fontSize: 17, fontStyle: 'normal', fontWeight: 400, lineHeight: '24px', letterSpacing: '-0.17px' }}
+            >
+              Теперь тебе нужно подойти к нашему стенду, чтобы стать участником розыгрыша лимитированного мерча.
+            </p>
+          </div>
+          <button
+            onClick={() => setShowSecretPhraseSuccessModal(false)}
+            className="absolute flex justify-center items-center rounded-lg text-white text-center font-inter text-[17px] font-semibold leading-[24px] tracking-[-0.204px]"
+            style={{
+              bottom: 20,
+              left: 19,
+              right: 20,
+              width: 'calc(100% - 38px)',
+              padding: '16px 24px',
+              background: 'linear-gradient(305deg, #FEDA3B -2.67%, #EF5541 38.9%, #801FDB 77.17%, #7E2A89 98.46%)',
+              zIndex: 10
+            }}
+          >
+            Отлично!
+          </button>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
