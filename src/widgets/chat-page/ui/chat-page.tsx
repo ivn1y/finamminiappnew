@@ -173,6 +173,7 @@ export const ChatPage: React.FC = () => {
   const [isTyping, setIsTyping] = useState(false);
   const [isInputFocused, setIsInputFocused] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   // Проверяем, есть ли данные пользователя
   const hasUserData = user && user.name && user.credentials?.email && user.credentials?.phone;
@@ -348,6 +349,21 @@ export const ChatPage: React.FC = () => {
     }
   };
 
+  // Функция для прокрутки к полю ввода при фокусе (для мобильных устройств)
+  const handleInputFocus = () => {
+    setIsInputFocused(true);
+    // Используем requestAnimationFrame для того, чтобы скролл произошел после появления клавиатуры
+    requestAnimationFrame(() => {
+      setTimeout(() => {
+        inputRef.current?.scrollIntoView({ 
+          behavior: 'smooth', 
+          block: 'center',
+          inline: 'nearest'
+        });
+      }, 300); // Небольшая задержка для появления клавиатуры
+    });
+  };
+
   const formatTime = (date: Date) => {
     return date.toLocaleTimeString('ru-RU', { 
       hour: '2-digit', 
@@ -404,11 +420,12 @@ export const ChatPage: React.FC = () => {
 									</div>
 								)}
 								<Input
+									ref={inputRef}
 									type='text'
 									value={inputText}
 									onChange={e => setInputText(e.target.value)}
 									onKeyPress={handleKeyPress}
-									onFocus={() => setIsInputFocused(true)}
+									onFocus={handleInputFocus}
 									onBlur={() => setIsInputFocused(false)}
 									placeholder={hasUserData ? 'Напишите сообщение...' : 'Сначала заполните данные в профиле'}
 									className='w-full h-full rounded-[8px] border border-[#373740] bg-[rgba(79,79,89,0.16)] p-4 pr-[56px] text-base font-normal leading-6 tracking-[-0.128px] text-white placeholder:text-[#6F6F7C] focus-visible:ring-offset-0 focus:outline-none focus:border-transparent font-inter relative z-10'
@@ -532,11 +549,12 @@ export const ChatPage: React.FC = () => {
 								</div>
 							)}
 							<Input
+								ref={inputRef}
 								type='text'
 								value={inputText}
 								onChange={e => setInputText(e.target.value)}
 								onKeyPress={handleKeyPress}
-								onFocus={() => setIsInputFocused(true)}
+								onFocus={handleInputFocus}
 								onBlur={() => setIsInputFocused(false)}
 								placeholder={hasUserData ? 'Напишите сообщение...' : 'Сначала заполните данные в профиле'}
 								className='w-full h-full rounded-[8px] border border-[#373740] bg-[rgba(79,79,89,0.16)] p-4 pr-[56px] text-base font-normal leading-6 tracking-[-0.128px] text-white placeholder:text-[#6F6F7C] focus-visible:ring-offset-0 focus:outline-none focus:border-transparent font-inter relative z-10'
