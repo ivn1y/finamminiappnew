@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Image from 'next/image';
+import { useAppStore } from '@/shared/store/app-store';
 
 interface BadgeModalProps {
   isOpen: boolean;
@@ -21,6 +22,29 @@ export const BadgeModal = ({
   onClose,
   badge
 }: BadgeModalProps) => {
+  const setQRScanner = useAppStore((state) => state.setQRScanner);
+  
+  const isSecretPhraseButton = badge.howToEarn?.toLowerCase().includes('секретную фразу') || 
+                               badge.howToEarn?.toLowerCase().includes('секретную') ||
+                               badge.howToEarn === 'Введи секретную фразу';
+  
+  const isTelegramQuestButton = badge.howToEarn?.toLowerCase().includes('telegram') || 
+                                badge.howToEarn?.toLowerCase().includes('телеграм') ||
+                                badge.howToEarn === 'Выполни Telegram квест' ||
+                                badge.howToEarn?.includes('Telegram квест');
+  
+  const isActiveButton = isSecretPhraseButton || isTelegramQuestButton;
+  
+  const handleHowToEarnClick = () => {
+    if (isSecretPhraseButton) {
+      onClose();
+      setQRScanner(true);
+    } else if (isTelegramQuestButton) {
+      onClose();
+      window.open('https://t.me/finam_collab', '_blank');
+    }
+  };
+
   if (!isOpen) return null;
 
   return (
@@ -109,6 +133,7 @@ export const BadgeModal = ({
         {/* How to earn badge block */}
         <div
           className="absolute"
+          onClick={isActiveButton ? handleHowToEarnClick : undefined}
           style={{
             top: '238px',
             left: '19px',
@@ -118,7 +143,8 @@ export const BadgeModal = ({
             justifyContent: 'center',
             alignItems: 'center',
             borderRadius: '5px',
-            background: '#2F2F37'
+            background: '#2F2F37',
+            cursor: isActiveButton ? 'pointer' : 'default'
           }}
         >
           <p

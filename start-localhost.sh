@@ -1,34 +1,29 @@
 #!/bin/bash
 
-# Скрипт для запуска локальной версии на localhost:3000
-# Автор: AI Assistant
-
-echo "🚀 Запуск локальной версии приложения (localhost:3000)..."
-echo ""
-
-echo "💻 Локальная версия доступна по адресу:"
-echo "   http://localhost:3000"
-echo ""
-echo "📱 Для мобильного тестирования используйте:"
-echo "   ./start-mobile-192.sh (для IP 192.168.1.192)"
-echo "   ./start-mobile-196.sh (для IP 192.168.1.196)"
-echo ""
-
-# Проверяем, свободен ли порт
-if lsof -Pi :3000 -sTCP:LISTEN -t >/dev/null ; then
-    echo "⚠️  Порт 3000 занят. Останавливаем процессы..."
-    lsof -ti:3000 | xargs kill -9
+if lsof -Pi :3000 -sTCP:LISTEN -t >/dev/null 2>&1; then
+    echo "⚠️  Остановка процессов на порту 3000..."
+    lsof -ti:3000 | xargs kill -9 2>/dev/null
     sleep 2
 fi
 
-echo "🔄 Запускаем локальный сервер..."
-echo ""
+if [ ! -d "node_modules" ]; then
+    echo "📦 Установка зависимостей..."
+    npm install
+fi
 
-# Запускаем локальную версию
-echo "💻 Запуск сервера для локальной разработки..."
+echo ""
+echo "🚀 Запуск локальной версии (для компьютера)..."
+echo ""
+echo "💻 Доступен по адресу:"
+echo "   http://localhost:3000"
+echo ""
 echo "🔧 Режим разработки с hot reload"
+echo ""
+echo "📱 Для мобильной версии используйте:"
+echo "   ./start-mobile-universal.sh"
+echo "   или npm run mobile"
+echo ""
 echo "⚠️  Для остановки нажмите Ctrl+C"
 echo ""
 
-# Запускаем скрипт локальной разработки
 node scripts/localhost-dev.js

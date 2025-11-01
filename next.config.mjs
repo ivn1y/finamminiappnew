@@ -18,6 +18,21 @@ const nextConfig = {
         port: "3001",
         pathname: "/**",
       },
+      {
+        protocol: "http",
+        hostname: "192.168.**",
+        pathname: "/**",
+      },
+      {
+        protocol: "http",
+        hostname: "10.**",
+        pathname: "/**",
+      },
+      {
+        protocol: "http",
+        hostname: "172.**",
+        pathname: "/**",
+      },
     ],
   },
   // Development optimizations

@@ -178,10 +178,7 @@ export const HomePage: React.FC = () => {
   if (!role) return null;
 
   const handleTelegramQuestClick = () => {
-    const questElement = document.getElementById('telegram-quest');
-    if (questElement) {
-      questElement.scrollIntoView({ behavior: 'smooth' });
-    }
+    window.open('https://t.me/finam_collab', '_blank');
   };
 
   const handleTelegramLinkClick = () => {
