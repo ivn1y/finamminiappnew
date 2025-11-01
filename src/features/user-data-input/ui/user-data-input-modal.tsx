@@ -53,7 +53,6 @@ export const UserDataInputModal: React.FC<UserDataInputModalProps> = ({
   const { user, updateUser } = useAppStore();
   const [agreedToPolicy, setAgreedToPolicy] = useState(false);
   const [errors, setErrors] = useState<Partial<Record<keyof UserData | 'policy', string>>>({});
-  const [phoneCountry, setPhoneCountry] = useState<string>('');
   const [focusedInput, setFocusedInput] = useState<string | null>(null);
   const [showRoleModal, setShowRoleModal] = useState(false);
   const inputRefs = {
@@ -110,9 +109,6 @@ export const UserDataInputModal: React.FC<UserDataInputModalProps> = ({
         // Автоматически форматируем номер при вводе
         if (validationResult.isValid && validationResult.formatted) {
           setFormData(prev => ({ ...prev, phone: validationResult.formatted! }));
-          setPhoneCountry(validationResult.country || '');
-        } else {
-          setPhoneCountry('');
         }
         break;
     }
@@ -227,11 +223,6 @@ export const UserDataInputModal: React.FC<UserDataInputModalProps> = ({
                 className={`${styles.input} ${errors.phone ? styles.error : ''}`}
               />
             </div>
-            {phoneCountry && !errors.phone && (
-              <p style={{ color: '#6F6F7C', fontSize: '12px', marginTop: '4px' }}>
-                Страна: {phoneCountry}
-              </p>
-            )}
           </div>
 
           <div className={`${styles.inputGroup} ${styles.emailInput}`}>
