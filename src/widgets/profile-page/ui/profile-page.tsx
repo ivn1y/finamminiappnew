@@ -328,18 +328,28 @@ export const ProfilePage: React.FC = () => {
             width: '139px',
             height: '184px',
             borderRadius: '8px',
-            border: '1px solid #CD81FF',
-            overflow: 'hidden', // to ensure the Image respects the border radius
-            background: 'lightgray',
+            padding: '2px',
+            background: 'linear-gradient(305deg, #FEDA3B -2.67%, #EF5541 38.9%, #801FDB 77.17%, #7E2A89 98.46%)',
+            zIndex: 10,
           }}
         >
-          <Image
-            src={role.image}
-            alt={role.title}
-            width={139}
-            height={184}
-            className="w-full h-full object-cover"
-          />
+          <div
+            style={{
+              width: '100%',
+              height: '100%',
+              borderRadius: '6px',
+              overflow: 'hidden',
+              background: 'lightgray',
+            }}
+          >
+            <Image
+              src={role.image}
+              alt={role.title}
+              width={139}
+              height={184}
+              className="w-full h-full object-cover"
+            />
+          </div>
         </div>
 
         {/* Level Indicator */}
@@ -348,14 +358,15 @@ export const ProfilePage: React.FC = () => {
             position: 'absolute',
             top: '38.41px',
             left: '243.21px',
-            width: '42.188px',
-            height: '42.188px',
+            width: '45px',
+            height: '45px',
+            zIndex: 20,
           }}
           className="flex items-center justify-center"
         >
             <LevelProgressCircle
                 level={Math.floor(user.xp / 100) + 1}
-                progress={getProgressPercentage()}
+                progress={user.xp % 100}
             />
           </div>
           
