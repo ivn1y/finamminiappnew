@@ -132,14 +132,14 @@ const SendIcon: React.FC = () => (
 // Компонент аватара пользователя
 const UserAvatar: React.FC<{ userRole: string }> = ({ userRole }) => {
   const roleIconMapping: Record<string, string> = {
-    trader: '/assets/icons/assistant/Trader.png',
-    startup: '/assets/icons/assistant/Startuper.png',
-    partner: '/assets/icons/assistant/Partner.png',
-    guest: '/assets/icons/assistant/Guest.png',
-    expert: '/assets/icons/assistant/Expert.png',
+    trader: '/assets/icons/assistant/Trader.png?v=2',
+    startup: '/assets/icons/assistant/Startuper.png?v=2',
+    partner: '/assets/icons/assistant/Partner.png?v=2',
+    guest: '/assets/icons/assistant/Guest.png?v=2',
+    expert: '/assets/icons/assistant/Expert.png?v=2',
   };
 
-  const roleIcon = roleIconMapping[userRole] || '/assets/icons/assistant/Guest.png';
+  const roleIcon = roleIconMapping[userRole] || '/assets/icons/assistant/Guest.png?v=2';
   
   return (
     <div className="relative h-8 w-8 overflow-hidden rounded-[12px] border border-[#7b36b7] bg-[#151519]">
