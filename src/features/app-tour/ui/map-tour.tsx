@@ -67,14 +67,14 @@ const MapTour: React.FC<MapTourProps> = ({ onComplete }) => {
           <div
             className="absolute"
             style={{
-              top: '23px',
+              top: '26px',
               left: '8px',
               width: '146px',
               height: '153px',
             }}
           >
             <Image
-              src="/assets/images/bard.png?v=3"
+              src="/assets/images/bard.png?v=4"
               alt="Assistant"
               width={146}
               height={153}
@@ -97,13 +97,7 @@ const MapTour: React.FC<MapTourProps> = ({ onComplete }) => {
             }}
           >
             <p style={{ margin: 0 }}>
-              Ты получаешь предмет:
-              <br />
-              «Карта События»
-            </p>
-            <p style={{ marginTop: '13px' }}>
-              С её помощью ты сможешь отыскать места силы, древние залы встреч и
-              скрытые уголки, где вершатся великие и тайные деяния.
+              Ты получаешь артефакт: «Карта События». С её помощью ты сможешь обнаружить узлы силы, залы конференций древних сетей и скрытые коды, где совершаются великие и тайные обновления системы.
             </p>
           </div>
         </div>

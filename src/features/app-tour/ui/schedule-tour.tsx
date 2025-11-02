@@ -67,14 +67,14 @@ const ScheduleTour: React.FC<ScheduleTourProps> = ({ onComplete }) => {
           <div
             className="absolute"
             style={{
-              top: '23px',
+              top: '26px',
               left: '8px',
               width: '146px',
               height: '153px',
             }}
           >
             <Image
-              src="/assets/images/bard.png?v=3"
+              src="/assets/images/bard.png?v=4"
               alt="Assistant"
               width={146}
               height={153}
@@ -97,9 +97,7 @@ const ScheduleTour: React.FC<ScheduleTourProps> = ({ onComplete }) => {
             }}
           >
             <p style={{ margin: 0 }}>
-              Здесь ты сможешь посмотреть выступления мастеров разных гильдий.
-              Они поделятся своим опытом и направят на нужный путь. А данный
-              свиток поможет не пропустить ни одной встречи
+              Здесь ты откроешь доступ к вещанию мастеров гильдий то есть хранителей знаний и первопроходцев цифровых миров. Они поделятся своими протоколами опыта и помогут откалибровать твой путь.
             </p>
           </div>
         </div>

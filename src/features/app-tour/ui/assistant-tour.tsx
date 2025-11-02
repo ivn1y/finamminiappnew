@@ -67,14 +67,14 @@ const AssistantTour: React.FC<AssistantTourProps> = ({ onComplete }) => {
           <div
             className="absolute"
             style={{
-              top: '23px',
+              top: '26px',
               left: '8px',
               width: '146px',
               height: '153px',
             }}
           >
             <Image
-              src="/assets/images/bard.png?v=3"
+              src="/assets/images/bard.png?v=4"
               alt="Assistant"
               width={146}
               height={153}
@@ -97,7 +97,7 @@ const AssistantTour: React.FC<AssistantTourProps> = ({ onComplete }) => {
             }}
           >
             <p style={{ margin: 0 }}>
-              Это глава нашей гильдии. Ты можешь задать любой вопрос который тебя волнует. Не переживай. Можешь спрашивать абсолютно все что тебя волнует. Для него не бывает глупых вопросов
+              Перед тобой — Глава нашей гильдии, хранитель кода и мудрости сети. Ты можешь задать ему любой вопрос, что тревожит твое сознание. Не бойся — здесь нет места страху или сомнению.
             </p>
           </div>
         </div>
