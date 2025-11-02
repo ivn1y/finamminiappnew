@@ -36,9 +36,9 @@ const nextConfig = {
     ],
   },
   // Development optimizations
-  compress: false, // Отключаем сжатие для разработки
+  compress: false,
   poweredByHeader: false,
-  generateEtags: false, // Отключаем ETags для разработки
+  generateEtags: false,
   // Build optimizations
   swcMinify: true,
   experimental: {
@@ -51,33 +51,28 @@ const nextConfig = {
   },
   // Mobile development settings
   async headers() {
-    return [
-      {
-        source: '/(.*)',
-        headers: [
-          {
-            key: 'X-Frame-Options',
-            value: 'SAMEORIGIN',
-          },
-          {
-            key: 'X-Content-Type-Options',
-            value: 'nosniff',
-          },
-          {
-            key: 'Access-Control-Allow-Origin',
-            value: '*',
-          },
-          {
-            key: 'Access-Control-Allow-Methods',
-            value: 'GET, POST, PUT, DELETE, OPTIONS',
-          },
-          {
-            key: 'Access-Control-Allow-Headers',
-            value: 'Content-Type, Authorization',
-          },
-        ],
-      },
-    ];
+    if (process.env.NODE_ENV === 'development') {
+      return [
+        {
+          source: '/(.*)',
+          headers: [
+            {
+              key: 'Access-Control-Allow-Origin',
+              value: '*',
+            },
+            {
+              key: 'Access-Control-Allow-Methods',
+              value: 'GET, POST, PUT, DELETE, OPTIONS',
+            },
+            {
+              key: 'Access-Control-Allow-Headers',
+              value: 'Content-Type, Authorization',
+            },
+          ],
+        },
+      ];
+    }
+    return [];
   },
 };
 

@@ -17,13 +17,15 @@ if [ ! -d "node_modules" ]; then
     npm install
 fi
 
+export NODE_ENV=development
+
 echo ""
-echo "🚀 Запуск мобильной версии (для телефона)..."
+echo "🚀 Запуск версии для ПК и телефона..."
 echo ""
-echo "📱 Мобильный доступ:"
+echo "📱 Для телефона (в той же Wi-Fi сети):"
 echo "   http://$IP:3000"
 echo ""
-echo "💻 Локальный доступ (тоже работает):"
+echo "💻 Для компьютера:"
 echo "   http://localhost:3000"
 echo ""
 echo "📋 Для подключения с телефона:"

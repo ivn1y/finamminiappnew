@@ -10,6 +10,8 @@ import { AIScreenerModal } from '@/shared/ui/aiscreener-modal';
 import { HypeRadarModal } from '@/shared/ui/hyperadar-modal';
 import { ManagementCompanyModal } from '@/shared/ui/management-company-modal';
 import { InternationalMarketsModal } from '@/shared/ui/international-markets-modal';
+import { ComonModal } from '@/shared/ui/comon-modal';
+import { EducationalCenterModal } from '@/shared/ui/educational-center-modal';
 import { useAppStore } from '@/shared/store/app-store';
 
 type ModalType = 
@@ -20,6 +22,8 @@ type ModalType =
   | 'hypeRadar'
   | 'managementCompany'
   | 'internationalMarkets'
+  | 'comon'
+  | 'educationalCenter'
   | null;
 
 export const ProductsPage: React.FC = () => {
@@ -65,6 +69,14 @@ export const ProductsPage: React.FC = () => {
       title: 'Международные рынки', 
       onClick: () => handleOpenModal('internationalMarkets')
     },
+    { 
+      title: 'Comon', 
+      onClick: () => handleOpenModal('comon')
+    },
+    { 
+      title: 'Учебный Центр', 
+      onClick: () => handleOpenModal('educationalCenter')
+    },
   ];
 
   return (
@@ -92,7 +104,7 @@ export const ProductsPage: React.FC = () => {
           </div>
 
           {/* Products container */}
-          <div className="mt-[32px] bg-[#151519] rounded-[8px] p-5">
+          <div className="mt-[32px] bg-[#151519] rounded-[8px] p-5" style={{ paddingBottom: '20px' }}>
             <h2 className="font-inter-tight text-[24px] text-white tracking-[-0.48px] leading-tight mb-3">
               Сервисы
             </h2>
@@ -176,6 +188,18 @@ export const ProductsPage: React.FC = () => {
       {/* International Markets Modal */}
       <InternationalMarketsModal
         isOpen={activeModal === 'internationalMarkets'}
+        onClose={handleCloseModal}
+      />
+      
+      {/* Comon Modal */}
+      <ComonModal
+        isOpen={activeModal === 'comon'}
+        onClose={handleCloseModal}
+      />
+      
+      {/* Educational Center Modal */}
+      <EducationalCenterModal
+        isOpen={activeModal === 'educationalCenter'}
         onClose={handleCloseModal}
       />
     </div>
