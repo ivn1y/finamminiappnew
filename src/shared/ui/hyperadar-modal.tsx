@@ -11,91 +11,63 @@ export const HypeRadarModal: React.FC<HypeRadarModalProps> = ({ isOpen, onClose 
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-70 flex items-end justify-center z-50 px-4">
-      <div 
-        className="bg-[#1a1a1f] rounded-[8px] w-full max-w-[353px] relative mb-[22px] overflow-y-auto"
-        style={{ maxHeight: 'calc(100% - 140px)' }}
-      >
-        {/* Close button */}
-        <button
-          onClick={onClose}
-          className="absolute top-[15px] right-[15px] p-[4px] rounded-full hover:bg-gray-700 transition-colors"
-        >
-          <div className="w-[20px] h-[20px] flex items-center justify-center">
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 16 16"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M12 4L4 12M4 4L12 12"
-                stroke="white"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </div>
-        </button>
-
-        {/* Product icon */}
-        <div className="flex justify-center pt-[12px] pb-[7px] px-[7px]">
-          <div className="w-[120px] h-[120px] relative">
+    <div className="fixed inset-0 bg-[#1a1a1f] z-50 overflow-y-auto">
+      <div className="w-full min-h-full flex flex-col px-[20px]">
+        {/* Product icon - отступ от верха 48px */}
+        <div className="flex justify-center pt-[48px]">
+          <div className="w-[150px] h-[150px] relative flex-shrink-0">
             <img
-              src="/assets/products/HypeRadar.png?v=3"
+              src="/assets/products/HypeRadar.png"
               alt="Hype Radar"
-              className="w-full h-full object-cover rounded-lg"
+              className="w-full h-full object-contain rounded-lg"
             />
           </div>
         </div>
 
-        {/* Title */}
-        <div className="flex justify-center mt-[3px]">
+        {/* Title - отступ от изображения 9px */}
+        <div className="flex justify-center mt-[9px]">
           <h2 className="text-[28px] font-medium text-white text-center leading-[32px] tracking-[-0.504px] font-inter">
             Hype Radar
           </h2>
         </div>
 
-        {/* Content */}
-        <div className="px-[20px] mt-[35px] space-y-[9px]">
-          {/* Description */}
-          <div className="bg-[#2f2f37] rounded-[5px] p-[12px]">
+        {/* Description - отступ от текста 40px */}
+        <div className="mt-[40px]">
+          <div className="bg-[#2f2f37] rounded-[5px] p-[12px] w-full">
             <p className="text-[17px] font-medium text-white leading-[24px] tracking-[-0.17px] font-inter">
               Превращает хаос новостей и соцмедиа в инструмент прогнозирования: помогает находить тренды, анализировать их силу и действовать до того, как об этом узнает весь рынок.
             </p>
           </div>
-
-          {/* Website button */}
-          <button 
-            onClick={() => window.open('https://telegra.ph/HypeRadar-10-28', '_blank')}
-            className="w-full h-[56px] bg-[rgba(79,79,89,0.24)] rounded-[8px] flex items-center justify-center hover:bg-[rgba(79,79,89,0.4)] transition-colors"
-          >
-            <span className="text-[17px] font-semibold text-[#ebebf2] leading-[24px] tracking-[-0.204px] font-inter">
-              Гайд по продукту
-            </span>
-          </button>
-
-          {/* Speaker contact button */}
-          <button 
-            onClick={() => window.open('https://t.me/kpistsov', '_blank')}
-            className="w-full h-[56px] btn-gradient transition-opacity hover:opacity-90"
-          >
-            <span className="text-[17px] font-semibold text-white leading-[24px] tracking-[-0.204px] font-inter">
-              Связь со спикером
-            </span>
-          </button>
         </div>
 
-        {/* Done button */}
-        <div className="px-[20px] pt-[85px] pb-[20px]">
+        {/* Website button - отступ от блока с текстом 20px */}
+        <button 
+          onClick={() => window.open('https://telegra.ph/HypeRadar-10-28', '_blank')}
+          className="w-full h-[56px] bg-[rgba(79,79,89,0.24)] rounded-[8px] flex items-center justify-center hover:bg-[rgba(79,79,89,0.4)] transition-colors mt-[20px]"
+        >
+          <span className="text-[17px] font-semibold text-[#ebebf2] leading-[24px] tracking-[-0.204px] font-inter">
+            Гайд по продукту
+          </span>
+        </button>
+
+        {/* Speaker contact button - отступ от кнопки "Гайд по продукту" 10px */}
+        <button 
+          onClick={() => window.open('https://t.me/kpistsov', '_blank')}
+          className="w-full h-[56px] btn-gradient transition-opacity hover:opacity-90 mt-[10px]"
+        >
+          <span className="text-[17px] font-semibold text-white leading-[24px] tracking-[-0.204px] font-inter">
+            Связь со спикером
+          </span>
+        </button>
+
+        {/* Back button - отступ от кнопки "Связь со спикером" 108px */}
+        <div className="mt-[108px] pb-[40px]">
           <button
             onClick={onClose}
             className="w-full h-[56px] bg-[rgba(79,79,89,0.24)] rounded-[8px] flex items-center justify-center hover:bg-[rgba(79,79,89,0.4)] transition-colors"
           >
             <span className="text-[17px] font-semibold text-[#ebebf2] leading-[24px] tracking-[-0.204px] font-inter">
-              Готово
+              Назад
             </span>
           </button>
         </div>
