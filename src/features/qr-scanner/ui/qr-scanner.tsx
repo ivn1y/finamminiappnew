@@ -74,7 +74,7 @@ export const QRScanner: React.FC<QRScannerProps> = ({ onSuccess, onClose }) => {
       <div
         className="absolute rounded-full"
         style={{
-          top: '301px',
+          top: '261px',
           left: '52px',
           width: '284px',
           height: '205px',
@@ -100,18 +100,18 @@ export const QRScanner: React.FC<QRScannerProps> = ({ onSuccess, onClose }) => {
           Секретная фраза спрятана в одной из локаций на конференции. Найди ее и введи ниже
         </p>
         
-        <div className="mt-[32px] w-[250px] h-[250px] aspect-square flex-shrink-0">
+        <div className="mt-[32px] w-[240px] h-[240px] aspect-square flex-shrink-0">
           <Image
             src="/assets/gifts/gift.png"
             alt="Подарок"
-            width={250}
-            height={250}
+            width={240}
+            height={240}
             className="object-cover"
           />
         </div>
 
         <div 
-          className="relative w-[353px] h-[56px] mt-[48px]"
+          className="relative w-[353px] h-[56px] mt-[52px]"
         >
           {isInputFocused && (
             <div 
@@ -151,10 +151,9 @@ export const QRScanner: React.FC<QRScannerProps> = ({ onSuccess, onClose }) => {
 
         <button
           onClick={handleConfirm}
-          disabled={inputValue.trim().length === 0}
-          className="flex w-full max-w-[353px] h-[56px] p-[16px_24px] justify-center items-center rounded-lg mt-[20px] mb-[10px] text-white font-semibold text-[17px] leading-[24px] tracking-[-0.204px]"
+          className="flex w-full max-w-[353px] h-[56px] justify-center items-center rounded-[8px] text-center font-inter text-[17px] font-semibold leading-[24px] tracking-[-0.204px] text-white mt-[10px] mb-[20px]"
           style={{
-            borderRadius: '8px',
+            padding: '16px 24px',
             background: inputValue.trim().length > 0
               ? 'linear-gradient(305deg, #FEDA3B -2.67%, #EF5541 38.9%, #801FDB 77.17%, #7E2A89 98.46%)'
               : 'rgba(79, 79, 89, 0.24)'
