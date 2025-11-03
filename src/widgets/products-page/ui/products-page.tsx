@@ -82,17 +82,14 @@ export const ProductsPage: React.FC = () => {
   return (
     <div className="w-full bg-black flex justify-center overflow-x-hidden" style={{ paddingBottom: '109px' }}>
       <div className="relative w-[393px]" style={{ minHeight: 'calc(100vh - 109px)' }}>
-        {/* Background gradient ellipse */}
-        <div className="absolute h-[536px] left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[393px] overflow-hidden">
-          <div 
-            className="absolute inset-[-29.85%_-35.24%]"
-            style={{ 
-              background: 'linear-gradient(315deg, rgba(126, 42, 137, 0.3) 0%, rgba(126, 42, 137, 0.1) 50%, rgba(126, 42, 137, 0.05) 100%)',
-              borderRadius: '50%',
-              filter: 'blur(80px)'
-            }}
-          />
-        </div>
+        {/* Background gradient ellipse - same as home page */}
+        <div
+          className="absolute top-[15px] left-1/2 -translate-x-1/2 w-[390px] h-[281px] rounded-[390px] opacity-50 blur-[80px]"
+          style={{
+            background:
+              'linear-gradient(315deg, #FAF1E6 -0.45%, #F9DEC0 15.8%, #ED9FA6 32.05%, #994B69 48.29%, rgba(51, 22, 86, 0.00) 64.54%)',
+          }}
+        ></div>
 
         {/* Scrollable content */}
         <div className="relative overflow-y-auto px-4" style={{ scrollBehavior: 'smooth', height: 'calc(100vh - 80px)' }}>
