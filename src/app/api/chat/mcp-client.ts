@@ -12,27 +12,14 @@ import { StreamableHTTPClientTransport } from '@modelcontextprotocol/sdk/client/
 export const getMcpClient = async () => {
   console.log('Creating new MCP client...');
   const client = await experimental_createMCPClient({
-    transport: {
-      type: 'sse',
-      url: process.env.MCP_SERVER_URL || 'https://flow.changesandbox.ru/mcp/2353930c-19b8-42e1-8068-61e89505310a',
-    }
+    // transport: {
+    //   type: 'sse',
+    //   url: process.env.MCP_SERVER_URL || 'https://flow.changesandbox.ru/mcp/2353930c-19b8-42e1-8068-61e89505310a',
+    // }
     // transport: new StreamableHTTPClientTransport(new URL(process.env.MCP_SERVER_URL || 'https://flow.changesandbox.ru/mcp/change-faq'))
-    // transport: new StreamableHTTPClientTransport(new URL(process.env.MCP_SERVER_URL || 'https://flow.changesandbox.ru/mcp/2353930c-19b8-42e1-8068-61e89505310a'))
+    transport: new StreamableHTTPClientTransport(new URL(process.env.MCP_SERVER_URL || 'https://flow.changesandbox.ru/mcp/2353930c-19b8-42e1-8068-61e89505310a'))
   });
   console.log('MCP client created successfully');
-  return client;
-}
-
-
-export const getTestMcpClient = async () => {
-  console.log('Creating new MCP client...');
-  const client = await experimental_createMCPClient({
-    transport: {
-      type: 'sse',
-      url: process.env.MCP_SERVER_URL || 'http://localhost:8005/mcp',
-    }
-  });
-  console.log('Test MCP client created successfully');
   return client;
 }
 
