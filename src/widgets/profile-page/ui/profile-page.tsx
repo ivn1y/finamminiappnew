@@ -319,6 +319,23 @@ export const ProfilePage: React.FC = () => {
         />
       )}
       <div className="relative" style={{ width: '393px', height: '1203px' }}>
+        {/* Gradient behind character */}
+        <div
+          style={{
+            position: 'absolute',
+            top: '89px',
+            left: '54px',
+            width: '284px',
+            height: '205px',
+            flexShrink: 0,
+            borderRadius: '284px',
+            opacity: 0.14,
+            background: '#E838C0',
+            filter: 'blur(80px)',
+            zIndex: 5,
+          }}
+        />
+
         {/* Avatar */}
         <div
           style={{

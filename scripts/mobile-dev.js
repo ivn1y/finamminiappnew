@@ -32,16 +32,18 @@ function main() {
   const ip = getLocalIP();
   const port = 3000;
   
-  console.log('\n🚀 Запуск мобильной версии (для телефона)...\n');
-  console.log('📱 Мобильный доступ:');
+  console.log('\n🚀 Запуск версии для ПК и телефона...\n');
+  console.log('📱 Для телефона (в той же Wi-Fi сети):');
   console.log(`   http://${ip}:${port}\n`);
-  console.log('💻 Локальный доступ (тоже работает):');
+  console.log('💻 Для компьютера:');
   console.log(`   http://localhost:${port}\n`);
-  console.log('⚠️  Убедитесь, что телефон в той же Wi-Fi сети!\n');
+  console.log('⚠️  Убедитесь, что телефон в той же Wi-Fi сети!');
   console.log('⚠️  Для остановки нажмите Ctrl+C\n');
   
+  process.env.NODE_ENV = 'development';
+  
   try {
-    execSync(`npm run dev:mobile`, { stdio: 'inherit' });
+    execSync(`npm run dev:mobile`, { stdio: 'inherit', env: { ...process.env, NODE_ENV: 'development' } });
   } catch (error) {
     if (error.signal !== 'SIGINT') {
       console.error('❌ Ошибка запуска:', error.message);

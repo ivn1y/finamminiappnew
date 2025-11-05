@@ -58,3 +58,5 @@ export * from './aiscreener-modal';
 export * from './hyperadar-modal';
 export * from './management-company-modal';
 export * from './international-markets-modal';
+export * from './comon-modal';
+export * from './educational-center-modal';
