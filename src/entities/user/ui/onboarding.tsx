@@ -286,7 +286,7 @@ export const Onboarding: React.FC = () => {
             >
             TradeId
           </span>{' '}
-          поможет найти:
+          поможет:
         </p>
             </div>
 

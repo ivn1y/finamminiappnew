@@ -70,7 +70,7 @@ export const ProductsPage: React.FC = () => {
       onClick: () => handleOpenModal('internationalMarkets')
     },
     { 
-      title: 'Comon', 
+      title: 'Автоследование', 
       onClick: () => handleOpenModal('comon')
     },
     { 
