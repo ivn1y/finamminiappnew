@@ -1,13 +1,13 @@
 'use client';
 
-import { AssistantTour } from '@/features/app-tour';
+import React, { useState, useRef, useEffect } from 'react';
+import { Send, User, MessageSquare, UserPlus } from 'lucide-react';
 import chatKB from '@/shared/data/chat-kb.json';
-import { useAppStore } from '@/shared/store/app-store';
+import { Button } from '@/shared/ui/button';
 import { Input } from '@/shared/ui/input';
+import { useAppStore } from '@/shared/store/app-store';
+import { AssistantTour } from '@/features/app-tour';
 import Image from 'next/image';
-import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { useChat } from "@ai-sdk/react"
-import { DefaultChatTransport } from 'ai';
 
 interface Message {
   id: string;
@@ -32,6 +32,21 @@ interface ChatKB {
   fallbackMessage: string;
   welcomeMessage: string;
 }
+
+// FSM: типы и модель узлов сценария (на основе mermaid)
+type ChatOption = {
+  id: string;
+  label: string;
+  next: string;
+  requiresProfile?: boolean;
+};
+
+type ChatNode = {
+  id: string;
+  message: string;
+  options?: ChatOption[];
+  kind?: 'router' | 'regular';
+};
 
 const FinamLogoIcon = ({ className }: { className?: string }) => (
 	<svg
@@ -132,14 +147,14 @@ const SendIcon: React.FC = () => (
 // Компонент аватара пользователя
 const UserAvatar: React.FC<{ userRole: string }> = ({ userRole }) => {
   const roleIconMapping: Record<string, string> = {
-    trader: '/assets/icons/assistant/Trader.png?v=2',
-    startup: '/assets/icons/assistant/Startuper.png?v=2',
-    partner: '/assets/icons/assistant/Partner.png?v=2',
-    guest: '/assets/icons/assistant/Guest.png?v=2',
-    expert: '/assets/icons/assistant/Expert.png?v=2',
+    trader: '/assets/icons/assistant/Trader.png',
+    startup: '/assets/icons/assistant/Startuper.png',
+    partner: '/assets/icons/assistant/Partner.png',
+    guest: '/assets/icons/assistant/Guest.png',
+    expert: '/assets/icons/assistant/Expert.png',
   };
 
-  const roleIcon = roleIconMapping[userRole] || '/assets/icons/assistant/Guest.png?v=2';
+  const roleIcon = roleIconMapping[userRole] || '/assets/icons/assistant/Guest.png';
   
   return (
     <div className="relative h-8 w-8 overflow-hidden rounded-[12px] border border-[#7b36b7] bg-[#151519]">
@@ -168,29 +183,204 @@ export const ChatPage: React.FC = () => {
   const kb = chatKB as ChatKB;
   
   
-  const [useMessages, setMessages] = useState<Message[]>([]);
-  const { messages: aiMessages, sendMessage, status, addToolResult } = useChat({
-    transport: new DefaultChatTransport({
-      api: '/api/chat',
-    }),
-  });
-  const mappedAiMessages = useMemo<Message[]>(
-    () =>
-      aiMessages.map((m: any) => ({
-        id: m.id,
-        text: m.content,
-        isUser: m.role === 'user',
-        timestamp: new Date(),
-      })),
-    [aiMessages]
-  );
-  const messages = useMemo(() => [...useMessages, ...mappedAiMessages], [useMessages, mappedAiMessages]);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [inputText, setInputText] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [isInputFocused, setIsInputFocused] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
+  const [currentNodeId, setCurrentNodeId] = useState<string | null>(null);
 
+  const STORAGE_KEYS = {
+    messages: 'chat_fsm_messages',
+    node: 'chat_fsm_current_node',
+  } as const;
+
+  // FSM: описание сценария на основе mermaid
+  const nodes: Record<string, ChatNode> = {
+    greet: {
+      id: 'greet',
+      message:
+        'Привет! Я твой персональный ассистент, и я помогу быстро разобраться в наших продуктах.\n\nЯ могу рассказать тебе о следующих продуктах:\n• Дневник Трейдера\n• Trade API\n• AI-скринер\n• УК — инфраструктура для алго-фондов\n• Проп-трейдинг\n• ZipLime\n• HypeRadar\n• Международные рынки\n\nПро какой продукт хочешь узнать подробнее?',
+      options: [
+        { id: 'C', label: 'Дневник трейдера', next: 'journal_intro' },
+        { id: 'D', label: 'Trade API', next: 'trade_intro' },
+        { id: 'n1', label: 'AI-скринер', next: 'ai_intro' },
+        { id: 'n2', label: 'УК для алго-фондов', next: 'amc_intro' },
+        { id: 'n3', label: 'ZipLime', next: 'ziplime_intro' },
+        { id: 'n4', label: 'HypeRadar', next: 'menu_more' },
+        { id: 'n5', label: 'Международные рынки', next: 'menu_more' },
+      ],
+    },
+    menu_more: {
+      id: 'menu_more',
+      message:
+        'Окей, понял тебя. Давай тогда расскажу про другие продукты. У нас есть:\n• Дневник трейдера\n• Trade API\n• AI-скринер\n• УК\n• Международные рынки\n• ZipLime\n• HypeRadar\n\nЧто выберешь?',
+      options: [
+        { id: 'C', label: 'Дневник трейдера', next: 'journal_intro' },
+        { id: 'D', label: 'Trade API', next: 'trade_intro' },
+        { id: 'n1', label: 'AI-скринер', next: 'ai_intro' },
+        { id: 'n2', label: 'УК', next: 'amc_intro' },
+        { id: 'n3', label: 'ZipLime', next: 'ziplime_intro' },
+      ],
+    },
+    journal_intro: {
+      id: 'journal_intro',
+      message:
+        'Дневник Трейдера — цифровой журнал сделок и идей: учёт позиций, импорт операций и аналитика эффективности. Полезен, чтобы:\n- фиксировать сделки и выводы за секунды;\n- получать визуальную аналитику P/L и рисков;\n- генерировать отчёты для дисциплины.\n\nМогу рассказать подробнее о продукте или записать тебя в бета-тест.',
+      options: [
+        { id: 'n8', label: 'Расскажи подробнее', next: 'journal_more' },
+        { id: 'n9', label: 'Запиши на бета-тест', next: 'profile_check', requiresProfile: true },
+        { id: 'n7', label: 'Не интересно', next: 'menu_more' },
+      ],
+    },
+    journal_more: {
+      id: 'journal_more',
+      message:
+        'Сделки импортируются через брокерский счёт / CSV / API. Также можно подключить автозаметки.\nСейчас продукт в бете и предоставляется бесплатно. Готов записаться в группу бета-теста?',
+      options: [
+        { id: 'n24', label: 'Да', next: 'profile_check', requiresProfile: true },
+        { id: 'n23', label: 'Нет', next: 'journal_beta_convince' },
+      ],
+    },
+    journal_beta_convince: {
+      id: 'journal_beta_convince',
+      message:
+        'Бета не требует от тебя ничего: попробуешь в любое время и сможешь повлиять на развитие. Точно не хочешь записаться?',
+      options: [
+        { id: 'n27', label: 'Хочу', next: 'profile_check', requiresProfile: true },
+        { id: 'n26', label: 'Не хочу', next: 'menu_more' },
+      ],
+    },
+    trade_intro: {
+      id: 'trade_intro',
+      message:
+        'Trade API — инструмент для торговли и автоматизации. Подключай алгоритмы и приложения к инфраструктуре Финам. Могу рассказать подробнее или передать контакты для подключения.',
+      options: [
+        { id: 'n29', label: 'Подробнее', next: 'trade_more' },
+        { id: 'n31', label: 'Хочу подключиться', next: 'profile_check', requiresProfile: true },
+        { id: 'n30', label: 'Не интересно', next: 'menu_more' },
+      ],
+    },
+    trade_more: {
+      id: 'trade_more',
+      message:
+        'Идеально для тех, кто торгует по алгоритмам. Чем мы отличаемся:\n• Американские акции и ETF (9 000)\n• Американские фьючерсы (топ-10)\n• Американские опционы (2 000 базовых активов)\n• Опционы на фьючерсы в РФ\n\nПодключиться к нашему API?',
+      options: [
+        { id: 'n33', label: 'Да', next: 'profile_check', requiresProfile: true },
+        { id: 'n34', label: 'Нет', next: 'trade_convince' },
+      ],
+    },
+    trade_convince: {
+      id: 'trade_convince',
+      message:
+        'Trade API позволяет работать быстрее других. Точно не хочешь подключиться?',
+      options: [
+        { id: 'n36', label: 'Хочу', next: 'profile_check', requiresProfile: true },
+        { id: 'n37', label: 'Не хочу', next: 'menu_more' },
+      ],
+    },
+    ai_intro: {
+      id: 'ai_intro',
+      message:
+        'AI-скринер — инструмент, который помогает быстро находить идеи и управлять рисками. Данные → инсайты → решения. Как начать?',
+      options: [
+        { id: 'n40', label: 'Подробнее', next: 'ai_more' },
+        { id: 'n42', label: 'Как начать использовать?', next: 'profile_check', requiresProfile: true },
+        { id: 'n39', label: 'Не интересно', next: 'menu_more' },
+      ],
+    },
+    ai_more: {
+      id: 'ai_more',
+      message:
+        'Онлайн-платформа для поиска и анализа, где AI агрегирует данные и ранжирует активы по привлекательности и риску. Начать использовать AI-скринер?',
+      options: [
+        { id: 'n43', label: 'Да', next: 'profile_check', requiresProfile: true },
+        { id: 'n44', label: 'Нет', next: 'ai_convince' },
+      ],
+    },
+    ai_convince: {
+      id: 'ai_convince',
+      message:
+        'AI-скринер строит прогноз на год вперёд, учитывая историю, мультипликаторы и макроэкономику. Точно не хочешь попробовать?',
+      options: [
+        { id: 'n46', label: 'Хочу', next: 'profile_check', requiresProfile: true },
+        { id: 'n47', label: 'Не хочу', next: 'menu_more' },
+      ],
+    },
+    amc_intro: {
+      id: 'amc_intro',
+      message:
+        'Платформа для запуска и ведения алготрейдинговых фондов: инфраструктура, лицензии и IT-решения. Рассказать подробнее?',
+      options: [
+        { id: 'n49', label: 'Да', next: 'amc_more' },
+        { id: 'n51', label: 'Хочу связаться с командой', next: 'profile_check', requiresProfile: true },
+        { id: 'n50', label: 'Нет', next: 'menu_more' },
+      ],
+    },
+    amc_more: {
+      id: 'amc_more',
+      message:
+        'Следующие шаги:\n• Определите стратегию и активы\n• Выберите форму фонда (ЗПИФ/ИПИФ/корп. оболочка)\n• Оставьте заявку — команда УК проведёт через юридическую и техническую настройку\n\nГотов запустить фонд с УК Финама?',
+      options: [
+        { id: 'n53', label: 'Да', next: 'profile_check', requiresProfile: true },
+        { id: 'n54', label: 'Нет', next: 'menu_more' },
+      ],
+    },
+    ziplime_intro: {
+      id: 'ziplime_intro',
+      message:
+        'ZipLime — платформа для создания и тестирования алгоритмических стратегий с поддержкой ИИ. Рассказать подробнее?',
+      options: [
+        { id: 'n57', label: 'Да, давай', next: 'ziplime_more' },
+        { id: 'n58', label: 'Хочу подключиться', next: 'profile_check', requiresProfile: true },
+        { id: 'n56', label: 'Нет', next: 'menu_more' },
+      ],
+    },
+    ziplime_more: {
+      id: 'ziplime_more',
+      message:
+        'ZipLime закрывает цикл: данные → гипотезы → бэктест → оценка рисков → тестовый счёт → реальная торговля → улучшение моделей. Хочешь подключиться?',
+      options: [
+        { id: 'n60', label: 'Да', next: 'profile_check', requiresProfile: true },
+        { id: 'n61', label: 'Нет', next: 'menu_more' },
+      ],
+    },
+    profile_check: { id: 'profile_check', message: '', kind: 'router' },
+    profile_ok: {
+      id: 'profile_ok',
+      message:
+        'Супер! Я записал тебя в группу/передал контакт. Рассказать про другие продукты ФИНАМа? Например, про УК или проп-трейдинг.',
+      options: [
+        { id: 'n19', label: 'Да, расскажи ещё', next: 'menu_more' },
+        { id: 'n20', label: 'Нет, спасибо', next: 'goodbye' },
+      ],
+    },
+    profile_missing: {
+      id: 'profile_missing',
+      message:
+        'Чтобы я смог записать тебя, отправь, пожалуйста, данные о себе в профиле. Мы не будем спамить или передавать данные третьим лицам.',
+      options: [
+        { id: 'n12', label: 'Данные заполнены', next: 'profile_ok' },
+        { id: 'n16', label: 'Не хочу заполнять', next: 'profile_refuse' },
+      ],
+    },
+    profile_refuse: {
+      id: 'profile_refuse',
+      message:
+        'Понимаю. Без данных не сможем добавить в группу/подключить продукт. Заполненные анкеты обрабатываем быстрее и даём больше возможностей для коллабораций.',
+      options: [
+        { id: 'n22', label: 'К другим продуктам', next: 'menu_more' },
+      ],
+    },
+    goodbye: {
+      id: 'goodbye',
+      message:
+        'Понял тебя. Если появятся вопросы по продуктам — обязательно пиши мне.',
+      options: [
+        { id: 'back_menu', label: 'К другим продуктам', next: 'menu_more' },
+      ],
+    },
+  };
 
   // Проверяем, есть ли данные пользователя
   const hasUserData = user && user.name && user.credentials?.email && user.credentials?.phone;
@@ -198,14 +388,55 @@ export const ChatPage: React.FC = () => {
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
+
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
 
-  // Индикатор набора по статусу useChat
+  // Восстановление состояния из sessionStorage
   useEffect(() => {
-    setIsTyping(status === 'streaming');
-  }, [status]);
+    try {
+      const rawMessages = sessionStorage.getItem(STORAGE_KEYS.messages);
+      const rawNode = sessionStorage.getItem(STORAGE_KEYS.node);
+      if (rawMessages) {
+        const parsed: Message[] = JSON.parse(rawMessages).map((m: any) => ({
+          ...m,
+          timestamp: new Date(m.timestamp),
+        }));
+        setMessages(parsed);
+      }
+      if (rawNode) {
+        setCurrentNodeId(rawNode);
+      }
+    } catch (_) {
+      // ignore
+    }
+  }, []);
+
+  // Сохранение состояния в sessionStorage
+  useEffect(() => {
+    try {
+      sessionStorage.setItem(STORAGE_KEYS.messages, JSON.stringify(messages));
+      if (currentNodeId) sessionStorage.setItem(STORAGE_KEYS.node, currentNodeId);
+    } catch (_) {
+      // ignore
+    }
+  }, [messages, currentNodeId]);
+
+  // Инициализация начального узла/сообщения
+  useEffect(() => {
+    if (!currentNodeId && messages.length === 0) {
+      const node = nodes.greet;
+      const botMessage: Message = {
+        id: `${Date.now()}_greet`,
+        text: node.message,
+        isUser: false,
+        timestamp: new Date(),
+      };
+      setMessages([botMessage]);
+      setCurrentNodeId(node.id);
+    }
+  }, [currentNodeId, messages.length]);
 
   const hasUserMessages = messages.filter(m => m.isUser).length > 0;
 
@@ -239,6 +470,53 @@ export const ChatPage: React.FC = () => {
     }
     
     return null;
+  };
+
+  // FSM: обработчик выбора опции
+  const handleOptionSelect = (option: any) => {
+    if (showAssistantTour && messages.filter(m => m.isUser).length === 0) {
+      endAssistantTour();
+    }
+
+    const userMessage: Message = {
+      id: `${Date.now()}_user_opt`,
+      text: option.label,
+      isUser: true,
+      timestamp: new Date(),
+    };
+    setMessages(prev => [...prev, userMessage]);
+
+    if (option.requiresProfile) {
+      setCurrentNodeId('profile_check');
+      setTimeout(() => {
+        const nextId = hasUserData ? 'profile_ok' : 'profile_missing';
+        const node = nodes[nextId];
+        const botMessage: Message = {
+          id: `${Date.now()}_${nextId}`,
+          text: node.message,
+          isUser: false,
+          timestamp: new Date(),
+        };
+        setMessages(prev => [...prev, botMessage]);
+        setCurrentNodeId(node.id);
+      }, 400);
+      return;
+    }
+
+    const nextNode = nodes[option.next];
+    if (!nextNode) return;
+    setIsTyping(true);
+    setTimeout(() => {
+      const botMessage: Message = {
+        id: `${Date.now()}_${nextNode.id}`,
+        text: nextNode.message,
+        isUser: false,
+        timestamp: new Date(),
+      };
+      setMessages(prev => [...prev, botMessage]);
+      setCurrentNodeId(nextNode.id);
+      setIsTyping(false);
+    }, 500);
   };
 
   // Функция для логирования запросов к AI-ассистенту
@@ -330,9 +608,37 @@ export const ChatPage: React.FC = () => {
     }
 
     const query = inputText.trim();
-    // Сообщения пользователя и ассистента в этом случае идут через useChat (aiMessages)
+    const userMessage: Message = {
+      id: Date.now().toString(),
+      text: query,
+      isUser: true,
+      timestamp: new Date()
+    };
+
+    setMessages(prev => [...prev, userMessage]);
     setInputText('');
-    sendMessage({ role: 'user', content: query } as any);
+    setIsTyping(true);
+
+    // Ищем ответ в KB (фоллбек к автомату)
+    setTimeout(() => {
+      const answer = findAnswerInKB(query);
+      const response = answer || kb.fallbackMessage;
+      const isFallback = !answer;
+
+      const botMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        text: response,
+        isUser: false,
+        timestamp: new Date(),
+        isFallback
+      };
+
+      setMessages(prev => [...prev, botMessage]);
+      setIsTyping(false);
+
+      // Логируем запрос
+      logChatRequest(query, response, isFallback);
+    }, 1200);
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -340,25 +646,6 @@ export const ChatPage: React.FC = () => {
       e.preventDefault();
       handleSendMessage();
     }
-  };
-
-  // Функция для прокрутки к полю ввода при фокусе (для мобильных устройств)
-  const handleInputFocus = () => {
-    setIsInputFocused(true);
-    // Используем requestAnimationFrame для того, чтобы скролл произошел после появления клавиатуры
-    requestAnimationFrame(() => {
-      setTimeout(() => {
-        inputRef.current?.scrollIntoView({ 
-          behavior: 'smooth', 
-          block: 'center',
-          inline: 'nearest'
-        });
-      }, 300); // Небольшая задержка для появления клавиатуры
-    });
-  };
-
-  const handleInputBlur = () => {
-    setIsInputFocused(false);
   };
 
   const formatTime = (date: Date) => {
@@ -417,13 +704,12 @@ export const ChatPage: React.FC = () => {
 									</div>
 								)}
 								<Input
-									ref={inputRef}
 									type='text'
 									value={inputText}
 									onChange={e => setInputText(e.target.value)}
 									onKeyPress={handleKeyPress}
-									onFocus={handleInputFocus}
-									onBlur={handleInputBlur}
+									onFocus={() => setIsInputFocused(true)}
+									onBlur={() => setIsInputFocused(false)}
 									placeholder={hasUserData ? 'Напишите сообщение...' : 'Сначала заполните данные в профиле'}
 									className='w-full h-full rounded-[8px] border border-[#373740] bg-[rgba(79,79,89,0.16)] p-4 pr-[56px] text-base font-normal leading-6 tracking-[-0.128px] text-white placeholder:text-[#6F6F7C] focus-visible:ring-offset-0 focus:outline-none focus:border-transparent font-inter relative z-10'
 									readOnly={!hasUserData}
@@ -524,7 +810,25 @@ export const ChatPage: React.FC = () => {
 						</div>
 					</div>
 
-					{/* Input Block */}
+				{/* FSM Options Block */}
+				{currentNodeId && (nodes as any)[currentNodeId]?.options && (nodes as any)[currentNodeId]?.options.length > 0 && (
+					<div className='absolute bottom-[180px] left-1/2 -translate-x-1/2 w-[353px]'>
+						<div className='w-full flex flex-wrap gap-2'>
+							{(nodes as any)[currentNodeId].options.map((opt: any) => (
+								<button
+									key={opt.id}
+									type='button'
+									onClick={() => handleOptionSelect(opt)}
+									className='px-3 py-2 rounded-[10px] bg-[#151519] border border-[#373740] text-white text-sm hover:bg-[#1f1f25]'
+								>
+									{opt.label}
+								</button>
+							))}
+						</div>
+					</div>
+				)}
+
+				{/* Input Block */}
 					<div className='absolute bottom-[109px] left-1/2 -translate-x-1/2 w-[353px]'>
 						<div className='relative w-full h-[56px]'>
 							{isInputFocused && (
@@ -546,13 +850,12 @@ export const ChatPage: React.FC = () => {
 								</div>
 							)}
 							<Input
-								ref={inputRef}
 								type='text'
 								value={inputText}
 								onChange={e => setInputText(e.target.value)}
 								onKeyPress={handleKeyPress}
-								onFocus={handleInputFocus}
-								onBlur={handleInputBlur}
+								onFocus={() => setIsInputFocused(true)}
+								onBlur={() => setIsInputFocused(false)}
 								placeholder={hasUserData ? 'Напишите сообщение...' : 'Сначала заполните данные в профиле'}
 								className='w-full h-full rounded-[8px] border border-[#373740] bg-[rgba(79,79,89,0.16)] p-4 pr-[56px] text-base font-normal leading-6 tracking-[-0.128px] text-white placeholder:text-[#6F6F7C] focus-visible:ring-offset-0 focus:outline-none focus:border-transparent font-inter relative z-10'
 								readOnly={!hasUserData}
