@@ -9,6 +9,7 @@ import Image from 'next/image';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useChat } from '@ai-sdk/react';
 import { DefaultChatTransport } from 'ai';
+import { useBooking } from '@/shared/hooks/use-booking';
 
 interface Message {
   id: string;
@@ -181,15 +182,29 @@ const BotAvatar: React.FC = () => {
 
 export const ChatPage: React.FC = () => {
   const { user, showAssistantTour, endAssistantTour } = useAppStore();
+  const { submitBooking, isSubmitting } = useBooking();
+  
   const kb = chatKB as ChatKB;
   
   
   const [useMessages, setMessages] = useState<Message[]>([]);
   const [currentNodeId, setCurrentNodeId] = useState<string | null>(null);
+  // Мемоизируем userContext чтобы избежать пересоздания при каждом рендере
+  const userContext = useMemo(() => ({
+    userId: user?.id || 'anonymous',
+    name: user?.name || '',
+    email: user?.credentials?.email || '',
+    phone: user?.credentials?.phone || '',
+    role: user?.role || '',
+  }), [user?.id, user?.name, user?.credentials?.email, user?.credentials?.phone, user?.role]);
+
   const { messages: aiMessages, sendMessage, status, addToolResult } = useChat({
     transport: new DefaultChatTransport({
       api: '/api/chat',
-    }),
+      body: {
+        userContext
+      }
+    })
   });
   const mappedAiMessages = useMemo<Message[]>(
     () =>
@@ -233,6 +248,36 @@ export const ChatPage: React.FC = () => {
     messages: 'chat_fsm_messages',
     node: 'chat_fsm_current_node',
   } as const;
+
+  // Функция для определения продукта по контексту сообщений
+  const getProductContextFromMessages = (): string => {
+    const recentMessages = messages.slice(-10); // Берем последние 10 сообщений
+    const messageText = recentMessages.map(m => m.text.toLowerCase()).join(' ');
+    
+    if (messageText.includes('дневник') || messageText.includes('journal')) {
+      return 'Дневник Трейдера';
+    }
+    if (messageText.includes('trade api') || messageText.includes('api')) {
+      return 'Trade API';
+    }
+    if (messageText.includes('ai-скринер') || messageText.includes('скринер')) {
+      return 'AI-скринер';
+    }
+    if (messageText.includes('ук') || messageText.includes('фонд')) {
+      return 'УК для алго-фондов';
+    }
+    if (messageText.includes('ziplime')) {
+      return 'ZipLime';
+    }
+    if (messageText.includes('hyperadar')) {
+      return 'HypeRadar';
+    }
+    if (messageText.includes('международные рынки')) {
+      return 'Международные рынки';
+    }
+    
+    return 'Общая консультация';
+  };
 
   // FSM: описание сценария на основе mermaid
   const nodes: Record<string, ChatNode> = {
@@ -571,9 +616,26 @@ export const ChatPage: React.FC = () => {
 
     if (option.requiresProfile) {
       setCurrentNodeId('profile_check');
-      setTimeout(() => {
+      setTimeout(async () => {
         const nextId = hasUserData ? 'profile_ok' : 'profile_missing';
         const node = nodes[nextId];
+        
+        // Если переходим в profile_ok, отправляем заявку в CRM
+        if (nextId === 'profile_ok' && hasUserData && user) {
+          console.log('📝 Отправка заявки из FSM чата для пользователя:', user.id);
+          
+          // Определяем продукт по предыдущему контексту
+          const productContext = getProductContextFromMessages();
+          const bookingMessage = `Заявка на запись из чата. Продукт: ${productContext}. Пользователь: ${user.name || user.id}`;
+          
+          try {
+            await submitBooking(bookingMessage);
+            console.log('✅ Заявка из FSM чата успешно отправлена');
+          } catch (error) {
+            console.error('❌ Ошибка отправки заявки из FSM чата:', error);
+          }
+        }
+        
         const botMessage: Message = {
           id: `${Date.now()}_${nextId}`,
           text: node.message,
@@ -589,7 +651,22 @@ export const ChatPage: React.FC = () => {
     const nextNode = nodes[option.next];
     if (!nextNode) return;
     setIsTyping(true);
-    setTimeout(() => {
+    setTimeout(async () => {
+      // Если переходим в profile_ok из profile_missing, также отправляем заявку
+      if (option.next === 'profile_ok' && hasUserData && user) {
+        console.log('📝 Отправка заявки из profile_missing для пользователя:', user.id);
+        
+        const productContext = getProductContextFromMessages();
+        const bookingMessage = `Заявка на запись из чата. Продукт: ${productContext}. Пользователь: ${user.name || user.id}`;
+        
+        try {
+          await submitBooking(bookingMessage);
+          console.log('✅ Заявка из profile_missing успешно отправлена');
+        } catch (error) {
+          console.error('❌ Ошибка отправки заявки из profile_missing:', error);
+        }
+      }
+      
       const botMessage: Message = {
         id: `${Date.now()}_${nextNode.id}`,
         text: nextNode.message,
