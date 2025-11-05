@@ -143,8 +143,17 @@ export const HomePage: React.FC = () => {
   const [highlightedButtonRect, setHighlightedButtonRect] = useState<DOMRect | null>(null);
 
   const handleProfileTaskClick = () => {
-    completeHomeTourAndGoToProfile();
-    router.push('/collab/profile');
+    // Проверяем, выполнено ли задание "Заполни свой профиль"
+    const isProfileCompleted = !!user?.credentials?.phone && !!user?.credentials?.email;
+    
+    // Если профиль уже заполнен, просто переходим на страницу профиля без запуска тура
+    if (isProfileCompleted) {
+      router.push('/collab/profile');
+    } else {
+      // Если профиль не заполнен, запускаем тур
+      completeHomeTourAndGoToProfile();
+      router.push('/collab/profile');
+    }
   };
 
   useEffect(() => {
