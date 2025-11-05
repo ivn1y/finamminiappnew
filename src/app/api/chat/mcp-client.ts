@@ -1,6 +1,6 @@
 // import { experimental_createMCPClient } from 'ai'
 import { experimental_createMCPClient } from '@ai-sdk/mcp'
-// import { StreamableHTTPClientTransport } from '@modelcontextprotocol/sdk/client/streamableHttp.js';
+import { StreamableHTTPClientTransport } from '@modelcontextprotocol/sdk/client/streamableHttp.js';
 
 
 // ============================================
@@ -9,12 +9,32 @@ import { experimental_createMCPClient } from '@ai-sdk/mcp'
 
 // Вариант 2: Если ваш MCP сервер работает через HTTP/SSE (как у вас сейчас)
 
-export const getMcpClient = async () => experimental_createMCPClient({
-  transport: {
-    type: 'sse',
-    url: process.env.MCP_SERVER_URL || 'http://localhost:8005/mcp',
-  }
-})
+export const getMcpClient = async () => {
+  console.log('Creating new MCP client...');
+  const client = await experimental_createMCPClient({
+    transport: {
+      type: 'sse',
+      url: process.env.MCP_SERVER_URL || 'https://flow.changesandbox.ru/mcp/2353930c-19b8-42e1-8068-61e89505310a',
+    }
+    // transport: new StreamableHTTPClientTransport(new URL(process.env.MCP_SERVER_URL || 'https://flow.changesandbox.ru/mcp/change-faq'))
+    // transport: new StreamableHTTPClientTransport(new URL(process.env.MCP_SERVER_URL || 'https://flow.changesandbox.ru/mcp/2353930c-19b8-42e1-8068-61e89505310a'))
+  });
+  console.log('MCP client created successfully');
+  return client;
+}
+
+
+export const getTestMcpClient = async () => {
+  console.log('Creating new MCP client...');
+  const client = await experimental_createMCPClient({
+    transport: {
+      type: 'sse',
+      url: process.env.MCP_SERVER_URL || 'http://localhost:8005/mcp',
+    }
+  });
+  console.log('Test MCP client created successfully');
+  return client;
+}
 
 // ============================================
 // HELPER TYPES
