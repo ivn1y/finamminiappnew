@@ -118,6 +118,24 @@ DATABASE_URL=postgresql://user:password@localhost:5432/dbname
 REDIS_URL=redis://localhost:6379
 ```
 
+## 🤖 Huntflow Integration (опционально)
+
+```bash
+# Huntflow API настройки (ВСЕ СЕРВЕРНЫЕ)
+HUNTFLOW_API_TOKEN=your-huntflow-api-token
+HUNTFLOW_ACCOUNT_ID=12345
+HUNTFLOW_VACANCY_ID=67890
+HUNTFLOW_STATUS_ID=1
+```
+
+## 📱 Telegram Integration (опционально)
+
+```bash
+# Telegram Bot настройки (ВСЕ СЕРВЕРНЫЕ)
+TELEGRAM_BOT_TOKEN=1234567890:ABCdefGHIjklMNOpqrsTUVwxyz
+TELEGRAM_CHAT_ID=-1001234567890
+```
+
 ## 🔐 Email Configuration (опционально)
 
 ```bash

@@ -10,6 +10,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useChat } from '@ai-sdk/react';
 import { DefaultChatTransport } from 'ai';
 import { useBooking } from '@/shared/hooks/use-booking';
+import { useChatMessages } from '@/shared/hooks/use-chat-messages';
 
 interface Message {
   id: string;
@@ -183,9 +184,9 @@ const BotAvatar: React.FC = () => {
 export const ChatPage: React.FC = () => {
   const { user, showAssistantTour, endAssistantTour } = useAppStore();
   const { submitBooking, isSubmitting } = useBooking();
+  const { addMessage, loadFromStorage, syncToStorage, getLastProductContext } = useChatMessages();
   
   const kb = chatKB as ChatKB;
-  
   
   const [useMessages, setMessages] = useState<Message[]>([]);
   const [currentNodeId, setCurrentNodeId] = useState<string | null>(null);
@@ -251,6 +252,13 @@ export const ChatPage: React.FC = () => {
 
   // Функция для определения продукта по контексту сообщений
   const getProductContextFromMessages = (): string => {
+    // Сначала пробуем получить последний контекст из store
+    const lastContext = getLastProductContext();
+    if (lastContext) {
+      return lastContext;
+    }
+    
+    // Если в store нет контекста, анализируем текущие сообщения
     const recentMessages = messages.slice(-10); // Берем последние 10 сообщений
     const messageText = recentMessages.map(m => m.text.toLowerCase()).join(' ');
     
@@ -526,6 +534,33 @@ export const ChatPage: React.FC = () => {
   useEffect(() => {
     setIsTyping(status === 'streaming');
   }, [status]);
+
+  // Загрузка сообщений из localStorage при инициализации
+  useEffect(() => {
+    if (user) {
+      loadFromStorage();
+    }
+  }, [user, loadFromStorage]);
+
+  // Синхронизация сообщений с localStorage (легкая, не нагружающая)
+  useEffect(() => {
+    if (messages.length > 0) {
+      // Дебаунс для избежания частых записей
+      const timeoutId = setTimeout(() => {
+        syncToStorage();
+      }, 1000);
+
+      return () => clearTimeout(timeoutId);
+    }
+  }, [messages.length, syncToStorage]);
+
+  // Сохранение сообщений в store при изменении
+  useEffect(() => {
+    messages.forEach(message => {
+      // Добавляем только новые сообщения (проверяем по ID)
+      addMessage(message.text, message.isUser, message.id);
+    });
+  }, [messages, addMessage]);
 
   const hasUserMessages = messages.filter(m => m.isUser).length > 0;
 

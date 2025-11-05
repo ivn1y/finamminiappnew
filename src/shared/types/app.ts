@@ -23,6 +23,14 @@ export interface GoalMilestone {
   date: string | null;
 }
 
+export interface ChatMessage {
+  id: string;
+  text: string;
+  isUser: boolean;
+  timestamp: string;
+  productContext?: string; // Контекст продукта из сообщения
+}
+
 export interface User {
   id: string;
   createdAt: string;
@@ -65,6 +73,7 @@ export interface User {
     frameId?: string;
     accessories?: string[];
   };
+  recentChatMessages?: ChatMessage[]; // Последние 15 сообщений чата
 }
 
 export interface Badge {

@@ -2,11 +2,12 @@
 
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-import { User, AppState, UserRole } from '../types/app';
+import { User, AppState, UserRole, ChatMessage } from '../types/app';
 import { globalBadges, roleContent } from '../data/seed';
 import { logRoleSelected, logProfileSubmitted, logBadgeEarned, logQRScanned } from '../lib/analytics-service';
 
 interface AppStore extends Omit<AppState, 'currentTab'> {
+  user: User;
   telegramQuestCompleted: boolean;
   showAppTour: boolean;
   showProfileTour: boolean;
@@ -22,6 +23,10 @@ interface AppStore extends Omit<AppState, 'currentTab'> {
   setUser: (user: User) => void;
   updateUser: (updates: Partial<User>) => void;
   setEventMode: (mode: boolean) => void;
+  // Chat messages actions
+  addChatMessage: (message: ChatMessage) => void;
+  getChatMessages: () => ChatMessage[];
+  clearChatMessages: () => void;
   completeOnboarding: () => void;
   completeTelegramQuest: () => void;
   startAppTour: () => void;
@@ -69,6 +74,7 @@ const createInitialUser = (): User => ({
   xp: 100, // Начальный XP
   progressSteps: 1, // Начальный прогресс
   scannedZones: [], // Убираем предзаполненные зоны
+  recentChatMessages: [], // Инициализируем пустой массив сообщений
   intent7d: 'Изучить возможности платформы',
   goalProgress: {
     current: 10,
@@ -156,6 +162,38 @@ export const useAppStore = create<AppStore>()(
       
       setEventMode: (mode) => set({ eventMode: mode }),
       
+      // Chat messages methods
+      addChatMessage: (message: ChatMessage) => set((state) => {
+        
+        const currentMessages = state.user.recentChatMessages || [];
+        const newMessages = [...currentMessages, message];
+        
+        // Оставляем только последние 15 сообщений
+        const limitedMessages = newMessages.slice(-15);
+        
+        return {
+          user: {
+            ...state.user,
+            recentChatMessages: limitedMessages
+          }
+        };
+      }),
+      
+      getChatMessages: (): ChatMessage[] => {
+        const state = get();
+        return state.user.recentChatMessages || [];
+      },
+      
+      clearChatMessages: () => set((state) => {
+        
+        return {
+          user: {
+            ...state.user,
+            recentChatMessages: []
+          }
+        };
+      }),
+      
       completeOnboarding: () => set({ isOnboardingComplete: true }),
 
       completeTelegramQuest: () => set({ telegramQuestCompleted: true }),
@@ -183,8 +221,7 @@ export const useAppStore = create<AppStore>()(
       openScheduleModal: (event) => set({ isScheduleModalOpen: true, selectedScheduleEvent: event }),
       closeScheduleModal: () => set({ isScheduleModalOpen: false, selectedScheduleEvent: null }),
       
-      addBadge: (badgeId) => set((state) => {
-        if (!state.user) return state;
+      addBadge: (badgeId: string) => set((state) => {
         
         const user = { ...state.user };
         if (!user.badges.includes(badgeId)) {
@@ -199,7 +236,6 @@ export const useAppStore = create<AppStore>()(
       }),
       
       incrementProgress: () => set((state) => {
-        if (!state.user) return state;
         
         const user = { ...state.user };
         if (user.progressSteps < 5) {
@@ -210,12 +246,11 @@ export const useAppStore = create<AppStore>()(
         return { user };
       }),
       
-      setQRScanner: (show) => set({ showQRScanner: show }),
+      setQRScanner: (show: boolean) => set({ showQRScanner: show }),
       hideQRScanner: () => set({ showQRScanner: false }),
       setChatInputFocused: (focused) => set({ isChatInputFocused: focused }),
       
-      addScannedZone: (zoneId) => set((state) => {
-        if (!state.user) return state;
+      addScannedZone: (zoneId: string) => set((state) => {
         
         const user = { ...state.user };
         if (!user.scannedZones) {
@@ -232,13 +267,13 @@ export const useAppStore = create<AppStore>()(
       }),
 
       // Getters
-      getRoleContent: (role) => {
+      getRoleContent: (role: UserRole) => {
         return roleContent.find(r => r.id === role);
       },
       
       getAllBadges: () => {
         const { user } = get();
-        if (!user || !user.role) return globalBadges;
+        if (!user.role) return globalBadges;
         
         const roleContentData = get().getRoleContent(user.role);
         return [...globalBadges, ...(roleContentData?.badges || [])];
@@ -246,7 +281,7 @@ export const useAppStore = create<AppStore>()(
       
       getProgressPercentage: () => {
         const { user } = get();
-        return user ? (user.progressSteps / 5) * 100 : 0;
+        return (user.progressSteps / 5) * 100;
       }
     }),
     {
