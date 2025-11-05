@@ -147,8 +147,15 @@ export const MapPage: React.FC = () => {
       {activeTab === 'map' ? (
         <>
           <div
-            className="absolute overflow-hidden rounded-lg border border-solid border-[#373740] cursor-grab active:cursor-grabbing"
-            style={{ top: 128, left: 20, width: 353, height: 356 }}
+            className="absolute overflow-hidden rounded-lg border border-solid cursor-grab active:cursor-grabbing"
+            style={{ 
+              top: 128, 
+              left: 20, 
+              width: 353, 
+              height: 356,
+              borderColor: 'var(--bg-brand-default, #FFC759)',
+              borderRadius: '8px'
+            }}
           >
             <TransformWrapper
                 initialScale={2.2}
