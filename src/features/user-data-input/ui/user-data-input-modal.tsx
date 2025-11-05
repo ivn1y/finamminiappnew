@@ -272,8 +272,12 @@ export const UserDataInputModal: React.FC<UserDataInputModalProps> = ({
             />
             <label htmlFor="privacy-policy" className={styles.privacyText}>
               Отправляя форму, я даю согласие на{' '}
-              <Link href="/privacy-policy">
-                <span className={styles.privacyLink}>обработку персональных данных</span>
+              <Link href="/privacy-policy" className={styles.privacyLink}>
+                обработку персональных данных
+              </Link>
+              {' '}и{' '}
+              <Link href="/advertising-consent" className={styles.privacyLink}>
+                получение рекламных рассылок
               </Link>
             </label>
           </div>

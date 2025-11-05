@@ -17,6 +17,7 @@ if [ ! -d "node_modules" ]; then
     npm install
 fi
 
+unset NODE_ENV
 export NODE_ENV=development
 
 echo ""
