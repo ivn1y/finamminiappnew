@@ -164,7 +164,7 @@ const BotAvatar: React.FC = () => {
 
 
 export const ChatPage: React.FC = () => {
-  const { user, showAssistantTour, endAssistantTour } = useAppStore();
+  const { user, showAssistantTour, endAssistantTour, setChatInputFocused } = useAppStore();
   const kb = chatKB as ChatKB;
   
   
@@ -185,6 +185,13 @@ export const ChatPage: React.FC = () => {
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+
+  // Сбрасываем состояние фокуса при размонтировании компонента
+  useEffect(() => {
+    return () => {
+      setChatInputFocused(false);
+    };
+  }, [setChatInputFocused]);
 
   const hasUserMessages = messages.filter(m => m.isUser).length > 0;
 
@@ -319,6 +326,9 @@ export const ChatPage: React.FC = () => {
     setMessages(prev => [...prev, userMessage]);
     setInputText('');
     setIsTyping(true);
+    
+    // Не сбрасываем фокус автоматически - пусть пользователь сам управляет
+    // Bottom navigation появится естественным образом когда пользователь уберет фокус (blur)
 
     // Ищем ответ в KB
     setTimeout(() => {
@@ -352,6 +362,7 @@ export const ChatPage: React.FC = () => {
   // Функция для прокрутки к полю ввода при фокусе (для мобильных устройств)
   const handleInputFocus = () => {
     setIsInputFocused(true);
+    setChatInputFocused(true);
     // Используем requestAnimationFrame для того, чтобы скролл произошел после появления клавиатуры
     requestAnimationFrame(() => {
       setTimeout(() => {
@@ -362,6 +373,11 @@ export const ChatPage: React.FC = () => {
         });
       }, 300); // Небольшая задержка для появления клавиатуры
     });
+  };
+
+  const handleInputBlur = () => {
+    setIsInputFocused(false);
+    setChatInputFocused(false);
   };
 
   const formatTime = (date: Date) => {
@@ -426,7 +442,7 @@ export const ChatPage: React.FC = () => {
 									onChange={e => setInputText(e.target.value)}
 									onKeyPress={handleKeyPress}
 									onFocus={handleInputFocus}
-									onBlur={() => setIsInputFocused(false)}
+									onBlur={handleInputBlur}
 									placeholder={hasUserData ? 'Напишите сообщение...' : 'Сначала заполните данные в профиле'}
 									className='w-full h-full rounded-[8px] border border-[#373740] bg-[rgba(79,79,89,0.16)] p-4 pr-[56px] text-base font-normal leading-6 tracking-[-0.128px] text-white placeholder:text-[#6F6F7C] focus-visible:ring-offset-0 focus:outline-none focus:border-transparent font-inter relative z-10'
 									readOnly={!hasUserData}
@@ -555,7 +571,7 @@ export const ChatPage: React.FC = () => {
 								onChange={e => setInputText(e.target.value)}
 								onKeyPress={handleKeyPress}
 								onFocus={handleInputFocus}
-								onBlur={() => setIsInputFocused(false)}
+								onBlur={handleInputBlur}
 								placeholder={hasUserData ? 'Напишите сообщение...' : 'Сначала заполните данные в профиле'}
 								className='w-full h-full rounded-[8px] border border-[#373740] bg-[rgba(79,79,89,0.16)] p-4 pr-[56px] text-base font-normal leading-6 tracking-[-0.128px] text-white placeholder:text-[#6F6F7C] focus-visible:ring-offset-0 focus:outline-none focus:border-transparent font-inter relative z-10'
 								readOnly={!hasUserData}
