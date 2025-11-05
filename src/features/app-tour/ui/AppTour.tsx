@@ -126,19 +126,19 @@ export const AppTour: React.FC<AppTourProps> = ({
 
         {/* 
           IMPORTANT: Please place the assistant image you provided at
-          'public/assets/images/assistant-bard.png' for it to be displayed correctly.
+          'public/assets/images/bard.png' for it to be displayed correctly.
         */}
         <div
           style={{
             position: 'absolute',
-            top: '25px',
+            top: '28px',
             left: '0px',
             width: '153px',
             height: '136px',
             flexShrink: 0,
             aspectRatio: '9 / 8',
             background:
-              'url(/assets/images/assistant-bard.png?v=3) lightgray -0.09px -6.377px / 100% 113.007% no-repeat',
+              'url(/assets/images/bard.png?v=4) lightgray -0.09px -6.377px / 100% 113.007% no-repeat',
             backgroundSize: 'cover',
           }}
         />
@@ -159,9 +159,7 @@ export const AppTour: React.FC<AppTourProps> = ({
             textOverflow: 'ellipsis',
           }}
         >
-          Привет тебе, отважный искатель приключений! Добро пожаловать в нашу
-          таверну, где путники обретают отдых и новые задания! Мы знаем, что ты —
-          герой, готовый к испытаниям. Расскажи нам о своём происхождении
+          Приветствую тебя, путник сетевых миров! Добро пожаловать в наш нейро-хаб, где кочевники данных отдыхают и получают новые миссии. Мы знаем, ты — кодовый герой, готовый к испытаниям в цифровых глубинах.
         </div>
       </div>
     </div>

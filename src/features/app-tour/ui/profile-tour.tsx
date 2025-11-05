@@ -145,14 +145,14 @@ const ProfileTour: React.FC<ProfileTourProps> = ({
           <div
             className="absolute"
             style={{
-              top: '23px',
+              top: '26px',
               left: '8px',
               width: '146px',
               height: '153px',
             }}
           >
             <Image
-              src="/assets/images/bard.png?v=3"
+              src="/assets/images/bard.png?v=4"
               alt="Assistant"
               width={146}
               height={153}
@@ -175,7 +175,7 @@ const ProfileTour: React.FC<ProfileTourProps> = ({
             }}
           >
             <p style={{ margin: 0 }}>
-              Расскажи о себе, странник. Коснись руны самопознания, и мы узнаем тебя ближе. Мы ищем соратников, разделяющих наши цели. Что привело тебя к нам? Какие испытания ты преодолел? Чем готов пожертвовать ради общего дела?
+              Расскажи о себе, странник сетевых миров. Коснись руны самопознания — и алгоритмы распознают твой код. Мы ищем соратников по потоку, тех, кто видит сквозь шум данных и чувствует пульс сети.
             </p>
           </div>
         </div>
