@@ -17,6 +17,7 @@ interface AppStore extends Omit<AppState, 'currentTab'> {
   isProductModalOpen: boolean;
   isScheduleModalOpen: boolean;
   selectedScheduleEvent: any;
+  isChatInputFocused: boolean;
   // Actions
   setUser: (user: User) => void;
   updateUser: (updates: Partial<User>) => void;
@@ -47,6 +48,7 @@ interface AppStore extends Omit<AppState, 'currentTab'> {
   setQRScanner: (show: boolean) => void;
   hideQRScanner: () => void;
   addScannedZone: (zoneId: string) => void;
+  setChatInputFocused: (focused: boolean) => void;
   
   // Getters
   getRoleContent: (role: UserRole) => any;
@@ -127,6 +129,7 @@ export const useAppStore = create<AppStore>()(
       isProductModalOpen: false,
       isScheduleModalOpen: false,
       selectedScheduleEvent: null,
+      isChatInputFocused: false,
 
       // Actions
       setUser: (user) => {
@@ -209,6 +212,7 @@ export const useAppStore = create<AppStore>()(
       
       setQRScanner: (show) => set({ showQRScanner: show }),
       hideQRScanner: () => set({ showQRScanner: false }),
+      setChatInputFocused: (focused) => set({ isChatInputFocused: focused }),
       
       addScannedZone: (zoneId) => set((state) => {
         if (!state.user) return state;
