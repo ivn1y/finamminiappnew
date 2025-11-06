@@ -125,7 +125,7 @@ export const ProductsPage: React.FC = () => {
               Узнай про все продукты Finam Collab
             </p>
             <button 
-              onClick={() => window.open('https://collab.finam.ru/', '_blank')}
+              onClick={() => window.open('https://collab.finam.ru/?utm_source=finam.collab-bot&utm_medium=referral&utm_campaign=app_collab_rf_native_content.app.users___referral&utm_content=button-site', '_blank')}
               className="w-full h-12 bg-[rgba(79,79,89,0.24)] rounded-lg flex items-center justify-center hover:bg-[rgba(79,79,89,0.4)] transition-colors"
             >
               <span className="font-inter font-semibold text-[#ebebf2] text-[17px] text-center tracking-[-0.204px] leading-6">
