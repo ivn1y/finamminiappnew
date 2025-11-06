@@ -50,7 +50,7 @@ export const CuratorContacts: React.FC = () => {
       >
         Твой куратор - Тимур Солдатенков
         <br />
-        Project Manager в ФГ "Финам"
+        Project Manager в "Финаме"
       </p>
       <button
         onClick={handleTelegramClick}

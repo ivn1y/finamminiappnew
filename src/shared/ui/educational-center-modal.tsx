@@ -17,7 +17,7 @@ export const EducationalCenterModal: React.FC<EducationalCenterModalProps> = ({ 
         <div className="flex justify-center pt-[48px]">
           <div className="w-[150px] h-[150px] relative flex-shrink-0">
             <img
-              src="/assets/products/uchebniychenter.png"
+              src="/assets/products/uchebniychenter.png?v=2"
               alt="Учебный Центр"
               className="w-full h-full object-contain rounded-lg"
             />
