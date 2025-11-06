@@ -17,8 +17,8 @@ export const ComonModal: React.FC<ComonModalProps> = ({ isOpen, onClose }) => {
         <div className="flex justify-center pt-[48px]">
           <div className="w-[150px] h-[150px] relative flex-shrink-0">
             <img
-              src="/assets/products/comon.png"
-              alt="Comon"
+              src="/assets/products/comon.png?v=2"
+              alt="Автоследование"
               className="w-full h-full object-contain rounded-lg"
             />
           </div>
@@ -27,7 +27,7 @@ export const ComonModal: React.FC<ComonModalProps> = ({ isOpen, onClose }) => {
         {/* Title - отступ от изображения 9px */}
         <div className="flex justify-center mt-[9px]">
           <h2 className="text-[28px] font-medium text-white text-center leading-[32px] tracking-[-0.504px] font-inter">
-            Comon
+            Автоследование
           </h2>
         </div>
 
@@ -35,7 +35,7 @@ export const ComonModal: React.FC<ComonModalProps> = ({ isOpen, onClose }) => {
         <div className="mt-[40px]">
           <div className="bg-[#2f2f37] rounded-[5px] p-[12px] w-full">
             <p className="text-[17px] font-medium text-white leading-[24px] tracking-[-0.17px] font-inter">
-              Автоследование – это уникальный сервис, позволяющий автоматически в реальном времени повторять сделки успешных трейдеров
+              Это уникальный сервис, позволяющий автоматически в реальном времени повторять сделки успешных трейдеров
             </p>
           </div>
         </div>
