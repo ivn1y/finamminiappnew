@@ -374,7 +374,7 @@ export const HomePage: React.FC = () => {
           </p>
         </div>
 
-        <div className="absolute top-[181px] left-1/2 -translate-x-1/2 flex w-[353px] pt-[12px] pb-[20px] flex-col items-center rounded-[8px] bg-[#151519]">
+        <div id="tasks-section" className="absolute top-[181px] left-1/2 -translate-x-1/2 flex w-[353px] pt-[12px] pb-[20px] flex-col items-center rounded-[8px] bg-[#151519]">
           <h2 className="font-inter-tight text-[24px] font-normal leading-[110%] tracking-[-0.48px] text-white">
             Выполни задания
           </h2>

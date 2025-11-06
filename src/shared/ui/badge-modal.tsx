@@ -33,7 +33,10 @@ export const BadgeModal = ({
                                 badge.howToEarn === 'Выполни Telegram квест' ||
                                 badge.howToEarn?.includes('Telegram квест');
   
-  const isActiveButton = isSecretPhraseButton || isTelegramQuestButton;
+  const isAllTasksButton = badge.howToEarn?.toLowerCase().includes('выполни все задания') ||
+                           badge.howToEarn === 'Выполни все задания';
+  
+  const isActiveButton = isSecretPhraseButton || isTelegramQuestButton || isAllTasksButton;
   
   const handleHowToEarnClick = () => {
     if (isSecretPhraseButton) {
@@ -42,6 +45,15 @@ export const BadgeModal = ({
     } else if (isTelegramQuestButton) {
       onClose();
       window.open('https://t.me/finam_collab', '_blank');
+    } else if (isAllTasksButton) {
+      onClose();
+      // Прокручиваем к секции "Выполни задания" на главной странице
+      setTimeout(() => {
+        const tasksSection = document.getElementById('tasks-section');
+        if (tasksSection) {
+          tasksSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 100);
     }
   };
 
