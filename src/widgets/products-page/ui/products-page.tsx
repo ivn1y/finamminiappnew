@@ -80,7 +80,7 @@ export const ProductsPage: React.FC = () => {
   ];
 
   return (
-    <div className="w-full bg-black flex justify-center overflow-x-hidden" style={{ paddingBottom: '109px' }}>
+    <div className="w-full bg-black flex justify-center overflow-x-hidden">
       <div className="relative w-[393px]" style={{ minHeight: 'calc(100vh - 109px)' }}>
         {/* Background gradient ellipse - same as home page */}
         <div
@@ -139,8 +139,8 @@ export const ProductsPage: React.FC = () => {
             <TelegramChannelBlock />
           </div>
 
-          {/* Bottom spacer */}
-          <div className="h-[139px]" />
+          {/* Bottom spacer - ensures 109px gap from last block to bottom of page */}
+          <div style={{ height: '109px' }} />
         </div>
       </div>
       
