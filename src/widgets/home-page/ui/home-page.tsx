@@ -17,6 +17,7 @@ import { HomeTour } from '@/features/app-tour';
 import { QRScanner } from '@/features/qr-scanner';
 import { QRScanResult } from '@/shared/types/qr';
 import { Dialog, DialogContent } from '@/shared/ui/dialog';
+import { useSubscriptionCheck } from '@/features/telegram-subscription-check';
 
 const TaskButton = React.forwardRef<HTMLDivElement, {
   href?: string;
@@ -142,6 +143,15 @@ export const HomePage: React.FC = () => {
   const profileTaskRef = useRef<HTMLDivElement>(null);
   const [highlightedButtonRect, setHighlightedButtonRect] = useState<DOMRect | null>(null);
 
+  // Проверка подписки на Telegram канал
+  // Автоматически проверяем каждые 5 секунд, если пользователь еще не подписан
+  const { isSubscribed, isLoading: isCheckingSubscription, checkSubscription } = useSubscriptionCheck(
+    'finam_collab',
+    undefined,
+    true, // autoCheck
+    telegramQuestCompleted ? 0 : 5000 // проверяем каждые 5 секунд, если квест не выполнен
+  );
+
   const handleProfileTaskClick = () => {
     // Проверяем, выполнено ли задание "Заполни свой профиль"
     const isProfileCompleted = !!user?.credentials?.phone && !!user?.credentials?.email;
@@ -186,12 +196,28 @@ export const HomePage: React.FC = () => {
   const role = roleContent.find(r => r.id === user.role);
   if (!role) return null;
 
-  const handleTelegramQuestClick = () => {
+  // Автоматически обновляем статус квеста при успешной проверке подписки
+  useEffect(() => {
+    if (isSubscribed && !telegramQuestCompleted) {
+      completeTelegramQuest();
+    }
+  }, [isSubscribed, telegramQuestCompleted, completeTelegramQuest]);
+
+  const handleTelegramQuestClick = async () => {
+    // Открываем канал
     window.open('https://t.me/finam_collab', '_blank');
+    
+    // Проверяем подписку через небольшую задержку (пользователь должен успеть подписаться)
+    setTimeout(async () => {
+      await checkSubscription();
+    }, 2000);
   };
 
   const handleTelegramLinkClick = () => {
-    completeTelegramQuest();
+    // Если уже подписан, просто отмечаем квест как выполненный
+    if (isSubscribed) {
+      completeTelegramQuest();
+    }
     window.open('https://t.me/finam_collab', '_blank');
   };
 
@@ -237,7 +263,7 @@ export const HomePage: React.FC = () => {
     },
     {
       text: 'Выполни первый квест',
-      completed: !!telegramQuestCompleted,
+      completed: !!telegramQuestCompleted || isSubscribed,
       onClick: handleTelegramQuestClick,
     },
     {
