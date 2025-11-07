@@ -42,7 +42,7 @@ export const EducationalCenterModal: React.FC<EducationalCenterModalProps> = ({ 
 
         {/* Website button - отступ от блока с текстом 20px */}
         <button 
-          onClick={() => window.open('https://telegra.ph/Dnevnik-trejdera-10-28', '_blank')}
+          onClick={() => window.open('https://telegra.ph/Uchebnyj-centr-11-07', '_blank')}
           className="w-full h-[56px] bg-[rgba(79,79,89,0.24)] rounded-[8px] flex items-center justify-center hover:bg-[rgba(79,79,89,0.4)] transition-colors mt-[20px]"
         >
           <span className="text-[17px] font-semibold text-[#ebebf2] leading-[24px] tracking-[-0.204px] font-inter">

@@ -2,12 +2,12 @@
 
 import React from 'react';
 
-interface ComonModalProps {
+interface OptionMakerModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-export const ComonModal: React.FC<ComonModalProps> = ({ isOpen, onClose }) => {
+export const OptionMakerModal: React.FC<OptionMakerModalProps> = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
   return (
@@ -17,8 +17,8 @@ export const ComonModal: React.FC<ComonModalProps> = ({ isOpen, onClose }) => {
         <div className="flex justify-center pt-[48px]">
           <div className="w-[150px] h-[150px] relative flex-shrink-0">
             <img
-              src="/assets/products/comon.png?v=2"
-              alt="Автоследование"
+              src="/assets/products/OptionMaker.png"
+              alt="Option Maker"
               className="w-full h-full object-contain rounded-lg"
             />
           </div>
@@ -27,7 +27,7 @@ export const ComonModal: React.FC<ComonModalProps> = ({ isOpen, onClose }) => {
         {/* Title - отступ от изображения 9px */}
         <div className="flex justify-center mt-[9px]">
           <h2 className="text-[28px] font-medium text-white text-center leading-[32px] tracking-[-0.504px] font-inter">
-            Автоследование
+            Option Maker
           </h2>
         </div>
 
@@ -35,14 +35,14 @@ export const ComonModal: React.FC<ComonModalProps> = ({ isOpen, onClose }) => {
         <div className="mt-[40px]">
           <div className="bg-[#2f2f37] rounded-[5px] p-[12px] w-full">
             <p className="text-[17px] font-medium text-white leading-[24px] tracking-[-0.17px] font-inter">
-              Это уникальный сервис, позволяющий автоматически в реальном времени повторять сделки успешных трейдеров
+              Это инструмент для создания структурных продуктов. С его помощью вы можете самостоятельно формировать параметры продукта, такие как срок, барьеры, базовые активы и даты наблюдения
             </p>
           </div>
         </div>
 
         {/* Website button - отступ от блока с текстом 20px */}
         <button 
-          onClick={() => window.open('https://telegra.ph/Avtosledovanie-11-07', '_blank')}
+          onClick={() => window.open('https://telegra.ph/Option-Maker-11-07', '_blank')}
           className="w-full h-[56px] bg-[rgba(79,79,89,0.24)] rounded-[8px] flex items-center justify-center hover:bg-[rgba(79,79,89,0.4)] transition-colors mt-[20px]"
         >
           <span className="text-[17px] font-semibold text-[#ebebf2] leading-[24px] tracking-[-0.204px] font-inter">
@@ -52,7 +52,7 @@ export const ComonModal: React.FC<ComonModalProps> = ({ isOpen, onClose }) => {
 
         {/* Survey button - отступ от кнопки "Гайд по продукту" 10px */}
         <button 
-          onClick={() => window.open('https://t.me/SergeKond', '_blank')}
+          onClick={() => window.location.href = 'mailto:Dorodnev@corp.finam.ru'}
           className="w-full h-[56px] btn-gradient transition-opacity hover:opacity-90 mt-[10px]"
         >
           <span className="text-[17px] font-semibold text-white leading-[24px] tracking-[-0.204px] font-inter">

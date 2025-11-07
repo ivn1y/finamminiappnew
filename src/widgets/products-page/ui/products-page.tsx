@@ -12,6 +12,8 @@ import { ManagementCompanyModal } from '@/shared/ui/management-company-modal';
 import { InternationalMarketsModal } from '@/shared/ui/international-markets-modal';
 import { ComonModal } from '@/shared/ui/comon-modal';
 import { EducationalCenterModal } from '@/shared/ui/educational-center-modal';
+import { OptionMakerModal } from '@/shared/ui/option-maker-modal';
+import { AlphaBuilderModal } from '@/shared/ui/alpha-builder-modal';
 import { useAppStore } from '@/shared/store/app-store';
 
 type ModalType = 
@@ -24,6 +26,8 @@ type ModalType =
   | 'internationalMarkets'
   | 'comon'
   | 'educationalCenter'
+  | 'optionMaker'
+  | 'alphaBuilder'
   | null;
 
 export const ProductsPage: React.FC = () => {
@@ -76,6 +80,14 @@ export const ProductsPage: React.FC = () => {
     { 
       title: 'Учебный Центр', 
       onClick: () => handleOpenModal('educationalCenter')
+    },
+    { 
+      title: 'Option Maker', 
+      onClick: () => handleOpenModal('optionMaker')
+    },
+    { 
+      title: 'Alpha Builder', 
+      onClick: () => handleOpenModal('alphaBuilder')
     },
   ];
 
@@ -197,6 +209,18 @@ export const ProductsPage: React.FC = () => {
       {/* Educational Center Modal */}
       <EducationalCenterModal
         isOpen={activeModal === 'educationalCenter'}
+        onClose={handleCloseModal}
+      />
+      
+      {/* Option Maker Modal */}
+      <OptionMakerModal
+        isOpen={activeModal === 'optionMaker'}
+        onClose={handleCloseModal}
+      />
+      
+      {/* Alpha Builder Modal */}
+      <AlphaBuilderModal
+        isOpen={activeModal === 'alphaBuilder'}
         onClose={handleCloseModal}
       />
     </div>
