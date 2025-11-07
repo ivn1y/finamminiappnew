@@ -2,12 +2,12 @@
 
 import React from 'react';
 
-interface EducationalCenterModalProps {
+interface AlphaBuilderModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-export const EducationalCenterModal: React.FC<EducationalCenterModalProps> = ({ isOpen, onClose }) => {
+export const AlphaBuilderModal: React.FC<AlphaBuilderModalProps> = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
   return (
@@ -17,8 +17,8 @@ export const EducationalCenterModal: React.FC<EducationalCenterModalProps> = ({ 
         <div className="flex justify-center pt-[48px]">
           <div className="w-[150px] h-[150px] relative flex-shrink-0">
             <img
-              src="/assets/products/uchebniychenter.png"
-              alt="Учебный Центр"
+              src="/assets/products/AplhaBuilder.png"
+              alt="Alpha Builder"
               className="w-full h-full object-contain rounded-lg"
             />
           </div>
@@ -27,7 +27,7 @@ export const EducationalCenterModal: React.FC<EducationalCenterModalProps> = ({ 
         {/* Title - отступ от изображения 9px */}
         <div className="flex justify-center mt-[9px]">
           <h2 className="text-[28px] font-medium text-white text-center leading-[32px] tracking-[-0.504px] font-inter">
-            Учебный Центр
+            Alpha Builder
           </h2>
         </div>
 
@@ -35,14 +35,14 @@ export const EducationalCenterModal: React.FC<EducationalCenterModalProps> = ({ 
         <div className="mt-[40px]">
           <div className="bg-[#2f2f37] rounded-[5px] p-[12px] w-full">
             <p className="text-[17px] font-medium text-white leading-[24px] tracking-[-0.17px] font-inter">
-              Ваш проводник по миру финансов. Мы поможем новичкам максимально быстро пройти путь от знакомства с рынком до создания собственной торговой стратегии, а опытным инвесторам - повысить свое мастерство
+              Это инструмент позволяющий создавать и управлять торговыми стратегиями, которые формируют для пользователя самоуправляемый виртуальный портфель и торговые сигналы
             </p>
           </div>
         </div>
 
         {/* Website button - отступ от блока с текстом 20px */}
         <button 
-          onClick={() => window.open('https://telegra.ph/Uchebnyj-centr-11-07', '_blank')}
+          onClick={() => window.open('https://telegra.ph/Alpha-Builder-11-07', '_blank')}
           className="w-full h-[56px] bg-[rgba(79,79,89,0.24)] rounded-[8px] flex items-center justify-center hover:bg-[rgba(79,79,89,0.4)] transition-colors mt-[20px]"
         >
           <span className="text-[17px] font-semibold text-[#ebebf2] leading-[24px] tracking-[-0.204px] font-inter">
@@ -52,7 +52,7 @@ export const EducationalCenterModal: React.FC<EducationalCenterModalProps> = ({ 
 
         {/* Survey button - отступ от кнопки "Гайд по продукту" 10px */}
         <button 
-          onClick={() => window.open('https://t.me/Glebpld', '_blank')}
+          onClick={() => window.open('https://t.me/MagicMikeNY', '_blank')}
           className="w-full h-[56px] btn-gradient transition-opacity hover:opacity-90 mt-[10px]"
         >
           <span className="text-[17px] font-semibold text-white leading-[24px] tracking-[-0.204px] font-inter">

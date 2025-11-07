@@ -60,3 +60,5 @@ export * from './management-company-modal';
 export * from './international-markets-modal';
 export * from './comon-modal';
 export * from './educational-center-modal';
+export * from './option-maker-modal';
+export * from './alpha-builder-modal';
