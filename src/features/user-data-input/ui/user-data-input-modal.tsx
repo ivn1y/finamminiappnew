@@ -106,8 +106,15 @@ export const UserDataInputModal: React.FC<UserDataInputModalProps> = ({
         break;
       case 'phone':
         validationResult = validatePhone(value);
-        // Автоматически форматируем номер при вводе
-        if (validationResult.isValid && validationResult.formatted) {
+        // Автоматически форматируем номер при вводе только если он полный
+        // Для российского номера (начинается с 8) нужно 11 цифр
+        // Для международного формата (+7) проверяем, что номер полный
+        const digitsOnly = value.replace(/\D/g, '');
+        const isCompleteRussianNumber = value.startsWith('8') && digitsOnly.length === 11;
+        const isCompleteInternationalNumber = value.startsWith('+') && digitsOnly.length >= 10;
+        
+        if (validationResult.isValid && validationResult.formatted && 
+            (isCompleteRussianNumber || isCompleteInternationalNumber)) {
           setFormData(prev => ({ ...prev, phone: validationResult.formatted! }));
         }
         break;
@@ -118,7 +125,7 @@ export const UserDataInputModal: React.FC<UserDataInputModalProps> = ({
     }
   };
 
-  const validateForm = (): boolean => {
+  const validateForm = (): { isValid: boolean; formattedData?: Partial<UserData> } => {
     const validationResult = validateUserForm(formData, requiredFields);
     
     const newErrors: Partial<Record<keyof UserData | 'policy', string>> = {
@@ -130,12 +137,21 @@ export const UserDataInputModal: React.FC<UserDataInputModalProps> = ({
     }
 
     setErrors(newErrors);
-    return validationResult.isValid && agreedToPolicy;
+    return { 
+      isValid: validationResult.isValid && agreedToPolicy,
+      formattedData: validationResult.formattedData
+    };
   };
 
   const handleSave = () => {
-    if (validateForm()) {
-      onSave(formData);
+    const validation = validateForm();
+    if (validation.isValid) {
+      // Используем отформатированные данные, если они есть, иначе используем исходные
+      const dataToSave: UserData = {
+        ...formData,
+        ...(validation.formattedData || {})
+      };
+      onSave(dataToSave);
       onClose();
     }
   };
@@ -219,7 +235,7 @@ export const UserDataInputModal: React.FC<UserDataInputModalProps> = ({
                 onChange={(e) => handleInputChange('phone', e.target.value)}
                 onFocus={() => handleInputFocus('phone')}
                 onBlur={() => setFocusedInput(null)}
-                placeholder="+7 912 345-67-89 или +971 50 123-45-67"
+                placeholder="+7 912 345-67-89"
                 className={`${styles.input} ${errors.phone ? styles.error : ''}`}
               />
             </div>

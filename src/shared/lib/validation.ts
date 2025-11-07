@@ -43,9 +43,11 @@ function normalizePhoneNumber(phone: string): string[] {
   const digitsOnly = phone.replace(/[\s\-()]/g, '');
   const trimmed = phone.trim();
   
-  // Если номер уже начинается с +, возвращаем как есть
+  // Если номер уже начинается с +, нормализуем его (убираем пробелы, если есть)
   if (trimmed.startsWith('+')) {
-    return [trimmed];
+    // Если номер начинается с +7 и идет слитно (например, +71234567890), оставляем как есть
+    // parsePhoneNumberFromString должен его правильно распарсить
+    return [trimmed.replace(/\s/g, '')];
   }
 
   const normalizedVariants: string[] = [];
@@ -178,6 +180,200 @@ function normalizePhoneNumber(phone: string): string[] {
 }
 
 /**
+ * Форматирование телефонного номера в зависимости от страны
+ */
+function formatPhoneByCountry(phoneNumber: ReturnType<typeof parsePhoneNumberFromString>, country: CountryCode | undefined): string {
+  if (!phoneNumber) {
+    return '';
+  }
+
+  if (!country) {
+    return phoneNumber.formatInternational();
+  }
+
+  const countryCode = phoneNumber.countryCallingCode;
+  const nationalNumber = phoneNumber.nationalNumber;
+
+  switch (country) {
+    // Россия и Казахстан: +7 (123) 456 78-90
+    case 'RU':
+    case 'KZ':
+      if (nationalNumber.length === 10) {
+        return `+${countryCode} (${nationalNumber.slice(0, 3)}) ${nationalNumber.slice(3, 6)} ${nationalNumber.slice(6, 8)}-${nationalNumber.slice(8)}`;
+      }
+      break;
+
+    // США и Канада: +1 (123) 456-7890
+    case 'US':
+    case 'CA':
+      if (nationalNumber.length === 10) {
+        return `+${countryCode} (${nationalNumber.slice(0, 3)}) ${nationalNumber.slice(3, 6)}-${nationalNumber.slice(6)}`;
+      }
+      break;
+
+    // Великобритания: +44 20 1234 5678
+    case 'GB':
+      if (nationalNumber.length >= 9 && nationalNumber.length <= 10) {
+        // Лондон (20) или другие города
+        if (nationalNumber.startsWith('20') && nationalNumber.length === 10) {
+          return `+${countryCode} ${nationalNumber.slice(0, 2)} ${nationalNumber.slice(2, 6)} ${nationalNumber.slice(6)}`;
+        } else if (nationalNumber.length === 10) {
+          return `+${countryCode} ${nationalNumber.slice(0, 2)} ${nationalNumber.slice(2, 6)} ${nationalNumber.slice(6)}`;
+        } else if (nationalNumber.length === 9) {
+          return `+${countryCode} ${nationalNumber.slice(0, 2)} ${nationalNumber.slice(2, 5)} ${nationalNumber.slice(5)}`;
+        }
+      }
+      break;
+
+    // Германия: +49 30 12345678 или +49 30 1234 5678
+    case 'DE':
+      if (nationalNumber.length >= 9 && nationalNumber.length <= 11) {
+        // Берлин (30) или другие города
+        if (nationalNumber.startsWith('30') && nationalNumber.length === 10) {
+          return `+${countryCode} ${nationalNumber.slice(0, 2)} ${nationalNumber.slice(2, 6)} ${nationalNumber.slice(6)}`;
+        } else if (nationalNumber.length >= 10) {
+          return `+${countryCode} ${nationalNumber.slice(0, 2)} ${nationalNumber.slice(2, 6)} ${nationalNumber.slice(6)}`;
+        }
+      }
+      break;
+
+    // Франция: +33 1 23 45 67 89
+    case 'FR':
+      if (nationalNumber.length === 9) {
+        return `+${countryCode} ${nationalNumber.slice(0, 1)} ${nationalNumber.slice(1, 3)} ${nationalNumber.slice(3, 5)} ${nationalNumber.slice(5, 7)} ${nationalNumber.slice(7)}`;
+      }
+      break;
+
+    // Италия: +39 02 1234 5678
+    case 'IT':
+      if (nationalNumber.length === 9 || nationalNumber.length === 10) {
+        if (nationalNumber.length === 10) {
+          return `+${countryCode} ${nationalNumber.slice(0, 2)} ${nationalNumber.slice(2, 6)} ${nationalNumber.slice(6)}`;
+        } else {
+          return `+${countryCode} ${nationalNumber.slice(0, 2)} ${nationalNumber.slice(2, 5)} ${nationalNumber.slice(5)}`;
+        }
+      }
+      break;
+
+    // Испания: +34 91 123 45 67
+    case 'ES':
+      if (nationalNumber.length === 9) {
+        return `+${countryCode} ${nationalNumber.slice(0, 2)} ${nationalNumber.slice(2, 5)} ${nationalNumber.slice(5, 7)} ${nationalNumber.slice(7)}`;
+      }
+      break;
+
+    // ОАЭ: +971 50 123 4567
+    case 'AE':
+      if (nationalNumber.length === 9) {
+        return `+${countryCode} ${nationalNumber.slice(0, 2)} ${nationalNumber.slice(2, 5)} ${nationalNumber.slice(5)}`;
+      }
+      break;
+
+    // Беларусь: +375 29 123-45-67
+    case 'BY':
+      if (nationalNumber.length === 9) {
+        return `+${countryCode} ${nationalNumber.slice(0, 2)} ${nationalNumber.slice(2, 5)}-${nationalNumber.slice(5, 7)}-${nationalNumber.slice(7)}`;
+      }
+      break;
+
+    // Украина: +380 50 123 4567
+    case 'UA':
+      if (nationalNumber.length === 9) {
+        return `+${countryCode} ${nationalNumber.slice(0, 2)} ${nationalNumber.slice(2, 5)} ${nationalNumber.slice(5)}`;
+      }
+      break;
+
+    // Турция: +90 212 123 45 67
+    case 'TR':
+      if (nationalNumber.length === 10) {
+        return `+${countryCode} ${nationalNumber.slice(0, 3)} ${nationalNumber.slice(3, 6)} ${nationalNumber.slice(6, 8)} ${nationalNumber.slice(8)}`;
+      }
+      break;
+
+    // Польша: +48 12 345 67 89
+    case 'PL':
+      if (nationalNumber.length === 9) {
+        return `+${countryCode} ${nationalNumber.slice(0, 2)} ${nationalNumber.slice(2, 5)} ${nationalNumber.slice(5, 7)} ${nationalNumber.slice(7)}`;
+      }
+      break;
+
+    // Чехия: +420 123 456 789
+    case 'CZ':
+      if (nationalNumber.length === 9) {
+        return `+${countryCode} ${nationalNumber.slice(0, 3)} ${nationalNumber.slice(3, 6)} ${nationalNumber.slice(6)}`;
+      }
+      break;
+
+    // Израиль: +972 50-123-4567
+    case 'IL':
+      if (nationalNumber.length === 9) {
+        return `+${countryCode} ${nationalNumber.slice(0, 2)}-${nationalNumber.slice(2, 5)}-${nationalNumber.slice(5)}`;
+      }
+      break;
+
+    // Саудовская Аравия: +966 50 123 4567
+    case 'SA':
+      if (nationalNumber.length === 9) {
+        return `+${countryCode} ${nationalNumber.slice(0, 2)} ${nationalNumber.slice(2, 5)} ${nationalNumber.slice(5)}`;
+      }
+      break;
+
+    // Катар: +974 1234 5678
+    case 'QA':
+      if (nationalNumber.length === 8) {
+        return `+${countryCode} ${nationalNumber.slice(0, 4)} ${nationalNumber.slice(4)}`;
+      }
+      break;
+
+    // Кувейт: +965 1234 5678
+    case 'KW':
+      if (nationalNumber.length === 8) {
+        return `+${countryCode} ${nationalNumber.slice(0, 4)} ${nationalNumber.slice(4)}`;
+      }
+      break;
+
+    // Армения: +374 12 345678
+    case 'AM':
+      if (nationalNumber.length === 8) {
+        return `+${countryCode} ${nationalNumber.slice(0, 2)} ${nationalNumber.slice(2)}`;
+      }
+      break;
+
+    // Азербайджан: +994 12 123 45 67
+    case 'AZ':
+      if (nationalNumber.length === 9) {
+        return `+${countryCode} ${nationalNumber.slice(0, 2)} ${nationalNumber.slice(2, 5)} ${nationalNumber.slice(5, 7)} ${nationalNumber.slice(7)}`;
+      }
+      break;
+
+    // Грузия: +995 32 123 456
+    case 'GE':
+      if (nationalNumber.length === 9) {
+        return `+${countryCode} ${nationalNumber.slice(0, 2)} ${nationalNumber.slice(2, 5)} ${nationalNumber.slice(5)}`;
+      }
+      break;
+
+    // Молдова: +373 22 123 456
+    case 'MD':
+      if (nationalNumber.length === 8 || nationalNumber.length === 9) {
+        if (nationalNumber.length === 9) {
+          return `+${countryCode} ${nationalNumber.slice(0, 2)} ${nationalNumber.slice(2, 5)} ${nationalNumber.slice(5)}`;
+        } else {
+          return `+${countryCode} ${nationalNumber.slice(0, 2)} ${nationalNumber.slice(2, 5)} ${nationalNumber.slice(5)}`;
+        }
+      }
+      break;
+
+    default:
+      // Для остальных стран используем международный формат
+      return phoneNumber.formatInternational();
+  }
+
+  // Если формат нестандартный, используем международный формат
+  return phoneNumber.formatInternational();
+}
+
+/**
  * Валидация телефонного номера
  * Поддерживает международные номера из различных стран
  * Принимает различные форматы ввода для разных регионов
@@ -244,9 +440,12 @@ export function validatePhone(phone: string): { isValid: boolean; error?: string
     const country = phoneNumber.country;
     const countryName = getCountryName(country);
 
+    // Форматируем номер в нужный формат в зависимости от страны
+    const formattedPhone = formatPhoneByCountry(phoneNumber, country);
+
     return { 
       isValid: true, 
-      formatted: phoneNumber.formatInternational(),
+      formatted: formattedPhone,
       country: countryName
     };
 
