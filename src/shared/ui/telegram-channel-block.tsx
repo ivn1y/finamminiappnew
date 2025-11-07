@@ -29,7 +29,7 @@ export const TelegramChannelBlock: React.FC<TelegramChannelBlockProps> = ({
         {title}
       </h3>
       <p className="absolute top-[50px] left-[16px] right-[52px] text-white font-inter text-[14px] font-normal leading-[20px] tracking-[-0.056px]">
-        Присоединиться к нашему Telegram коммьюнити
+        Присоединиться к нашему Telegram комьюнити
       </p>
       <button
         onClick={handleClick}

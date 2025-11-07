@@ -217,7 +217,7 @@ export const Onboarding: React.FC = () => {
       badges: ['explorer'],
       xp: 100,
       progressSteps: 1,
-      name: selectedRole === 'guest' ? 'Гость' : '',
+      name: selectedRole === 'guest' ? 'Прохожий' : '',
       intent7d: selectedRole === 'guest' ? 'Изучить платформу Collab' : 'Изучить возможности платформы'
     };
 
