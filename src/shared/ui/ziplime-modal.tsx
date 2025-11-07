@@ -35,7 +35,7 @@ export const ZipLimeModal: React.FC<ZipLimeModalProps> = ({ isOpen, onClose }) =
         <div className="mt-[40px]">
           <div className="bg-[#2f2f37] rounded-[5px] p-[12px] w-full">
             <p className="text-[17px] font-medium text-white leading-[24px] tracking-[-0.17px] font-inter">
-              AI бектестер позволяющий легко проверять рыночные гипотезы
+              AI бектестер, позволяющий легко проверять рыночные гипотезы
             </p>
           </div>
         </div>
