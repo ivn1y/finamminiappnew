@@ -26,27 +26,27 @@ import { ScheduleEvent } from '@/shared/types/app';
 const initialScheduleData = [
   {
     block: 'Рынки в 2025 году',
-    time: '10:00 - 11:15',
+    time: '11:00 - 12:25',
     events: mockScheduleData.events.filter(e => e.block === 'Блок 1: РЫНКИ в 2025'),
   },
   {
     block: 'Обзор стратегий и тактик',
-    time: '11:35 - 14:50',
+    time: '12:25 - 16:00',
     events: mockScheduleData.events.filter(e => e.block === 'Блок 2: Обзор стратегий и тактик'),
   },
   {
     block: 'Новые возможности',
-    time: '14:50 - 16:40',
+    time: '16:00 - 17:40',
     events: mockScheduleData.events.filter(e => e.block === 'Блок 3: Новые возможности'),
   },
   {
     block: 'Пост трейд',
-    time: '17:00 - 18:40',
+    time: '17:40 - 18:55',
     events: mockScheduleData.events.filter(e => e.block === 'Блок 4: Пост трейд'),
   },
   {
     block: 'Завершение',
-    time: '18:40 - 19:00',
+    time: '18:55',
     events: mockScheduleData.events.filter(e => e.block === 'Блок 5'),
   },
 ];
