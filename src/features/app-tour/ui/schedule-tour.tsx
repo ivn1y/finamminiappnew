@@ -1,12 +1,16 @@
 'use client';
 import Image from 'next/image';
 import React from 'react';
+import { useScrollLock } from '@/shared/hooks';
 
 interface ScheduleTourProps {
   onComplete: () => void;
 }
 
 const ScheduleTour: React.FC<ScheduleTourProps> = ({ onComplete }) => {
+  // Блокируем скролл когда тур активен
+  useScrollLock();
+
   return (
     <div
       className="fixed inset-0 z-50 pointer-events-auto"
