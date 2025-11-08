@@ -190,6 +190,7 @@ export const ChatPage: React.FC = () => {
   
   const [useMessages, setMessages] = useState<Message[]>([]);
   const [currentNodeId, setCurrentNodeId] = useState<string | null>(null);
+  const [isChatOpened, setIsChatOpened] = useState(false);
   // Мемоизируем userContext чтобы избежать пересоздания при каждом рендере
   const userContext = useMemo(() => ({
     userId: user?.id || 'anonymous',
@@ -244,10 +245,12 @@ export const ChatPage: React.FC = () => {
   const [isInputFocused, setIsInputFocused] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const touchStartRef = useRef<{ x: number; y: number; time: number } | null>(null);
 
   const STORAGE_KEYS = {
     messages: 'chat_fsm_messages',
     node: 'chat_fsm_current_node',
+    isChatOpened: 'chat_fsm_is_chat_opened',
   } as const;
 
   // Функция для определения продукта по контексту сообщений
@@ -278,7 +281,7 @@ export const ChatPage: React.FC = () => {
       return 'ZipLime';
     }
     if (messageText.includes('hyperadar')) {
-      return 'HypeRadar';
+      return 'Hype Radar';
     }
     if (messageText.includes('международные рынки')) {
       return 'Международные рынки';
@@ -292,27 +295,29 @@ export const ChatPage: React.FC = () => {
     greet: {
       id: 'greet',
       message:
-        'Привет! Я твой персональный ассистент, и я помогу быстро разобраться в наших продуктах.\n\nЯ могу рассказать тебе о следующих продуктах:\n• Дневник Трейдера\n• Trade API\n• AI-скринер\n• УК — инфраструктура для алго-фондов\n• Проп-трейдинг\n• ZipLime\n• HypeRadar\n• Международные рынки\n\nПро какой продукт хочешь узнать подробнее?',
+        'Привет! Я твой персональный ассистент, и я помогу быстро разобраться в наших продуктах.\n\nЯ могу рассказать тебе о следующих продуктах:\n• Дневник Трейдера\n• Trade API\n• AI-скринер\n• УК — инфраструктура для алго-фондов\n• Проп-трейдинг\n• ZipLime\n• Hype Radar\n• Международные рынки\n\nПро какой продукт хочешь узнать подробнее?',
       options: [
         { id: 'C', label: 'Дневник трейдера', next: 'journal_intro' },
         { id: 'D', label: 'Trade API', next: 'trade_intro' },
         { id: 'n1', label: 'AI-скринер', next: 'ai_intro' },
         { id: 'n2', label: 'УК для алго-фондов', next: 'amc_intro' },
         { id: 'n3', label: 'ZipLime', next: 'ziplime_intro' },
-        { id: 'n4', label: 'HypeRadar', next: 'menu_more' },
-        { id: 'n5', label: 'Международные рынки', next: 'menu_more' },
+        { id: 'n4', label: 'Hype Radar', next: 'hyperadar_intro' },
+        { id: 'n5', label: 'Международные рынки', next: 'international_markets_intro' },
       ],
     },
     menu_more: {
       id: 'menu_more',
       message:
-        'Окей, понял тебя. Давай тогда расскажу про другие продукты. У нас есть:\n• Дневник трейдера\n• Trade API\n• AI-скринер\n• УК\n• Международные рынки\n• ZipLime\n• HypeRadar\n\nЧто выберешь?',
+        'Окей, понял тебя. Давай тогда расскажу про другие продукты. У нас есть:\n• Дневник трейдера\n• Trade API\n• AI-скринер\n• УК\n• Международные рынки\n• ZipLime\n• Hype Radar\n\nЧто выберешь?',
       options: [
         { id: 'C', label: 'Дневник трейдера', next: 'journal_intro' },
         { id: 'D', label: 'Trade API', next: 'trade_intro' },
         { id: 'n1', label: 'AI-скринер', next: 'ai_intro' },
         { id: 'n2', label: 'УК', next: 'amc_intro' },
         { id: 'n3', label: 'ZipLime', next: 'ziplime_intro' },
+        { id: 'n4', label: 'Hype Radar', next: 'hyperadar_intro' },
+        { id: 'n5', label: 'Международные рынки', next: 'international_markets_intro' },
       ],
     },
     journal_intro: {
@@ -374,10 +379,10 @@ export const ChatPage: React.FC = () => {
     ai_intro: {
       id: 'ai_intro',
       message:
-        'AI-скринер — инструмент, который помогает быстро находить идеи и управлять рисками. Данные → инсайты → решения. Как начать?',
+        'AI-скринер — инструмент, который помогает быстро находить идеи и управлять рисками. Данные → инсайты → решения. Рассказать подробнее?',
       options: [
         { id: 'n40', label: 'Подробнее', next: 'ai_more' },
-        { id: 'n42', label: 'Как начать использовать?', next: 'profile_check', requiresProfile: true },
+        { id: 'n42', label: 'Начать использовать', next: 'profile_check', requiresProfile: true },
         { id: 'n39', label: 'Не интересно', next: 'menu_more' },
       ],
     },
@@ -437,6 +442,44 @@ export const ChatPage: React.FC = () => {
         { id: 'n61', label: 'Нет', next: 'menu_more' },
       ],
     },
+    hyperadar_intro: {
+      id: 'hyperadar_intro',
+      message:
+        'Hype Radar превращает хаос новостей и соцмедиа в инструмент прогнозирования: помогает находить тренды, анализировать их силу и действовать до того, как об этом узнает весь рынок. Рассказать подробнее?',
+      options: [
+        { id: 'n62', label: 'Подробнее', next: 'hyperadar_more' },
+        { id: 'n63', label: 'Хочу использовать', next: 'profile_check', requiresProfile: true },
+        { id: 'n64', label: 'Не интересно', next: 'menu_more' },
+      ],
+    },
+    hyperadar_more: {
+      id: 'hyperadar_more',
+      message:
+        'Hype Radar - это инструмент, который помогает трейдерам и инвесторам раньше других замечать и оценивать рыночные тренды, объединяя аналитику данных, социальные сигналы и динамику интереса в едином интерфейсе. Хочешь записаться на ЗБТ?',
+      options: [
+        { id: 'n65', label: 'Да', next: 'profile_check', requiresProfile: true },
+        { id: 'n66', label: 'Нет', next: 'menu_more' },
+      ],
+    },
+    international_markets_intro: {
+      id: 'international_markets_intro',
+      message:
+        'Ты торгуешь на российском рынке и чувствуешь, что возможностей становится меньше? Тогда пора смотреть шире — туда, где ликвидность, объёмы и драйверы роста. Но есть нюанс: прямой доступ к крупнейшим мировым биржам из России сегодня даёт только один брокер.\n\n«Финам» — единственный в РФ, кто обеспечивает реальный доступ к американским и азиатским рынкам: NYSE, NASDAQ, CME, Гонконг, Шанхай, Шэньчжэнь.',
+      options: [
+        { id: 'n67', label: 'Подробнее', next: 'international_markets_more' },
+        { id: 'n68', label: 'Хочу подключиться', next: 'profile_check', requiresProfile: true },
+        { id: 'n69', label: 'Не интересно', next: 'menu_more' },
+      ],
+    },
+    international_markets_more: {
+      id: 'international_markets_more',
+      message:
+        'Что это даёт тебе:\n\n- 7200+ акций США, включая лидеров роста (FAANG) и ETF.\n\n- Американские опционы: от классических до нулевого дня (0DTE) — идеальны для активных стратегий.\n\n- 50+ товарных фьючерсов на CME — от золота до нефти.\n\n- 3500+ азиатских акций с волатильностью до 25% и арбитражем A/H-акций до 15%.\n\n- Поддержка продвинутых опционных стратегий: стрэддлы, спреды, бабочки, кондоры.\n\nХочешь получить доступ?',
+      options: [
+        { id: 'n70', label: 'Да', next: 'profile_check', requiresProfile: true },
+        { id: 'n71', label: 'Нет', next: 'menu_more' },
+      ],
+    },
     profile_check: { id: 'profile_check', message: '', kind: 'router' },
     profile_ok: {
       id: 'profile_ok',
@@ -490,15 +533,25 @@ export const ChatPage: React.FC = () => {
     try {
       const rawMessages = sessionStorage.getItem(STORAGE_KEYS.messages);
       const rawNode = sessionStorage.getItem(STORAGE_KEYS.node);
+      const rawIsChatOpened = sessionStorage.getItem(STORAGE_KEYS.isChatOpened);
+      
       if (rawMessages) {
         const parsed: Message[] = JSON.parse(rawMessages).map((m: any) => ({
           ...m,
           timestamp: new Date(m.timestamp),
         }));
         setMessages(parsed);
+        // Если есть сообщения, открываем чат
+        if (parsed.length > 0) {
+          setIsChatOpened(true);
+        }
       }
       if (rawNode) {
         setCurrentNodeId(rawNode);
+      }
+      // Восстанавливаем состояние открытия чата
+      if (rawIsChatOpened === 'true') {
+        setIsChatOpened(true);
       }
     } catch (_) {
       // ignore
@@ -510,14 +563,37 @@ export const ChatPage: React.FC = () => {
     try {
       sessionStorage.setItem(STORAGE_KEYS.messages, JSON.stringify(useMessages));
       if (currentNodeId) sessionStorage.setItem(STORAGE_KEYS.node, currentNodeId);
+      sessionStorage.setItem(STORAGE_KEYS.isChatOpened, String(isChatOpened));
     } catch (_) {
       // ignore
     }
-  }, [useMessages, currentNodeId]);
+  }, [useMessages, currentNodeId, isChatOpened]);
 
-  // Инициализация начального узла/сообщения
-  useEffect(() => {
-    if (!currentNodeId && useMessages.length === 0) {
+  // Инициализация начального узла/сообщения убрана - сообщение появляется только при клике на input
+
+  // Обработчик открытия чата при клике на input
+  const handleInputFocus = () => {
+    setIsInputFocused(true);
+    setIsChatOpened(true);
+    
+    // Прокрутка к полю ввода при фокусе (для мобильных устройств)
+    requestAnimationFrame(() => {
+      setTimeout(() => {
+        inputRef.current?.scrollIntoView({ 
+          behavior: 'smooth', 
+          block: 'center',
+          inline: 'nearest'
+        });
+      }, 300); // Небольшая задержка для появления клавиатуры
+    });
+    
+    // Проверяем, есть ли уже приветственное сообщение в useMessages
+    const hasGreetMessage = useMessages.some(m => 
+      !m.isUser && m.text.includes('Привет! Я твой персональный ассистент')
+    );
+    
+    // Если нет приветственного сообщения, добавляем его
+    if (!hasGreetMessage) {
       const node = nodes.greet;
       const botMessage: Message = {
         id: `${Date.now()}_greet`,
@@ -525,10 +601,69 @@ export const ChatPage: React.FC = () => {
         isUser: false,
         timestamp: new Date(),
       };
-      setMessages([botMessage]);
-      setCurrentNodeId(node.id);
+      
+      // Добавляем приветственное сообщение
+      setMessages(prev => {
+        // Проверяем, нет ли уже такого сообщения в текущем состоянии
+        const alreadyExists = prev.some(m => 
+          !m.isUser && m.text.includes('Привет! Я твой персональный ассистент')
+        );
+        if (!alreadyExists) {
+          // Если сообщений нет, добавляем приветственное, иначе добавляем в начало
+          if (prev.length === 0) {
+            return [botMessage];
+          }
+          // Добавляем в начало, чтобы приветствие было первым
+          return [botMessage, ...prev];
+        }
+        return prev;
+      });
+      
+      // Устанавливаем currentNodeId, если его еще нет
+      if (!currentNodeId) {
+        setCurrentNodeId(node.id);
+      }
     }
-  }, [currentNodeId, useMessages.length]);
+  };
+
+  // Проверка: если чат открыт, но нет приветственного сообщения, добавляем его
+  useEffect(() => {
+    if (isChatOpened) {
+      // Проверяем, есть ли уже приветственное сообщение
+      const hasGreetMessage = useMessages.some(m => 
+        !m.isUser && m.text.includes('Привет! Я твой персональный ассистент')
+      );
+      
+      if (!hasGreetMessage) {
+        const node = nodes.greet;
+        const botMessage: Message = {
+          id: `${Date.now()}_greet`,
+          text: node.message,
+          isUser: false,
+          timestamp: new Date(),
+        };
+        setMessages(prev => {
+          // Проверяем еще раз, нет ли уже такого сообщения
+          const alreadyExists = prev.some(m => 
+            !m.isUser && m.text.includes('Привет! Я твой персональный ассистент')
+          );
+          if (!alreadyExists) {
+            // Если сообщений нет, добавляем приветственное, иначе добавляем в начало
+            if (prev.length === 0) {
+              return [botMessage];
+            }
+            // Добавляем в начало, чтобы приветствие было первым
+            return [botMessage, ...prev];
+          }
+          return prev;
+        });
+        if (!currentNodeId) {
+          setCurrentNodeId(node.id);
+        }
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isChatOpened, useMessages.length]);
 
   // Индикатор набора по статусу useChat
   useEffect(() => {
@@ -635,11 +770,46 @@ export const ChatPage: React.FC = () => {
     }
   };
 
+  // Обработчик touchStart для отслеживания начала касания
+  const handleTouchStart = (e: React.TouchEvent) => {
+    const touch = e.touches[0];
+    touchStartRef.current = {
+      x: touch.clientX,
+      y: touch.clientY,
+      time: Date.now(),
+    };
+  };
+
+  // Обработчик touchEnd для определения, был ли это клик или скролл
+  const handleTouchEnd = (e: React.TouchEvent, option: ChatOption) => {
+    if (!touchStartRef.current) return;
+
+    const touch = e.changedTouches[0];
+    const deltaX = Math.abs(touch.clientX - touchStartRef.current.x);
+    const deltaY = Math.abs(touch.clientY - touchStartRef.current.y);
+    const deltaTime = Date.now() - touchStartRef.current.time;
+    const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+
+    // Если движение было больше 10px или длилось больше 300ms - это скролл, не клик
+    if (distance > 10 || deltaTime > 300) {
+      touchStartRef.current = null;
+      return;
+    }
+
+    // Это был клик - выполняем действие
+    e.preventDefault();
+    handleOptionSelect(option);
+    touchStartRef.current = null;
+  };
+
   // FSM: обработчик выбора опции
   const handleOptionSelect = (option: ChatOption) => {
     if (showAssistantTour && messages.filter(m => m.isUser).length === 0) {
       endAssistantTour();
     }
+
+    // Открываем чат при выборе опции
+    setIsChatOpened(true);
 
     const userMessage: Message = {
       id: `${Date.now()}_user_opt`,
@@ -724,6 +894,9 @@ export const ChatPage: React.FC = () => {
 
     const query = inputText.trim();
     
+    // Открываем чат при отправке сообщения
+    setIsChatOpened(true);
+    
     // Сбрасываем FSM на стартовый узел при свободном вводе
     setCurrentNodeId('greet');
     
@@ -742,21 +915,6 @@ export const ChatPage: React.FC = () => {
     }
   };
 
-  // Функция для прокрутки к полю ввода при фокусе (для мобильных устройств)
-  const handleInputFocus = () => {
-    setIsInputFocused(true);
-    // Используем requestAnimationFrame для того, чтобы скролл произошел после появления клавиатуры
-    requestAnimationFrame(() => {
-      setTimeout(() => {
-        inputRef.current?.scrollIntoView({ 
-          behavior: 'smooth', 
-          block: 'center',
-          inline: 'nearest'
-        });
-      }, 300); // Небольшая задержка для появления клавиатуры
-    });
-  };
-
   const handleInputBlur = () => {
     setIsInputFocused(false);
   };
@@ -768,7 +926,7 @@ export const ChatPage: React.FC = () => {
     });
   };
 
-  if (!hasUserMessages) {
+  if (!hasUserMessages && !isChatOpened) {
 		return (
 			<>
         {showAssistantTour && <AssistantTour onComplete={endAssistantTour} />}
@@ -807,10 +965,8 @@ export const ChatPage: React.FC = () => {
 												e.preventDefault();
 												handleOptionSelect(opt);
 											}}
-											onTouchStart={(e: React.TouchEvent) => {
-												e.preventDefault();
-												handleOptionSelect(opt);
-											}}
+											onTouchStart={handleTouchStart}
+											onTouchEnd={(e: React.TouchEvent) => handleTouchEnd(e, opt)}
 											className='rounded-[10px] bg-[#151519] border-[#373740] text-white hover:bg-[#1f1f25] px-3 py-2'
 										>
 											{opt.label}
@@ -960,10 +1116,8 @@ export const ChatPage: React.FC = () => {
 										e.preventDefault();
 										handleOptionSelect(opt);
 									}}
-									onTouchStart={(e: React.TouchEvent) => {
-										e.preventDefault();
-										handleOptionSelect(opt);
-									}}
+									onTouchStart={handleTouchStart}
+									onTouchEnd={(e: React.TouchEvent) => handleTouchEnd(e, opt)}
 									className='rounded-[10px] bg-[#151519] border-[#373740] text-white hover:bg-[#1f1f25] px-3 py-2'
 								>
 									{opt.label}

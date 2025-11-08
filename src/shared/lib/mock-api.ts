@@ -180,11 +180,14 @@ class MockApiService {
 
     // Валидация профиля по ролям
     if (updates.profile && userRole) {
-      const roleProfile = updates.profile[userRole];
-      if (roleProfile) {
-        const validationError = this.validateRoleProfile(roleProfile, userRole);
-        if (validationError) {
-          return validationError;
+      // Проверяем, что роль существует в типе profile
+      if (userRole in updates.profile) {
+        const roleProfile = updates.profile[userRole as keyof typeof updates.profile];
+        if (roleProfile) {
+          const validationError = this.validateRoleProfile(roleProfile, userRole);
+          if (validationError) {
+            return validationError;
+          }
         }
       }
     }
