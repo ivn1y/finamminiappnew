@@ -1,6 +1,7 @@
 'use client';
 import Image from 'next/image';
 import React, { useState, useEffect } from 'react';
+import { useScrollLock } from '@/shared/hooks';
 
 interface HomeTourProps {
   highlightedElementRect: DOMRect;
@@ -12,6 +13,9 @@ const HomeTour: React.FC<HomeTourProps> = ({
   onComplete,
 }) => {
   const [assistantBlockTop, setAssistantBlockTop] = useState<number | null>(null);
+
+  // Блокируем скролл когда тур активен
+  useScrollLock();
 
   useEffect(() => {
     if (!highlightedElementRect) {

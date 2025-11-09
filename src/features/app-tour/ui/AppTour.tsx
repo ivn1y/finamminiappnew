@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useState, RefObject } from 'react';
+import { useScrollLock } from '@/shared/hooks';
 
 // NOTE: The font "Inter Tight" is not configured in the project.
 // I'm using the default sans-serif font. Please configure the font if needed.
@@ -17,6 +18,9 @@ export const AppTour: React.FC<AppTourProps> = ({
   highlightElementRef,
 }) => {
   const [highlightBox, setHighlightBox] = useState<DOMRect | null>(null);
+
+  // Блокируем скролл когда тур активен
+  useScrollLock(isOpen);
 
   useEffect(() => {
     const updateHighlightBox = () => {
