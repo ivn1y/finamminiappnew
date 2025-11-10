@@ -52,7 +52,7 @@ export const OptionMakerModal: React.FC<OptionMakerModalProps> = ({ isOpen, onCl
 
         {/* Survey button - отступ от кнопки "Гайд по продукту" 10px */}
         <button 
-          onClick={() => window.location.href = 'mailto:Dorodnev@corp.finam.ru'}
+          onClick={() => window.location.href = 'mailto:finamcollab@corp.finam.ru'}
           className="w-full h-[56px] btn-gradient transition-opacity hover:opacity-90 mt-[10px]"
         >
           <span className="text-[17px] font-semibold text-white leading-[24px] tracking-[-0.204px] font-inter">

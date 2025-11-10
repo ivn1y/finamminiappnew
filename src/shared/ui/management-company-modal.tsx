@@ -52,7 +52,7 @@ export const ManagementCompanyModal: React.FC<ManagementCompanyModalProps> = ({ 
 
         {/* Speaker contact button - отступ от кнопки "Гайд по продукту" 10px */}
         <button 
-          onClick={() => window.open('https://t.me/etsybulski', '_blank')}
+          onClick={() => window.location.href = 'mailto:finamcollab@corp.finam.ru'}
           className="w-full h-[56px] btn-gradient transition-opacity hover:opacity-90 mt-[10px]"
         >
           <span className="text-[17px] font-semibold text-white leading-[24px] tracking-[-0.204px] font-inter">

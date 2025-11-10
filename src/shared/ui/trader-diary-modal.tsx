@@ -52,15 +52,15 @@ export const TraderDiaryModal: React.FC<TraderDiaryModalProps> = ({ isOpen, onCl
 
         {/* Survey button - отступ от кнопки "Гайд по продукту" 10px */}
         <button 
-          onClick={() => window.open('https://t.me/cyberriver', '_blank')}
+          onClick={() => window.open('https://ankt.cc/nvSEMn', '_blank')}
           className="w-full h-[56px] btn-gradient transition-opacity hover:opacity-90 mt-[10px]"
         >
           <span className="text-[17px] font-semibold text-white leading-[24px] tracking-[-0.204px] font-inter">
-            Связь со спикером
+            Начать использовать
           </span>
         </button>
 
-        {/* Back button - отступ от кнопки "Связь со спикером" 108px */}
+        {/* Back button - отступ от кнопки "Начать использовать" 108px */}
         <div className="mt-[108px] pb-[40px]">
           <button
             onClick={onClose}
