@@ -14,6 +14,7 @@ import { ComonModal } from '@/shared/ui/comon-modal';
 import { EducationalCenterModal } from '@/shared/ui/educational-center-modal';
 import { OptionMakerModal } from '@/shared/ui/option-maker-modal';
 import { AlphaBuilderModal } from '@/shared/ui/alpha-builder-modal';
+import { InfluencersModal } from '@/shared/ui/influencers-modal';
 import { useAppStore } from '@/shared/store/app-store';
 
 type ModalType = 
@@ -28,6 +29,7 @@ type ModalType =
   | 'educationalCenter'
   | 'optionMaker'
   | 'alphaBuilder'
+  | 'influencers'
   | null;
 
 export const ProductsPage: React.FC = () => {
@@ -88,6 +90,10 @@ export const ProductsPage: React.FC = () => {
     { 
       title: 'Alpha Builder', 
       onClick: () => handleOpenModal('alphaBuilder')
+    },
+    { 
+      title: 'Influencers', 
+      onClick: () => handleOpenModal('influencers')
     },
   ];
 
@@ -221,6 +227,12 @@ export const ProductsPage: React.FC = () => {
       {/* Alpha Builder Modal */}
       <AlphaBuilderModal
         isOpen={activeModal === 'alphaBuilder'}
+        onClose={handleCloseModal}
+      />
+      
+      {/* Influencers Modal */}
+      <InfluencersModal
+        isOpen={activeModal === 'influencers'}
         onClose={handleCloseModal}
       />
     </div>
