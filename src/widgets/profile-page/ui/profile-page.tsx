@@ -41,6 +41,7 @@ import { User } from '@/shared/types/app';
 import Image from 'next/image';
 import { ProfileTour } from '@/features/app-tour';
 import { useRouter } from 'next/navigation';
+import { useBooking } from '@/shared/hooks/use-booking';
 
 export const ProfilePage: React.FC = () => {
   const { user, getAllBadges, getProgressPercentage, showProfileTour, endProfileTour, startMapTour, openUserDataInputModal } = useAppStore();
@@ -52,6 +53,7 @@ export const ProfilePage: React.FC = () => {
     trackScreenView, 
     trackShareProfile 
   } = useProfileAnalytics();
+  const { submitBooking } = useBooking();
   const [showEditModal, setShowEditModal] = useState(false);
   const [showAdvancedEdit, setShowAdvancedEdit] = useState(false);
   const [showAvatarCustomization, setShowAvatarCustomization] = useState(false);
@@ -279,7 +281,13 @@ export const ProfilePage: React.FC = () => {
     }
   };
 
-  const handleCredentialsSave = (credentials: { name?: string; phone?: string; email?: string }) => {
+  const handleCredentialsSave = async (credentials: { name?: string; phone?: string; email?: string }) => {
+    // Проверяем, были ли данные до сохранения (для определения первой регистрации)
+    const hadAllDataBefore = user?.name && 
+                              user?.credentials?.email && 
+                              user?.credentials?.phone && 
+                              user?.role;
+    
     const updatedUser = {
       ...user,
       name: credentials.name || user.name,
@@ -290,6 +298,23 @@ export const ProfilePage: React.FC = () => {
       }
     };
     useAppStore.getState().setUser(updatedUser);
+
+    // Проверяем, что теперь все данные заполнены
+    const hasAllDataNow = updatedUser.name && 
+                          updatedUser.credentials?.email && 
+                          updatedUser.credentials?.phone && 
+                          updatedUser.role;
+
+    // Если это первая регистрация (до этого не было всех данных, а теперь есть), отправляем в CRM
+    if (!hadAllDataBefore && hasAllDataNow) {
+      console.log('📤 Первая регистрация - отправка данных в CRM');
+      try {
+        await submitBooking('Регистрация пользователя через профиль');
+      } catch (error) {
+        console.error('❌ Ошибка отправки данных в CRM при регистрации:', error);
+        // Не блокируем пользователя при ошибке отправки в CRM
+      }
+    }
 
     if (
       showProfileTour &&

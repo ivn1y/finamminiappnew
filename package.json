@@ -114,6 +114,7 @@
     "react-markdown": "^9.0.1",
     "react-zoom-pan-pinch": "^3.7.0",
     "server-only": "^0.0.1",
+    "sharp": "^0.34.5",
     "sonner": "^1.7.4",
     "swr": "^2.3.3",
     "tailwind-merge": "^2.5.4",

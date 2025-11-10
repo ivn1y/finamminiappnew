@@ -67,9 +67,23 @@ async function submitBookingToCRM(params: z.infer<typeof bookingSchema>) {
     };
 
     // Отправляем запрос на /api/crm-submit
+    // CRM_SUBMIT_API_KEY - ключ для отправки запросов (используется на инстансе за контуром)
+    const apiKey = process.env.CRM_SUBMIT_API_KEY;
+    const headers: HeadersInit = {
+      "Content-Type": "application/json",
+    };
+    
+    // Добавляем API ключ, если он задан (для вызовов из другого инстанса)
+    if (apiKey) {
+      headers["x-api-key"] = apiKey;
+      console.log('🔑 Отправка запроса с API ключом');
+    } else {
+      console.warn('⚠️ CRM_SUBMIT_API_KEY не задан - запрос будет отправлен без ключа');
+    }
+    
     const response = await fetch(targetUrl, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers,
       body: JSON.stringify(crmSubmitData),
     });
 

@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { auth } from '@/shared/lib/auth';
 
 // ============================================
 // Types
@@ -373,10 +374,79 @@ async function sendToTelegram(data: CRMFormData, statuses: IntegrationStatus[]):
 // ============================================
 // API Route Handler
 // ============================================
+// Архитектура с двумя инстансами:
+// 1. Инстанс в контуре (этот файл): имеет доступ к CRM, проверяет API ключ через CRM_SUBMIT_API_KEY_VALIDATOR
+// 2. Инстанс за контуром: имеет чат и booking-tool, отправляет запросы с CRM_SUBMIT_API_KEY
+// 
+// Логика проверки:
+// - Если передан валидный API ключ -> серверный вызов (пропускаем проверку сессии)
+// - Если API ключ не передан -> клиентский вызов (проверяем авторизацию через сессию)
+// ============================================
 
 export async function POST(request: NextRequest) {
   try {
-    console.log('📝 Получен запрос на отправку в CRM');
+    // Проверка API ключа для серверных вызовов (опциональная)
+    // CRM_SUBMIT_API_KEY_VALIDATOR - ключ для проверки на инстансе в контуре
+    // CRM_SUBMIT_API_KEY - ключ для отправки на инстансе за контуром
+    const validatorKey = process.env.CRM_SUBMIT_API_KEY_VALIDATOR || process.env.CRM_SUBMIT_API_KEY;
+    let isServerCall = false;
+    
+    if (validatorKey) {
+      const apiKey = request.headers.get('x-api-key') || 
+                     request.headers.get('authorization')?.replace('Bearer ', '');
+      
+      if (apiKey === validatorKey) {
+        // Валидный API ключ - это серверный вызов, пропускаем проверку сессии
+        isServerCall = true;
+        console.log('✅ Валидный API ключ - серверный вызов');
+      } else if (apiKey) {
+        // Передан неверный API ключ
+        console.warn('❌ Неверный API ключ для /api/crm-submit');
+        return NextResponse.json(
+          { 
+            success: false, 
+            message: "Unauthorized",
+            details: { error: "Invalid API key" }
+          },
+          { status: 401 }
+        );
+      }
+    }
+    
+    // Для клиентских вызовов проверяем авторизацию
+    if (!isServerCall) {
+      try {
+        // В NextAuth 5 auth() может принимать request для API роутов
+        const session = await auth();
+        if (!session || !session.user) {
+          console.warn('❌ Неавторизованный запрос к /api/crm-submit');
+          return NextResponse.json(
+            { 
+              success: false, 
+              message: "Unauthorized",
+              details: { error: "User not authenticated" }
+            },
+            { status: 401 }
+          );
+        }
+        console.log('✅ Авторизованный клиентский запрос:', { 
+          userId: session.user.id,
+          userName: session.user.name 
+        });
+      } catch (error: any) {
+        console.error('❌ Ошибка проверки авторизации:', error);
+        return NextResponse.json(
+          { 
+            success: false, 
+            message: "Unauthorized",
+            details: { error: "Authentication check failed" }
+          },
+          { status: 401 }
+        );
+      }
+    }
+    
+    console.log('📝 Получен запрос на отправку в CRM', { isServerCall });
     
     const body = await request.json();
     const {

@@ -56,6 +56,19 @@ CRM_FORM_UID=779
 # Может быть локальным (/api/crm-submit) или внешним URL (https://.../api/crm-submit)
 # По умолчанию: /api/crm-submit
 CRM_SUBMIT_ENDPOINT=/api/crm-submit
+
+# API ключи для защиты /api/crm-submit (СЕРВЕРНАЯ, опционально)
+# Используются для работы с двумя инстансами приложения:
+# - Инстанс в контуре (имеет доступ к CRM): использует CRM_SUBMIT_API_KEY_VALIDATOR для проверки
+# - Инстанс за контуром (имеет чат): использует CRM_SUBMIT_API_KEY для отправки запросов
+# Если ключи не заданы, проверка API ключа не выполняется (для обратной совместимости)
+
+# Ключ для отправки запросов (на инстансе за контуром с чатом)
+CRM_SUBMIT_API_KEY=your-secure-api-key-here
+
+# Ключ для проверки запросов (на инстансе в контуре с доступом к CRM)
+# Если не задан, используется CRM_SUBMIT_API_KEY
+CRM_SUBMIT_API_KEY_VALIDATOR=your-validator-key-here
 ```
 
 ### CRM Form UIDs по направлениям (опционально)
@@ -251,6 +264,10 @@ CRM_FORM_UID_SCOUT=705
 CRM_FORM_UID_PARTNER=7206
 # Endpoint для отправки заявок (локальный или внешний)
 CRM_SUBMIT_ENDPOINT=/api/crm-submit
+# API ключ для отправки запросов (на инстансе за контуром)
+CRM_SUBMIT_API_KEY=your-secure-api-key-here
+# API ключ для проверки запросов (на инстансе в контуре)
+CRM_SUBMIT_API_KEY_VALIDATOR=your-validator-key-here
 
 # ============================================
 # AI CHAT CONFIGURATION
