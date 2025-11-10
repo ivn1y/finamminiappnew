@@ -202,7 +202,7 @@ export const ChatPage: React.FC = () => {
 
   const { messages: aiMessages, sendMessage, status, addToolResult } = useChat({
     transport: new DefaultChatTransport({
-      api: '/api/chat',
+      api: '/api/chat/proxy',
       body: {
         userContext
       }

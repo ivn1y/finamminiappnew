@@ -18,42 +18,29 @@ const bookingSchema = z.object({
 
 // ============================================
 // CRM Submission Logic (server-side)
+// Использует /api/crm-submit через env переменную CRM_SUBMIT_ENDPOINT
 // ============================================
 
 async function submitBookingToCRM(params: z.infer<typeof bookingSchema>) {
   try {
     console.log('📝 Обработка заявки на запись:', { userId: params.userId, direction: params.direction });
 
-    // Базовый URL CRM
-    const crmApiUrl = process.env.CRM_API_URL || "https://api.finam.tech";
+    // Получаем endpoint из env, по умолчанию локальный /api/crm-submit
+    const crmSubmitEndpoint = process.env.CRM_SUBMIT_ENDPOINT || '/api/crm-submit';
     
-    // Определяем crm_form_uid по направлению
-    const direction = params.direction.toLowerCase();
-    const directionMapDefaults = {
-      "trader": "779",
-      "startup": "778", 
-      "expert": "7243",
-      "scout": "705",
-      "business": "7206",
-      "partner": "7206",
-    };
-
-    const directionEnvMap = {
-      "trader": process.env.CRM_FORM_UID_TRADER || directionMapDefaults["trader"],
-      "startup": process.env.CRM_FORM_UID_STARTUP || directionMapDefaults["startup"],
-      "expert": process.env.CRM_FORM_UID_EXPERT || directionMapDefaults["expert"],
-      "scout": process.env.CRM_FORM_UID_SCOUT || directionMapDefaults["scout"],
-      "business": process.env.CRM_FORM_UID_PARTNER || directionMapDefaults["business"],
-      "partner": process.env.CRM_FORM_UID_PARTNER || directionMapDefaults["business"],
-    };
-
-    const crmFormUid = directionEnvMap[direction as keyof typeof directionEnvMap] || 
-                       process.env.CRM_FORM_UID || 
-                       "779"; // fallback
-
-    if (!crmApiUrl) {
-      throw new Error("CRM_API_URL не настроен");
-    }
+    // Определяем базовый URL для внешних запросов
+    const isExternalUrl = crmSubmitEndpoint.startsWith('http://') || crmSubmitEndpoint.startsWith('https://');
+    const baseUrl = isExternalUrl 
+      ? '' 
+      : process.env.NEXTAUTH_URL || 'http://localhost:3000';
+    
+    const targetUrl = isExternalUrl ? crmSubmitEndpoint : `${baseUrl}${crmSubmitEndpoint}`;
+    
+    console.log('📤 Отправка заявки через CRM_SUBMIT_ENDPOINT:', { 
+      targetUrl, 
+      isExternal: isExternalUrl,
+      envEndpoint: crmSubmitEndpoint 
+    });
 
     // Формируем сообщение
     const messageText = [
@@ -62,55 +49,45 @@ async function submitBookingToCRM(params: z.infer<typeof bookingSchema>) {
       'Источник: чат-ассистент'
     ].filter(Boolean).join('\n');
 
-    // Формируем payload для CRM
-    const crmData = {
-      url: "https://finamcollab.com/chat",
-      userIp: "127.0.0.1", // В серверном контексте IP может быть недоступен
-      userAgent: "Chat Assistant",
-      utm: params.utmParams || {},
-      agent: "",
-      agency: "",
-      analytics: [],
-      data: {
-        phone: params.phone || "",
-        email: params.email,
-        firstname: params.fullName.split(" ")[0] || "",
-        lastname: params.fullName.split(" ")[1] || "",
-        middlename: params.fullName.split(" ")[2] || "",
-        inn: "",
-        referer: "https://finamcollab.com/chat",
-        direction: params.direction,
-        subDirection: "",
-        market: "",
-        risk: "",
-        profile: "",
-        interest: "",
-        message: messageText,
-        sourcePage: "chat-assistant",
-      }
+    // Формируем payload для /api/crm-submit (соответствует интерфейсу CRMFormData)
+    const crmSubmitData = {
+      fullName: params.fullName,
+      email: params.email,
+      phone: params.phone || '',
+      direction: params.direction,
+      subDirection: '',
+      market: '',
+      risk: '',
+      profile: '',
+      interest: params.productInterest || '',
+      message: messageText,
+      sourceUrl: 'https://finamcollab.com/chat',
+      referral: '',
+      utmParams: params.utmParams || {},
     };
 
-    // Отправляем в CRM
-    const url = `${crmApiUrl}/form/send/${crmFormUid}`;
-    console.log("📤 Отправка в CRM:", { url, direction, crmFormUid });
-    
-    const response = await fetch(url, {
+    // Отправляем запрос на /api/crm-submit
+    const response = await fetch(targetUrl, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(crmData),
+      body: JSON.stringify(crmSubmitData),
     });
 
     if (!response.ok) {
       const errorText = await response.text();
-      throw new Error(`CRM API error: ${response.status} - ${errorText}`);
+      console.error('❌ Ошибка отправки в CRM_SUBMIT:', {
+        status: response.status,
+        error: errorText.substring(0, 200)
+      });
+      throw new Error(`CRM Submit API error: ${response.status} - ${errorText.substring(0, 200)}`);
     }
 
     const responseData = await response.json().catch(() => ({}));
-    console.log("✅ Заявка успешно отправлена в CRM");
+    console.log("✅ Заявка успешно отправлена через CRM_SUBMIT_ENDPOINT");
 
     return {
-      success: true,
-      message: "Заявка успешно отправлена",
+      success: responseData.success || true,
+      message: responseData.message || "Заявка успешно отправлена",
       crmResponse: responseData,
     };
 

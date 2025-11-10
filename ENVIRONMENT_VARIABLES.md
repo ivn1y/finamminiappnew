@@ -48,6 +48,11 @@ CRM_API_URL=https://api.finam.tech
 
 # Общий Form UID по умолчанию (СЕРВЕРНАЯ)
 CRM_FORM_UID=779
+
+# Endpoint для отправки заявок в CRM (СЕРВЕРНАЯ)
+# Может быть локальным (/api/crm-submit) или внешним URL (https://.../api/crm-submit)
+# По умолчанию: /api/crm-submit
+CRM_SUBMIT_ENDPOINT=/api/crm-submit
 ```
 
 ### CRM Form UIDs по направлениям (опционально)
@@ -86,6 +91,15 @@ AI_MODEL=gpt-4o-mini
 
 # Температура для AI ответов (СЕРВЕРНАЯ)
 AI_TEMPERATURE=0.7
+```
+
+### Chat API Proxy
+```bash
+# Endpoint для проксирования запросов чата (СЕРВЕРНАЯ)
+# Может быть локальным (/api/chat) или внешним URL (https://.../api/chat)
+# Используется для работы с другим инстансом приложения внутри контура
+# По умолчанию: /api/chat
+CHAT_API_ENDPOINT=/api/chat
 ```
 
 ## 📊 Analytics & Monitoring (опционально)
@@ -227,6 +241,8 @@ CRM_FORM_UID_STARTUP=778
 CRM_FORM_UID_EXPERT=7243
 CRM_FORM_UID_SCOUT=705
 CRM_FORM_UID_PARTNER=7206
+# Endpoint для отправки заявок (локальный или внешний)
+CRM_SUBMIT_ENDPOINT=/api/crm-submit
 
 # ============================================
 # AI CHAT CONFIGURATION
@@ -235,6 +251,8 @@ MCP_SERVER_URL=https://flow.changesandbox.ru/mcp/2353930c-19b8-42e1-8068-61e8950
 OPENAI_API_KEY=sk-your-openai-api-key
 AI_MODEL=gpt-4o-mini
 AI_TEMPERATURE=0.7
+# Endpoint для проксирования запросов чата (локальный или внешний)
+CHAT_API_ENDPOINT=/api/chat
 
 # ============================================
 # ANALYTICS (OPTIONAL)
