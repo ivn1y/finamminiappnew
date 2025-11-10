@@ -6,12 +6,14 @@ interface TelegramChannelBlockProps {
   className?: string;
   onClick?: () => void;
   title?: string;
+  description?: string;
 }
 
 export const TelegramChannelBlock: React.FC<TelegramChannelBlockProps> = ({
   className = '',
   onClick,
-  title = 'Telegram канал'
+  title = 'Telegram канал',
+  description = 'Присоединиться к нашему Telegram комьюнити'
 }) => {
   const handleClick = () => {
     if (onClick) {
@@ -29,7 +31,7 @@ export const TelegramChannelBlock: React.FC<TelegramChannelBlockProps> = ({
         {title}
       </h3>
       <p className="absolute top-[50px] left-[16px] right-[52px] text-white font-inter text-[14px] font-normal leading-[20px] tracking-[-0.056px]">
-        Присоединиться к нашему Telegram комьюнити
+        {description}
       </p>
       <button
         onClick={handleClick}

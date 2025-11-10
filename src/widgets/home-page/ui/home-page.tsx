@@ -358,7 +358,7 @@ export const HomePage: React.FC = () => {
       displayTitle: 'Risk Manager',
       achieved: userBadges.includes('risk-manager'),
       description: 'За эффективное управление рисками в торговле',
-      howToEarn: 'Выполни Telegram квест'
+      howToEarn: 'Вступи в сообщество'
     },
     {
       imgSrc: '/assets/badges/algo-creator.png?v=2',
@@ -451,7 +451,11 @@ export const HomePage: React.FC = () => {
           id="telegram-quest"
           className="absolute top-[910px] left-1/2 -translate-x-1/2"
         >
-          <TelegramChannelBlock onClick={handleTelegramLinkClick} title="Твой первый квест" />
+          <TelegramChannelBlock 
+            onClick={handleTelegramLinkClick} 
+            title="Твой первый квест"
+            description="Расскажи о себе в сообществе Финам Collab и получи призы"
+          />
         </div>
       </div>
 

@@ -31,7 +31,9 @@ export const BadgeModal = ({
   const isTelegramQuestButton = badge.howToEarn?.toLowerCase().includes('telegram') || 
                                 badge.howToEarn?.toLowerCase().includes('телеграм') ||
                                 badge.howToEarn === 'Выполни Telegram квест' ||
-                                badge.howToEarn?.includes('Telegram квест');
+                                badge.howToEarn?.includes('Telegram квест') ||
+                                badge.howToEarn?.toLowerCase().includes('сообщество') ||
+                                badge.howToEarn === 'Вступи в сообщество';
   
   const isAllTasksButton = badge.howToEarn?.toLowerCase().includes('выполни все задания') ||
                            badge.howToEarn === 'Выполни все задания';
