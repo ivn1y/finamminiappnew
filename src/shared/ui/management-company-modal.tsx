@@ -52,15 +52,15 @@ export const ManagementCompanyModal: React.FC<ManagementCompanyModalProps> = ({ 
 
         {/* Speaker contact button - отступ от кнопки "Гайд по продукту" 10px */}
         <button 
-          onClick={() => window.location.href = 'mailto:finamcollab@corp.finam.ru'}
+          onClick={() => window.open('https://fkviking.com/trader_fund', '_blank')}
           className="w-full h-[56px] btn-gradient transition-opacity hover:opacity-90 mt-[10px]"
         >
           <span className="text-[17px] font-semibold text-white leading-[24px] tracking-[-0.204px] font-inter">
-            Связь со спикером
+            Запустить фонд
           </span>
         </button>
 
-        {/* Back button - отступ от кнопки "Связь со спикером" 108px */}
+        {/* Back button - отступ от кнопки "Запустить фонд" 108px */}
         <div className="mt-[108px] pb-[40px]">
           <button
             onClick={onClose}
