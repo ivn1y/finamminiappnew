@@ -218,13 +218,10 @@ function main() {
     statusData.frontend.status = 'running';
     createStatusFile(statusData);
     
-    // Показываем QR код для мобильного доступа
+    // Показываем информацию для мобильного доступа
     setTimeout(() => {
       console.log(`\n${colors.cyan}📱 Для быстрого доступа с мобильного устройства:${colors.reset}`);
       console.log(`${colors.green}http://${ip}:${frontendPort}${colors.reset}`);
-      
-      // Показываем QR код
-      createQRCode(`http://${ip}:${frontendPort}`);
       
       console.log(`\n${colors.bright}${colors.green}🎉 Серверы запущены и готовы к работе!${colors.reset}`);
       console.log(`${colors.gray}================================================${colors.reset}`);

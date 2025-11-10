@@ -1,16 +1,13 @@
 'use client';
 
-import { AssistantTour } from '@/features/app-tour';
+import React, { useState, useRef, useEffect } from 'react';
+import { Send, User, MessageSquare, UserPlus } from 'lucide-react';
 import chatKB from '@/shared/data/chat-kb.json';
-import { useAppStore } from '@/shared/store/app-store';
+import { Button } from '@/shared/ui/button';
 import { Input } from '@/shared/ui/input';
-import { Suggestions, Suggestion } from '@/shared/ui/suggestions';
+import { useAppStore } from '@/shared/store/app-store';
+import { AssistantTour } from '@/features/app-tour';
 import Image from 'next/image';
-import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { useChat } from '@ai-sdk/react';
-import { DefaultChatTransport } from 'ai';
-import { useBooking } from '@/shared/hooks/use-booking';
-import { useChatMessages } from '@/shared/hooks/use-chat-messages';
 
 interface Message {
   id: string;
@@ -183,141 +180,47 @@ const BotAvatar: React.FC = () => {
 
 export const ChatPage: React.FC = () => {
   const { user, showAssistantTour, endAssistantTour } = useAppStore();
-  const { submitBooking, isSubmitting } = useBooking();
-  const { addMessage, loadFromStorage, syncToStorage, getLastProductContext } = useChatMessages();
-  
   const kb = chatKB as ChatKB;
   
-  const [useMessages, setMessages] = useState<Message[]>([]);
-  const [currentNodeId, setCurrentNodeId] = useState<string | null>(null);
-  const [isChatOpened, setIsChatOpened] = useState(false);
-  // Мемоизируем userContext чтобы избежать пересоздания при каждом рендере
-  const userContext = useMemo(() => ({
-    userId: user?.id || 'anonymous',
-    name: user?.name || '',
-    email: user?.credentials?.email || '',
-    phone: user?.credentials?.phone || '',
-    role: user?.role || '',
-  }), [user?.id, user?.name, user?.credentials?.email, user?.credentials?.phone, user?.role]);
-
-  const { messages: aiMessages, sendMessage, status, addToolResult } = useChat({
-    transport: new DefaultChatTransport({
-      api: '/api/chat',
-      body: {
-        userContext
-      }
-    })
-  });
-  const mappedAiMessages = useMemo<Message[]>(
-    () =>
-      aiMessages
-        .map((m: any, index: number) => {
-          // Извлекаем текст из parts массива
-          let text = '';
-          if (m.parts && Array.isArray(m.parts)) {
-            const textParts = m.parts.filter((p: any) => p.type === 'text' && p.text);
-            text = textParts.map((p: any) => p.text).join('\n');
-          } else if (m.content) {
-            text = m.content;
-          }
-          
-          // Используем текущее время для новых сообщений
-          const timestamp = m.createdAt ? new Date(m.createdAt) : new Date(Date.now() + index);
-          
-          return {
-        id: m.id,
-            text,
-        isUser: m.role === 'user',
-            timestamp,
-          };
-        })
-        .filter(m => m.text && m.text.trim() !== ''), // Фильтруем пустые сообщения
-    [aiMessages]
-  );
   
-  // Объединяем и сортируем по timestamp для хронологического порядка
-  const messages = useMemo(() => {
-    const combined = [...useMessages, ...mappedAiMessages];
-    return combined.sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime());
-  }, [useMessages, mappedAiMessages]);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [inputText, setInputText] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [isInputFocused, setIsInputFocused] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
-  const touchStartRef = useRef<{ x: number; y: number; time: number } | null>(null);
+  const [currentNodeId, setCurrentNodeId] = useState<string | null>(null);
 
   const STORAGE_KEYS = {
     messages: 'chat_fsm_messages',
     node: 'chat_fsm_current_node',
-    isChatOpened: 'chat_fsm_is_chat_opened',
   } as const;
-
-  // Функция для определения продукта по контексту сообщений
-  const getProductContextFromMessages = (): string => {
-    // Сначала пробуем получить последний контекст из store
-    const lastContext = getLastProductContext();
-    if (lastContext) {
-      return lastContext;
-    }
-    
-    // Если в store нет контекста, анализируем текущие сообщения
-    const recentMessages = messages.slice(-10); // Берем последние 10 сообщений
-    const messageText = recentMessages.map(m => m.text.toLowerCase()).join(' ');
-    
-    if (messageText.includes('дневник') || messageText.includes('journal')) {
-      return 'Дневник Трейдера';
-    }
-    if (messageText.includes('trade api') || messageText.includes('api')) {
-      return 'Trade API';
-    }
-    if (messageText.includes('ai-скринер') || messageText.includes('скринер')) {
-      return 'AI-скринер';
-    }
-    if (messageText.includes('ук') || messageText.includes('фонд')) {
-      return 'УК для алго-фондов';
-    }
-    if (messageText.includes('ziplime')) {
-      return 'ZipLime';
-    }
-    if (messageText.includes('hyperadar')) {
-      return 'Hype Radar';
-    }
-    if (messageText.includes('международные рынки')) {
-      return 'Международные рынки';
-    }
-    
-    return 'Общая консультация';
-  };
 
   // FSM: описание сценария на основе mermaid
   const nodes: Record<string, ChatNode> = {
     greet: {
       id: 'greet',
       message:
-        'Привет! Я твой персональный ассистент, и я помогу быстро разобраться в наших продуктах.\n\nЯ могу рассказать тебе о следующих продуктах:\n• Дневник Трейдера\n• Trade API\n• AI-скринер\n• УК — инфраструктура для алго-фондов\n• Проп-трейдинг\n• ZipLime\n• Hype Radar\n• Международные рынки\n\nПро какой продукт хочешь узнать подробнее?',
+        'Привет! Я твой персональный ассистент, и я помогу быстро разобраться в наших продуктах.\n\nЯ могу рассказать тебе о следующих продуктах:\n• Дневник Трейдера\n• Trade API\n• AI-скринер\n• УК — инфраструктура для алго-фондов\n• Проп-трейдинг\n• ZipLime\n• HypeRadar\n• Международные рынки\n\nПро какой продукт хочешь узнать подробнее?',
       options: [
         { id: 'C', label: 'Дневник трейдера', next: 'journal_intro' },
         { id: 'D', label: 'Trade API', next: 'trade_intro' },
         { id: 'n1', label: 'AI-скринер', next: 'ai_intro' },
         { id: 'n2', label: 'УК для алго-фондов', next: 'amc_intro' },
         { id: 'n3', label: 'ZipLime', next: 'ziplime_intro' },
-        { id: 'n4', label: 'Hype Radar', next: 'hyperadar_intro' },
-        { id: 'n5', label: 'Международные рынки', next: 'international_markets_intro' },
+        { id: 'n4', label: 'HypeRadar', next: 'menu_more' },
+        { id: 'n5', label: 'Международные рынки', next: 'menu_more' },
       ],
     },
     menu_more: {
       id: 'menu_more',
       message:
-        'Окей, понял тебя. Давай тогда расскажу про другие продукты. У нас есть:\n• Дневник трейдера\n• Trade API\n• AI-скринер\n• УК\n• Международные рынки\n• ZipLime\n• Hype Radar\n\nЧто выберешь?',
+        'Окей, понял тебя. Давай тогда расскажу про другие продукты. У нас есть:\n• Дневник трейдера\n• Trade API\n• AI-скринер\n• УК\n• Международные рынки\n• ZipLime\n• HypeRadar\n\nЧто выберешь?',
       options: [
         { id: 'C', label: 'Дневник трейдера', next: 'journal_intro' },
         { id: 'D', label: 'Trade API', next: 'trade_intro' },
         { id: 'n1', label: 'AI-скринер', next: 'ai_intro' },
         { id: 'n2', label: 'УК', next: 'amc_intro' },
         { id: 'n3', label: 'ZipLime', next: 'ziplime_intro' },
-        { id: 'n4', label: 'Hype Radar', next: 'hyperadar_intro' },
-        { id: 'n5', label: 'Международные рынки', next: 'international_markets_intro' },
       ],
     },
     journal_intro: {
@@ -379,10 +282,10 @@ export const ChatPage: React.FC = () => {
     ai_intro: {
       id: 'ai_intro',
       message:
-        'AI-скринер — инструмент, который помогает быстро находить идеи и управлять рисками. Данные → инсайты → решения. Рассказать подробнее?',
+        'AI-скринер — инструмент, который помогает быстро находить идеи и управлять рисками. Данные → инсайты → решения. Как начать?',
       options: [
         { id: 'n40', label: 'Подробнее', next: 'ai_more' },
-        { id: 'n42', label: 'Начать использовать', next: 'profile_check', requiresProfile: true },
+        { id: 'n42', label: 'Как начать использовать?', next: 'profile_check', requiresProfile: true },
         { id: 'n39', label: 'Не интересно', next: 'menu_more' },
       ],
     },
@@ -442,44 +345,6 @@ export const ChatPage: React.FC = () => {
         { id: 'n61', label: 'Нет', next: 'menu_more' },
       ],
     },
-    hyperadar_intro: {
-      id: 'hyperadar_intro',
-      message:
-        'Hype Radar превращает хаос новостей и соцмедиа в инструмент прогнозирования: помогает находить тренды, анализировать их силу и действовать до того, как об этом узнает весь рынок. Рассказать подробнее?',
-      options: [
-        { id: 'n62', label: 'Подробнее', next: 'hyperadar_more' },
-        { id: 'n63', label: 'Хочу использовать', next: 'profile_check', requiresProfile: true },
-        { id: 'n64', label: 'Не интересно', next: 'menu_more' },
-      ],
-    },
-    hyperadar_more: {
-      id: 'hyperadar_more',
-      message:
-        'Hype Radar - это инструмент, который помогает трейдерам и инвесторам раньше других замечать и оценивать рыночные тренды, объединяя аналитику данных, социальные сигналы и динамику интереса в едином интерфейсе. Хочешь записаться на ЗБТ?',
-      options: [
-        { id: 'n65', label: 'Да', next: 'profile_check', requiresProfile: true },
-        { id: 'n66', label: 'Нет', next: 'menu_more' },
-      ],
-    },
-    international_markets_intro: {
-      id: 'international_markets_intro',
-      message:
-        'Ты торгуешь на российском рынке и чувствуешь, что возможностей становится меньше? Тогда пора смотреть шире — туда, где ликвидность, объёмы и драйверы роста. Но есть нюанс: прямой доступ к крупнейшим мировым биржам из России сегодня даёт только один брокер.\n\n«Финам» — единственный в РФ, кто обеспечивает реальный доступ к американским и азиатским рынкам: NYSE, NASDAQ, CME, Гонконг, Шанхай, Шэньчжэнь.',
-      options: [
-        { id: 'n67', label: 'Подробнее', next: 'international_markets_more' },
-        { id: 'n68', label: 'Хочу подключиться', next: 'profile_check', requiresProfile: true },
-        { id: 'n69', label: 'Не интересно', next: 'menu_more' },
-      ],
-    },
-    international_markets_more: {
-      id: 'international_markets_more',
-      message:
-        'Что это даёт тебе:\n\n- 7200+ акций США, включая лидеров роста (FAANG) и ETF.\n\n- Американские опционы: от классических до нулевого дня (0DTE) — идеальны для активных стратегий.\n\n- 50+ товарных фьючерсов на CME — от золота до нефти.\n\n- 3500+ азиатских акций с волатильностью до 25% и арбитражем A/H-акций до 15%.\n\n- Поддержка продвинутых опционных стратегий: стрэддлы, спреды, бабочки, кондоры.\n\nХочешь получить доступ?',
-      options: [
-        { id: 'n70', label: 'Да', next: 'profile_check', requiresProfile: true },
-        { id: 'n71', label: 'Нет', next: 'menu_more' },
-      ],
-    },
     profile_check: { id: 'profile_check', message: '', kind: 'router' },
     profile_ok: {
       id: 'profile_ok',
@@ -517,13 +382,13 @@ export const ChatPage: React.FC = () => {
     },
   };
 
-
   // Проверяем, есть ли данные пользователя
   const hasUserData = user && user.name && user.credentials?.email && user.credentials?.phone;
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
+
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
@@ -533,25 +398,15 @@ export const ChatPage: React.FC = () => {
     try {
       const rawMessages = sessionStorage.getItem(STORAGE_KEYS.messages);
       const rawNode = sessionStorage.getItem(STORAGE_KEYS.node);
-      const rawIsChatOpened = sessionStorage.getItem(STORAGE_KEYS.isChatOpened);
-      
       if (rawMessages) {
         const parsed: Message[] = JSON.parse(rawMessages).map((m: any) => ({
           ...m,
           timestamp: new Date(m.timestamp),
         }));
         setMessages(parsed);
-        // Если есть сообщения, открываем чат
-        if (parsed.length > 0) {
-          setIsChatOpened(true);
-        }
       }
       if (rawNode) {
         setCurrentNodeId(rawNode);
-      }
-      // Восстанавливаем состояние открытия чата
-      if (rawIsChatOpened === 'true') {
-        setIsChatOpened(true);
       }
     } catch (_) {
       // ignore
@@ -561,39 +416,16 @@ export const ChatPage: React.FC = () => {
   // Сохранение состояния в sessionStorage
   useEffect(() => {
     try {
-      sessionStorage.setItem(STORAGE_KEYS.messages, JSON.stringify(useMessages));
+      sessionStorage.setItem(STORAGE_KEYS.messages, JSON.stringify(messages));
       if (currentNodeId) sessionStorage.setItem(STORAGE_KEYS.node, currentNodeId);
-      sessionStorage.setItem(STORAGE_KEYS.isChatOpened, String(isChatOpened));
     } catch (_) {
       // ignore
     }
-  }, [useMessages, currentNodeId, isChatOpened]);
+  }, [messages, currentNodeId]);
 
-  // Инициализация начального узла/сообщения убрана - сообщение появляется только при клике на input
-
-  // Обработчик открытия чата при клике на input
-  const handleInputFocus = () => {
-    setIsInputFocused(true);
-    setIsChatOpened(true);
-    
-    // Прокрутка к полю ввода при фокусе (для мобильных устройств)
-    requestAnimationFrame(() => {
-      setTimeout(() => {
-        inputRef.current?.scrollIntoView({ 
-          behavior: 'smooth', 
-          block: 'center',
-          inline: 'nearest'
-        });
-      }, 300); // Небольшая задержка для появления клавиатуры
-    });
-    
-    // Проверяем, есть ли уже приветственное сообщение в useMessages
-    const hasGreetMessage = useMessages.some(m => 
-      !m.isUser && m.text.includes('Привет! Я твой персональный ассистент')
-    );
-    
-    // Если нет приветственного сообщения, добавляем его
-    if (!hasGreetMessage) {
+  // Инициализация начального узла/сообщения
+  useEffect(() => {
+    if (!currentNodeId && messages.length === 0) {
       const node = nodes.greet;
       const botMessage: Message = {
         id: `${Date.now()}_greet`,
@@ -601,101 +433,10 @@ export const ChatPage: React.FC = () => {
         isUser: false,
         timestamp: new Date(),
       };
-      
-      // Добавляем приветственное сообщение
-      setMessages(prev => {
-        // Проверяем, нет ли уже такого сообщения в текущем состоянии
-        const alreadyExists = prev.some(m => 
-          !m.isUser && m.text.includes('Привет! Я твой персональный ассистент')
-        );
-        if (!alreadyExists) {
-          // Если сообщений нет, добавляем приветственное, иначе добавляем в начало
-          if (prev.length === 0) {
-            return [botMessage];
-          }
-          // Добавляем в начало, чтобы приветствие было первым
-          return [botMessage, ...prev];
-        }
-        return prev;
-      });
-      
-      // Устанавливаем currentNodeId, если его еще нет
-      if (!currentNodeId) {
-        setCurrentNodeId(node.id);
-      }
+      setMessages([botMessage]);
+      setCurrentNodeId(node.id);
     }
-  };
-
-  // Проверка: если чат открыт, но нет приветственного сообщения, добавляем его
-  useEffect(() => {
-    if (isChatOpened) {
-      // Проверяем, есть ли уже приветственное сообщение
-      const hasGreetMessage = useMessages.some(m => 
-        !m.isUser && m.text.includes('Привет! Я твой персональный ассистент')
-      );
-      
-      if (!hasGreetMessage) {
-        const node = nodes.greet;
-        const botMessage: Message = {
-          id: `${Date.now()}_greet`,
-          text: node.message,
-          isUser: false,
-          timestamp: new Date(),
-        };
-        setMessages(prev => {
-          // Проверяем еще раз, нет ли уже такого сообщения
-          const alreadyExists = prev.some(m => 
-            !m.isUser && m.text.includes('Привет! Я твой персональный ассистент')
-          );
-          if (!alreadyExists) {
-            // Если сообщений нет, добавляем приветственное, иначе добавляем в начало
-            if (prev.length === 0) {
-              return [botMessage];
-            }
-            // Добавляем в начало, чтобы приветствие было первым
-            return [botMessage, ...prev];
-          }
-          return prev;
-        });
-        if (!currentNodeId) {
-          setCurrentNodeId(node.id);
-        }
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isChatOpened, useMessages.length]);
-
-  // Индикатор набора по статусу useChat
-  useEffect(() => {
-    setIsTyping(status === 'streaming');
-  }, [status]);
-
-  // Загрузка сообщений из localStorage при инициализации
-  useEffect(() => {
-    if (user) {
-      loadFromStorage();
-    }
-  }, [user, loadFromStorage]);
-
-  // Синхронизация сообщений с localStorage (легкая, не нагружающая)
-  useEffect(() => {
-    if (messages.length > 0) {
-      // Дебаунс для избежания частых записей
-      const timeoutId = setTimeout(() => {
-        syncToStorage();
-      }, 1000);
-
-      return () => clearTimeout(timeoutId);
-    }
-  }, [messages.length, syncToStorage]);
-
-  // Сохранение сообщений в store при изменении
-  useEffect(() => {
-    messages.forEach(message => {
-      // Добавляем только новые сообщения (проверяем по ID)
-      addMessage(message.text, message.isUser, message.id);
-    });
-  }, [messages, addMessage]);
+  }, [currentNodeId, messages.length]);
 
   const hasUserMessages = messages.filter(m => m.isUser).length > 0;
 
@@ -729,6 +470,53 @@ export const ChatPage: React.FC = () => {
     }
     
     return null;
+  };
+
+  // FSM: обработчик выбора опции
+  const handleOptionSelect = (option: any) => {
+    if (showAssistantTour && messages.filter(m => m.isUser).length === 0) {
+      endAssistantTour();
+    }
+
+    const userMessage: Message = {
+      id: `${Date.now()}_user_opt`,
+      text: option.label,
+      isUser: true,
+      timestamp: new Date(),
+    };
+    setMessages(prev => [...prev, userMessage]);
+
+    if (option.requiresProfile) {
+      setCurrentNodeId('profile_check');
+      setTimeout(() => {
+        const nextId = hasUserData ? 'profile_ok' : 'profile_missing';
+        const node = nodes[nextId];
+        const botMessage: Message = {
+          id: `${Date.now()}_${nextId}`,
+          text: node.message,
+          isUser: false,
+          timestamp: new Date(),
+        };
+        setMessages(prev => [...prev, botMessage]);
+        setCurrentNodeId(node.id);
+      }, 400);
+      return;
+    }
+
+    const nextNode = nodes[option.next];
+    if (!nextNode) return;
+    setIsTyping(true);
+    setTimeout(() => {
+      const botMessage: Message = {
+        id: `${Date.now()}_${nextNode.id}`,
+        text: nextNode.message,
+        isUser: false,
+        timestamp: new Date(),
+      };
+      setMessages(prev => [...prev, botMessage]);
+      setCurrentNodeId(nextNode.id);
+      setIsTyping(false);
+    }, 500);
   };
 
   // Функция для логирования запросов к AI-ассистенту
@@ -770,118 +558,45 @@ export const ChatPage: React.FC = () => {
     }
   };
 
-  // Обработчик touchStart для отслеживания начала касания
-  const handleTouchStart = (e: React.TouchEvent) => {
-    const touch = e.touches[0];
-    touchStartRef.current = {
-      x: touch.clientX,
-      y: touch.clientY,
-      time: Date.now(),
-    };
-  };
+  const handleQuickButtonClick = (buttonId: string) => {
+    const button = kb.quickButtons.find(b => b.id === buttonId);
+    if (!button) return;
 
-  // Обработчик touchEnd для определения, был ли это клик или скролл
-  const handleTouchEnd = (e: React.TouchEvent, option: ChatOption) => {
-    if (!touchStartRef.current) return;
-
-    const touch = e.changedTouches[0];
-    const deltaX = Math.abs(touch.clientX - touchStartRef.current.x);
-    const deltaY = Math.abs(touch.clientY - touchStartRef.current.y);
-    const deltaTime = Date.now() - touchStartRef.current.time;
-    const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
-
-    // Если движение было больше 10px или длилось больше 300ms - это скролл, не клик
-    if (distance > 10 || deltaTime > 300) {
-      touchStartRef.current = null;
-      return;
-    }
-
-    // Это был клик - выполняем действие
-    e.preventDefault();
-    handleOptionSelect(option);
-    touchStartRef.current = null;
-  };
-
-  // FSM: обработчик выбора опции
-  const handleOptionSelect = (option: ChatOption) => {
+    // Завершаем AssistantTour при нажатии на быструю кнопку
     if (showAssistantTour && messages.filter(m => m.isUser).length === 0) {
       endAssistantTour();
     }
 
-    // Открываем чат при выборе опции
-    setIsChatOpened(true);
-
     const userMessage: Message = {
-      id: `${Date.now()}_user_opt`,
-      text: option.label,
+      id: Date.now().toString(),
+      text: button.text,
       isUser: true,
-      timestamp: new Date(),
+      timestamp: new Date()
     };
+
     setMessages(prev => [...prev, userMessage]);
-
-    if (option.requiresProfile) {
-      setCurrentNodeId('profile_check');
-      setTimeout(async () => {
-        const nextId = hasUserData ? 'profile_ok' : 'profile_missing';
-        const node = nodes[nextId];
-        
-        // Если переходим в profile_ok, отправляем заявку в CRM
-        if (nextId === 'profile_ok' && hasUserData && user) {
-          console.log('📝 Отправка заявки из FSM чата для пользователя:', user.id);
-          
-          // Определяем продукт по предыдущему контексту
-          const productContext = getProductContextFromMessages();
-          const bookingMessage = `Заявка на запись из чата. Продукт: ${productContext}. Пользователь: ${user.name || user.id}`;
-          
-          try {
-            await submitBooking(bookingMessage);
-            console.log('✅ Заявка из FSM чата успешно отправлена');
-          } catch (error) {
-            console.error('❌ Ошибка отправки заявки из FSM чата:', error);
-          }
-        }
-        
-        const botMessage: Message = {
-          id: `${Date.now()}_${nextId}`,
-          text: node.message,
-          isUser: false,
-          timestamp: new Date(),
-        };
-        setMessages(prev => [...prev, botMessage]);
-        setCurrentNodeId(node.id);
-      }, 400);
-      return;
-    }
-
-    const nextNode = nodes[option.next];
-    if (!nextNode) return;
     setIsTyping(true);
-    setTimeout(async () => {
-      // Если переходим в profile_ok из profile_missing, также отправляем заявку
-      if (option.next === 'profile_ok' && hasUserData && user) {
-        console.log('📝 Отправка заявки из profile_missing для пользователя:', user.id);
-        
-        const productContext = getProductContextFromMessages();
-        const bookingMessage = `Заявка на запись из чата. Продукт: ${productContext}. Пользователь: ${user.name || user.id}`;
-        
-        try {
-          await submitBooking(bookingMessage);
-          console.log('✅ Заявка из profile_missing успешно отправлена');
-        } catch (error) {
-          console.error('❌ Ошибка отправки заявки из profile_missing:', error);
-        }
-      }
-      
+
+    // Ищем ответ в KB
+    setTimeout(() => {
+      const answer = findAnswerInKB(buttonId);
+      const response = answer || kb.fallbackMessage;
+      const isFallback = !answer;
+
       const botMessage: Message = {
-        id: `${Date.now()}_${nextNode.id}`,
-        text: nextNode.message,
+        id: (Date.now() + 1).toString(),
+        text: response,
         isUser: false,
         timestamp: new Date(),
+        isFallback
       };
+
       setMessages(prev => [...prev, botMessage]);
-      setCurrentNodeId(nextNode.id);
       setIsTyping(false);
-    }, 500);
+
+      // Логируем запрос
+      logChatRequest(button.text, response, isFallback);
+    }, 1000);
   };
 
   const handleSendMessage = () => {
@@ -893,19 +608,37 @@ export const ChatPage: React.FC = () => {
     }
 
     const query = inputText.trim();
-    
-    // Открываем чат при отправке сообщения
-    setIsChatOpened(true);
-    
-    // Сбрасываем FSM на стартовый узел при свободном вводе
-    setCurrentNodeId('greet');
-    
-    // Отправляем в AI (сообщение пользователя и ответ придут в aiMessages)
+    const userMessage: Message = {
+      id: Date.now().toString(),
+      text: query,
+      isUser: true,
+      timestamp: new Date()
+    };
+
+    setMessages(prev => [...prev, userMessage]);
     setInputText('');
-    sendMessage({
-      role: 'user',
-      parts: [{ type: 'text', text: query }]
-    } as any);
+    setIsTyping(true);
+
+    // Ищем ответ в KB (фоллбек к автомату)
+    setTimeout(() => {
+      const answer = findAnswerInKB(query);
+      const response = answer || kb.fallbackMessage;
+      const isFallback = !answer;
+
+      const botMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        text: response,
+        isUser: false,
+        timestamp: new Date(),
+        isFallback
+      };
+
+      setMessages(prev => [...prev, botMessage]);
+      setIsTyping(false);
+
+      // Логируем запрос
+      logChatRequest(query, response, isFallback);
+    }, 1200);
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -915,10 +648,6 @@ export const ChatPage: React.FC = () => {
     }
   };
 
-  const handleInputBlur = () => {
-    setIsInputFocused(false);
-  };
-
   const formatTime = (date: Date) => {
     return date.toLocaleTimeString('ru-RU', { 
       hour: '2-digit', 
@@ -926,7 +655,7 @@ export const ChatPage: React.FC = () => {
     });
   };
 
-  if (!hasUserMessages && !isChatOpened) {
+  if (!hasUserMessages) {
 		return (
 			<>
         {showAssistantTour && <AssistantTour onComplete={endAssistantTour} />}
@@ -952,29 +681,6 @@ export const ChatPage: React.FC = () => {
 								Чему могу помочь?
 							</p>
 						</div>
-
-						{/* FSM Options Block - Start Screen (показывается только при фокусе на input) */}
-						{isInputFocused && currentNodeId && nodes[currentNodeId]?.options && nodes[currentNodeId]?.options!.length > 0 && (
-							<div className='absolute bottom-[180px] left-1/2 -translate-x-1/2 w-[353px]'>
-								<Suggestions>
-									{nodes[currentNodeId]!.options!.map((opt) => (
-										<Suggestion
-											key={opt.id}
-											suggestion={opt.label}
-											onMouseDown={(e: React.MouseEvent) => {
-												e.preventDefault();
-												handleOptionSelect(opt);
-											}}
-											onTouchStart={handleTouchStart}
-											onTouchEnd={(e: React.TouchEvent) => handleTouchEnd(e, opt)}
-											className='rounded-[10px] bg-[#151519] border-[#373740] text-white hover:bg-[#1f1f25] px-3 py-2'
-										>
-											{opt.label}
-										</Suggestion>
-									))}
-								</Suggestions>
-							</div>
-						)}
 
 						{/* Input Block */}
 						<div className='absolute bottom-[109px] left-1/2 -translate-x-1/2 w-[353px]'>
@@ -1002,8 +708,8 @@ export const ChatPage: React.FC = () => {
 									value={inputText}
 									onChange={e => setInputText(e.target.value)}
 									onKeyPress={handleKeyPress}
-									onFocus={handleInputFocus}
-									onBlur={handleInputBlur}
+									onFocus={() => setIsInputFocused(true)}
+									onBlur={() => setIsInputFocused(false)}
 									placeholder={hasUserData ? 'Напишите сообщение...' : 'Сначала заполните данные в профиле'}
 									className='w-full h-full rounded-[8px] border border-[#373740] bg-[rgba(79,79,89,0.16)] p-4 pr-[56px] text-base font-normal leading-6 tracking-[-0.128px] text-white placeholder:text-[#6F6F7C] focus-visible:ring-offset-0 focus:outline-none focus:border-transparent font-inter relative z-10'
 									readOnly={!hasUserData}
@@ -1105,29 +811,24 @@ export const ChatPage: React.FC = () => {
 					</div>
 
 				{/* FSM Options Block */}
-				{currentNodeId && nodes[currentNodeId]?.options && nodes[currentNodeId]?.options!.length > 0 && (
+				{currentNodeId && (nodes as any)[currentNodeId]?.options && (nodes as any)[currentNodeId]?.options.length > 0 && (
 					<div className='absolute bottom-[180px] left-1/2 -translate-x-1/2 w-[353px]'>
-						<Suggestions>
-							{nodes[currentNodeId]!.options!.map((opt) => (
-								<Suggestion
+						<div className='w-full flex flex-wrap gap-2'>
+							{(nodes as any)[currentNodeId].options.map((opt: any) => (
+								<button
 									key={opt.id}
-									suggestion={opt.label}
-									onMouseDown={(e: React.MouseEvent) => {
-										e.preventDefault();
-										handleOptionSelect(opt);
-									}}
-									onTouchStart={handleTouchStart}
-									onTouchEnd={(e: React.TouchEvent) => handleTouchEnd(e, opt)}
-									className='rounded-[10px] bg-[#151519] border-[#373740] text-white hover:bg-[#1f1f25] px-3 py-2'
+									type='button'
+									onClick={() => handleOptionSelect(opt)}
+									className='px-3 py-2 rounded-[10px] bg-[#151519] border border-[#373740] text-white text-sm hover:bg-[#1f1f25]'
 								>
 									{opt.label}
-								</Suggestion>
+								</button>
 							))}
-						</Suggestions>
+						</div>
 					</div>
 				)}
 
-					{/* Input Block */}
+				{/* Input Block */}
 					<div className='absolute bottom-[109px] left-1/2 -translate-x-1/2 w-[353px]'>
 						<div className='relative w-full h-[56px]'>
 							{isInputFocused && (
@@ -1153,8 +854,8 @@ export const ChatPage: React.FC = () => {
 								value={inputText}
 								onChange={e => setInputText(e.target.value)}
 								onKeyPress={handleKeyPress}
-								onFocus={handleInputFocus}
-								onBlur={handleInputBlur}
+								onFocus={() => setIsInputFocused(true)}
+								onBlur={() => setIsInputFocused(false)}
 								placeholder={hasUserData ? 'Напишите сообщение...' : 'Сначала заполните данные в профиле'}
 								className='w-full h-full rounded-[8px] border border-[#373740] bg-[rgba(79,79,89,0.16)] p-4 pr-[56px] text-base font-normal leading-6 tracking-[-0.128px] text-white placeholder:text-[#6F6F7C] focus-visible:ring-offset-0 focus:outline-none focus:border-transparent font-inter relative z-10'
 								readOnly={!hasUserData}

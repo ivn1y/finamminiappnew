@@ -94,6 +94,7 @@ export const ProfilePage: React.FC = () => {
       xp: 300,
       progressSteps: 2,
       scannedZones: ['finam-a', 'startup-zone'],
+      recentChatMessages: [],
       intent7d: 'Получить доступ к платформе автоследования',
       goalProgress: {
         current: 10,
@@ -175,8 +176,8 @@ export const ProfilePage: React.FC = () => {
   if (!role) return null;
 
   const allBadges = getAllBadges();
-  const userBadges = allBadges.filter(badge => user.badges.includes(badge.id));
-  const lockedBadges = allBadges.filter(badge => !user.badges.includes(badge.id));
+  const userBadges = allBadges.filter((badge: any) => user.badges.includes(badge.id));
+  const lockedBadges = allBadges.filter((badge: any) => !user.badges.includes(badge.id));
 
   const getRoleIcon = (roleId: string) => {
     switch (roleId) {

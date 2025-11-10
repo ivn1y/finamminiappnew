@@ -1,4 +1,4 @@
-export type UserRole = 'trader' | 'startup' | 'expert' | 'partner' | 'guest';
+export type UserRole = 'trader' | 'startup' | 'expert' | 'partner' | 'guest' | 'scout';
 
 export interface GoalProgress {
   current: number;
@@ -21,6 +21,14 @@ export interface GoalMilestone {
   title: string;
   completed: boolean;
   date: string | null;
+}
+
+export interface ChatMessage {
+  id: string;
+  text: string;
+  isUser: boolean;
+  timestamp: string;
+  productContext?: string; // Контекст продукта из сообщения
 }
 
 export interface User {
@@ -65,6 +73,7 @@ export interface User {
     frameId?: string;
     accessories?: string[];
   };
+  recentChatMessages?: ChatMessage[]; // Последние 15 сообщений чата
 }
 
 export interface Badge {
