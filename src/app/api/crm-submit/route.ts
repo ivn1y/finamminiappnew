@@ -280,7 +280,7 @@ async function sendToHuntflow(data: CRMFormData): Promise<IntegrationStatus> {
 
 async function sendToTelegram(data: CRMFormData, statuses: IntegrationStatus[]): Promise<IntegrationStatus> {
   try {
-    const botToken = process.env.TELEGRAM_BOT_TOKEN;
+    const botToken = process.env.TELEGRAM_BOT_NOTIFY_TOKEN;
     const chatId = process.env.TELEGRAM_CHAT_ID;
     
     if (!botToken || !chatId) {
@@ -289,7 +289,7 @@ async function sendToTelegram(data: CRMFormData, statuses: IntegrationStatus[]):
         service: "Telegram",
         success: false,
         message: "Telegram не настроен",
-        details: { error: "Missing bot token or chat ID" }
+        details: { error: "Missing TELEGRAM_BOT_NOTIFY_TOKEN or TELEGRAM_CHAT_ID" }
       };
     }
     

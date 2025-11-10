@@ -23,8 +23,11 @@ NEXTAUTH_URL=http://localhost:3000
 
 ### Telegram Bot Configuration
 ```bash
-# Токен Telegram бота (СЕРВЕРНАЯ)
+# Токен Telegram бота для аутентификации и проверки подписки (СЕРВЕРНАЯ)
 TELEGRAM_BOT_TOKEN=1234567890:ABCdefGHIjklMNOpqrsTUVwxyz
+
+# Токен Telegram бота для отправки уведомлений о заявках (СЕРВЕРНАЯ)
+TELEGRAM_BOT_NOTIFY_TOKEN=1234567890:ABCdefGHIjklMNOpqrsTUVwxyz
 
 # Публичное имя бота для клиентских компонентов (КЛИЕНТСКАЯ)
 NEXT_PUBLIC_TELEGRAM_BOT_NAME=your_bot_name
@@ -145,8 +148,9 @@ HUNTFLOW_STATUS_ID=1
 ## 📱 Telegram Integration (опционально)
 
 ```bash
-# Telegram Bot настройки (ВСЕ СЕРВЕРНЫЕ)
-TELEGRAM_BOT_TOKEN=1234567890:ABCdefGHIjklMNOpqrsTUVwxyz
+# Telegram Bot настройки для уведомлений о заявках (ВСЕ СЕРВЕРНЫЕ)
+# TELEGRAM_BOT_TOKEN используется для аутентификации (см. выше)
+TELEGRAM_BOT_NOTIFY_TOKEN=1234567890:ABCdefGHIjklMNOpqrsTUVwxyz
 TELEGRAM_CHAT_ID=-1001234567890
 ```
 
@@ -222,7 +226,11 @@ NEXTAUTH_URL=http://localhost:3000
 # ============================================
 # TELEGRAM CONFIGURATION
 # ============================================
+# Токен бота для аутентификации и проверки подписки
 TELEGRAM_BOT_TOKEN=1234567890:ABCdefGHIjklMNOpqrsTUVwxyz
+# Токен бота для отправки уведомлений о заявках
+TELEGRAM_BOT_NOTIFY_TOKEN=1234567890:ABCdefGHIjklMNOpqrsTUVwxyz
+TELEGRAM_CHAT_ID=-1001234567890
 NEXT_PUBLIC_TELEGRAM_BOT_NAME=finam_collab_bot
 
 # ============================================
