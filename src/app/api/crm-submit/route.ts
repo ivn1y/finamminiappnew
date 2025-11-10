@@ -414,37 +414,38 @@ export async function POST(request: NextRequest) {
     }
     
     // Для клиентских вызовов проверяем авторизацию
-    if (!isServerCall) {
-      try {
-        // В NextAuth 5 auth() может принимать request для API роутов
-        const session = await auth();
-        if (!session || !session.user) {
-          console.warn('❌ Неавторизованный запрос к /api/crm-submit');
-          return NextResponse.json(
-            { 
-              success: false, 
-              message: "Unauthorized",
-              details: { error: "User not authenticated" }
-            },
-            { status: 401 }
-          );
-        }
-        console.log('✅ Авторизованный клиентский запрос:', { 
-          userId: session.user.id,
-          userName: session.user.name 
-        });
-      } catch (error: any) {
-        console.error('❌ Ошибка проверки авторизации:', error);
-        return NextResponse.json(
-          { 
-            success: false, 
-            message: "Unauthorized",
-            details: { error: "Authentication check failed" }
-          },
-          { status: 401 }
-        );
-      }
-    }
+    // if (!isServerCall) {
+    //   try {
+    //     // В NextAuth 5 auth() может принимать request для API роутов
+    //     const session = await auth();
+    //     console.log(session)
+    //     if (!session || !session.user) {
+    //       console.warn('❌ Неавторизованный запрос к /api/crm-submit');
+    //       return NextResponse.json(
+    //         { 
+    //           success: false, 
+    //           message: "Unauthorized",
+    //           details: { error: "User not authenticated" }
+    //         },
+    //         { status: 401 }
+    //       );
+    //     }
+    //     console.log('✅ Авторизованный клиентский запрос:', { 
+    //       userId: session.user.id,
+    //       userName: session.user.name 
+    //     });
+    //   } catch (error: any) {
+    //     console.error('❌ Ошибка проверки авторизации:', error);
+    //     return NextResponse.json(
+    //       { 
+    //         success: false, 
+    //         message: "Unauthorized",
+    //         details: { error: "Authentication check failed" }
+    //       },
+    //       { status: 401 }
+    //     );
+    //   }
+    // }
     
     console.log('📝 Получен запрос на отправку в CRM', { isServerCall });
     
