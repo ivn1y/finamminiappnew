@@ -42,9 +42,11 @@ async function sendToCRM(
   utmParams: Record<string, string>, 
   request: NextRequest
 ): Promise<IntegrationStatus> {
+  console.log('📤 [SEND-TO-CRM] Начинаем отправку в CRM...');
   try {
     // Базовый URL CRM с дефолтом
     const crmApiUrl = process.env.CRM_API_URL || "https://api.finam.tech";
+    console.log('📤 [SEND-TO-CRM] CRM API URL:', crmApiUrl);
 
     // Извлекаем контекст запроса
     const referer = request.headers.get("referer") || "";
@@ -384,24 +386,41 @@ async function sendToTelegram(data: CRMFormData, statuses: IntegrationStatus[]):
 // ============================================
 
 export async function POST(request: NextRequest) {
+  console.log('🚀 [CRM-SUBMIT] ========== НАЧАЛО ОБРАБОТКИ ЗАПРОСА ==========');
+  console.log('📝 [CRM-SUBMIT] Метод:', request.method);
+  console.log('📝 [CRM-SUBMIT] URL:', request.url);
+  
   try {
     // Проверка API ключа для серверных вызовов (опциональная)
     // CRM_SUBMIT_API_KEY_VALIDATOR - ключ для проверки на инстансе в контуре
     // CRM_SUBMIT_API_KEY - ключ для отправки на инстансе за контуром
+    console.log('📝 [CRM-SUBMIT] Проверяем API ключ...');
     const validatorKey = process.env.CRM_SUBMIT_API_KEY_VALIDATOR || process.env.CRM_SUBMIT_API_KEY;
     let isServerCall = false;
+    
+    console.log('📝 [CRM-SUBMIT] Настройки API ключа:', {
+      hasValidatorKey: !!process.env.CRM_SUBMIT_API_KEY_VALIDATOR,
+      hasSubmitKey: !!process.env.CRM_SUBMIT_API_KEY,
+      validatorKeyLength: validatorKey?.length || 0
+    });
     
     if (validatorKey) {
       const apiKey = request.headers.get('x-api-key') || 
                      request.headers.get('authorization')?.replace('Bearer ', '');
       
+      console.log('📝 [CRM-SUBMIT] Получен API ключ из заголовков:', {
+        hasXApiKey: !!request.headers.get('x-api-key'),
+        hasAuthorization: !!request.headers.get('authorization'),
+        apiKeyLength: apiKey?.length || 0
+      });
+      
       if (apiKey === validatorKey) {
         // Валидный API ключ - это серверный вызов, пропускаем проверку сессии
         isServerCall = true;
-        console.log('✅ Валидный API ключ - серверный вызов');
+        console.log('✅ [CRM-SUBMIT] Валидный API ключ - серверный вызов');
       } else if (apiKey) {
         // Передан неверный API ключ
-        console.warn('❌ Неверный API ключ для /api/crm-submit');
+        console.warn('❌ [CRM-SUBMIT] Неверный API ключ для /api/crm-submit');
         return NextResponse.json(
           { 
             success: false, 
@@ -410,7 +429,11 @@ export async function POST(request: NextRequest) {
           },
           { status: 401 }
         );
+      } else {
+        console.log('📝 [CRM-SUBMIT] API ключ не передан - это клиентский вызов');
       }
+    } else {
+      console.log('📝 [CRM-SUBMIT] API ключ не настроен в env - пропускаем проверку');
     }
     
     // Для клиентских вызовов проверяем авторизацию
@@ -447,9 +470,31 @@ export async function POST(request: NextRequest) {
     //   }
     // }
     
-    console.log('📝 Получен запрос на отправку в CRM', { isServerCall });
+    console.log('📝 [CRM-SUBMIT] Получен запрос на отправку в CRM', { isServerCall });
     
-    const body = await request.json();
+    // Парсинг body с логированием
+    let body: any;
+    try {
+      console.log('📝 [CRM-SUBMIT] Начинаем парсинг body...');
+      body = await request.json();
+      console.log('📝 [CRM-SUBMIT] Body успешно распарсен:', { 
+        hasFullName: !!body.fullName,
+        hasEmail: !!body.email,
+        hasDirection: !!body.direction,
+        keys: Object.keys(body)
+      });
+    } catch (error: any) {
+      console.error('❌ [CRM-SUBMIT] Ошибка парсинга body:', error);
+      return NextResponse.json(
+        { 
+          success: false, 
+          message: "Ошибка парсинга запроса",
+          details: { error: error.message || String(error) }
+        },
+        { status: 400 }
+      );
+    }
+    
     const {
       fullName,
       email,
@@ -466,19 +511,31 @@ export async function POST(request: NextRequest) {
       utmParams = {}
     } = body;
 
+    console.log('📝 [CRM-SUBMIT] Извлечены данные из body:', {
+      fullName: fullName ? `${fullName.substring(0, 20)}...` : 'отсутствует',
+      email: email ? `${email.substring(0, 20)}...` : 'отсутствует',
+      direction: direction || 'отсутствует',
+      phone: phone ? 'есть' : 'отсутствует'
+    });
+
     // Валидация обязательных полей
+    console.log('📝 [CRM-SUBMIT] Начинаем валидацию обязательных полей...');
     if (!fullName || !email || !direction) {
+      const missing = ['fullName', 'email', 'direction'].filter(field => !body[field]);
+      console.warn('❌ [CRM-SUBMIT] Валидация не пройдена. Отсутствуют поля:', missing);
       return NextResponse.json(
         { 
           success: false, 
           message: "Обязательные поля не заполнены",
-          details: { missing: ['fullName', 'email', 'direction'].filter(field => !body[field]) }
+          details: { missing }
         },
         { status: 400 }
       );
     }
+    console.log('✅ [CRM-SUBMIT] Валидация пройдена успешно');
 
     // Подготавливаем данные формы
+    console.log('📝 [CRM-SUBMIT] Подготавливаем formData...');
     const formData: CRMFormData = {
       fullName,
       email,
@@ -493,8 +550,14 @@ export async function POST(request: NextRequest) {
       sourceUrl,
       referral,
     };
+    console.log('✅ [CRM-SUBMIT] formData подготовлен:', {
+      fullName: formData.fullName ? `${formData.fullName.substring(0, 20)}...` : 'отсутствует',
+      email: formData.email ? `${formData.email.substring(0, 20)}...` : 'отсутствует',
+      direction: formData.direction || 'отсутствует'
+    });
 
     // Извлекаем UTM параметры из заголовков (если переданы)
+    console.log('📝 [CRM-SUBMIT] Извлекаем UTM параметры...');
     const utmHeaders = {
       utm_source: request.headers.get('x-utm-source') || utmParams.utm_source || '',
       utm_medium: request.headers.get('x-utm-medium') || utmParams.utm_medium || '',
@@ -512,24 +575,48 @@ export async function POST(request: NextRequest) {
     const cleanUtmParams = Object.fromEntries(
       Object.entries(utmHeaders).filter(([_, value]) => value && value.trim() !== '')
     );
+    console.log('✅ [CRM-SUBMIT] UTM параметры обработаны:', { 
+      count: Object.keys(cleanUtmParams).length,
+      keys: Object.keys(cleanUtmParams)
+    });
 
-    console.log('🚀 Запуск параллельной отправки в 3 точки:', { direction, hasUtm: Object.keys(cleanUtmParams).length > 0 });
+    console.log('🚀 [CRM-SUBMIT] Запуск параллельной отправки в 3 точки:', { 
+      direction, 
+      hasUtm: Object.keys(cleanUtmParams).length > 0 
+    });
 
     // Параллельная отправка во все интеграции
-    const results = await Promise.allSettled([
-      sendToCRM(formData, cleanUtmParams, request),
-      sendToHuntflow(formData),
-    ]);
+    console.log('📝 [CRM-SUBMIT] Начинаем параллельную отправку в CRM и Huntflow...');
+    let results: PromiseSettledResult<IntegrationStatus>[];
+    try {
+      results = await Promise.allSettled([
+        sendToCRM(formData, cleanUtmParams, request),
+        sendToHuntflow(formData),
+      ]);
+      console.log('✅ [CRM-SUBMIT] Параллельная отправка завершена, обрабатываем результаты...');
+    } catch (error: any) {
+      console.error('❌ [CRM-SUBMIT] Критическая ошибка при параллельной отправке:', error);
+      throw error;
+    }
 
     // Обрабатываем результаты
+    console.log('📝 [CRM-SUBMIT] Обрабатываем результаты интеграций...');
     const statuses: IntegrationStatus[] = [];
-    for (const result of results) {
+    for (let i = 0; i < results.length; i++) {
+      const result = results[i];
+      const serviceName = i === 0 ? 'CRM' : 'Huntflow';
+      console.log(`📝 [CRM-SUBMIT] Результат ${serviceName}:`, {
+        status: result.status,
+        success: result.status === 'fulfilled' ? result.value.success : false
+      });
+      
       if (result.status === 'fulfilled') {
         statuses.push(result.value);
+        console.log(`✅ [CRM-SUBMIT] ${serviceName} успешно обработан`);
       } else {
-        console.error('Ошибка при выполнении интеграции:', result.reason);
+        console.error(`❌ [CRM-SUBMIT] Ошибка при выполнении ${serviceName}:`, result.reason);
         statuses.push({
-          service: "Unknown",
+          service: serviceName,
           success: false,
           message: `Критическая ошибка: ${result.reason}`,
           details: { error: String(result.reason) }
@@ -538,10 +625,24 @@ export async function POST(request: NextRequest) {
     }
 
     // Отправляем в Telegram с результатами всех интеграций
-    const telegramStatus = await sendToTelegram(formData, statuses);
-    statuses.push(telegramStatus);
+    console.log('📝 [CRM-SUBMIT] Отправляем уведомление в Telegram...');
+    let telegramStatus: IntegrationStatus;
+    try {
+      telegramStatus = await sendToTelegram(formData, statuses);
+      statuses.push(telegramStatus);
+      console.log('✅ [CRM-SUBMIT] Telegram уведомление отправлено');
+    } catch (error: any) {
+      console.error('❌ [CRM-SUBMIT] Ошибка отправки в Telegram:', error);
+      statuses.push({
+        service: "Telegram",
+        success: false,
+        message: `Ошибка: ${error.message || String(error)}`,
+        details: { error: error.message || String(error) }
+      });
+    }
 
     // Определяем общий статус успеха
+    console.log('📝 [CRM-SUBMIT] Определяем общий статус успеха...');
     const criticalServices = ["CRM", "Huntflow"];
     const criticalSuccesses = statuses.filter(s => criticalServices.includes(s.service) && s.success);
     
@@ -556,7 +657,10 @@ export async function POST(request: NextRequest) {
       resultMessage = "Не удалось обработать заявку ни в одной критичной интеграции";
     }
 
-    console.log(`✅ Обработка завершена. Успешных интеграций: ${criticalSuccesses.length}/${criticalServices.length}`);
+    console.log(`✅ [CRM-SUBMIT] Обработка завершена. Успешных интеграций: ${criticalSuccesses.length}/${criticalServices.length}`, {
+      overallSuccess,
+      statuses: statuses.map(s => ({ service: s.service, success: s.success, message: s.message }))
+    });
     
     const response: CRMSubmissionResult = {
       success: overallSuccess,
@@ -564,15 +668,18 @@ export async function POST(request: NextRequest) {
       statuses
     };
 
+    console.log('📝 [CRM-SUBMIT] Формируем финальный ответ...');
     return NextResponse.json(response, { 
       status: overallSuccess ? 200 : 500 
     });
 
   } catch (error: any) {
-    console.error("❌ Критическая ошибка API /crm-submit:", {
+    console.error("❌ [CRM-SUBMIT] Критическая ошибка API /crm-submit:", {
       error,
       message: error?.message,
-      stack: error?.stack
+      stack: error?.stack,
+      name: error?.name,
+      cause: error?.cause
     });
     
     return NextResponse.json(
