@@ -307,9 +307,21 @@ export const ProfilePage: React.FC = () => {
 
     // Если это первая регистрация (до этого не было всех данных, а теперь есть), отправляем в CRM
     if (!hadAllDataBefore && hasAllDataNow) {
-      console.log('📤 Первая регистрация - отправка данных в CRM');
+      console.log('📤 Первая регистрация - отправка данных в CRM', {
+        updatedUser: {
+          name: updatedUser.name,
+          email: updatedUser.credentials?.email,
+          phone: updatedUser.credentials?.phone,
+          role: updatedUser.role
+        }
+      });
       try {
-        await submitBooking('Регистрация пользователя через профиль');
+        // Используем обновленного пользователя напрямую через submitUserApplicationToCRM
+        const { submitUserApplicationToCRM } = await import('@/shared/lib/crm-api');
+        await submitUserApplicationToCRM(updatedUser, {
+          message: 'Регистрация пользователя через профиль'
+        });
+        console.log('✅ Данные успешно отправлены в CRM при регистрации');
       } catch (error) {
         console.error('❌ Ошибка отправки данных в CRM при регистрации:', error);
         // Не блокируем пользователя при ошибке отправки в CRM

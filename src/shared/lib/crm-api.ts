@@ -39,65 +39,115 @@ export interface CRMSubmissionRequest extends CRMFormData {
  * Маппинг данных профиля пользователя в формат CRM
  */
 export function mapUserProfileToCRM(user: User, additionalData?: Partial<CRMFormData>): CRMFormData {
+  console.log('📝 [MAP-USER-TO-CRM] Маппинг данных пользователя:', {
+    userId: user.id,
+    userName: user.name,
+    userRole: user.role,
+    hasCredentials: !!user.credentials,
+    email: user.credentials?.email || 'ОТСУТСТВУЕТ',
+    phone: user.credentials?.phone || 'ОТСУТСТВУЕТ',
+    additionalDataKeys: additionalData ? Object.keys(additionalData) : []
+  });
+  
   // Базовые данные из профиля
+  const email = user.credentials?.email || additionalData?.email || '';
+  const phone = user.credentials?.phone || additionalData?.phone || '';
+  const fullName = user.name || additionalData?.fullName || 'Пользователь';
+  const direction = user.role || additionalData?.direction || 'guest';
+  
+  if (!email) {
+    console.error('❌ [MAP-USER-TO-CRM] КРИТИЧЕСКАЯ ОШИБКА: email отсутствует!', {
+      userCredentials: user.credentials,
+      additionalDataEmail: additionalData?.email
+    });
+  }
+  
   const baseData: CRMFormData = {
-    fullName: user.name || 'Пользователь',
-    email: user.credentials?.email || '',
-    phone: user.credentials?.phone || '',
-    direction: user.role || 'guest',
-    message: additionalData?.message || `Заявка от пользователя ${user.name || user.id}`,
+    fullName,
+    email,
+    phone,
+    direction,
+    message: additionalData?.message || `Заявка от пользователя ${fullName}`,
     sourceUrl: typeof window !== 'undefined' ? window.location.href : '',
   };
+  
+  console.log('📝 [MAP-USER-TO-CRM] Сформированные базовые данные:', {
+    fullName: baseData.fullName,
+    email: baseData.email || 'ПУСТО!',
+    phone: baseData.phone || 'отсутствует',
+    direction: baseData.direction
+  });
 
   // Маппинг специфичных данных по ролям
+  let result: CRMFormData;
   switch (user.role) {
     case 'trader':
-      return {
+      result = {
         ...baseData,
         direction: 'trader',
         market: user.profile?.trader?.markets?.[0] || additionalData?.market,
         risk: mapRiskLevel(user.profile?.trader?.risk) || additionalData?.risk,
         ...additionalData,
       };
+      break;
 
     case 'startup':
-      return {
+      result = {
         ...baseData,
         direction: 'startup',
         subDirection: mapStartupStage(user.profile?.startup?.stage) || additionalData?.subDirection,
         ...additionalData,
       };
+      break;
 
     case 'expert':
-      return {
+      result = {
         ...baseData,
         direction: 'expert',
         profile: user.profile?.expert?.domain || additionalData?.profile,
         ...additionalData,
       };
+      break;
 
     case 'partner':
-      return {
+      result = {
         ...baseData,
         direction: 'business',
         interest: mapPartnerInterest(user.profile?.partner?.interest) || additionalData?.interest,
         ...additionalData,
       };
+      break;
 
     case 'scout':
-      return {
+      result = {
         ...baseData,
         direction: 'scout',
         subDirection: additionalData?.subDirection || 'Региональные скауты',
         ...additionalData,
       };
+      break;
 
     default:
-      return {
+      result = {
         ...baseData,
         ...additionalData,
       };
   }
+  
+  // Убеждаемся, что email не потерялся при spread additionalData
+  if (!result.email && email) {
+    console.warn('⚠️ [MAP-USER-TO-CRM] Email был потерян при spread, восстанавливаем...');
+    result.email = email;
+  }
+  
+  console.log('📝 [MAP-USER-TO-CRM] Финальный результат:', {
+    fullName: result.fullName,
+    email: result.email || 'ПУСТО!',
+    phone: result.phone || 'отсутствует',
+    direction: result.direction
+  });
+  
+  return result;
 }
 
 /**
@@ -213,8 +263,25 @@ export async function submitUserApplicationToCRM(
   additionalData?: Partial<CRMFormData>,
   utmParams?: Record<string, string>
 ): Promise<CRMSubmissionResult> {
+  console.log('📤 [SUBMIT-USER-TO-CRM] Начинаем отправку заявки пользователя:', {
+    userId: user.id,
+    userName: user.name,
+    userRole: user.role,
+    hasCredentials: !!user.credentials,
+    email: user.credentials?.email || 'ОТСУТСТВУЕТ',
+    phone: user.credentials?.phone || 'отсутствует',
+    additionalData: additionalData ? Object.keys(additionalData) : []
+  });
+  
   // Маппим данные профиля пользователя
   const crmData = mapUserProfileToCRM(user, additionalData);
+  
+  console.log('📤 [SUBMIT-USER-TO-CRM] Данные после маппинга:', {
+    fullName: crmData.fullName,
+    email: crmData.email || 'ПУСТО!',
+    phone: crmData.phone || 'отсутствует',
+    direction: crmData.direction
+  });
 
   // Добавляем UTM параметры из URL, если не переданы
   const finalUtmParams = utmParams || extractUtmFromUrl();
