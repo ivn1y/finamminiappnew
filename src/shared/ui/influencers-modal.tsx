@@ -2,12 +2,12 @@
 
 import React from 'react';
 
-interface ManagementCompanyModalProps {
+interface InfluencersModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-export const ManagementCompanyModal: React.FC<ManagementCompanyModalProps> = ({ isOpen, onClose }) => {
+export const InfluencersModal: React.FC<InfluencersModalProps> = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
   return (
@@ -17,8 +17,8 @@ export const ManagementCompanyModal: React.FC<ManagementCompanyModalProps> = ({ 
         <div className="flex justify-center pt-[48px]">
           <div className="w-[150px] h-[150px] relative flex-shrink-0">
             <img
-              src="/assets/products/upravlaushaiakompania.png"
-              alt="Управляющая компания"
+              src="/assets/products/Influencers.png"
+              alt="Influencers"
               className="w-full h-full object-contain rounded-lg"
             />
           </div>
@@ -27,7 +27,7 @@ export const ManagementCompanyModal: React.FC<ManagementCompanyModalProps> = ({ 
         {/* Title - отступ от изображения 9px */}
         <div className="flex justify-center mt-[9px]">
           <h2 className="text-[28px] font-medium text-white text-center leading-[32px] tracking-[-0.504px] font-inter">
-            Управляющая<br />компания
+            Influencers
           </h2>
         </div>
 
@@ -35,14 +35,14 @@ export const ManagementCompanyModal: React.FC<ManagementCompanyModalProps> = ({ 
         <div className="mt-[40px]">
           <div className="bg-[#2f2f37] rounded-[5px] p-[12px] w-full">
             <p className="text-[17px] font-medium text-white leading-[24px] tracking-[-0.17px] font-inter">
-              Алгоритмические фонды требуют не просто идей и стратегий — им нужна инфраструктура, где всё отлажено до миллисекунды. Именно такую экосистему сегодня создаёт управляющая компания «ФИНАМ Менеджмент»
+              Ищем инфлюенсеров, которые говорят о трейдинге — если тебе это близко, оставляй заявку и давай сотрудничать!
             </p>
           </div>
         </div>
 
         {/* Website button - отступ от блока с текстом 20px */}
         <button 
-          onClick={() => window.open('https://telegra.ph/UK-Finam-Menedzhment-10-28', '_blank')}
+          onClick={() => window.open('https://telegra.ph/Influencers-11-10-2', '_blank')}
           className="w-full h-[56px] bg-[rgba(79,79,89,0.24)] rounded-[8px] flex items-center justify-center hover:bg-[rgba(79,79,89,0.4)] transition-colors mt-[20px]"
         >
           <span className="text-[17px] font-semibold text-[#ebebf2] leading-[24px] tracking-[-0.204px] font-inter">
@@ -50,17 +50,17 @@ export const ManagementCompanyModal: React.FC<ManagementCompanyModalProps> = ({ 
           </span>
         </button>
 
-        {/* Speaker contact button - отступ от кнопки "Гайд по продукту" 10px */}
+        {/* Survey button - отступ от кнопки "Гайд по продукту" 10px */}
         <button 
-          onClick={() => window.open('https://fkviking.com/trader_fund', '_blank')}
+          onClick={() => window.open('https://simpoll.ru/run/survey/cbd4c1fb', '_blank')}
           className="w-full h-[56px] btn-gradient transition-opacity hover:opacity-90 mt-[10px]"
         >
           <span className="text-[17px] font-semibold text-white leading-[24px] tracking-[-0.204px] font-inter">
-            Запустить фонд
+            Отправить заявку
           </span>
         </button>
 
-        {/* Back button - отступ от кнопки "Запустить фонд" 108px */}
+        {/* Back button - отступ от кнопки "Отправить заявку" 108px */}
         <div className="mt-[108px] pb-[40px]">
           <button
             onClick={onClose}
@@ -75,3 +75,4 @@ export const ManagementCompanyModal: React.FC<ManagementCompanyModalProps> = ({ 
     </div>
   );
 };
+

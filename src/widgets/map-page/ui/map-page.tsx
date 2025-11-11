@@ -46,6 +46,8 @@ export const MapPage: React.FC = () => {
   const [redeemedZones, setRedeemedZones] = useState<string[]>([]);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [showSecretPhraseSuccessModal, setShowSecretPhraseSuccessModal] = useState(false);
+  const isClickingLinkRef = React.useRef(false);
+  const isClickingCloseRef = React.useRef(false);
   const [lastPrize, setLastPrize] = useState('');
   const [selectedZone, setSelectedZone] = useState<any>(null);
   const [activeTab, setActiveTab] = useState<'map' | 'schedule'>('map');
@@ -272,9 +274,62 @@ export const MapPage: React.FC = () => {
         </DialogContent>
       </Dialog>
 
-      <Dialog open={showSecretPhraseSuccessModal} onOpenChange={setShowSecretPhraseSuccessModal}>
-        <DialogContent className="p-0 border-0" style={{ width: 353, height: 358, borderRadius: 10, background: '#1A1A1F' }}>
-            <div className="relative w-full h-full flex flex-col items-center">
+      <Dialog 
+        open={showSecretPhraseSuccessModal} 
+        onOpenChange={(open) => {
+          // Не закрываем модалку, если клик был на ссылку "Telegram-комьюнити"
+          if (!open && isClickingLinkRef.current) {
+            isClickingLinkRef.current = false;
+            return;
+          }
+          // Если клик был на крестик - просто закрываем
+          if (!open && isClickingCloseRef.current) {
+            isClickingCloseRef.current = false;
+            setShowSecretPhraseSuccessModal(false);
+            return;
+          }
+          // Разрешаем закрытие через кнопку "Участвовать" или крестик
+          setShowSecretPhraseSuccessModal(open);
+        }}
+      >
+        <DialogContent 
+          className="p-0 border-0" 
+          style={{ width: 353, height: 358, borderRadius: 10, background: '#1A1A1F' }}
+          onInteractOutside={(e) => {
+            // Полностью предотвращаем закрытие при клике вне модалки
+            e.preventDefault();
+          }}
+          onEscapeKeyDown={(e) => {
+            // Разрешаем закрытие только по Escape
+            // (можно оставить как есть или тоже заблокировать)
+          }}
+          onClick={(e) => {
+            // Отслеживаем клик на крестик, но не мешаем кнопке "Участвовать"
+            const target = e.target as HTMLElement;
+            // Если клик на кнопку "Участвовать" - не обрабатываем здесь
+            if (target.closest('button') && target.closest('button')?.textContent?.includes('Участвовать')) {
+              return; // Позволяем обработчику кнопки сработать
+            }
+            // Отслеживаем клик на крестик
+            const closeButton = target.closest('button[data-radix-dialog-close]') || 
+                               target.closest('[data-radix-dialog-close]') ||
+                               (target.closest('button') && target.closest('button')?.querySelector('svg'));
+            if (closeButton && !closeButton.textContent?.includes('Участвовать')) {
+              isClickingCloseRef.current = true;
+            }
+          }}
+        >
+            <div 
+              className="relative w-full h-full flex flex-col items-center" 
+              onMouseDown={(e) => {
+                e.stopPropagation();
+                (window as any).lastClickEvent = e.nativeEvent;
+              }} 
+              onClick={(e) => {
+                e.stopPropagation();
+                (window as any).lastClickEvent = e.nativeEvent;
+              }}
+            >
               <div className="absolute" style={{ top: 14 }}>
                   <Image src="/assets/gifts/gift.png" alt="Подарок" width={120} height={120} />
               </div>
@@ -287,13 +342,71 @@ export const MapPage: React.FC = () => {
               <p
                 className="absolute text-center"
                 style={{ top: 170, left: 19, right: 18, color: '#6F6F7C', fontFamily: 'Inter', fontSize: 17, fontStyle: 'normal', fontWeight: 400, lineHeight: '24px', letterSpacing: '-0.17px' }}
+                onMouseDown={(e) => {
+                  // Не блокируем клик на span внутри
+                  if ((e.target as HTMLElement).closest('span[style*="background"]')) {
+                    return;
+                  }
+                  e.stopPropagation();
+                }}
+                onClick={(e) => {
+                  // Не блокируем клик на span внутри
+                  if ((e.target as HTMLElement).closest('span[style*="background"]')) {
+                    return;
+                  }
+                  e.stopPropagation();
+                }}
               >
-                Теперь тебе нужно подойти к нашему стенду, чтобы стать участником розыгрыша лимитированного мерча.
+                Чтобы принять участие в розыгрыше, убедись, что ты уже в нашем{' '}
+                <span
+                  onMouseDown={(e) => {
+                    e.stopPropagation();
+                    isClickingLinkRef.current = true;
+                  }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    isClickingLinkRef.current = true;
+                    const url = 'https://t.me/finam_collab';
+                    console.log('Opening Telegram link:', url);
+                    if (typeof window !== 'undefined' && (window as any).Telegram?.WebApp?.openLink) {
+                      (window as any).Telegram.WebApp.openLink(url);
+                    } else {
+                      window.open(url, '_blank');
+                    }
+                    // Сбрасываем флаг через небольшую задержку
+                    setTimeout(() => {
+                      isClickingLinkRef.current = false;
+                    }, 100);
+                  }}
+                  className="text-[17px] font-normal tracking-[-0.17px] font-inter cursor-pointer"
+                  style={{
+                    background: 'linear-gradient(305deg, #FEDA3B -2.67%, #EF5541 38.9%, #801FDB 77.17%, #7E2A89 98.46%)',
+                    backgroundClip: 'text',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                  }}
+                >
+                  Telegram-комьюнити
+                </span>
+                , и нажми кнопку ниже
               </p>
             </div>
             <button
-              onClick={() => setShowSecretPhraseSuccessModal(false)}
-              className="absolute flex justify-center items-center rounded-lg text-white text-center font-inter text-[17px] font-semibold leading-[24px] tracking-[-0.204px]"
+              type="button"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                const url = 'https://t.me/Random/JoinLot?startapp=1813414Gf249b41&startApp=1813414Gf249b41';
+                console.log('Button clicked, opening:', url);
+                if (typeof window !== 'undefined' && (window as any).Telegram?.WebApp?.openLink) {
+                  (window as any).Telegram.WebApp.openLink(url);
+                } else {
+                  window.open(url, '_blank');
+                }
+                setShowSecretPhraseSuccessModal(false);
+              }}
+              className="absolute flex justify-center items-center rounded-lg text-white text-center font-inter text-[17px] font-semibold leading-[24px] tracking-[-0.204px] cursor-pointer"
               style={{
                   bottom: 20,
                   left: 19,
@@ -301,10 +414,12 @@ export const MapPage: React.FC = () => {
                   width: 'calc(100% - 38px)',
                   padding: '16px 24px',
                   background: 'linear-gradient(305deg, #FEDA3B -2.67%, #EF5541 38.9%, #801FDB 77.17%, #7E2A89 98.46%)',
-                  zIndex: 10
+                  zIndex: 10,
+                  border: 'none',
+                  outline: 'none'
               }}
             >
-              Отлично!
+              Участвовать
             </button>
         </DialogContent>
       </Dialog>
