@@ -23,12 +23,25 @@ export const CredentialsCollectionForm: React.FC<CredentialsCollectionFormProps>
     email: user.credentials?.email || '',
   });
 
+  const previousRoleRef = React.useRef(user.role);
+
+  // Обновляем formData только если роль не изменилась
+  // При смене роли сохраняем текущие данные формы, чтобы пользователь не потерял введенные данные
   useEffect(() => {
-    setFormData({
-      name: user.name || '',
-      phone: user.credentials?.phone || '',
-      email: user.credentials?.email || '',
-    });
+    const roleChanged = previousRoleRef.current !== user.role;
+    
+    // Если роль не изменилась, обновляем данные как обычно
+    if (!roleChanged) {
+      setFormData({
+        name: user.name || '',
+        phone: user.credentials?.phone || '',
+        email: user.credentials?.email || '',
+      });
+    } else {
+      // Если роль изменилась, сохраняем текущие данные формы
+      // Не сбрасываем их, чтобы пользователь не потерял введенные данные
+      previousRoleRef.current = user.role;
+    }
   }, [user]);
   
   const handleUserDataSave = (data: UserData) => {

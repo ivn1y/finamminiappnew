@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 const BackArrowIcon = () => (
   <svg
@@ -49,6 +49,46 @@ export function PartnerProfileForm({ onBack, onNext }: PartnerProfileFormProps) 
   const [companyIndustry, setCompanyIndustry] = useState<string | null>(null);
   const [focusedInput, setFocusedInput] = useState<string | null>(null);
 
+  const packageRef = useRef<HTMLDivElement>(null);
+  const industryRef = useRef<HTMLDivElement>(null);
+  const packageDropdownRef = useRef<HTMLDivElement>(null);
+  const industryDropdownRef = useRef<HTMLDivElement>(null);
+
+  // Обработка клика вне селектов
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Node;
+
+      if (openDropdown === "package") {
+        if (
+          packageRef.current &&
+          packageDropdownRef.current &&
+          !packageRef.current.contains(target) &&
+          !packageDropdownRef.current.contains(target)
+        ) {
+          setOpenDropdown(null);
+        }
+      } else if (openDropdown === "industry") {
+        if (
+          industryRef.current &&
+          industryDropdownRef.current &&
+          !industryRef.current.contains(target) &&
+          !industryDropdownRef.current.contains(target)
+        ) {
+          setOpenDropdown(null);
+        }
+      }
+    };
+
+    if (openDropdown) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [openDropdown]);
+
   const packageOptions = ["Франшиза", "White-label", "API-интеграция"];
   const industryOptions = ["FinTech", "Банкинг", "Инвестиции", "Консалтинг", "Технологии", "Другое"];
 
@@ -95,7 +135,7 @@ export function PartnerProfileForm({ onBack, onNext }: PartnerProfileFormProps) 
         </div>
 
         <div style={{ position: "absolute", top: "217px", width: "100%", padding: "0 16px", boxSizing: "border-box" }}>
-          <div style={formElementWrapperStyle("package", "select")}>
+          <div ref={packageRef} style={formElementWrapperStyle("package", "select")}>
             {openDropdown === "package" && (
               <div 
                 style={{
@@ -219,7 +259,7 @@ export function PartnerProfileForm({ onBack, onNext }: PartnerProfileFormProps) 
             </div>
           </div>
 
-          <div style={formElementWrapperStyle("industry", "select")}>
+          <div ref={industryRef} style={formElementWrapperStyle("industry", "select")}>
             {openDropdown === "industry" && (
               <div 
                 style={{
@@ -265,7 +305,7 @@ export function PartnerProfileForm({ onBack, onNext }: PartnerProfileFormProps) 
         </div>
         
         {openDropdown === "package" && (
-            <div style={{ position: "absolute", top: "312px", left: "16px", right: "16px", borderRadius: "8px", background: "#242426", padding: "20px", zIndex: 10, display: "flex", flexDirection: "column", gap: "20px" }}>
+            <div ref={packageDropdownRef} style={{ position: "absolute", top: "312px", left: "16px", right: "16px", borderRadius: "8px", background: "#242426", padding: "20px", zIndex: 10, display: "flex", flexDirection: "column", gap: "20px" }}>
                 {packageOptions.map(option => (
                     <label key={option} style={{ display: "flex", alignItems: "center", gap: "10px", cursor: "pointer" }}>
                         <input type="radio" name="package" value={option} checked={partnerPackage === option} onChange={() => handleSelectPackage(option)} style={{ display: "none" }} />
@@ -279,7 +319,7 @@ export function PartnerProfileForm({ onBack, onNext }: PartnerProfileFormProps) 
         )}
 
         {openDropdown === "industry" && (
-            <div style={{ position: "absolute", top: "575px", left: "16px", right: "16px", borderRadius: "8px", background: "#242426", padding: "20px", zIndex: 10, display: "flex", flexDirection: "column", gap: "20px" }}>
+            <div ref={industryDropdownRef} style={{ position: "absolute", top: "575px", left: "16px", right: "16px", borderRadius: "8px", background: "#242426", padding: "20px", zIndex: 10, display: "flex", flexDirection: "column", gap: "20px" }}>
                 {industryOptions.map(option => (
                     <label key={option} style={{ display: "flex", alignItems: "center", gap: "10px", cursor: "pointer" }}>
                         <input type="radio" name="industry" value={option} checked={companyIndustry === option} onChange={() => handleSelectIndustry(option)} style={{ display: "none" }} />

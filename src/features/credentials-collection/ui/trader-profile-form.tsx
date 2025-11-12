@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 const BackArrowIcon = () => (
   <svg
@@ -49,6 +49,57 @@ export function TraderProfileForm({ onBack, onNext }: TraderProfileFormProps) {
   const [selectedRiskProfile, setSelectedRiskProfile] = useState<string | null>(
     null
   );
+
+  const experienceRef = useRef<HTMLDivElement>(null);
+  const marketsRef = useRef<HTMLDivElement>(null);
+  const riskProfileRef = useRef<HTMLDivElement>(null);
+  const experienceDropdownRef = useRef<HTMLDivElement>(null);
+  const marketsDropdownRef = useRef<HTMLDivElement>(null);
+  const riskProfileDropdownRef = useRef<HTMLDivElement>(null);
+
+  // Обработка клика вне селектов
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Node;
+
+      if (openDropdown === "experience") {
+        if (
+          experienceRef.current &&
+          experienceDropdownRef.current &&
+          !experienceRef.current.contains(target) &&
+          !experienceDropdownRef.current.contains(target)
+        ) {
+          setOpenDropdown(null);
+        }
+      } else if (openDropdown === "markets") {
+        if (
+          marketsRef.current &&
+          marketsDropdownRef.current &&
+          !marketsRef.current.contains(target) &&
+          !marketsDropdownRef.current.contains(target)
+        ) {
+          setOpenDropdown(null);
+        }
+      } else if (openDropdown === "riskProfile") {
+        if (
+          riskProfileRef.current &&
+          riskProfileDropdownRef.current &&
+          !riskProfileRef.current.contains(target) &&
+          !riskProfileDropdownRef.current.contains(target)
+        ) {
+          setOpenDropdown(null);
+        }
+      }
+    };
+
+    if (openDropdown) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [openDropdown]);
 
   const experienceOptions = [
     "Меньше года",
@@ -188,6 +239,7 @@ export function TraderProfileForm({ onBack, onNext }: TraderProfileFormProps) {
           }}
         >
           <div
+            ref={experienceRef}
             style={selectBoxWrapperStyle("experience")}
           >
             {openDropdown === "experience" && (
@@ -241,6 +293,7 @@ export function TraderProfileForm({ onBack, onNext }: TraderProfileFormProps) {
           </div>
 
           <div
+            ref={marketsRef}
             style={selectBoxWrapperStyle("markets")}
           >
             {openDropdown === "markets" && (
@@ -296,6 +349,7 @@ export function TraderProfileForm({ onBack, onNext }: TraderProfileFormProps) {
           </div>
 
           <div
+            ref={riskProfileRef}
             style={selectBoxWrapperStyle("riskProfile")}
           >
             {openDropdown === "riskProfile" && (
@@ -353,6 +407,7 @@ export function TraderProfileForm({ onBack, onNext }: TraderProfileFormProps) {
 
         {openDropdown === "experience" && (
           <div
+            ref={experienceDropdownRef}
             style={{
               position: "absolute",
               top: "309px",
@@ -425,6 +480,7 @@ export function TraderProfileForm({ onBack, onNext }: TraderProfileFormProps) {
 
         {openDropdown === "markets" && (
           <div
+            ref={marketsDropdownRef}
             style={{
               position: "absolute",
               top: "397px",
@@ -506,6 +562,7 @@ export function TraderProfileForm({ onBack, onNext }: TraderProfileFormProps) {
 
         {openDropdown === "riskProfile" && (
           <div
+            ref={riskProfileDropdownRef}
             style={{
               position: "absolute",
               top: "486px",

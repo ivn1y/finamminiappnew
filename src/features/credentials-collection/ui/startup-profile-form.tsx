@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 const BackArrowIcon = () => (
   <svg
@@ -47,6 +47,46 @@ export function StartupProfileForm({ onBack, onNext }: StartupProfileFormProps) 
   const [projectStage, setProjectStage] = useState<string | null>(null);
   const [industry, setIndustry] = useState<string | null>(null);
   const [focusedInput, setFocusedInput] = useState<string | null>(null);
+
+  const stageRef = useRef<HTMLDivElement>(null);
+  const industryRef = useRef<HTMLDivElement>(null);
+  const stageDropdownRef = useRef<HTMLDivElement>(null);
+  const industryDropdownRef = useRef<HTMLDivElement>(null);
+
+  // Обработка клика вне селектов
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Node;
+
+      if (openDropdown === "stage") {
+        if (
+          stageRef.current &&
+          stageDropdownRef.current &&
+          !stageRef.current.contains(target) &&
+          !stageDropdownRef.current.contains(target)
+        ) {
+          setOpenDropdown(null);
+        }
+      } else if (openDropdown === "industry") {
+        if (
+          industryRef.current &&
+          industryDropdownRef.current &&
+          !industryRef.current.contains(target) &&
+          !industryDropdownRef.current.contains(target)
+        ) {
+          setOpenDropdown(null);
+        }
+      }
+    };
+
+    if (openDropdown) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [openDropdown]);
 
   const stageOptions = ["Идея", "MVP", "Рост", "Масштабирование"];
   const industryOptions = [
@@ -158,7 +198,7 @@ export function StartupProfileForm({ onBack, onNext }: StartupProfileFormProps) 
             </div>
           </div>
 
-          <div style={formElementWrapperStyle("stage", "select")}>
+          <div ref={stageRef} style={formElementWrapperStyle("stage", "select")}>
             {openDropdown === "stage" && (
               <div 
                 style={{
@@ -202,7 +242,7 @@ export function StartupProfileForm({ onBack, onNext }: StartupProfileFormProps) 
             </div>
           </div>
 
-          <div style={formElementWrapperStyle("industry", "select")}>
+          <div ref={industryRef} style={formElementWrapperStyle("industry", "select")}>
             {openDropdown === "industry" && (
               <div 
                 style={{
@@ -248,7 +288,7 @@ export function StartupProfileForm({ onBack, onNext }: StartupProfileFormProps) 
         </div>
 
         {openDropdown === "stage" && (
-          <div style={{ position: "absolute", top: "397px", left: "16px", right: "16px", borderRadius: "8px", background: "#242426", padding: "20px", boxSizing: "border-box", display: "flex", flexDirection: "column", gap: "20px", zIndex: 10 }}>
+          <div ref={stageDropdownRef} style={{ position: "absolute", top: "397px", left: "16px", right: "16px", borderRadius: "8px", background: "#242426", padding: "20px", boxSizing: "border-box", display: "flex", flexDirection: "column", gap: "20px", zIndex: 10 }}>
             {stageOptions.map((option) => (
               <label key={option} style={{ display: "flex", alignItems: "center", gap: "10px", cursor: "pointer" }}>
                 <input type="radio" name="stage" value={option} checked={projectStage === option} onChange={() => handleSelectStage(option)} style={{ display: "none" }} />
@@ -262,7 +302,7 @@ export function StartupProfileForm({ onBack, onNext }: StartupProfileFormProps) 
         )}
 
         {openDropdown === "industry" && (
-          <div style={{ position: "absolute", top: "485px", left: "16px", right: "16px", borderRadius: "8px", background: "#242426", padding: "20px", boxSizing: "border-box", display: "flex", flexDirection: "column", gap: "20px", zIndex: 10 }}>
+          <div ref={industryDropdownRef} style={{ position: "absolute", top: "485px", left: "16px", right: "16px", borderRadius: "8px", background: "#242426", padding: "20px", boxSizing: "border-box", display: "flex", flexDirection: "column", gap: "20px", zIndex: 10 }}>
             {industryOptions.map((option) => (
               <label key={option} style={{ display: "flex", alignItems: "center", gap: "10px", cursor: "pointer" }}>
                 <input type="radio" name="industry" value={option} checked={industry === option} onChange={() => handleSelectIndustry(option)} style={{ display: "none" }} />

@@ -63,20 +63,45 @@ export const UserDataInputModal: React.FC<UserDataInputModalProps> = ({
 
   const currentRole = user?.role || null;
   const currentRoleTitle = currentRole ? roleContent.find(r => r.id === currentRole)?.title : 'Не выбрано';
+  const previousRoleRef = useRef<UserRole | null>(currentRole);
+  const hasFormDataRef = useRef(false);
+  const isRoleChangingRef = useRef(false);
 
+  // Инициализируем форму только при первом открытии или если форма пустая
   useEffect(() => {
-    if (initialData) {
-      setFormData({
-        name: initialData.name || '',
-        email: initialData.email || '',
-        phone: initialData.phone || '',
-        company: initialData.company || '',
-        position: initialData.position || '',
-        goals: initialData.goals || '',
-        interests: initialData.interests || '',
-      });
+    if (isOpen && initialData && !isRoleChangingRef.current) {
+      // Если форма еще не заполнена пользователем, инициализируем из initialData
+      if (!hasFormDataRef.current) {
+        setFormData({
+          name: initialData.name || '',
+          email: initialData.email || '',
+          phone: initialData.phone || '',
+          company: initialData.company || '',
+          position: initialData.position || '',
+          goals: initialData.goals || '',
+          interests: initialData.interests || '',
+        });
+      }
     }
-  }, [initialData]);
+  }, [isOpen, initialData]);
+
+  // Отслеживаем, когда пользователь начинает заполнять форму
+  useEffect(() => {
+    const hasAnyData = formData.name || formData.email || formData.phone || 
+                      formData.company || formData.position || formData.goals || formData.interests;
+    if (hasAnyData) {
+      hasFormDataRef.current = true;
+    }
+  }, [formData]);
+
+  // Сбрасываем флаг при закрытии модального окна
+  useEffect(() => {
+    if (!isOpen) {
+      hasFormDataRef.current = false;
+      previousRoleRef.current = currentRole;
+      isRoleChangingRef.current = false;
+    }
+  }, [isOpen, currentRole]);
 
   const handleInputChange = (field: keyof UserData, value: string) => {
     const updatedFormData = { ...formData, [field]: value };
@@ -158,6 +183,12 @@ export const UserDataInputModal: React.FC<UserDataInputModalProps> = ({
 
   const handleRoleSelect = (role: UserRole) => {
     if (user) {
+      // Устанавливаем флаг, что происходит смена роли
+      isRoleChangingRef.current = true;
+      
+      // Сохраняем текущие данные формы перед сменой роли
+      const currentFormData = { ...formData };
+      
       // Обновляем роль и аватар (персонаж)
       updateUser({
         role,
@@ -167,6 +198,17 @@ export const UserDataInputModal: React.FC<UserDataInputModalProps> = ({
           accessories: user.avatar?.accessories || [],
         },
       });
+
+      // Восстанавливаем данные формы после обновления роли
+      // Используем setTimeout, чтобы обновление произошло после обновления store
+      setTimeout(() => {
+        setFormData(currentFormData);
+        if (onDataChange) {
+          onDataChange(currentFormData);
+        }
+        // Сбрасываем флаг после восстановления данных
+        isRoleChangingRef.current = false;
+      }, 0);
     }
   };
 

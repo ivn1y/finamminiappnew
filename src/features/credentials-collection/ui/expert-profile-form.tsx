@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 const BackArrowIcon = () => (
   <svg
@@ -47,6 +47,46 @@ export function ExpertProfileForm({ onBack, onNext }: ExpertProfileFormProps) {
   const [experience, setExperience] = useState<string | null>(null);
   const [expertise, setExpertise] = useState("");
   const [focusedInput, setFocusedInput] = useState<string | null>(null);
+
+  const roleRef = useRef<HTMLDivElement>(null);
+  const experienceRef = useRef<HTMLDivElement>(null);
+  const roleDropdownRef = useRef<HTMLDivElement>(null);
+  const experienceDropdownRef = useRef<HTMLDivElement>(null);
+
+  // Обработка клика вне селектов
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Node;
+
+      if (openDropdown === "role") {
+        if (
+          roleRef.current &&
+          roleDropdownRef.current &&
+          !roleRef.current.contains(target) &&
+          !roleDropdownRef.current.contains(target)
+        ) {
+          setOpenDropdown(null);
+        }
+      } else if (openDropdown === "experience") {
+        if (
+          experienceRef.current &&
+          experienceDropdownRef.current &&
+          !experienceRef.current.contains(target) &&
+          !experienceDropdownRef.current.contains(target)
+        ) {
+          setOpenDropdown(null);
+        }
+      }
+    };
+
+    if (openDropdown) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [openDropdown]);
 
   const roleOptions = [
     "Ментор",
@@ -95,7 +135,7 @@ export function ExpertProfileForm({ onBack, onNext }: ExpertProfileFormProps) {
         </div>
 
         <div style={{ position: "absolute", top: "217px", width: "100%", padding: "0 16px", boxSizing: "border-box" }}>
-          <div style={formElementWrapperStyle("role", "select")}>
+          <div ref={roleRef} style={formElementWrapperStyle("role", "select")}>
             {openDropdown === "role" && (
               <div 
                 style={{
@@ -139,7 +179,7 @@ export function ExpertProfileForm({ onBack, onNext }: ExpertProfileFormProps) {
             </div>
           </div>
 
-          <div style={formElementWrapperStyle("experience", "select")}>
+          <div ref={experienceRef} style={formElementWrapperStyle("experience", "select")}>
             {openDropdown === "experience" && (
               <div 
                 style={{
@@ -245,7 +285,7 @@ export function ExpertProfileForm({ onBack, onNext }: ExpertProfileFormProps) {
         </div>
 
         {openDropdown === "role" && (
-          <div style={{ position: "absolute", top: "309px", left: "16px", right: "16px", borderRadius: "8px", background: "#242426", padding: "20px", boxSizing: "border-box", display: "flex", flexDirection: "column", gap: "20px", zIndex: 10 }}>
+          <div ref={roleDropdownRef} style={{ position: "absolute", top: "309px", left: "16px", right: "16px", borderRadius: "8px", background: "#242426", padding: "20px", boxSizing: "border-box", display: "flex", flexDirection: "column", gap: "20px", zIndex: 10 }}>
             {roleOptions.map((option) => (
               <label key={option} style={{ display: "flex", alignItems: "center", gap: "10px", cursor: "pointer" }}>
                 <input type="radio" name="role" value={option} checked={expertRole === option} onChange={() => handleSelectRole(option)} style={{ display: "none" }} />
@@ -259,7 +299,7 @@ export function ExpertProfileForm({ onBack, onNext }: ExpertProfileFormProps) {
         )}
 
         {openDropdown === "experience" && (
-          <div style={{ position: "absolute", top: "396px", left: "16px", right: "16px", borderRadius: "8px", background: "#242426", padding: "20px", boxSizing: "border-box", display: "flex", flexDirection: "column", gap: "20px", zIndex: 10 }}>
+          <div ref={experienceDropdownRef} style={{ position: "absolute", top: "396px", left: "16px", right: "16px", borderRadius: "8px", background: "#242426", padding: "20px", boxSizing: "border-box", display: "flex", flexDirection: "column", gap: "20px", zIndex: 10 }}>
             {experienceOptions.map((option) => (
               <label key={option} style={{ display: "flex", alignItems: "center", gap: "10px", cursor: "pointer" }}>
                 <input type="radio" name="experience" value={option} checked={experience === option} onChange={() => handleSelectExperience(option)} style={{ display: "none" }} />
