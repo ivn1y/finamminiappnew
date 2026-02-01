@@ -18,7 +18,7 @@ export default function BaseLayout({
 }) {
   const pathname = usePathname();
   const router = useRouter();
-  const { showQRScanner, hideQRScanner, isUserDataInputModalOpen, showAppTour, showProfileTour, showMapTour, showScheduleTour, showAssistantTour, isOnboardingComplete, isProductModalOpen } = useAppStore();
+  const { openQRScanner, hideQRScanner, isUserDataInputModalOpen, showAppTour, showProfileTour, showMapTour, showScheduleTour, showAssistantTour, isOnboardingComplete, isProductModalOpen } = useAppStore();
 
   // Проверяем, что какой-то tour действительно показывается
   const isAnyTourActive = (showProfileTour || showMapTour || showScheduleTour || showAssistantTour) ||
