@@ -55,9 +55,9 @@ export const UserDataInputModal: React.FC<UserDataInputModalProps> = ({
     interests: initialData.interests || '',
   });
 
-  const { user, updateUser } = useAppStore();
+  const { user, updateUser, addRoleToHistory } = useAppStore();
   const [agreedToPolicy, setAgreedToPolicy] = useState(false);
-  const [errors, setErrors] = useState<Partial<Record<keyof UserData | 'policy', string>>>({});
+  const [errors, setErrors] = useState<Partial<Record<keyof UserData | 'policy' | 'role', string>>>({});
   const [focusedInput, setFocusedInput] = useState<string | null>(null);
   const [showRoleModal, setShowRoleModal] = useState(false);
   const [showThankYou, setShowThankYou] = useState(false);
@@ -162,9 +162,14 @@ export const UserDataInputModal: React.FC<UserDataInputModalProps> = ({
   const validateForm = (): { isValid: boolean; formattedData?: Partial<UserData> } => {
     const validationResult = validateUserForm(formData, requiredFields);
     
-    const newErrors: Partial<Record<keyof UserData | 'policy', string>> = {
+    const newErrors: Partial<Record<keyof UserData | 'policy' | 'role', string>> = {
       ...validationResult.errors
     };
+
+    // Проверка обязательного выбора роли
+    if (!currentRole) {
+      newErrors.role = 'Необходимо выбрать роль';
+    }
 
     if (!agreedToPolicy) {
       newErrors.policy = 'Необходимо согласиться с политикой обработки персональных данных';
@@ -172,7 +177,7 @@ export const UserDataInputModal: React.FC<UserDataInputModalProps> = ({
 
     setErrors(newErrors);
     return { 
-      isValid: validationResult.isValid && agreedToPolicy,
+      isValid: validationResult.isValid && agreedToPolicy && !!currentRole,
       formattedData: validationResult.formattedData
     };
   };
@@ -192,6 +197,14 @@ export const UserDataInputModal: React.FC<UserDataInputModalProps> = ({
   };
 
   const handleRoleSelect = (role: UserRole) => {
+    // Сохраняем выбор роли в историю (всегда, даже если пользователь еще не создан)
+    addRoleToHistory(role);
+    
+    // Очищаем ошибку роли при выборе
+    if (errors.role) {
+      setErrors((prev) => ({ ...prev, role: undefined }));
+    }
+    
     if (user) {
       // Устанавливаем флаг, что происходит смена роли
       isRoleChangingRef.current = true;
@@ -219,6 +232,14 @@ export const UserDataInputModal: React.FC<UserDataInputModalProps> = ({
         // Сбрасываем флаг после восстановления данных
         isRoleChangingRef.current = false;
       }, 0);
+    } else {
+      // Если пользователь еще не создан, создаем его с выбранной ролью
+      updateUser({
+        role,
+        avatar: {
+          characterId: `${role}_v1`,
+        },
+      });
     }
   };
 
@@ -372,12 +393,17 @@ export const UserDataInputModal: React.FC<UserDataInputModalProps> = ({
               <button
                 type="button"
                 onClick={() => setShowRoleModal(true)}
-                className={`${styles.input} ${styles.roleButton}`}
+                className={`${styles.input} ${styles.roleButton} ${errors.role ? styles.error : ''}`}
                 style={{ cursor: 'pointer', textAlign: 'left' }}
               >
-                {currentRoleTitle}
+                {currentRole ? currentRoleTitle : 'Выберите роль*'}
               </button>
             </div>
+            {errors.role && (
+              <p style={{ color: 'red', fontSize: '12px', marginTop: '4px', marginLeft: '28px' }}>
+                {errors.role}
+              </p>
+            )}
           </div>
 
           <button type="submit" className={styles.submitButton}>

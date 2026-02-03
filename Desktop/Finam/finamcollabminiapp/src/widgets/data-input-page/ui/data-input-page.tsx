@@ -4,10 +4,11 @@ import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAppStore } from '@/shared/store/app-store';
 import { UserDataInputModal, type UserData } from '@/features/user-data-input';
+import { sendToCRM } from '@/shared/lib/crm';
 
 export const DataInputPage: React.FC = () => {
   const router = useRouter();
-  const { user, updateUser, openUserDataInputModal, closeUserDataInputModal, isUserDataInputModalOpen } = useAppStore();
+  const { user, updateUser, openUserDataInputModal, closeUserDataInputModal, isUserDataInputModalOpen, roleHistory } = useAppStore();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
@@ -21,7 +22,7 @@ export const DataInputPage: React.FC = () => {
     return () => clearTimeout(timer);
   }, [openUserDataInputModal]);
 
-  const handleUserDataSave = (data: UserData) => {
+  const handleUserDataSave = async (data: UserData) => {
     if (user) {
       updateUser({
         credentials: {
@@ -30,6 +31,29 @@ export const DataInputPage: React.FC = () => {
         },
         name: data.name,
       });
+    }
+    
+    // Отправляем данные в CRM с ролью и историей выбора ролей
+    try {
+      const crmResult = await sendToCRM({
+        name: data.name,
+        email: data.email,
+        phone: data.phone,
+        role: user?.role || null,
+        roleHistory: roleHistory,
+        company: data.company,
+        position: data.position,
+        goals: data.goals,
+        interests: data.interests,
+      });
+
+      if (!crmResult.success) {
+        console.error('Ошибка отправки данных в CRM:', crmResult.error);
+        // Можно показать уведомление пользователю, но не блокируем сохранение
+      }
+    } catch (error) {
+      console.error('Ошибка при отправке данных в CRM:', error);
+      // Не блокируем сохранение данных, даже если отправка в CRM не удалась
     }
     
     // Не закрываем модальное окно сразу - показываем экран благодарности
