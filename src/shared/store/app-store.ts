@@ -6,8 +6,15 @@ import { User, AppState, UserRole, ChatMessage } from '../types/app';
 import { globalBadges, roleContent } from '../data/seed';
 import { logRoleSelected, logProfileSubmitted, logBadgeEarned, logQRScanned } from '../lib/analytics-service';
 
+interface RoleHistoryEntry {
+  role: UserRole;
+  timestamp: string;
+}
+
 interface AppStore extends Omit<AppState, 'currentTab'> {
   user: User;
+  selectedRole: UserRole | null;
+  roleHistory: RoleHistoryEntry[];
   telegramQuestCompleted: boolean;
   showAppTour: boolean;
   showProfileTour: boolean;
@@ -22,6 +29,8 @@ interface AppStore extends Omit<AppState, 'currentTab'> {
   // Actions
   setUser: (user: User) => void;
   updateUser: (updates: Partial<User>) => void;
+  setSelectedRole: (role: UserRole | null) => void;
+  addRoleToHistory: (role: UserRole) => void;
   setEventMode: (mode: boolean) => void;
   // Chat messages actions
   addChatMessage: (message: ChatMessage) => void;
@@ -122,6 +131,8 @@ export const useAppStore = create<AppStore>()(
     (set, get) => ({
       // Initial state
       user: createInitialUser(),
+      selectedRole: null,
+      roleHistory: [],
       eventMode: true,
       isOnboardingComplete: false, // Новые пользователи должны проходить онбординг
       showQRScanner: false,
@@ -159,6 +170,12 @@ export const useAppStore = create<AppStore>()(
         
         return { user: updatedUser };
       }),
+      
+      setSelectedRole: (role) => set({ selectedRole: role }),
+      
+      addRoleToHistory: (role) => set((state) => ({
+        roleHistory: [...state.roleHistory, { role, timestamp: new Date().toISOString() }]
+      })),
       
       setEventMode: (mode) => set({ eventMode: mode }),
       

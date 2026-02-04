@@ -31,6 +31,21 @@ export interface CRMSubmissionRequest extends CRMFormData {
   utmParams?: Record<string, string>;
 }
 
+/**
+ * Данные из маркетинговой формы ввода
+ */
+export interface MarketingFormData {
+  name: string;
+  email: string;
+  phone: string;
+  role: string | null;
+  roleHistory?: Array<{ role: string; timestamp: string }>;
+  company?: string;
+  position?: string;
+  goals?: string;
+  interests?: string;
+}
+
 // ============================================
 // Profile Data Mapping
 // ============================================
@@ -200,6 +215,24 @@ function mapPartnerInterest(interest?: 'white-label' | 'franchise' | 'api'): str
   }
 }
 
+/**
+ * Маппинг роли пользователя в направление для CRM
+ */
+function mapRoleToDirection(role: string | null): string {
+  if (!role) return 'guest';
+  
+  const roleMap: Record<string, string> = {
+    trader: 'trader',
+    startup: 'startup',
+    expert: 'expert',
+    partner: 'business',
+    scout: 'scout',
+    guest: 'guest',
+  };
+  
+  return roleMap[role] || 'guest';
+}
+
 // ============================================
 // CRM API Client
 // ============================================
@@ -326,5 +359,78 @@ export async function submitBookingRequest(
   return submitUserApplicationToCRM(user, {
     message: message || `Заявка на запись от пользователя ${user.name || user.id}. Источник: чат-ассистент`,
     sourceUrl: typeof window !== 'undefined' ? window.location.href : '',
+  });
+}
+
+/**
+ * Отправка данных из маркетинговой формы ввода в CRM
+ * Используется для страницы data-input с формой регистрации
+ */
+export async function submitMarketingUserRequest(
+  formData: MarketingFormData
+): Promise<CRMSubmissionResult> {
+  console.log('📤 [SUBMIT-MARKETING-TO-CRM] Начинаем отправку данных из маркетинговой формы:', {
+    name: formData.name,
+    email: formData.email,
+    phone: formData.phone ? 'есть' : 'отсутствует',
+    role: formData.role || 'не указана',
+    hasRoleHistory: !!formData.roleHistory?.length,
+    hasCompany: !!formData.company,
+    hasPosition: !!formData.position,
+    hasGoals: !!formData.goals,
+    hasInterests: !!formData.interests,
+  });
+
+  // Маппинг роли в направление
+  const direction = mapRoleToDirection(formData.role);
+
+  // Формируем сообщение из дополнительных данных
+  const messageParts: string[] = [];
+  
+  if (formData.goals) {
+    messageParts.push(`Цели: ${formData.goals}`);
+  }
+  
+  if (formData.company) {
+    messageParts.push(`Компания: ${formData.company}`);
+  }
+  
+  if (formData.position) {
+    messageParts.push(`Должность: ${formData.position}`);
+  }
+  
+  if (formData.roleHistory && formData.roleHistory.length > 0) {
+    const historyText = formData.roleHistory
+      .map(h => `${h.role} (${new Date(h.timestamp).toLocaleString('ru-RU')})`)
+      .join(', ');
+    messageParts.push(`История выбора ролей: ${historyText}`);
+  }
+
+  // Формируем данные для CRM
+  const crmData: CRMFormData = {
+    fullName: formData.name,
+    email: formData.email,
+    phone: formData.phone,
+    direction: direction,
+    interest: formData.interests,
+    message: messageParts.length > 0 ? messageParts.join('\n') : 'Заявка из маркетинговой формы',
+    sourceUrl: typeof window !== 'undefined' ? window.location.href : '',
+  };
+
+  console.log('📤 [SUBMIT-MARKETING-TO-CRM] Данные после маппинга:', {
+    fullName: crmData.fullName,
+    email: crmData.email || 'ПУСТО!',
+    phone: crmData.phone || 'отсутствует',
+    direction: crmData.direction,
+    hasMessage: !!crmData.message,
+    messageLength: crmData.message?.length || 0,
+  });
+
+  // Извлекаем UTM параметры из URL
+  const utmParams = extractUtmFromUrl();
+
+  return submitToCRM({
+    ...crmData,
+    utmParams,
   });
 }
