@@ -8,6 +8,9 @@ import { useAppStore } from '@/shared/store/app-store';
 import { QRScanner } from '@/features/qr-scanner';
 import { useEffect } from 'react';
 
+// Feature flag для скрытия основных разделов (временное решение для привлечения лидов)
+const HIDE_MAIN_SECTIONS = true;
+
 export default function BaseLayout({
   children,
 }: {
@@ -15,7 +18,7 @@ export default function BaseLayout({
 }) {
   const pathname = usePathname();
   const router = useRouter();
-  const { showQRScanner, hideQRScanner, isUserDataInputModalOpen, showAppTour, showProfileTour, showMapTour, showScheduleTour, showAssistantTour, isOnboardingComplete, isProductModalOpen } = useAppStore();
+  const { isUserDataInputModalOpen, showAppTour, showProfileTour, showMapTour, showScheduleTour, showAssistantTour, isOnboardingComplete, isProductModalOpen } = useAppStore();
 
   // Проверяем, что какой-то tour действительно показывается
   const isAnyTourActive = (showProfileTour || showMapTour || showScheduleTour || showAssistantTour) ||
@@ -23,9 +26,12 @@ export default function BaseLayout({
 
   // Показываем навигацию только на страницах приложения (/collab/*), 
   // но НЕ на экранах онбординга и НЕ когда открыт модальный диалог
+  // и НЕ когда скрыты основные разделы
   const showNav = pathname.startsWith('/collab') && 
                   !isUserDataInputModalOpen &&
-                  !isProductModalOpen;
+                  !isProductModalOpen &&
+                  !HIDE_MAIN_SECTIONS &&
+                  !pathname.startsWith('/collab/data-input');
 
   // Проверка онбординга
   useEffect(() => {
@@ -44,17 +50,36 @@ export default function BaseLayout({
       // Если пользователь завершил онбординг и находится на главной странице или странице онбординга
       if (isOnboardingComplete && (pathname === '/' || pathname === '/onboarding')) {
         console.log('[BaseLayout] Redirecting to main app - onboarding completed');
-        router.push('/collab/home');
+        // Если скрыты основные разделы, редиректим на страницу ввода данных
+        if (HIDE_MAIN_SECTIONS) {
+          router.push('/collab/data-input');
+        } else {
+          router.push('/collab/home');
+        }
         return;
+      }
+      
+      // Если основные разделы скрыты и пользователь пытается зайти на home, map, products, chat
+      // редиректим на страницу ввода данных
+      if (HIDE_MAIN_SECTIONS && isOnboardingComplete) {
+        const hiddenPaths = ['/collab/home', '/collab/map', '/collab/products', '/collab/chat'];
+        if (hiddenPaths.includes(pathname)) {
+          router.push('/collab/data-input');
+          return;
+        }
       }
     }, 100);
 
     return () => clearTimeout(timer);
   }, [isOnboardingComplete, pathname, router]);
 
+  // Скрываем содержимое страниц home, map, products, chat если флаг включен
+  const hiddenPaths = ['/collab/home', '/collab/map', '/collab/products', '/collab/chat'];
+  const shouldHideContent = HIDE_MAIN_SECTIONS && hiddenPaths.includes(pathname);
+
   return (
     <div className="relative min-h-screen bg-black text-white">
-      {children}
+      {!shouldHideContent && children}
       {showNav && <BottomNavigation activeTab={pathname} isBlocked={isAnyTourActive} />}
     </div>
   );

@@ -57,7 +57,7 @@ export async function POST(req: Request) {
     onFinish: async () => {
       await faqMCPClient.close();
     },
-    messages: convertToModelMessages(messages),
+    messages: await convertToModelMessages(messages),
     system: `Ты AI-ассистент Финама Change, который помогает пользователям с вопросами о продуктах и услугах компании.
 
 КОНТЕКСТ ПОЛЬЗОВАТЕЛЯ:

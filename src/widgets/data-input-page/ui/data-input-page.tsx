@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAppStore } from '@/shared/store/app-store';
 import { UserDataInputModal, type UserData } from '@/features/user-data-input';
-import { sendToCRM } from '@/shared/lib/crm';
+import { submitMarketingUserRequest } from '@/shared/lib/crm-api';
 
 export const DataInputPage: React.FC = () => {
   const router = useRouter();
@@ -35,7 +35,7 @@ export const DataInputPage: React.FC = () => {
     
     // Отправляем данные в CRM с ролью и историей выбора ролей
     try {
-      const crmResult = await sendToCRM({
+      const crmResult = await submitMarketingUserRequest({
         name: data.name,
         email: data.email,
         phone: data.phone,
@@ -48,8 +48,10 @@ export const DataInputPage: React.FC = () => {
       });
 
       if (!crmResult.success) {
-        console.error('Ошибка отправки данных в CRM:', crmResult.error);
+        console.error('Ошибка отправки данных в CRM:', crmResult.message);
         // Можно показать уведомление пользователю, но не блокируем сохранение
+      } else {
+        console.log('✅ Данные успешно отправлены в CRM');
       }
     } catch (error) {
       console.error('Ошибка при отправке данных в CRM:', error);

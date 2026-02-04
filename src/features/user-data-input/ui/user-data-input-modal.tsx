@@ -9,6 +9,8 @@ import { validateUserForm, validateEmail, validatePhone, validateName } from '@/
 import { RoleSelectionModal } from '@/features/role-carousel/ui/role-selection-modal';
 import { roleContent } from '@/shared/data/seed';
 import { UserRole } from '@/shared/types/app';
+import { PrivacyPolicyModal } from './privacy-policy-modal';
+import { AdvertisingConsentModal } from './advertising-consent-modal';
 
 interface UserDataInputModalProps {
   isOpen: boolean;
@@ -50,11 +52,14 @@ export const UserDataInputModal: React.FC<UserDataInputModalProps> = ({
     interests: initialData.interests || '',
   });
 
-  const { user, updateUser } = useAppStore();
+  const { user, updateUser, addRoleToHistory } = useAppStore();
   const [agreedToPolicy, setAgreedToPolicy] = useState(false);
-  const [errors, setErrors] = useState<Partial<Record<keyof UserData | 'policy', string>>>({});
+  const [errors, setErrors] = useState<Partial<Record<keyof UserData | 'policy' | 'role', string>>>({});
   const [focusedInput, setFocusedInput] = useState<string | null>(null);
   const [showRoleModal, setShowRoleModal] = useState(false);
+  const [showThankYou, setShowThankYou] = useState(false);
+  const [showPrivacyModal, setShowPrivacyModal] = useState(false);
+  const [showAdvertisingModal, setShowAdvertisingModal] = useState(false);
   const inputRefs = {
     name: useRef<HTMLInputElement>(null),
     phone: useRef<HTMLInputElement>(null),
@@ -100,6 +105,7 @@ export const UserDataInputModal: React.FC<UserDataInputModalProps> = ({
       hasFormDataRef.current = false;
       previousRoleRef.current = currentRole;
       isRoleChangingRef.current = false;
+      setShowThankYou(false); // Сбрасываем экран благодарности при закрытии
     }
   }, [isOpen, currentRole]);
 
@@ -153,9 +159,14 @@ export const UserDataInputModal: React.FC<UserDataInputModalProps> = ({
   const validateForm = (): { isValid: boolean; formattedData?: Partial<UserData> } => {
     const validationResult = validateUserForm(formData, requiredFields);
     
-    const newErrors: Partial<Record<keyof UserData | 'policy', string>> = {
+    const newErrors: Partial<Record<keyof UserData | 'policy' | 'role', string>> = {
       ...validationResult.errors
     };
+
+    // Проверка обязательного выбора роли
+    if (!currentRole) {
+      newErrors.role = 'Необходимо выбрать роль';
+    }
 
     if (!agreedToPolicy) {
       newErrors.policy = 'Необходимо согласиться с политикой обработки персональных данных';
@@ -163,7 +174,7 @@ export const UserDataInputModal: React.FC<UserDataInputModalProps> = ({
 
     setErrors(newErrors);
     return { 
-      isValid: validationResult.isValid && agreedToPolicy,
+      isValid: validationResult.isValid && agreedToPolicy && !!currentRole,
       formattedData: validationResult.formattedData
     };
   };
@@ -177,11 +188,20 @@ export const UserDataInputModal: React.FC<UserDataInputModalProps> = ({
         ...(validation.formattedData || {})
       };
       onSave(dataToSave);
-      onClose();
+      // Показываем экран благодарности вместо закрытия
+      setShowThankYou(true);
     }
   };
 
   const handleRoleSelect = (role: UserRole) => {
+    // Сохраняем выбор роли в историю (всегда, даже если пользователь еще не создан)
+    addRoleToHistory(role);
+    
+    // Очищаем ошибку роли при выборе
+    if (errors.role) {
+      setErrors((prev) => ({ ...prev, role: undefined }));
+    }
+    
     if (user) {
       // Устанавливаем флаг, что происходит смена роли
       isRoleChangingRef.current = true;
@@ -209,6 +229,14 @@ export const UserDataInputModal: React.FC<UserDataInputModalProps> = ({
         // Сбрасываем флаг после восстановления данных
         isRoleChangingRef.current = false;
       }, 0);
+    } else {
+      // Если пользователь еще не создан, создаем его с выбранной ролью
+      updateUser({
+        role,
+        avatar: {
+          characterId: `${role}_v1`,
+        },
+      });
     }
   };
 
@@ -232,6 +260,57 @@ export const UserDataInputModal: React.FC<UserDataInputModalProps> = ({
 
   if (!isOpen) {
     return null;
+  }
+
+  // Показываем экран благодарности
+  if (showThankYou) {
+    return (
+      <div className={styles.container}>
+        <div className={styles.formWrapper}>
+          <div className={styles.gradient} />
+          <div
+            style={{
+              position: 'absolute',
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
+              width: '100%',
+              maxWidth: '353px',
+              padding: '0 20px',
+              textAlign: 'center',
+              zIndex: 1,
+            }}
+          >
+            <h1
+              style={{
+                color: '#fff',
+                fontFamily: 'Inter Tight, sans-serif',
+                fontSize: '30px',
+                fontWeight: 400,
+                lineHeight: '110%',
+                letterSpacing: '-0.6px',
+                marginBottom: '20px',
+              }}
+            >
+              Спасибо за ваш отклик
+            </h1>
+            <p
+              style={{
+                color: 'rgba(255, 255, 255, 0.72)',
+                fontFamily: 'Inter, sans-serif',
+                fontSize: '17px',
+                fontWeight: 400,
+                lineHeight: '24px',
+                letterSpacing: '-0.17px',
+                margin: 0,
+              }}
+            >
+              Мы свяжемся с вами в ближайшее время
+            </p>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -309,12 +388,17 @@ export const UserDataInputModal: React.FC<UserDataInputModalProps> = ({
               <button
                 type="button"
                 onClick={() => setShowRoleModal(true)}
-                className={`${styles.input} ${styles.roleButton}`}
+                className={`${styles.input} ${styles.roleButton} ${errors.role ? styles.error : ''}`}
                 style={{ cursor: 'pointer', textAlign: 'left' }}
               >
-                {currentRoleTitle}
+                {currentRole ? currentRoleTitle : 'Выберите роль*'}
               </button>
             </div>
+            {errors.role && (
+              <p style={{ color: 'red', fontSize: '12px', marginTop: '4px', marginLeft: '28px' }}>
+                {errors.role}
+              </p>
+            )}
           </div>
 
           <button type="submit" className={styles.submitButton}>
@@ -328,15 +412,43 @@ export const UserDataInputModal: React.FC<UserDataInputModalProps> = ({
               onCheckedChange={(checked) => setAgreedToPolicy(checked as boolean)}
               className={styles.checkbox}
             />
-            <label htmlFor="privacy-policy" className={styles.privacyText}>
+            <label 
+              htmlFor="privacy-policy" 
+              className={styles.privacyText}
+              onClick={(e) => {
+                // Если клик был на ссылку, не переключаем чекбокс
+                const target = e.target as HTMLElement;
+                if (target.tagName === 'A' || target.closest('a')) {
+                  return;
+                }
+                // Переключаем чекбокс при клике на текст
+                setAgreedToPolicy(!agreedToPolicy);
+              }}
+            >
               Отправляя форму, я даю согласие на{' '}
-              <Link href="/privacy-policy" className={styles.privacyLink}>
+              <span 
+                className={styles.privacyLink}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  e.preventDefault();
+                  setShowPrivacyModal(true);
+                }}
+                style={{ cursor: 'pointer' }}
+              >
                 обработку персональных данных
-              </Link>
+              </span>
               {' '}и{' '}
-              <Link href="/advertising-consent" className={styles.privacyLink}>
+              <span 
+                className={styles.privacyLink}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  e.preventDefault();
+                  setShowAdvertisingModal(true);
+                }}
+                style={{ cursor: 'pointer' }}
+              >
                 получение рекламных рассылок
-              </Link>
+              </span>
             </label>
           </div>
           {errors.policy && <p style={{ color: 'red', fontSize: '12px', position: 'absolute', top: '612px', left: '28px' }}>{errors.policy}</p>}
@@ -348,6 +460,16 @@ export const UserDataInputModal: React.FC<UserDataInputModalProps> = ({
         onClose={() => setShowRoleModal(false)}
         onSelect={handleRoleSelect}
         currentRole={currentRole}
+      />
+
+      <PrivacyPolicyModal
+        isOpen={showPrivacyModal}
+        onClose={() => setShowPrivacyModal(false)}
+      />
+
+      <AdvertisingConsentModal
+        isOpen={showAdvertisingModal}
+        onClose={() => setShowAdvertisingModal(false)}
       />
     </div>
   );
