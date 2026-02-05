@@ -88,6 +88,7 @@ export const DataInputPage: React.FC = () => {
             interests: '',
           }}
           requiredFields={['name', 'email', 'phone']}
+          showCloseButton={false}
         />
       </div>
     </div>
