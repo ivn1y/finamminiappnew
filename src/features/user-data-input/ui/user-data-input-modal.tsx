@@ -22,6 +22,7 @@ interface UserDataInputModalProps {
   description?: string;
   showOptionalFields?: boolean;
   requiredFields?: (keyof UserData)[];
+  showCloseButton?: boolean;
 }
 
 export interface UserData {
@@ -41,6 +42,7 @@ export const UserDataInputModal: React.FC<UserDataInputModalProps> = ({
   initialData = {},
   onDataChange,
   requiredFields = ['name', 'email'],
+  showCloseButton = true,
 }) => {
   const [formData, setFormData] = useState<UserData>({
     name: initialData.name || '',
@@ -292,7 +294,7 @@ export const UserDataInputModal: React.FC<UserDataInputModalProps> = ({
                 marginBottom: '20px',
               }}
             >
-              Спасибо за ваш отклик
+              Спасибо за заявку!
             </h1>
             <p
               style={{
@@ -305,7 +307,9 @@ export const UserDataInputModal: React.FC<UserDataInputModalProps> = ({
                 margin: 0,
               }}
             >
-              Мы свяжемся с вами в ближайшее время
+              Мы свяжемся с тобой в ближайшее время.
+              <br />
+              Если письмо не пришло — проверь папку «Спам».
             </p>
           </div>
         </div>
@@ -316,7 +320,7 @@ export const UserDataInputModal: React.FC<UserDataInputModalProps> = ({
   return (
     <div className={styles.container}>
       <div className={styles.formWrapper}>
-        <button onClick={onClose} className={styles.closeButton}>&times;</button>
+        {showCloseButton && <button onClick={onClose} className={styles.closeButton}>&times;</button>}
         <div className={styles.gradient} />
         <h1 className={styles.title}>Профиль</h1>
         <form onSubmit={(e) => { e.preventDefault(); handleSave(); }} className={styles.form}>
