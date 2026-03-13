@@ -127,7 +127,7 @@ export function objectToZodSchema(obj: Record<string, any>): z.ZodObject<any> {
 }
 
 // Функция для форматирования времени с учетом timezone
-export function formatTimeWithTimezone(dateString: string, timezone?: string): string {
+export async function formatTimeWithTimezone(dateString: string, timezone?: string): Promise<string> {
   try {
     // Создаем Date объект из строки (предполагаем, что это UTC)
     const utcDate = new Date(dateString)
@@ -140,7 +140,7 @@ export function formatTimeWithTimezone(dateString: string, timezone?: string): s
     // Получаем timezone пользователя
     let userTimezone = timezone
     if (!userTimezone) {
-      userTimezone = getUserTimezone()
+      userTimezone = await getUserTimezone()
     }
     
     // Форматируем время в timezone пользователя
@@ -155,13 +155,13 @@ export function formatTimeWithTimezone(dateString: string, timezone?: string): s
   }
 }
 
-// Функция для получения текущего timezone пользователя
-export function getUserTimezone(): string {
+// Функция для получения текущего timezone пользователя (Next.js 15: cookies() async)
+export async function getUserTimezone(): Promise<string> {
   // На сервере пытаемся получить из cookies
   if (typeof window === 'undefined') {
     try {
-      const { cookies } = require('next/headers')
-      const cookieStore = cookies()
+      const { cookies } = await import('next/headers')
+      const cookieStore = await cookies()
       const timezoneCookie = cookieStore.get('user_timezone')
       return timezoneCookie?.value || 'Europe/Moscow'
     } catch (error) {
@@ -194,10 +194,10 @@ export function getUserTimezone(): string {
 }
 
 // Функция для получения timezone на сервере (для использования в server actions)
-export function getServerTimezone(): string {
+export async function getServerTimezone(): Promise<string> {
   try {
-    const { cookies } = require('next/headers')
-    const cookieStore = cookies()
+    const { cookies } = await import('next/headers')
+    const cookieStore = await cookies()
     const timezoneCookie = cookieStore.get('user_timezone')
     return timezoneCookie?.value || 'Europe/Moscow'
   } catch (error) {
@@ -275,8 +275,8 @@ function getTimezoneOffsetMinutes(timezone: string, date: Date = new Date()): nu
 }
 
 // Утилиты для работы с UTC датами с учетом timezone пользователя
-export function getStartOfDayInTimezone(date: Date, timezone?: string): Date {
-  const userTimezone = timezone || getUserTimezone()
+export async function getStartOfDayInTimezone(date: Date, timezone?: string): Promise<Date> {
+  const userTimezone = timezone || (await getUserTimezone())
   
   // Создаем дату в timezone пользователя
   const localDateString = date.toLocaleDateString('en-CA', { timeZone: userTimezone })
@@ -301,8 +301,8 @@ export function getStartOfDayInTimezone(date: Date, timezone?: string): Date {
   return result
 }
 
-export function getEndOfDayInTimezone(date: Date, timezone?: string): Date {
-  const userTimezone = timezone || getUserTimezone()
+export async function getEndOfDayInTimezone(date: Date, timezone?: string): Promise<Date> {
+  const userTimezone = timezone || (await getUserTimezone())
   
   // Создаем дату в timezone пользователя
   const localDateString = date.toLocaleDateString('en-CA', { timeZone: userTimezone })
@@ -329,8 +329,8 @@ export function getEndOfDayInTimezone(date: Date, timezone?: string): Date {
   return result
 }
 
-export function getStartOfMonthInTimezone(date: Date, timezone?: string): Date {
-  const userTimezone = timezone || getUserTimezone()
+export async function getStartOfMonthInTimezone(date: Date, timezone?: string): Promise<Date> {
+  const userTimezone = timezone || (await getUserTimezone())
   
   // Создаем дату в timezone пользователя
   const localDate = new Date(date.getFullYear(), date.getMonth(), 1)
@@ -342,8 +342,8 @@ export function getStartOfMonthInTimezone(date: Date, timezone?: string): Date {
   return new Date(Date.UTC(utcDate.getFullYear(), utcDate.getMonth(), 1, 0, 0, 0, 0))
 }
 
-export function getEndOfMonthInTimezone(date: Date, timezone?: string): Date {
-  const userTimezone = timezone || getUserTimezone()
+export async function getEndOfMonthInTimezone(date: Date, timezone?: string): Promise<Date> {
+  const userTimezone = timezone || (await getUserTimezone())
   
   // Создаем дату в timezone пользователя
   const localDate = new Date(date.getFullYear(), date.getMonth() + 1, 0)
@@ -356,18 +356,18 @@ export function getEndOfMonthInTimezone(date: Date, timezone?: string): Date {
 }
 
 // Обратная совместимость с существующими UTC функциями
-export function getStartOfDayUTC(date: Date): Date {
+export async function getStartOfDayUTC(date: Date): Promise<Date> {
   return getStartOfDayInTimezone(date)
 }
 
-export function getEndOfDayUTC(date: Date): Date {
+export async function getEndOfDayUTC(date: Date): Promise<Date> {
   return getEndOfDayInTimezone(date)
 }
 
-export function getStartOfMonthUTC(date: Date): Date {
+export async function getStartOfMonthUTC(date: Date): Promise<Date> {
   return getStartOfMonthInTimezone(date)
 }
 
-export function getEndOfMonthUTC(date: Date): Date {
+export async function getEndOfMonthUTC(date: Date): Promise<Date> {
   return getEndOfMonthInTimezone(date)
 }
