@@ -7,47 +7,19 @@ const nextConfig = {
     ignoreBuildErrors: false,
   },
   images: {
-    remotePatterns: [
-      {
-        protocol: "https",
-        hostname: "**",
-      },
-      {
-        protocol: "http",
-        hostname: "localhost",
-        port: "3001",
-        pathname: "/**",
-      },
-      {
-        protocol: "http",
-        hostname: "192.168.**",
-        pathname: "/**",
-      },
-      {
-        protocol: "http",
-        hostname: "10.**",
-        pathname: "/**",
-      },
-      {
-        protocol: "http",
-        hostname: "172.**",
-        pathname: "/**",
-      },
-    ],
+    remotePatterns: [],
   },
   // Development optimizations
   compress: false,
   poweredByHeader: false,
   generateEtags: false,
-  // Build optimizations
-  swcMinify: true,
+  // Build optimizations (swcMinify is default in Next.js 15)
   experimental: {
     // optimizeCss: true,
   },
   // Development server settings
   devIndicators: {
-    buildActivity: true,
-    buildActivityPosition: 'bottom-right',
+    position: 'bottom-right',
   },
   // Mobile development settings
   async headers() {
