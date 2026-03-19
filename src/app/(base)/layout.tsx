@@ -9,7 +9,7 @@ import { QRScanner } from '@/features/qr-scanner';
 import { useEffect } from 'react';
 
 // Feature flag для скрытия основных разделов (временное решение для привлечения лидов)
-const HIDE_MAIN_SECTIONS = true;
+const HIDE_MAIN_SECTIONS = false;
 
 export default function BaseLayout({
   children,
@@ -61,13 +61,8 @@ export default function BaseLayout({
       //   return;
       // }
 
-      // Новая логика: сразу редиректим на data-input при старте
-      // Если пользователь на главной странице или онбординге - сразу редиректим на data-input
-      if (pathname === '/' || pathname === '/onboarding') {
-        console.log('[BaseLayout] Redirecting to data-input page');
-        router.push('/collab/data-input');
-        return;
-      }
+      // Разрешаем показывать онбординг - пользователь должен увидеть приветственный экран
+      // Редирект на data-input происходит только после завершения онбординга
 
       // Если основные разделы скрыты и пользователь пытается зайти на home, map, products, chat
       // редиректим на страницу ввода данных
