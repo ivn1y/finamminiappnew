@@ -1,7 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import React, { useState } from 'react';
 import Image from 'next/image';
 import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
 import { useAppStore } from '@/shared/store/app-store';
@@ -11,7 +10,6 @@ import { Button } from '@/shared/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from '@/shared/ui/dialog';
 import { QRScanner } from '@/features/qr-scanner';
 import { QRScanResult } from '@/shared/types/qr';
-import { MapTour } from '@/features/app-tour';
 import { SchedulePage } from '@/widgets/schedule-page';
 
 const LegendItem: React.FC<{
@@ -34,30 +32,17 @@ const LegendItem: React.FC<{
 );
 
 export const MapPage: React.FC = () => {
-  const router = useRouter();
   const {
     eventMode,
     setQRScanner,
     showQRScanner,
-    showMapTour,
-    completeMapTourAndGoToSchedule,
-    showScheduleTour,
   } = useAppStore();
   const [redeemedZones, setRedeemedZones] = useState<string[]>([]);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [showSecretPhraseSuccessModal, setShowSecretPhraseSuccessModal] = useState(false);
-  const isClickingLinkRef = React.useRef(false);
-  const isClickingCloseRef = React.useRef(false);
   const [lastPrize, setLastPrize] = useState('');
   const [selectedZone, setSelectedZone] = useState<any>(null);
   const [activeTab, setActiveTab] = useState<'map' | 'schedule'>('map');
   const [isMapFullScreen, setIsMapFullScreen] = useState(false);
-
-  useEffect(() => {
-    if (showScheduleTour) {
-      setActiveTab('schedule');
-    }
-  }, [showScheduleTour]);
 
   if (!eventMode) {
     return (
@@ -84,16 +69,6 @@ export const MapPage: React.FC = () => {
       return;
     }
 
-    // Проверяем секретную фразу "Финам Collab твои возможности"
-    if (code.toLowerCase() === 'finam:финам collab твои возможности') {
-      setQRScanner(false);
-      setShowSecretPhraseSuccessModal(true);
-      useAppStore.getState().addBadge('qr_scanner_badge');
-      useAppStore.getState().incrementProgress();
-      useAppStore.getState().addScannedZone('secret_phrase_zone');
-      return;
-    }
-    
     const zone = eventData.zones.find(z => z.qr === code);
     if (zone && !redeemedZones.includes(zone.id)) {
       setRedeemedZones(prev => [...prev, zone.id]);
@@ -113,8 +88,6 @@ export const MapPage: React.FC = () => {
   return (
     <div className="w-full bg-black flex justify-center overflow-x-hidden">
       <div className="bg-black w-[393px] relative font-sans text-white" style={{ height: '867px' }}>
-      {showMapTour && <MapTour onComplete={completeMapTourAndGoToSchedule} />}
-      
       {/* Tab Switcher */}
       <div
         className="absolute flex w-[353px] h-12 p-1 items-center justify-center rounded-[4px] bg-[#151519]"
@@ -204,20 +177,6 @@ export const MapPage: React.FC = () => {
             <LegendItem gradient="#cf8d2d" text="Финам" />
             <LegendItem gradient="#7a412d" text="Бар" rotated />
           </div>
-
-          <button
-            onClick={() => setQRScanner(true)}
-            className="absolute flex justify-center items-center rounded-[8px] text-center font-inter text-[17px] font-semibold leading-[24px] tracking-[-0.204px] text-white z-40 mb-24"
-            style={{ 
-              top: 665, 
-              left: 20, 
-              width: 353, 
-              padding: '16px 24px',
-              background: 'linear-gradient(305deg, #FEDA3B -2.67%, #EF5541 38.9%, #801FDB 77.17%, #7E2A89 98.46%)'
-            }}
-          >
-            Секретная фраза
-          </button>
         </>
       ) : (
         <div className="absolute" style={{ top: 98, left: 0, right: 0, bottom: 0 }}>
@@ -271,156 +230,6 @@ export const MapPage: React.FC = () => {
           >
             Отлично!
           </Button>
-        </DialogContent>
-      </Dialog>
-
-      <Dialog 
-        open={showSecretPhraseSuccessModal} 
-        onOpenChange={(open) => {
-          // Не закрываем модалку, если клик был на ссылку "Telegram-комьюнити"
-          if (!open && isClickingLinkRef.current) {
-            isClickingLinkRef.current = false;
-            return;
-          }
-          // Если клик был на крестик - просто закрываем
-          if (!open && isClickingCloseRef.current) {
-            isClickingCloseRef.current = false;
-            setShowSecretPhraseSuccessModal(false);
-            return;
-          }
-          // Разрешаем закрытие через кнопку "Участвовать" или крестик
-          setShowSecretPhraseSuccessModal(open);
-        }}
-      >
-        <DialogContent 
-          className="p-0 border-0" 
-          style={{ width: 353, height: 358, borderRadius: 10, background: '#1A1A1F' }}
-          onInteractOutside={(e) => {
-            // Полностью предотвращаем закрытие при клике вне модалки
-            e.preventDefault();
-          }}
-          onEscapeKeyDown={(e) => {
-            // Разрешаем закрытие только по Escape
-            // (можно оставить как есть или тоже заблокировать)
-          }}
-          onClick={(e) => {
-            // Отслеживаем клик на крестик, но не мешаем кнопке "Участвовать"
-            const target = e.target as HTMLElement;
-            // Если клик на кнопку "Участвовать" - не обрабатываем здесь
-            if (target.closest('button') && target.closest('button')?.textContent?.includes('Участвовать')) {
-              return; // Позволяем обработчику кнопки сработать
-            }
-            // Отслеживаем клик на крестик
-            const closeButton = target.closest('button[data-radix-dialog-close]') || 
-                               target.closest('[data-radix-dialog-close]') ||
-                               (target.closest('button') && target.closest('button')?.querySelector('svg'));
-            if (closeButton && !closeButton.textContent?.includes('Участвовать')) {
-              isClickingCloseRef.current = true;
-            }
-          }}
-        >
-            <div 
-              className="relative w-full h-full flex flex-col items-center" 
-              onMouseDown={(e) => {
-                e.stopPropagation();
-                (window as any).lastClickEvent = e.nativeEvent;
-              }} 
-              onClick={(e) => {
-                e.stopPropagation();
-                (window as any).lastClickEvent = e.nativeEvent;
-              }}
-            >
-              <div className="absolute" style={{ top: 14 }}>
-                  <Image src="/assets/gifts/gift.png" alt="Подарок" width={120} height={120} />
-              </div>
-              <h2 
-                className="absolute text-white text-center font-inter-tight font-normal"
-                style={{ top: 128, fontSize: 28, lineHeight: '32px', letterSpacing: '-0.504px' }}
-              >
-                Поздравляем!
-              </h2>
-              <p
-                className="absolute text-center"
-                style={{ top: 170, left: 19, right: 18, color: '#6F6F7C', fontFamily: 'Inter', fontSize: 17, fontStyle: 'normal', fontWeight: 400, lineHeight: '24px', letterSpacing: '-0.17px' }}
-                onMouseDown={(e) => {
-                  // Не блокируем клик на span внутри
-                  if ((e.target as HTMLElement).closest('span[style*="background"]')) {
-                    return;
-                  }
-                  e.stopPropagation();
-                }}
-                onClick={(e) => {
-                  // Не блокируем клик на span внутри
-                  if ((e.target as HTMLElement).closest('span[style*="background"]')) {
-                    return;
-                  }
-                  e.stopPropagation();
-                }}
-              >
-                Чтобы принять участие в розыгрыше, убедись, что ты уже в нашем{' '}
-                <span
-                  onMouseDown={(e) => {
-                    e.stopPropagation();
-                    isClickingLinkRef.current = true;
-                  }}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    e.preventDefault();
-                    isClickingLinkRef.current = true;
-                    const url = 'https://t.me/finam_collab';
-                    console.log('Opening Telegram link:', url);
-                    if (typeof window !== 'undefined' && (window as any).Telegram?.WebApp?.openLink) {
-                      (window as any).Telegram.WebApp.openLink(url);
-                    } else {
-                      window.open(url, '_blank');
-                    }
-                    // Сбрасываем флаг через небольшую задержку
-                    setTimeout(() => {
-                      isClickingLinkRef.current = false;
-                    }, 100);
-                  }}
-                  className="text-[17px] font-normal tracking-[-0.17px] font-inter cursor-pointer"
-                  style={{
-                    background: 'linear-gradient(305deg, #FEDA3B -2.67%, #EF5541 38.9%, #801FDB 77.17%, #7E2A89 98.46%)',
-                    backgroundClip: 'text',
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
-                  }}
-                >
-                  Telegram-комьюнити
-                </span>
-                , и нажми кнопку ниже
-              </p>
-            </div>
-            <button
-              type="button"
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                const url = 'https://t.me/Random/JoinLot?startapp=1813414Gf249b41&startApp=1813414Gf249b41';
-                console.log('Button clicked, opening:', url);
-                if (typeof window !== 'undefined' && (window as any).Telegram?.WebApp?.openLink) {
-                  (window as any).Telegram.WebApp.openLink(url);
-                } else {
-                  window.open(url, '_blank');
-                }
-                setShowSecretPhraseSuccessModal(false);
-              }}
-              className="absolute flex justify-center items-center rounded-lg text-white text-center font-inter text-[17px] font-semibold leading-[24px] tracking-[-0.204px] cursor-pointer"
-              style={{
-                  bottom: 20,
-                  left: 19,
-                  right: 20,
-                  width: 'calc(100% - 38px)',
-                  padding: '16px 24px',
-                  background: 'linear-gradient(305deg, #FEDA3B -2.67%, #EF5541 38.9%, #801FDB 77.17%, #7E2A89 98.46%)',
-                  zIndex: 10,
-                  border: 'none',
-                  outline: 'none'
-              }}
-            >
-              Участвовать
-            </button>
         </DialogContent>
       </Dialog>
       </div>

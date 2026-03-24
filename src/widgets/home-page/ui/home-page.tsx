@@ -14,9 +14,6 @@ import {
 import { BadgeModal, TelegramChannelBlock } from '@/shared/ui';
 import Image from 'next/image';
 import { HomeTour } from '@/features/app-tour';
-import { QRScanner } from '@/features/qr-scanner';
-import { QRScanResult } from '@/shared/types/qr';
-import { Dialog, DialogContent } from '@/shared/ui/dialog';
 import { useSubscriptionCheck } from '@/features/telegram-subscription-check';
 
 const TaskButton = React.forwardRef<HTMLDivElement, {
@@ -128,7 +125,7 @@ const Badge = ({
 );
 
 export const HomePage: React.FC = () => {
-  const { user, telegramQuestCompleted, completeTelegramQuest, showAppTour, endAppTour, completeHomeTourAndGoToProfile, showQRScanner, setQRScanner } = useAppStore();
+  const { user, telegramQuestCompleted, completeTelegramQuest, showAppTour, endAppTour, completeHomeTourAndGoToProfile } = useAppStore();
   const router = useRouter();
   const [selectedBadge, setSelectedBadge] = useState<{
     imgSrc: string;
@@ -139,9 +136,6 @@ export const HomePage: React.FC = () => {
     howToEarn?: string;
   } | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [showSecretPhraseSuccessModal, setShowSecretPhraseSuccessModal] = useState(false);
-  const isClickingLinkRef = React.useRef(false);
-  const isClickingCloseRef = React.useRef(false);
   const profileTaskRef = useRef<HTMLDivElement>(null);
   const [highlightedButtonRect, setHighlightedButtonRect] = useState<DOMRect | null>(null);
 
@@ -223,30 +217,6 @@ export const HomePage: React.FC = () => {
     window.open('https://t.me/finam_collab', '_blank');
   };
 
-  const handleSecretPhraseClick = (e?: React.MouseEvent) => {
-    if (e) {
-      e.preventDefault();
-      e.stopPropagation();
-    }
-    setQRScanner(true);
-  };
-
-  const handleQRSuccess = (result: QRScanResult) => {
-    const code = result.code || '';
-
-    // Проверяем секретную фразу "Финам Collab твои возможности"
-    if (code.toLowerCase() === 'finam:финам collab твои возможности') {
-      setQRScanner(false);
-      setShowSecretPhraseSuccessModal(true);
-      useAppStore.getState().addBadge('qr_scanner_badge');
-      useAppStore.getState().incrementProgress();
-      useAppStore.getState().addScannedZone('secret_phrase_zone');
-      return;
-    }
-    
-    // Если это другой QR код, просто закрываем
-    setQRScanner(false);
-  };
 
   // Mock data for progress and badges, will be replaced with real data
   const progress = 25;
@@ -268,16 +238,10 @@ export const HomePage: React.FC = () => {
       completed: !!telegramQuestCompleted || isSubscribed,
       onClick: handleTelegramQuestClick,
     },
-    {
-      text: 'Введи секретную фразу',
-      completed: !!(user.scannedZones && user.scannedZones.length > 0),
-      onClick: handleSecretPhraseClick,
-      href: undefined,
-    },
   ];
 
   const completedTasksCount = tasks.filter(task => task.completed).length;
-  const progressPercentage = completedTasksCount * 25;
+  const progressPercentage = Math.round((completedTasksCount / tasks.length) * 100);
 
   const handleBadgeClick = (badge: {
     imgSrc: string;
@@ -314,11 +278,6 @@ export const HomePage: React.FC = () => {
       userBadges.push('researcher');
     }
     
-    // Бейдж "Market Explorer" - за сканирование QR-кодов
-    if (user.scannedZones && user.scannedZones.length > 0) {
-      userBadges.push('market-explorer');
-    }
-    
     // Бейдж "Risk Manager" - за выполнение Telegram квеста
     if (telegramQuestCompleted) {
       userBadges.push('risk-manager');
@@ -336,8 +295,8 @@ export const HomePage: React.FC = () => {
 
   const badges = [
     {
-      imgSrc: '/assets/badges/researcher.png?v=2',
-      grayImgSrc: '/assets/badges-gray/researcher gray.png?v=2',
+      imgSrc: '/assets/badges/researcher.png?v=5',
+      grayImgSrc: '/assets/badges-gray/researcher gray.png?v=5',
       title: 'ИССЛЕДОВАТЕЛЬ',
       displayTitle: 'Исследователь',
       achieved: userBadges.includes('researcher'),
@@ -345,31 +304,13 @@ export const HomePage: React.FC = () => {
       howToEarn: 'Заполни профиль полностью'
     },
     {
-      imgSrc: '/assets/badges/market-explorer.png?v=2',
-      grayImgSrc: '/assets/badges-gray/market-explorer gray.png?v=2',
-      title: 'MARKET EXPLORER',
-      displayTitle: 'Market Explorer',
-      achieved: userBadges.includes('market-explorer'),
-      description: 'За исследование различных рынков и активов',
-      howToEarn: 'Введи секретную фразу'
-    },
-    {
-      imgSrc: '/assets/badges/risk-manager.png?v=2',
-      grayImgSrc: '/assets/badges-gray/risk-manager gray.png?v=2',
-      title: 'RISK MANAGER',
-      displayTitle: 'Risk Manager',
+      imgSrc: '/assets/badges/risk-manager.png?v=5',
+      grayImgSrc: '/assets/badges-gray/risk-manager gray.png?v=5',
+      title: 'МЕНЕДЖЕР РИСКОВ',
+      displayTitle: 'Менеджер Рисков',
       achieved: userBadges.includes('risk-manager'),
       description: 'За эффективное управление рисками в торговле',
       howToEarn: 'Вступи в сообщество'
-    },
-    {
-      imgSrc: '/assets/badges/algo-creator.png?v=2',
-      grayImgSrc: '/assets/badges-gray/algo-creator gray.png?v=2',
-      title: 'ALGO CREATOR',
-      displayTitle: 'Algo Creator',
-      achieved: userBadges.includes('algo-creator'),
-      description: 'За создание собственных торговых алгоритмов',
-      howToEarn: 'Выполни все задания'
     },
   ];
 
@@ -381,7 +322,7 @@ export const HomePage: React.FC = () => {
           onComplete={handleProfileTaskClick}
         />
       )}
-      <div className="relative w-[393px]" style={{ height: '1193px' }}>
+      <div className="relative w-[393px]" style={{ height: '981px' }}>
         <div
           className="absolute top-[15px] left-1/2 -translate-x-1/2 w-[390px] h-[281px] rounded-[390px] opacity-50 blur-[80px]"
           style={{
@@ -398,7 +339,7 @@ export const HomePage: React.FC = () => {
 
         <div className="absolute top-[120px] w-full px-[38.5px]">
           <p className="text-[rgba(255,255,255,0.72)] text-center font-inter text-[17px] font-normal leading-[24px] tracking-[-0.17px]">
-            Ты прошел {completedTasksCount} из 4 шагов до своей первой коллаборации
+            Ты прошел {completedTasksCount} из {tasks.length} шагов до своей первой коллаборации
           </p>
         </div>
 
@@ -433,10 +374,10 @@ export const HomePage: React.FC = () => {
           </div>
         </div>
 
-        <h2 className="absolute top-[565px] left-[20px] font-inter-tight text-[24px] font-normal leading-[110%] tracking-[-0.48px] text-white">
+        <h2 className="absolute top-[499px] left-[20px] font-inter-tight text-[24px] font-normal leading-[110%] tracking-[-0.48px] text-white">
           Мои бейджи
         </h2>
-        <div className="absolute top-[607px] left-[20px] grid grid-cols-2 gap-x-[9px] gap-y-[9px]">
+        <div className="absolute top-[541px] left-[20px] grid grid-cols-2 gap-x-[9px] gap-y-[9px]">
           {badges.map((badge, index) => (
             <Badge
               key={index}
@@ -451,12 +392,12 @@ export const HomePage: React.FC = () => {
 
         <div
           id="telegram-quest"
-          className="absolute top-[910px] left-1/2 -translate-x-1/2"
+          className="absolute top-[698px] left-1/2 -translate-x-1/2"
         >
           <TelegramChannelBlock 
             onClick={handleTelegramLinkClick} 
             title="Твой первый квест"
-            description="Расскажи о себе в сообществе Финам Collab и получи призы"
+            description="Расскажи о себе в сообществе Финам Коллаб и получи призы"
           />
         </div>
       </div>
@@ -470,167 +411,6 @@ export const HomePage: React.FC = () => {
         />
       )}
 
-      {/* QR Scanner */}
-      {showQRScanner && (
-        <QRScanner
-          onSuccess={handleQRSuccess}
-          onClose={() => {
-            setQRScanner(false);
-          }}
-          userId="demo-user"
-        />
-      )}
-
-      {/* Secret Phrase Success Modal */}
-      <Dialog 
-        open={showSecretPhraseSuccessModal} 
-        onOpenChange={(open) => {
-          // Не закрываем модалку, если клик был на ссылку "Telegram-комьюнити"
-          if (!open && isClickingLinkRef.current) {
-            isClickingLinkRef.current = false;
-            return;
-          }
-          // Если клик был на крестик - просто закрываем
-          if (!open && isClickingCloseRef.current) {
-            isClickingCloseRef.current = false;
-            setShowSecretPhraseSuccessModal(false);
-            return;
-          }
-          // Разрешаем закрытие через кнопку "Участвовать" или крестик
-          setShowSecretPhraseSuccessModal(open);
-        }}
-      >
-        <DialogContent 
-          className="p-0 border-0" 
-          style={{ width: 353, height: 358, borderRadius: 10, background: '#1A1A1F' }}
-          onInteractOutside={(e) => {
-            // Полностью предотвращаем закрытие при клике вне модалки
-            e.preventDefault();
-          }}
-          onEscapeKeyDown={(e) => {
-            // Разрешаем закрытие только по Escape
-            // (можно оставить как есть или тоже заблокировать)
-          }}
-          onClick={(e) => {
-            // Отслеживаем клик на крестик, но не мешаем кнопке "Участвовать"
-            const target = e.target as HTMLElement;
-            // Если клик на кнопку "Участвовать" - не обрабатываем здесь
-            if (target.closest('button') && target.closest('button')?.textContent?.includes('Участвовать')) {
-              return; // Позволяем обработчику кнопки сработать
-            }
-            // Отслеживаем клик на крестик
-            const closeButton = target.closest('button[data-radix-dialog-close]') || 
-                               target.closest('[data-radix-dialog-close]') ||
-                               (target.closest('button') && target.closest('button')?.querySelector('svg'));
-            if (closeButton && !closeButton.textContent?.includes('Участвовать')) {
-              isClickingCloseRef.current = true;
-            }
-          }}
-        >
-          <div 
-            className="relative w-full h-full flex flex-col items-center" 
-            onMouseDown={(e) => {
-              e.stopPropagation();
-              (window as any).lastClickEvent = e.nativeEvent;
-            }} 
-            onClick={(e) => {
-              e.stopPropagation();
-              (window as any).lastClickEvent = e.nativeEvent;
-            }}
-          >
-            <div className="absolute" style={{ top: 14 }}>
-              <Image src="/assets/gifts/gift.png" alt="Подарок" width={120} height={120} />
-            </div>
-            <h2 
-              className="absolute text-white text-center font-inter-tight font-normal"
-              style={{ top: 128, fontSize: 28, lineHeight: '32px', letterSpacing: '-0.504px' }}
-            >
-              Поздравляем!
-            </h2>
-            <p
-              className="absolute text-center"
-              style={{ top: 170, left: 19, right: 18, color: '#6F6F7C', fontFamily: 'Inter', fontSize: 17, fontStyle: 'normal', fontWeight: 400, lineHeight: '24px', letterSpacing: '-0.17px' }}
-              onMouseDown={(e) => {
-                // Не блокируем клик на span внутри
-                if ((e.target as HTMLElement).closest('span[style*="background"]')) {
-                  return;
-                }
-                e.stopPropagation();
-              }}
-              onClick={(e) => {
-                // Не блокируем клик на span внутри
-                if ((e.target as HTMLElement).closest('span[style*="background"]')) {
-                  return;
-                }
-                e.stopPropagation();
-              }}
-            >
-              Чтобы принять участие в розыгрыше, убедись, что ты уже в нашем{' '}
-              <span
-                onMouseDown={(e) => {
-                  e.stopPropagation();
-                  isClickingLinkRef.current = true;
-                }}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  e.preventDefault();
-                  isClickingLinkRef.current = true;
-                  const url = 'https://t.me/finam_collab';
-                  console.log('Opening Telegram link:', url);
-                  if (typeof window !== 'undefined' && (window as any).Telegram?.WebApp?.openLink) {
-                    (window as any).Telegram.WebApp.openLink(url);
-                  } else {
-                    window.open(url, '_blank');
-                  }
-                  // Сбрасываем флаг через небольшую задержку
-                  setTimeout(() => {
-                    isClickingLinkRef.current = false;
-                  }, 100);
-                }}
-                className="text-[17px] font-normal tracking-[-0.17px] font-inter cursor-pointer"
-                style={{
-                  background: 'linear-gradient(305deg, #FEDA3B -2.67%, #EF5541 38.9%, #801FDB 77.17%, #7E2A89 98.46%)',
-                  backgroundClip: 'text',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                }}
-              >
-                Telegram-комьюнити
-              </span>
-              , и нажми кнопку ниже
-            </p>
-          </div>
-          <button
-            type="button"
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              const url = 'https://t.me/Random/JoinLot?startapp=1813414Gf249b41&startApp=1813414Gf249b41';
-              console.log('Button clicked, opening:', url);
-              if (typeof window !== 'undefined' && (window as any).Telegram?.WebApp?.openLink) {
-                (window as any).Telegram.WebApp.openLink(url);
-              } else {
-                window.open(url, '_blank');
-              }
-              setShowSecretPhraseSuccessModal(false);
-            }}
-            className="absolute flex justify-center items-center rounded-lg text-white text-center font-inter text-[17px] font-semibold leading-[24px] tracking-[-0.204px] cursor-pointer"
-            style={{
-              bottom: 20,
-              left: 19,
-              right: 20,
-              width: 'calc(100% - 38px)',
-              padding: '16px 24px',
-              background: 'linear-gradient(305deg, #FEDA3B -2.67%, #EF5541 38.9%, #801FDB 77.17%, #7E2A89 98.46%)',
-              zIndex: 10,
-              border: 'none',
-              outline: 'none'
-            }}
-          >
-            Участвовать
-          </button>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 };

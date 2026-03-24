@@ -2,7 +2,6 @@
 
 import React from 'react';
 import Image from 'next/image';
-import { useAppStore } from '@/shared/store/app-store';
 
 interface BadgeModalProps {
   isOpen: boolean;
@@ -22,12 +21,6 @@ export const BadgeModal = ({
   onClose,
   badge
 }: BadgeModalProps) => {
-  const setQRScanner = useAppStore((state) => state.setQRScanner);
-  
-  const isSecretPhraseButton = badge.howToEarn?.toLowerCase().includes('секретную фразу') || 
-                               badge.howToEarn?.toLowerCase().includes('секретную') ||
-                               badge.howToEarn === 'Введи секретную фразу';
-  
   const isTelegramQuestButton = badge.howToEarn?.toLowerCase().includes('telegram') || 
                                 badge.howToEarn?.toLowerCase().includes('телеграм') ||
                                 badge.howToEarn === 'Выполни Telegram квест' ||
@@ -38,18 +31,14 @@ export const BadgeModal = ({
   const isAllTasksButton = badge.howToEarn?.toLowerCase().includes('выполни все задания') ||
                            badge.howToEarn === 'Выполни все задания';
   
-  const isActiveButton = isSecretPhraseButton || isTelegramQuestButton || isAllTasksButton;
+  const isActiveButton = isTelegramQuestButton || isAllTasksButton;
   
   const handleHowToEarnClick = () => {
-    if (isSecretPhraseButton) {
-      onClose();
-      setQRScanner(true);
-    } else if (isTelegramQuestButton) {
+    if (isTelegramQuestButton) {
       onClose();
       window.open('https://t.me/finam_collab', '_blank');
     } else if (isAllTasksButton) {
       onClose();
-      // Прокручиваем к секции "Выполни задания" на главной странице
       setTimeout(() => {
         const tasksSection = document.getElementById('tasks-section');
         if (tasksSection) {
@@ -122,11 +111,11 @@ export const BadgeModal = ({
 
         {/* Badge title */}
         <h2
-          className="absolute font-inter-tight text-[28px] font-medium leading-[32px] tracking-[-0.504px] text-white text-center whitespace-nowrap"
+          className="absolute font-inter-tight text-[28px] font-medium leading-[32px] tracking-[-0.504px] text-white text-center"
           style={{
             top: '126px',
-            left: '92px',
-            right: '91px',
+            left: '0',
+            right: '0',
           }}
         >
           {badge.title}

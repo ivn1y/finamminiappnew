@@ -44,7 +44,7 @@ import { useRouter } from 'next/navigation';
 import { useBooking } from '@/shared/hooks/use-booking';
 
 export const ProfilePage: React.FC = () => {
-  const { user, getAllBadges, getProgressPercentage, showProfileTour, endProfileTour, startMapTour, openUserDataInputModal } = useAppStore();
+  const { user, getAllBadges, getProgressPercentage, showProfileTour, endProfileTour, openUserDataInputModal } = useAppStore();
   const { syncWithApi, isLoading: isProfileLoading } = useProfile();
   const { 
     updateProfile, 
@@ -262,8 +262,8 @@ export const ProfilePage: React.FC = () => {
     await trackShareProfile();
     
     const shareData = {
-      title: 'Finam Collab',
-      text: `Я участвую в Finam Collab как ${role.title}! Присоединяйся!`,
+      title: 'Финам Коллаб',
+      text: `Я участвую в Финам Коллаб как ${role.title}! Присоединяйся!`,
       url: window.location.href
     };
 
@@ -335,8 +335,6 @@ export const ProfilePage: React.FC = () => {
       updatedUser.credentials?.email
     ) {
       endProfileTour();
-      startMapTour();
-      router.push('/collab/map');
     }
   };
 

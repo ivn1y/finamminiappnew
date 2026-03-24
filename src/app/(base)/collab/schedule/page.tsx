@@ -1,7 +1,7 @@
-import { SchedulePage } from '@/widgets/schedule-page';
+import { CompetitionPage } from '@/widgets/competition-page';
 
 export const dynamic = 'force-dynamic';
 
 export default function Schedule() {
-  return <SchedulePage />;
+  return <CompetitionPage />;
 }

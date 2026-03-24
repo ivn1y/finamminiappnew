@@ -134,13 +134,13 @@ export const ProductsPage: React.FC = () => {
             </div>
           </div>
 
-          {/* Finam Collab Block */}
+          {/* Финам Коллаб Block */}
           <div className="mt-5 bg-[#1a1a1f] rounded-lg p-4">
             <h2 className="font-inter-tight text-[24px] text-white tracking-[-0.48px] leading-tight mb-2">
-              Финам Collab
+              Финам Коллаб
             </h2>
             <p className="font-inter text-[14px] text-white tracking-[-0.056px] leading-5 mb-2 w-[285px]">
-              Узнай про все продукты Finam Collab
+              Узнай про все продукты Финам Коллаб
             </p>
             <button 
               onClick={() => window.open('https://collab.finam.ru/?utm_source=finam.collab-bot&utm_medium=referral&utm_campaign=app_collab_rf_native_content.app.users___referral&utm_content=button-site', '_blank')}

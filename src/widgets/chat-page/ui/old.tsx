@@ -675,7 +675,7 @@ export const ChatPage: React.FC = () => {
 							<FinamLogoIcon className="h-[56px] w-[60px]" />
 							<h1 className='mt-[7px] w-[352px] font-inter text-white text-[30px] font-normal leading-[110%] tracking-[-0.6px] text-center'>
 								Привет, я AI - Ассиcтент
-								<span className='block'>Finam</span>
+								<span className='block'>Финам</span>
 							</h1>
 							<p className='mt-[14px] w-[336px] text-[rgba(255,255,255,0.72)] font-inter text-[17px] font-normal leading-[24px] tracking-[-0.17px] text-center'>
 								Чему могу помочь?

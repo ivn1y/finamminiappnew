@@ -5,13 +5,8 @@ import { useRouter } from 'next/navigation';
 import { useAppStore } from '@/shared/store/app-store';
 import { UserRole } from '@/shared/types/app';
 import { roleContent } from '@/shared/data/seed';
-import { ChevronRight, ChevronLeft, Sparkles, Target, Users, Building2, Lightbulb, AlertCircle, User } from 'lucide-react';
+import { Target, Users, Building2, Lightbulb, User } from 'lucide-react';
 import { RoleCarousel } from '@/features/role-carousel';
-import { PrivacyPolicyLink } from '@/features/privacy-policy';
-import { TraderProfileForm } from '@/features/credentials-collection/ui/trader-profile-form';
-import { StartupProfileForm } from '@/features/credentials-collection/ui/startup-profile-form';
-import { ExpertProfileForm } from '@/features/credentials-collection/ui/expert-profile-form';
-import { PartnerProfileForm } from '@/features/credentials-collection/ui/partner-profile-form';
 import { type CarouselApi } from '@/shared/ui/carousel';
 
 // Логотип Финам
@@ -85,9 +80,7 @@ export const Onboarding: React.FC = () => {
   const { setUser, updateUser, completeOnboarding, startAppTour, eventMode } = useAppStore();
   const [currentStep, setCurrentStep] = useState(0);
   const [selectedRole, setSelectedRole] = useState<UserRole | null>('trader');
-  const [profileData, setProfileData] = useState<Record<string, any>>({});
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const [customMarkets, setCustomMarkets] = useState<string>('');
   const [carouselApi, setCarouselApi] = useState<CarouselApi | undefined>();
   const [currentSlide, setCurrentSlide] = useState(0);
 
@@ -126,80 +119,15 @@ export const Onboarding: React.FC = () => {
 
   const handleRoleNext = () => {
     if (selectedRole) {
-      // Для роли "Гость" сразу завершаем онбординг без показа формы профиля
-      if (selectedRole === 'guest') {
-        handleProfileNext();
-      } else {
-        setCurrentStep(2);
-      }
+      // Сразу завершаем онбординг без показа формы профиля
+      handleFinalSubmit();
     } else {
       // Если роль не выбрана, показываем ошибку
       setErrors({...errors, role: 'Выберите роль'});
     }
   };
 
-  const handleProfileNext = async (data?: any) => {
-    const newProfileData = { ...profileData, ...data };
-    setProfileData(newProfileData);
-
-    // Валидация для трейдера
-    if (selectedRole === 'trader') {
-      if (!newProfileData.experience) {
-        setErrors({ ...errors, experience: 'Выберите опыт торговли' });
-        return;
-      }
-      if (!newProfileData.markets || newProfileData.markets.length === 0) {
-        setErrors({ ...errors, markets: 'Выберите хотя бы один рынок' });
-        return;
-      }
-    }
-
-    if (data) {
-      setProfileData(newProfileData);
-    } else {
-      setProfileData(profileData);
-    }
-    
-    // Валидация для стартапа
-    if (selectedRole === 'startup') {
-      if (!newProfileData.projectStage) {
-        setErrors({ ...errors, projectStage: 'Выберите стадию проекта' });
-        return;
-      }
-      if (!newProfileData.productDescription || newProfileData.productDescription.trim() === '') {
-        setErrors({ ...errors, productDescription: 'Опишите свой продукт в трех словах' });
-        return;
-      }
-    }
-    
-    // Валидация для эксперта
-    if (selectedRole === 'expert') {
-      if (!newProfileData.expertRole) {
-        setErrors({ ...errors, expertRole: 'Выберите роль в Collab' });
-        return;
-      }
-      if (!newProfileData.expertise || newProfileData.expertise.trim() === '') {
-        setErrors({ ...errors, expertise: 'Укажите область вашей экспертизы' });
-        return;
-      }
-      if (!newProfileData.experience) {
-        setErrors({ ...errors, experience: 'Выберите опыт работы' });
-        return;
-      }
-    }
-    
-    // Валидация для партнера
-    if (selectedRole === 'partner') {
-      if (!newProfileData.partnerPackage) {
-        setErrors({ ...errors, partnerPackage: 'Выберите что вас интересует' });
-        return;
-      }
-    }
-    
-      await handleFinalSubmit(newProfileData);
-  };
-
-  const handleFinalSubmit = async (finalProfileData: any) => {
+  const handleFinalSubmit = async () => {
     if (!selectedRole) {
       console.error('No selected role');
       return;
@@ -213,12 +141,12 @@ export const Onboarding: React.FC = () => {
       id: `user_${Date.now()}`,
       createdAt: new Date().toISOString(),
       role: selectedRole,
-        profile: selectedRole === 'guest' ? {} : { [selectedRole]: finalProfileData || {} },
+      profile: {},
       badges: ['explorer'],
       xp: 100,
       progressSteps: 1,
       name: selectedRole === 'guest' ? 'Прохожий' : '',
-      intent7d: selectedRole === 'guest' ? 'Изучить платформу Collab' : 'Изучить возможности платформы'
+      intent7d: selectedRole === 'guest' ? 'Изучить платформу Коллаб' : 'Изучить возможности платформы'
     };
 
       console.log('Creating user:', newUser);
@@ -274,19 +202,7 @@ export const Onboarding: React.FC = () => {
             color: 'rgba(255, 255, 255, 0.72)',
           }}
         >
-          Наше мини приложение для конференции{' '}
-            <span 
-              className="text-[17px] font-normal tracking-[-0.17px] font-inter"
-              style={{
-                background: 'linear-gradient(305deg, #FEDA3B -2.67%, #EF5541 38.9%, #801FDB 77.17%, #7E2A89 98.46%)',
-                backgroundClip: 'text',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-              }}
-            >
-            TradeId
-          </span>{' '}
-          поможет:
+          Наше приложение поможет:
         </p>
             </div>
 
@@ -297,14 +213,14 @@ export const Onboarding: React.FC = () => {
           <button
             className="flex items-center justify-center gap-10 rounded-lg px-4 py-2 bg-[#59307C] hover:bg-[#6B3A8F] transition-colors"
             style={{
-              width: '253px', // длина для iPhone 16
-              height: '36px', // ширина для iPhone 16
+              width: '340px',
+              height: '36px',
             }}
           >
             <span 
               className="text-white text-center font-inter text-[14px] font-medium leading-[140%] tracking-[-0.196px] whitespace-nowrap"
             >
-              Посмотреть карту и расписание
+              Узнать про возможности партнерства с Финам
             </span>
           </button>
         </div>
@@ -314,14 +230,14 @@ export const Onboarding: React.FC = () => {
           <button
             className="flex justify-center items-center gap-10 rounded-lg px-4 py-2 bg-[#59307C] hover:bg-[#6B3A8F] transition-colors"
             style={{
-              width: '289px', // длина для iPhone 16
-              height: '36px', // ширина для iPhone 16
+              width: '310px',
+              height: '36px',
             }}
           >
             <span 
               className="text-white text-center font-inter text-[14px] font-medium leading-[140%] tracking-[-0.196px]"
             >
-              Проходить квесты и получать бонусы
+              Оставить свою заявку для партнерства
             </span>
           </button>
         </div>
@@ -431,51 +347,11 @@ export const Onboarding: React.FC = () => {
     </div>
   );
 
-  const renderProfileForm = () => {
-    if (!selectedRole) return null;
-
-    const role = roleContent.find(r => r.id === selectedRole);
-    if (!role) return null;
-
-    // Для роли "Гость" не показываем форму профиля
-    if (selectedRole === 'guest') {
-      return null;
-    }
-
-    // Рендерим форму в зависимости от выбранной роли
-    if (selectedRole === 'trader') {
-      return renderTraderProfile();
-    } else if (selectedRole === 'startup') {
-      return renderStartupProfile();
-    } else if (selectedRole === 'expert') {
-      return renderExpertProfile();
-    } else if (selectedRole === 'partner') {
-      return renderPartnerProfile();
-    }
-
-    return null;
-  };
-
-
-  const renderTraderProfile = () => <TraderProfileForm onBack={() => setCurrentStep(1)} onNext={handleProfileNext} />;
-
-  const renderStartupProfile = () => <StartupProfileForm onBack={() => setCurrentStep(1)} onNext={handleProfileNext} />;
-
-  const renderExpertProfile = () => <ExpertProfileForm onBack={() => setCurrentStep(1)} onNext={handleProfileNext} />;
-
-  const renderPartnerProfile = () => <PartnerProfileForm onBack={() => setCurrentStep(1)} onNext={handleProfileNext} />;
-
   switch (currentStep) {
     case 0:
       return renderWelcomeScreen();
     case 1:
       return renderRoleSelection();
-    case 2:
-      // Для роли "Гость" не показываем форму профиля
-      if (selectedRole === 'guest') {
-        return null; // Этот case не должен выполняться для гостя
-      }
-      return renderProfileForm();
     default:
       return renderWelcomeScreen();
   }
