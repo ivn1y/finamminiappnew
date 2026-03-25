@@ -1,11 +1,9 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import React, { useState } from 'react';
 import { useAppStore } from '@/shared/store/app-store';
 import { scheduleData as mockScheduleData } from '@/shared/data/seed';
 import { ScheduleFilters } from '@/features/schedule-filters';
-import { ScheduleTour } from '@/features/app-tour';
 import {
   Accordion,
   AccordionContent,
@@ -159,16 +157,9 @@ const EventCard = ({ event }: { event: (typeof mockScheduleData.events)[0] }) =>
 
 
 export const SchedulePage: React.FC = () => {
-  const { showScheduleTour, completeScheduleTourAndGoToAssistant, showAssistantTour, isScheduleModalOpen, closeScheduleModal, selectedScheduleEvent } = useAppStore();
+  const { isScheduleModalOpen, closeScheduleModal, selectedScheduleEvent } = useAppStore();
   const [filteredEvents, setFilteredEvents] = useState<ScheduleEvent[] | null>(null);
   const [accordionValue, setAccordionValue] = useState<string>('');
-  const router = useRouter();
-
-  useEffect(() => {
-    if (showAssistantTour) {
-      router.push('/collab/chat');
-    }
-  }, [showAssistantTour, router]);
 
   const handleFilterChange = (events: ScheduleEvent[] | null) => {
     setFilteredEvents(events);
@@ -194,7 +185,6 @@ export const SchedulePage: React.FC = () => {
             paddingBottom: '191px'
           }}
         >
-      {showScheduleTour && <ScheduleTour onComplete={completeScheduleTourAndGoToAssistant} />}
       {/* Background Ellipse */}
       <div
         className="absolute"

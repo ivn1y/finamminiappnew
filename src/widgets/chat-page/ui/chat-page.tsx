@@ -1,6 +1,5 @@
 'use client';
 
-import { AssistantTour } from '@/features/app-tour';
 import chatKB from '@/shared/data/chat-kb.json';
 import { useAppStore } from '@/shared/store/app-store';
 import { Input } from '@/shared/ui/input';
@@ -182,7 +181,7 @@ const BotAvatar: React.FC = () => {
 
 
 export const ChatPage: React.FC = () => {
-  const { user, showAssistantTour, endAssistantTour } = useAppStore();
+  const { user } = useAppStore();
   const { submitBooking, isSubmitting } = useBooking();
   const { addMessage, loadFromStorage, syncToStorage, getLastProductContext } = useChatMessages();
   
@@ -804,10 +803,6 @@ export const ChatPage: React.FC = () => {
 
   // FSM: обработчик выбора опции
   const handleOptionSelect = (option: ChatOption) => {
-    if (showAssistantTour && messages.filter(m => m.isUser).length === 0) {
-      endAssistantTour();
-    }
-
     // Открываем чат при выборе опции
     setIsChatOpened(true);
 
@@ -887,11 +882,6 @@ export const ChatPage: React.FC = () => {
   const handleSendMessage = () => {
     if (!inputText.trim()) return;
 
-    // Завершаем AssistantTour при отправке первого сообщения
-    if (showAssistantTour && messages.filter(m => m.isUser).length === 0) {
-      endAssistantTour();
-    }
-
     const query = inputText.trim();
     
     // Открываем чат при отправке сообщения
@@ -927,11 +917,10 @@ export const ChatPage: React.FC = () => {
   };
 
   if (!hasUserMessages && !isChatOpened) {
-		return (
-			<>
-        {showAssistantTour && <AssistantTour onComplete={endAssistantTour} />}
-				<div className='w-full bg-black flex justify-center overflow-x-hidden'>
-					<div className='bg-black w-[393px] relative font-sans text-white' style={{ height: '816px' }}>
+	return (
+		<>
+			<div className='w-full bg-black flex justify-center overflow-x-hidden'>
+				<div className='bg-black w-[393px] relative font-sans text-white' style={{ height: '816px' }}>
 						{/* Gradient Background */}
 						<div
 							className='absolute top-[274px] left-1/2 -translate-x-1/2 w-[284px] h-[205px] rounded-full opacity-50 blur-[120px]'
@@ -946,7 +935,7 @@ export const ChatPage: React.FC = () => {
 							<FinamLogoIcon className="h-[56px] w-[60px]" />
 							<h1 className='mt-[7px] w-[352px] font-inter text-white text-[30px] font-normal leading-[110%] tracking-[-0.6px] text-center'>
 								Привет, я AI - Ассиcтент
-								<span className='block'>Finam</span>
+								<span className='block'>Финам</span>
 							</h1>
 							<p className='mt-[14px] w-[336px] text-[rgba(255,255,255,0.72)] font-inter text-[17px] font-normal leading-[24px] tracking-[-0.17px] text-center'>
 								Чему могу помочь?
@@ -1033,7 +1022,6 @@ export const ChatPage: React.FC = () => {
 
 	return (
 		<>
-			{showAssistantTour && <AssistantTour onComplete={endAssistantTour} />}
 			<div className='w-full bg-black flex justify-center overflow-x-hidden'>
 				<div className='bg-black w-[393px] relative font-sans text-white overflow-x-hidden' style={{ height: '816px' }}>
 					{/* Messages Container */}

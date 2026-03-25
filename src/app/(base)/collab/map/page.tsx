@@ -1,5 +1,5 @@
-import { MapPage } from '@/widgets/map-page';
+import { CompetitionPage } from '@/widgets/competition-page';
 
 export default function MapPageRoute() {
-  return <MapPage />;
+  return <CompetitionPage />;
 }

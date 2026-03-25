@@ -173,7 +173,7 @@ export function ExpertProfileForm({ onBack, onNext }: ExpertProfileFormProps) {
               onClick={() => setOpenDropdown(openDropdown === "role" ? null : "role")}
             >
               <span className="font-inter text-[16px] font-normal leading-[24px] tracking-[-0.128px] whitespace-nowrap overflow-hidden text-ellipsis" style={{ color: expertRole ? "#FFF" : "#A4A4B2" }}>
-                {expertRole || "Кем ты хочешь быть в Collab"}
+                {expertRole || "Кем ты хочешь быть в Коллаб"}
               </span>
               <SelectArrowIcon />
             </div>

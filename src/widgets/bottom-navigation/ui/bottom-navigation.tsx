@@ -18,11 +18,11 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({ activeTab, i
   }
 
   const tabs = [
-    { id: 'home', label: 'Главная', icon: '/assets/icons/main.png?v=3', href: '/collab/home' },
-    { id: 'map', label: 'Карта', icon: '/assets/icons/map.png?v=3', href: '/collab/map' },
-    { id: 'products', label: 'Продукты', icon: '/assets/icons/products.png?v=3', href: '/collab/products' },
-    { id: 'chat', label: 'Ассистент', icon: '/assets/icons/assistant.png?v=3', href: '/collab/chat' },
-    { id: 'profile', label: 'Профиль', icon: '/assets/icons/profile.png?v=3', href: '/collab/profile' }
+    { id: 'home', label: 'Главная', icon: '/assets/icons/main.png', iconGray: '/assets/icons/main_gray.svg', href: '/collab/home' },
+    { id: 'map', label: 'Соревнование', icon: '/assets/icons/competition.png', iconGray: '/assets/icons/competition_gray.svg', href: '/collab/map' },
+    { id: 'products', label: 'Продукты', icon: '/assets/icons/products.png', iconGray: '/assets/icons/products_gray.svg', href: '/collab/products' },
+    { id: 'chat', label: 'Ассистент', icon: '/assets/icons/assistant.png', iconGray: '/assets/icons/assistant_gray.svg', href: '/collab/chat' },
+    { id: 'profile', label: 'Профиль', icon: '/assets/icons/profile.png', iconGray: '/assets/icons/profile_gray.svg', href: '/collab/profile' }
   ];
 
   const handleLinkClick = () => {
@@ -54,12 +54,20 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({ activeTab, i
               >
                 <div className="w-[50px] h-[50px] mb-[-5px] flex items-center justify-center">
                   <img 
-                    src={tab.icon} 
+                    src={isActive ? tab.icon : tab.iconGray} 
                     alt={tab.label} 
-                    className="w-[80%] h-[80%] object-contain block"
+                    className={`object-contain block ${isActive ? 'w-[46px] h-[46px] aspect-square' : 'w-[22px] h-[22px]'}`}
                   />
                 </div>
-                <span className={`text-[9px] font-normal leading-[12px] ${isActive ? 'text-gradient' : 'text-inherit'}`}>
+                <span 
+                  className="text-[7px] font-normal leading-[12px] tracking-[0.112px] uppercase text-center"
+                  style={isActive ? {
+                    background: 'linear-gradient(90deg, #FDB938 6.62%, #ED6B51 100%)',
+                    backgroundClip: 'text',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent'
+                  } : {}}
+                >
                   {tab.label}
                 </span>
               </div>
@@ -79,12 +87,20 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({ activeTab, i
             >
               <div className="w-[50px] h-[50px] mb-[-5px] flex items-center justify-center">
                 <img 
-                  src={tab.icon} 
+                  src={isActive ? tab.icon : tab.iconGray} 
                   alt={tab.label} 
-                  className="w-[80%] h-[80%] object-contain block"
+                  className={`object-contain block ${isActive ? 'w-[46px] h-[46px] aspect-square' : 'w-[22px] h-[22px]'}`}
                 />
               </div>
-              <span className={`text-[9px] font-normal leading-[12px] ${isActive ? 'text-gradient' : 'text-inherit'}`}>
+              <span 
+                className="text-[7px] font-normal leading-[12px] tracking-[0.112px] uppercase text-center"
+                style={isActive ? {
+                  background: 'linear-gradient(90deg, #FDB938 6.62%, #ED6B51 100%)',
+                  backgroundClip: 'text',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent'
+                } : {}}
+              >
                 {tab.label}
               </span>
             </Link>

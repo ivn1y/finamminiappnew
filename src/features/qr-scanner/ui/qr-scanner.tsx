@@ -33,7 +33,7 @@ export const QRScanner: React.FC<QRScannerProps> = ({ onSuccess, onClose }) => {
     setInputValue(value);
   }
 
-  const SECRET_PHRASE = 'Финам Collab твои возможности'
+  const SECRET_PHRASE = 'Финам Коллаб твои возможности'
   
   const handleConfirm = () => {
     const userInput = inputValue.trim()

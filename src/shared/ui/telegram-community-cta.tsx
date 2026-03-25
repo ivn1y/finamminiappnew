@@ -27,7 +27,7 @@ export const TelegramCommunityCTA: React.FC<TelegramCommunityCTAProps> = ({
           className="w-full flex items-center justify-center space-x-2 text-blue-600 hover:text-blue-700 border-blue-200 hover:border-blue-300"
         >
           <MessageCircle className="w-4 h-4" />
-          <span>Вступай в сообщество Collab</span>
+          <span>Вступай в сообщество Коллаб</span>
           <ExternalLink className="w-3 h-3" />
         </Button>
       </div>
@@ -45,7 +45,7 @@ export const TelegramCommunityCTA: React.FC<TelegramCommunityCTAProps> = ({
           </div>
           <div className="flex-1 min-w-0">
             <h3 className="text-sm font-semibold text-gray-900">
-              Вступай в сообщество Collab
+              Вступай в сообщество Коллаб
             </h3>
             <p className="text-xs text-gray-600 mt-1">
               Присоединяйся к нашему Telegram сообществу для обсуждений и новостей
