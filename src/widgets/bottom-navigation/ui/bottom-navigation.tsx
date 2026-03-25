@@ -52,15 +52,26 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({ activeTab, i
                     : 'text-gray-400'
                 }`}
               >
-                <div className="w-[50px] h-[50px] mb-[-5px] flex items-center justify-center">
+                <div className="w-[50px] h-[50px] mb-[-5px] flex items-center justify-center relative">
                   <img 
-                    src={isActive ? tab.icon : tab.iconGray} 
+                    src={tab.iconGray} 
                     alt={tab.label} 
-                    className={`object-contain block ${isActive ? 'w-[46px] h-[46px] aspect-square' : 'w-[22px] h-[22px]'}`}
+                    className="object-contain block w-[22px] h-[22px] absolute transition-all duration-300 ease-in-out"
+                    style={{ opacity: isActive ? 0 : 1 }}
+                  />
+                  <img 
+                    src={tab.icon} 
+                    alt={tab.label} 
+                    className="object-contain block aspect-square absolute transition-all duration-300 ease-in-out"
+                    style={{ 
+                      opacity: isActive ? 1 : 0,
+                      width: isActive ? '46px' : '22px',
+                      height: isActive ? '46px' : '22px'
+                    }}
                   />
                 </div>
                 <span 
-                  className="text-[7px] font-normal leading-[12px] tracking-[0.112px] uppercase text-center"
+                  className="text-[7px] font-normal leading-[12px] tracking-[0.112px] uppercase text-center transition-all duration-300 ease-in-out"
                   style={isActive ? {
                     background: 'linear-gradient(90deg, #FDB938 6.62%, #ED6B51 100%)',
                     backgroundClip: 'text',
@@ -85,15 +96,26 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({ activeTab, i
                   : 'text-gray-400 hover:text-white'
               }`}
             >
-              <div className="w-[50px] h-[50px] mb-[-5px] flex items-center justify-center">
+              <div className="w-[50px] h-[50px] mb-[-5px] flex items-center justify-center relative">
                 <img 
-                  src={isActive ? tab.icon : tab.iconGray} 
+                  src={tab.iconGray} 
                   alt={tab.label} 
-                  className={`object-contain block ${isActive ? 'w-[46px] h-[46px] aspect-square' : 'w-[22px] h-[22px]'}`}
+                  className="object-contain block w-[22px] h-[22px] absolute transition-all duration-300 ease-in-out"
+                  style={{ opacity: isActive ? 0 : 1 }}
+                />
+                <img 
+                  src={tab.icon} 
+                  alt={tab.label} 
+                  className="object-contain block aspect-square absolute transition-all duration-300 ease-in-out"
+                  style={{ 
+                    opacity: isActive ? 1 : 0,
+                    width: isActive ? '46px' : '22px',
+                    height: isActive ? '46px' : '22px'
+                  }}
                 />
               </div>
               <span 
-                className="text-[7px] font-normal leading-[12px] tracking-[0.112px] uppercase text-center"
+                className="text-[7px] font-normal leading-[12px] tracking-[0.112px] uppercase text-center transition-all duration-300 ease-in-out"
                 style={isActive ? {
                   background: 'linear-gradient(90deg, #FDB938 6.62%, #ED6B51 100%)',
                   backgroundClip: 'text',

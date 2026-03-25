@@ -1,240 +1,153 @@
 'use client';
 
-import React, { useState } from 'react';
-import { ProductItem } from '@/shared/ui/product-item';
+import React from 'react';
 import { TelegramChannelBlock } from '@/shared/ui/telegram-channel-block';
-import { TraderDiaryModal } from '@/shared/ui/trader-diary-modal';
-import { ZipLimeModal } from '@/shared/ui/ziplime-modal';
-import { TradeAPIModal } from '@/shared/ui/tradeapi-modal';
-import { AIScreenerModal } from '@/shared/ui/aiscreener-modal';
-import { HypeRadarModal } from '@/shared/ui/hyperadar-modal';
-import { ManagementCompanyModal } from '@/shared/ui/management-company-modal';
-import { InternationalMarketsModal } from '@/shared/ui/international-markets-modal';
-import { ComonModal } from '@/shared/ui/comon-modal';
-import { EducationalCenterModal } from '@/shared/ui/educational-center-modal';
-import { OptionMakerModal } from '@/shared/ui/option-maker-modal';
-import { AlphaBuilderModal } from '@/shared/ui/alpha-builder-modal';
-import { InfluencersModal } from '@/shared/ui/influencers-modal';
-import { useAppStore } from '@/shared/store/app-store';
 
-type ModalType = 
-  | 'traderDiary'
-  | 'zipLime'
-  | 'tradeAPI'
-  | 'aiScreener'
-  | 'hypeRadar'
-  | 'managementCompany'
-  | 'internationalMarkets'
-  | 'comon'
-  | 'educationalCenter'
-  | 'optionMaker'
-  | 'alphaBuilder'
-  | 'influencers'
-  | null;
+const FinamCollabLogo = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="104" height="98" viewBox="0 0 118 118" fill="none">
+    <path d="M89.5059 41.4014C89.4886 41.4305 86.2171 46.9666 81.2451 50.8027C73.4688 56.8024 66.8227 56.7883 61.3037 61.4854C55.7848 66.1824 53.5643 71.1712 53.042 73.4502L46.6328 68.4648C47.1551 66.1859 49.3755 61.197 54.8945 56.5C60.4135 51.8032 67.4209 52.259 74.835 45.8174C82.2491 39.3756 83.0967 36.416 83.0967 36.416L89.5059 41.4014ZM84.9463 24.0244C84.9353 24.0689 82.0782 35.5775 71.8428 43.6807C64.1421 49.7771 57.4204 49.6663 51.9014 54.3633C46.3824 59.0603 44.1619 64.0492 43.6396 66.3281L37.2305 61.3428C37.7527 59.0638 39.9732 54.0749 45.4922 49.3779C51.0111 44.6811 58.0186 45.1369 65.4326 38.6953C76.2524 29.2946 78.5371 19.0391 78.5371 19.0391L84.9463 24.0244ZM73.6943 22.0303C73.6801 22.0756 71.5295 28.8922 62.8701 36.416C55.456 42.8578 48.4477 42.4017 42.9287 47.0986C37.4097 51.7957 35.1893 56.7845 34.667 59.0635L28.2578 54.0781C28.7801 51.7991 31.0006 46.8103 36.5195 42.1133C42.0385 37.4166 49.046 37.8723 56.46 31.4307C65.1419 23.8874 67.2819 17.0554 67.2852 17.0449L73.6943 22.0303Z" fill="url(#paint0_linear_38_1565)"/>
+    <path d="M38.2152 92.4246V82.4824H33.691V99.0557H38.2152L45.0383 89.1506V99.0557H49.5442V82.4824H45.0245L38.2152 92.4246ZM24.0964 82.4778H21.403V80.9124H16.8925V82.4917H14.1991C9.34907 82.4778 6.55469 85.5902 6.55469 91.0115C6.55469 95.9941 9.34907 99.0465 14.6029 99.0465H16.8971V100.658H21.4076V99.0465H23.7018C26.3632 99.0465 28.3867 98.2614 29.7633 96.8068C31.1398 95.3522 31.7501 93.4821 31.7501 91.0115C31.7408 85.5902 28.9465 82.4778 24.0964 82.4778ZM16.8925 95.7402H15.8143C12.717 95.7402 11.1661 93.893 11.1661 90.6606C11.1661 87.6405 12.6849 85.8072 15.4793 85.8072H16.8925V95.7402ZM22.4814 95.7402H21.403V85.8211H22.8208C25.6152 85.8211 27.1295 87.7236 27.1295 90.6743C27.1295 93.893 25.5785 95.7402 22.4814 95.7402ZM63.7547 89.1506H56.9271V82.4824H52.4395V99.0557H56.9454V92.4246H63.7731V99.0557H68.279V82.4824H63.7731L63.7547 89.1506ZM106.483 82.4917C104.739 82.4917 103.661 83.4151 103.124 85.0637L100.16 94.1008L97.1497 85.0683C96.6129 83.4106 95.5391 82.4963 93.7909 82.4963H89.6613V99.0465H94.1947V87.3773L98.0215 99.0465H102.298L106.125 87.3773V99.0465H110.631V82.5008L106.483 82.4917ZM84.5038 83.3829C83.6641 82.8057 82.3839 82.4593 80.6312 82.4593H71.6515V85.8072H79.2088C81.7325 85.8072 82.6822 86.6707 82.6822 88.7349V89.1551H76.5015C74.5194 89.1551 73.0372 89.5476 72.0645 90.5635C71.6108 91.03 71.2552 91.5836 71.0187 92.1912C70.7823 92.7991 70.6698 93.4484 70.688 94.1008C70.688 95.8279 71.3441 97.1624 72.4545 97.9752C73.4272 98.6863 74.839 99.0418 76.6897 99.0418H86.8532V89.8063C86.8532 86.6522 86.0869 84.4634 84.5038 83.3829ZM82.6685 95.754H76.7585C75.6526 95.754 74.7395 95.343 74.7395 94.1285C74.7395 92.8079 75.5471 92.4431 76.7585 92.4431H82.7235L82.6685 95.754Z" fill="white"/>
+    <path d="M75.7511 114.758V107.739H80.1278V108.65H76.8101V110.57H78.3798C78.9008 110.57 79.3429 110.654 79.7062 110.823C80.0718 110.992 80.3506 111.231 80.5425 111.539C80.7367 111.848 80.8338 112.211 80.8338 112.629C80.8338 113.047 80.7367 113.416 80.5425 113.736C80.3506 114.056 80.0718 114.306 79.7062 114.487C79.3429 114.667 78.9008 114.758 78.3798 114.758H75.7511ZM76.8101 113.867H78.3798C78.6815 113.867 78.9362 113.807 79.1441 113.688C79.3544 113.57 79.5132 113.415 79.6205 113.226C79.7302 113.036 79.7851 112.833 79.7851 112.616C79.7851 112.3 79.664 112.03 79.4218 111.803C79.1796 111.575 78.8323 111.461 78.3798 111.461H76.8101V113.867Z" fill="url(#paint1_linear_38_1565)"/>
+    <path d="M68.5243 114.758H67.4001L69.926 107.739H71.1496L73.6755 114.758H72.5514L70.5669 109.014H70.5121L68.5243 114.758ZM68.7128 112.009H72.3594V112.9H68.7128V112.009Z" fill="url(#paint2_linear_38_1565)"/>
+    <path d="M59.4017 114.758V113.839L59.6073 113.832C59.8861 113.825 60.1054 113.731 60.2653 113.548C60.4276 113.365 60.5452 113.07 60.6184 112.664C60.6938 112.257 60.744 111.714 60.7692 111.036L60.8891 107.739H65.3275V114.758H64.2822V108.637H61.8865L61.7768 111.317C61.7471 112.068 61.6717 112.7 61.5506 113.212C61.4295 113.722 61.2239 114.107 60.9337 114.367C60.6458 114.627 60.2356 114.758 59.7033 114.758H59.4017Z" fill="url(#paint3_linear_38_1565)"/>
+    <path d="M51.4032 114.758V113.839L51.6089 113.832C51.8876 113.825 52.107 113.731 52.2669 113.548C52.4291 113.365 52.5468 113.07 52.6199 112.664C52.6953 112.257 52.7456 111.714 52.7707 111.036L52.8907 107.739H57.3291V114.758H56.2837V108.637H53.888L53.7784 111.317C53.7487 112.068 53.6733 112.7 53.5522 113.212C53.4311 113.722 53.2254 114.107 52.9352 114.367C52.6473 114.627 52.2372 114.758 51.7048 114.758H51.4032Z" fill="url(#paint4_linear_38_1565)"/>
+    <path d="M49.5524 111.248C49.5524 111.998 49.4153 112.642 49.1411 113.181C48.8669 113.718 48.491 114.132 48.0135 114.422C47.5382 114.71 46.9979 114.854 46.3924 114.854C45.7846 114.854 45.2419 114.71 44.7644 114.422C44.2891 114.132 43.9144 113.717 43.6402 113.178C43.366 112.638 43.2289 111.995 43.2289 111.248C43.2289 110.499 43.366 109.855 43.6402 109.319C43.9144 108.779 44.2891 108.366 44.7644 108.078C45.2419 107.788 45.7846 107.643 46.3924 107.643C46.9979 107.643 47.5382 107.788 48.0135 108.078C48.491 108.366 48.8669 108.779 49.1411 109.319C49.4153 109.855 49.5524 110.499 49.5524 111.248ZM48.5036 111.248C48.5036 110.677 48.4111 110.196 48.226 109.805C48.0432 109.412 47.7919 109.115 47.472 108.914C47.1544 108.711 46.7945 108.609 46.3924 108.609C45.988 108.609 45.6269 108.711 45.3093 108.914C44.9917 109.115 44.7404 109.412 44.5553 109.805C44.3725 110.196 44.2811 110.677 44.2811 111.248C44.2811 111.819 44.3725 112.301 44.5553 112.694C44.7404 113.085 44.9917 113.382 45.3093 113.586C45.6269 113.787 45.988 113.887 46.3924 113.887C46.7945 113.887 47.1544 113.787 47.472 113.586C47.7919 113.382 48.0432 113.085 48.226 112.694C48.4111 112.301 48.5036 111.819 48.5036 111.248Z" fill="url(#paint5_linear_38_1565)"/>
+    <path d="M40.4689 114.758L38.1109 111.611H37.3637V114.758H36.3047V107.739H37.3637V110.703H37.7099L40.3627 107.739H41.6548L38.8478 110.881L41.761 114.758H40.4689Z" fill="url(#paint6_linear_38_1565)"/>
+    <defs>
+      <linearGradient id="paint0_linear_38_1565" x1="77.8298" y1="17.0449" x2="30.9208" y2="17.0449" gradientUnits="userSpaceOnUse">
+        <stop stopColor="#FEDA3B"/>
+        <stop offset="0.47" stopColor="#EF5541"/>
+        <stop offset="0.815" stopColor="#821EE0"/>
+        <stop offset="0.98" stopColor="#7F2A8A"/>
+      </linearGradient>
+      <linearGradient id="paint1_linear_38_1565" x1="35.7419" y1="101.487" x2="81.8387" y2="101.206" gradientUnits="userSpaceOnUse">
+        <stop stopColor="#FFE479"/>
+        <stop offset="1" stopColor="#ED6B51"/>
+      </linearGradient>
+      <linearGradient id="paint2_linear_38_1565" x1="35.7419" y1="101.487" x2="81.8387" y2="101.206" gradientUnits="userSpaceOnUse">
+        <stop stopColor="#FFE479"/>
+        <stop offset="1" stopColor="#ED6B51"/>
+      </linearGradient>
+      <linearGradient id="paint3_linear_38_1565" x1="35.7419" y1="101.487" x2="81.8387" y2="101.206" gradientUnits="userSpaceOnUse">
+        <stop stopColor="#FFE479"/>
+        <stop offset="1" stopColor="#ED6B51"/>
+      </linearGradient>
+      <linearGradient id="paint4_linear_38_1565" x1="35.7419" y1="101.487" x2="81.8387" y2="101.206" gradientUnits="userSpaceOnUse">
+        <stop stopColor="#FFE479"/>
+        <stop offset="1" stopColor="#ED6B51"/>
+      </linearGradient>
+      <linearGradient id="paint5_linear_38_1565" x1="35.7419" y1="101.487" x2="81.8387" y2="101.206" gradientUnits="userSpaceOnUse">
+        <stop stopColor="#FFE479"/>
+        <stop offset="1" stopColor="#ED6B51"/>
+      </linearGradient>
+      <linearGradient id="paint6_linear_38_1565" x1="35.7419" y1="101.487" x2="81.8387" y2="101.206" gradientUnits="userSpaceOnUse">
+        <stop stopColor="#FFE479"/>
+        <stop offset="1" stopColor="#ED6B51"/>
+      </linearGradient>
+    </defs>
+  </svg>
+);
+
+const FinamXLogo = () => (
+  <svg width="160" height="72" viewBox="0 0 160 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <g clipPath="url(#clip0_finamx)">
+      <path d="M32.526 45.5096H26.6581V26.4907H32.526V45.5096ZM47.166 26.4907C50.4508 26.4907 52.7277 27.1553 54.0408 28.4433C55.1361 29.5362 55.7051 31.3334 55.7051 33.793V45.5093H49.8376V33.2082C49.8376 31.3334 48.9618 30.5522 46.816 30.5522H41.737V45.5096H35.8688V26.4907H47.166ZM70.8342 26.4907C73.1978 26.4907 74.9494 26.8425 76.132 27.5059C78.3213 28.7561 79.4159 31.1759 79.4159 34.8093V45.5096H65.7542C63.1705 45.5096 61.2883 45.1579 60.0184 44.4547C58.442 43.5571 57.6535 42.0349 57.6535 39.8859C57.6535 36.0197 60.1057 33.9503 65.4928 33.9503H73.5484V33.5977C73.5484 31.2943 72.4541 30.5522 69.0828 30.5522H59.1861V26.4907H70.8342ZM104.102 26.4907C107.56 26.4907 110.013 27.1553 111.371 28.4433C112.509 29.4982 113.078 31.1759 113.078 33.4027V45.5096H107.21V34.2233C107.21 31.4121 106.379 30.5522 103.709 30.5522H100.6V45.5096H94.7311V30.5522H88.4253V45.5096H82.5581V26.4907H104.102ZM23.0435 26.4907V30.5522H9.83022C7.68447 30.5522 6.80896 31.3334 6.80896 33.2079V34.5663H23.0435V38.6121H6.80896V45.5093H0.941406V33.793C0.941406 31.3334 1.51047 29.5362 2.60542 28.4433C3.91853 27.1553 6.19575 26.4907 9.47996 26.4907H23.0435ZM65.798 38.012C64.3534 38.012 63.6084 38.5971 63.6084 39.7695C63.6084 40.98 64.4842 41.4481 66.7618 41.4481H73.5484V38.012H65.798Z" fill="white"/>
+      <mask id="mask0_finamx" style={{maskType: 'alpha'}} maskUnits="userSpaceOnUse" x="127" y="26" width="33" height="20">
+        <path d="M135.406 26.4268C138.231 28.9326 140.83 31.0667 143.35 33.0819L152.007 26.4268H159.576L149.076 34.4977C148.015 35.3132 148.006 36.7698 149.053 37.5987C152.096 40.0063 155.201 42.5141 158.647 45.5708H151.078L143.158 39.0479L134.675 45.5708H127.105L137.547 37.5419C138.592 36.7384 138.619 35.3083 137.606 34.4734L127.837 26.4268H135.406Z" fill="white"/>
+      </mask>
+      <g mask="url(#mask0_finamx)">
+        <path d="M200.078 10.4165H116.004V84.9914H200.078V10.4165Z" fill="white"/>
+      </g>
+    </g>
+    <defs>
+      <clipPath id="clip0_finamx">
+        <rect width="160" height="72" fill="white"/>
+      </clipPath>
+    </defs>
+  </svg>
+);
 
 export const ProductsPage: React.FC = () => {
-  const [activeModal, setActiveModal] = useState<ModalType>(null);
-  const { openProductModal, closeProductModal } = useAppStore();
-
-  const handleOpenModal = (modal: ModalType) => {
-    setActiveModal(modal);
-    openProductModal();
-  };
-
-  const handleCloseModal = () => {
-    setActiveModal(null);
-    closeProductModal();
-  };
-
-  const products = [
-    { 
-      title: 'Дневник трейдера', 
-      onClick: () => handleOpenModal('traderDiary')
-    },
-    { 
-      title: 'ZipLime', 
-      onClick: () => handleOpenModal('zipLime')
-    },
-    { 
-      title: 'TradeAPI', 
-      onClick: () => handleOpenModal('tradeAPI')
-    },
-    { 
-      title: 'AI-скринер', 
-      onClick: () => handleOpenModal('aiScreener')
-    },
-    { 
-      title: 'Hype Radar', 
-      onClick: () => handleOpenModal('hypeRadar')
-    },
-    { 
-      title: 'Управляющая компания', 
-      onClick: () => handleOpenModal('managementCompany')
-    },
-    { 
-      title: 'Международные рынки', 
-      onClick: () => handleOpenModal('internationalMarkets')
-    },
-    { 
-      title: 'Автоследование', 
-      onClick: () => handleOpenModal('comon')
-    },
-    { 
-      title: 'Учебный Центр', 
-      onClick: () => handleOpenModal('educationalCenter')
-    },
-    { 
-      title: 'Option Maker', 
-      onClick: () => handleOpenModal('optionMaker')
-    },
-    { 
-      title: 'Alpha Builder', 
-      onClick: () => handleOpenModal('alphaBuilder')
-    },
-    { 
-      title: 'Influencers', 
-      onClick: () => handleOpenModal('influencers')
-    },
-  ];
-
   return (
-    <div className="w-full bg-black flex justify-center overflow-x-hidden">
-      <div className="relative w-[393px]" style={{ minHeight: 'calc(100vh - 109px)' }}>
-        {/* Background gradient ellipse - same as home page */}
+    <div className="w-full bg-black overflow-x-hidden">
+      <div className="flex justify-center">
         <div
-          className="absolute top-[15px] left-1/2 -translate-x-1/2 w-[390px] h-[281px] rounded-[390px] opacity-50 blur-[80px]"
-          style={{
-            background:
-              'linear-gradient(315deg, #FAF1E6 -0.45%, #F9DEC0 15.8%, #ED9FA6 32.05%, #994B69 48.29%, rgba(51, 22, 86, 0.00) 64.54%)',
-          }}
-        ></div>
+          className="relative w-[393px] bg-black pb-[120px]"
+          style={{ minHeight: '100vh' }}
+        >
+          {/* Background gradient ellipse */}
+          <div
+            className="absolute top-[15px] left-1/2 -translate-x-1/2 w-[390px] h-[281px] rounded-[390px] opacity-50 blur-[80px] pointer-events-none"
+            style={{
+              background:
+                'linear-gradient(315deg, #FAF1E6 -0.45%, #F9DEC0 15.8%, #ED9FA6 32.05%, #994B69 48.29%, rgba(51, 22, 86, 0.00) 64.54%)',
+            }}
+          />
 
-        {/* Scrollable content */}
-        <div className="relative overflow-y-auto px-4" style={{ scrollBehavior: 'smooth', height: 'calc(100vh - 80px)' }}>
-          {/* Header */}
-          <div className="mt-[60px] text-center">
-            <h1 className="text-[30px] font-inter-tight text-white leading-tight tracking-[-0.6px]">
-              Наши продукты
-            </h1>
-          </div>
+          {/* Content */}
+          <div className="relative px-5">
+            {/* Header */}
+            <div className="pt-[60px] text-center">
+              <h1 className="text-[30px] font-inter-tight text-white leading-[1.1] tracking-[-0.6px]">
+                Наши продукты
+              </h1>
+              <p className="mt-[12px] text-[17px] font-inter text-[rgba(255,255,255,0.72)] leading-[24px] tracking-[-0.17px]">
+                Наши новые продукты
+              </p>
+            </div>
 
-          {/* Products container */}
-          <div className="mt-[32px] bg-[#151519] rounded-[8px] p-5" style={{ paddingBottom: '20px' }}>
-            <h2 className="font-inter-tight text-[24px] text-white tracking-[-0.48px] leading-tight mb-3">
-              Сервисы
-            </h2>
-            <div className="flex flex-col gap-3">
-              {products.map((product, index) => (
-                <ProductItem
-                  key={index}
-                  title={product.title}
-                  onClick={product.onClick}
-                />
-              ))}
+            {/* Finam X Logo Block */}
+            <div 
+              className="mt-[52px] bg-[#1a1a1f] rounded-[8px] h-[130px] flex items-center justify-center cursor-pointer hover:bg-[#252529] transition-colors"
+              onClick={() => window.open('https://www.finam.ru/landings/finamx/', '_blank')}
+            >
+              <FinamXLogo />
+            </div>
+
+            {/* Predict Market Block */}
+            <div 
+              className="mt-[20px] bg-[#1a1a1f] rounded-[8px] h-[130px] flex items-center justify-center cursor-pointer hover:bg-[#252529] transition-colors"
+              onClick={() => window.open('https://t.me/predictmarket_bot', '_blank')}
+            >
+              <p className="font-inter text-[40px] text-center tracking-[0.64px]">
+                <span className="text-[#d9d9d9]">Predict</span>
+                <span className="text-white"> Market</span>
+              </p>
+            </div>
+
+            {/* Finam Collab Logo Block */}
+            <div 
+              className="mt-[20px] bg-[#1a1a1f] rounded-[8px] h-[130px] flex items-center justify-center cursor-pointer hover:bg-[#252529] transition-colors"
+              onClick={() => window.open('https://collab.finam.ru/?utm_source=finam.collab-bot&utm_medium=referral&utm_campaign=app_collab_rf_native_content.app.users___referral&utm_content=button-site', '_blank')}
+            >
+              <FinamCollabLogo />
+            </div>
+
+            {/* Influencers Section */}
+            <div className="mt-[20px] bg-[#1a1a1f] rounded-[8px] p-[20px]">
+              <h3 className="font-inter font-medium text-[24px] text-white leading-[1.1] tracking-[-0.48px]">
+                Infuencers
+              </h3>
+              <p className="mt-[10px] font-inter text-[14px] text-white leading-[20px] tracking-[-0.056px] w-[285px]">
+                Если у тебя есть идеи для партнерства, нужна поддержка или ищешь возможности для роста с крутым рекламодателем, заполни анкету ниже.
+              </p>
+              <button 
+                onClick={() => window.open('https://simpoll.ru/run/survey/cbd4c1fb', '_blank')}
+                className="mt-[10px] w-full h-[56px] bg-[rgba(79,79,89,0.24)] rounded-[8px] flex items-center justify-center hover:bg-[rgba(79,79,89,0.4)] transition-colors"
+              >
+                <span className="font-inter font-semibold text-[17px] text-[#ebebf2] leading-[24px] tracking-[-0.204px]">
+                  Анкета
+                </span>
+              </button>
+            </div>
+
+            {/* Telegram Channel Block */}
+            <div className="mt-[20px]">
+              <TelegramChannelBlock />
             </div>
           </div>
-
-          {/* Финам Коллаб Block */}
-          <div className="mt-5 bg-[#1a1a1f] rounded-lg p-4">
-            <h2 className="font-inter-tight text-[24px] text-white tracking-[-0.48px] leading-tight mb-2">
-              Финам Коллаб
-            </h2>
-            <p className="font-inter text-[14px] text-white tracking-[-0.056px] leading-5 mb-2 w-[285px]">
-              Узнай про все продукты Финам Коллаб
-            </p>
-            <button 
-              onClick={() => window.open('https://collab.finam.ru/?utm_source=finam.collab-bot&utm_medium=referral&utm_campaign=app_collab_rf_native_content.app.users___referral&utm_content=button-site', '_blank')}
-              className="w-full h-12 bg-[rgba(79,79,89,0.24)] rounded-lg flex items-center justify-center hover:bg-[rgba(79,79,89,0.4)] transition-colors"
-            >
-              <span className="font-inter font-semibold text-[#ebebf2] text-[17px] text-center tracking-[-0.204px] leading-6">
-                Перейти
-              </span>
-            </button>
-          </div>
-
-          {/* Telegram Channel Block */}
-          <div className="mt-5">
-            <TelegramChannelBlock />
-          </div>
-
-          {/* Bottom spacer - ensures 109px gap from last block to bottom of page */}
-          <div style={{ height: '109px' }} />
         </div>
       </div>
-      
-      {/* --- Modals --- */}
-
-      {/* Trader Diary Modal */}
-      <TraderDiaryModal
-        isOpen={activeModal === 'traderDiary'}
-        onClose={handleCloseModal}
-      />
-      
-      {/* ZipLime Modal */}
-      <ZipLimeModal
-        isOpen={activeModal === 'zipLime'}
-        onClose={handleCloseModal}
-      />
-      
-      {/* TradeAPI Modal */}
-      <TradeAPIModal
-        isOpen={activeModal === 'tradeAPI'}
-        onClose={handleCloseModal}
-      />
-      
-      {/* AI Screener Modal */}
-      <AIScreenerModal
-        isOpen={activeModal === 'aiScreener'}
-        onClose={handleCloseModal}
-      />
-      
-      {/* Hype Radar Modal */}
-      <HypeRadarModal
-        isOpen={activeModal === 'hypeRadar'}
-        onClose={handleCloseModal}
-      />
-      
-      {/* Management Company Modal */}
-      <ManagementCompanyModal
-        isOpen={activeModal === 'managementCompany'}
-        onClose={handleCloseModal}
-      />
-      
-      {/* International Markets Modal */}
-      <InternationalMarketsModal
-        isOpen={activeModal === 'internationalMarkets'}
-        onClose={handleCloseModal}
-      />
-      
-      {/* Comon Modal */}
-      <ComonModal
-        isOpen={activeModal === 'comon'}
-        onClose={handleCloseModal}
-      />
-      
-      {/* Educational Center Modal */}
-      <EducationalCenterModal
-        isOpen={activeModal === 'educationalCenter'}
-        onClose={handleCloseModal}
-      />
-      
-      {/* Option Maker Modal */}
-      <OptionMakerModal
-        isOpen={activeModal === 'optionMaker'}
-        onClose={handleCloseModal}
-      />
-      
-      {/* Alpha Builder Modal */}
-      <AlphaBuilderModal
-        isOpen={activeModal === 'alphaBuilder'}
-        onClose={handleCloseModal}
-      />
-      
-      {/* Influencers Modal */}
-      <InfluencersModal
-        isOpen={activeModal === 'influencers'}
-        onClose={handleCloseModal}
-      />
     </div>
   );
 };
