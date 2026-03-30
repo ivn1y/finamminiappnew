@@ -32,6 +32,11 @@ yarn-error.log*
 .env.development
 .env.production
 
+# Database
+*.db
+*.db-journal
+prisma/dev.db
+
 # vercel
 .vercel
 
@@ -56,3 +61,5 @@ Thumbs.db
 # Package managers conflicts (keep only one)
 # package-lock.json  # Keep if using npm
 # yarn.lock         # Keep if using yarn
+
+/src/generated/prisma

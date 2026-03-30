@@ -1,0 +1,33 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model User {
+  id              String   @id @default(cuid())
+  telegramId      BigInt   @unique
+  username        String?
+  firstName       String
+  lastName        String?
+  photoUrl        String?
+  languageCode    String?
+  isPremium       Boolean  @default(false)
+  allowsWriteToPm Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model Broadcast {
+  id        String   @id @default(cuid())
+  message   String
+  sentAt    DateTime @default(now())
+  sentCount Int      @default(0)
+  failCount Int      @default(0)
+  status    String   @default("pending")
+}
