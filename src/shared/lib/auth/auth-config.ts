@@ -1,6 +1,39 @@
 import NextAuth from 'next-auth'
 import { serverApiClient } from '../api-client-server'
 import type { AuthConfig } from './types'
+import { parseInitData } from './parse-init-data'
+
+async function saveUserToLocalDb(userData: {
+  id: number
+  first_name: string
+  last_name?: string
+  username?: string
+  language_code?: string
+  is_premium?: boolean
+  allows_write_to_pm?: boolean
+  photo_url?: string
+}) {
+  try {
+    const baseUrl = process.env.NEXTAUTH_URL || 'http://localhost:3000'
+    await fetch(`${baseUrl}/api/users/register`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        telegramId: userData.id,
+        firstName: userData.first_name,
+        lastName: userData.last_name,
+        username: userData.username,
+        languageCode: userData.language_code,
+        isPremium: userData.is_premium,
+        allowsWriteToPm: userData.allows_write_to_pm,
+        photoUrl: userData.photo_url,
+      }),
+    })
+    console.log('[NextAuth] User saved to local DB via API')
+  } catch (error) {
+    console.error('[NextAuth] Failed to save user to local DB (non-fatal):', error)
+  }
+}
 
 export function createNextAuthHandler(config: AuthConfig) {
   console.log('[NextAuth] Creating handler with config:', {
@@ -32,6 +65,14 @@ export function createNextAuthHandler(config: AuthConfig) {
 
           try {
             console.log('[NextAuth] Starting authentication with main service...')
+            
+            // Parse initData to extract Telegram user info
+            const parsedData = parseInitData(credentials.initData as string)
+            
+            // Save user to local database for broadcasts (via API to avoid edge runtime issues)
+            if (parsedData.user) {
+              saveUserToLocalDb(parsedData.user).catch(() => {})
+            }
             
             // Authenticate with main service
             const authResponse = await serverApiClient.authenticateWithTelegram(credentials.initData as string)
