@@ -155,7 +155,7 @@ export const CompetitionPage: React.FC = () => {
                     <h3 className="font-inter-tight text-[24px] text-white leading-[110%] tracking-[-0.48px]">
                       Призовые фонды
                     </h3>
-                    <p className="font-inter text-[14px] text-white leading-[20px] tracking-[-0.056px] w-[198px]">
+                    <p className="font-inter text-[14px] text-[#A4A4B2] leading-[20px] tracking-[-0.056px] w-[198px]">
                       Соревнования с призами до 500 000 ₽
                     </p>
                   </div>
@@ -176,7 +176,7 @@ export const CompetitionPage: React.FC = () => {
                     <h3 className="font-inter-tight text-[24px] text-white leading-[110%] tracking-[-0.48px] w-[228px]">
                       Карьерные возможности
                     </h3>
-                    <p className="font-inter text-[14px] text-white leading-[20px] tracking-[-0.056px] w-[228px]">
+                    <p className="font-inter text-[14px] text-[#A4A4B2] leading-[20px] tracking-[-0.056px] w-[228px]">
                       Лучшие участники получают приглашения в фонды и финтех-команды
                     </p>
                   </div>
@@ -197,7 +197,7 @@ export const CompetitionPage: React.FC = () => {
                     <h3 className="font-inter-tight text-[24px] text-white leading-[110%] tracking-[-0.48px]">
                       Практический опыт
                     </h3>
-                    <p className="font-inter text-[14px] text-white leading-[20px] tracking-[-0.056px] w-[285px]">
+                    <p className="font-inter text-[14px] text-[#A4A4B2] leading-[20px] tracking-[-0.056px] w-[285px]">
                       Работа с реальными задачами индустрии
                     </p>
                   </div>
@@ -323,14 +323,14 @@ export const CompetitionPage: React.FC = () => {
                     </div>
                   </div>
 
-                  {/* Финам X */}
+                  {/* Финам Дневник */}
                   <div className="w-full h-[130px] bg-[#1a1a1f] rounded-lg flex items-center justify-center p-[10px]">
                     <div className="relative w-[160px] h-[72px] flex items-center justify-center">
                       <img
-                        src="/assets/logos/finamx.svg"
-                        alt="Финам X"
-                        width={112}
-                        height={19}
+                        src="/assets/logos/finamDiarygray.svg"
+                        alt="Финам Дневник"
+                        width={180}
+                        height={60}
                         className="object-contain"
                       />
                     </div>
