@@ -420,7 +420,7 @@ export const HomePage: React.FC = () => {
           <TelegramChannelBlock 
             onClick={handleTelegramLinkClick} 
             title="Твой первый квест"
-            description="Расскажи о себе в сообществе Финам Коллаб и получи призы"
+            description="Расскажи о себе в сообществе Финам Коллаб"
           />
         </div>
       </div>

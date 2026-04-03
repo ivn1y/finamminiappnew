@@ -86,17 +86,14 @@ export const ProductsPage: React.FC = () => {
           {/* Content */}
           <div className="relative px-5">
             {/* Header */}
-            <div className="pt-[60px] text-center">
+            <div className="pt-[80px] text-center">
               <h1 className="text-[30px] font-inter-tight text-white leading-[1.1] tracking-[-0.6px]">
                 Наши продукты
               </h1>
-              <p className="mt-[12px] text-[17px] font-inter text-[rgba(255,255,255,0.72)] leading-[24px] tracking-[-0.17px]">
-                Наши новые продукты
-              </p>
             </div>
 
             {/* Product Cards */}
-            <div className="mt-[40px] flex flex-col gap-[20px]">
+            <div className="mt-[20px] flex flex-col gap-[20px]">
               {/* Finam Diary Card */}
               <ProductCard
                 backgroundImage="/assets/products/finamdiarybackground.png"

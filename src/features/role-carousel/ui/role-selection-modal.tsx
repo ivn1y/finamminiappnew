@@ -89,7 +89,7 @@ export const RoleSelectionModal: React.FC<RoleSelectionModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 w-full h-screen bg-black z-[100] flex flex-col items-center pt-[60px] overflow-hidden">
+    <div className="fixed inset-0 w-full h-screen min-h-[100dvh] bg-black z-[10000] flex flex-col items-center pt-[60px] overflow-hidden">
       <button
         onClick={onClose}
         style={{
