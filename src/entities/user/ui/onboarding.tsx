@@ -177,6 +177,20 @@ export const Onboarding: React.FC = () => {
           filter: 'blur(80px)',
         }}
       />
+
+      {/* Второй эллипс на заднем фоне */}
+      <div 
+        className="absolute"
+        style={{
+          top: '282.5px',
+          width: '387px',
+          height: '268px',
+          borderRadius: '387px',
+          background: 'linear-gradient(305deg, #FEDA3B -2.67%, #EF5541 38.9%, #801FDB 77.17%, #7E2A89 98.46%)',
+          opacity: 0.15,
+          filter: 'blur(50px)',
+        }}
+      />
       
       {/* Логотип */}
       <div className="relative z-10 mt-8 sm:mt-12" style={{ marginBottom: '92.5px' }}>
@@ -226,7 +240,7 @@ export const Onboarding: React.FC = () => {
         </div>
 
         {/* Вторая кнопка - 340px для iPhone 16 */}
-        <div className="w-full flex justify-center">
+        <div className="w-full flex justify-center" style={{ marginBottom: '12px' }}>
           <button
             className="flex justify-center items-center gap-10 rounded-lg px-4 py-2 bg-[#59307C] hover:bg-[#6B3A8F] transition-colors"
             style={{
@@ -238,6 +252,23 @@ export const Onboarding: React.FC = () => {
               className="text-white text-center font-inter text-[14px] font-medium leading-[140%] tracking-[-0.196px]"
             >
               Оставить свою заявку для партнерства
+            </span>
+          </button>
+        </div>
+
+        {/* Третья кнопка - розыгрыш VIP-билета */}
+        <div className="w-full flex justify-center">
+          <button
+            className="flex justify-center items-center gap-10 rounded-lg px-4 py-2 bg-[#59307C] hover:bg-[#6B3A8F] transition-colors"
+            style={{
+              width: '340px',
+              height: '36px',
+            }}
+          >
+            <span 
+              className="text-white text-center font-inter text-[14px] font-medium leading-[140%] tracking-[-0.196px]"
+            >
+              Принять участие в розыгрыше VIP-билета
             </span>
           </button>
         </div>

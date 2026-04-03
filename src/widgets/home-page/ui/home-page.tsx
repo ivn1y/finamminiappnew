@@ -322,7 +322,7 @@ export const HomePage: React.FC = () => {
           onComplete={handleProfileTaskClick}
         />
       )}
-      <div className="relative w-[393px]" style={{ height: '981px' }}>
+      <div className="relative w-[393px]" style={{ height: '1167px' }}>
         <div
           className="absolute top-[15px] left-1/2 -translate-x-1/2 w-[390px] h-[281px] rounded-[390px] opacity-50 blur-[80px]"
           style={{
@@ -374,10 +374,33 @@ export const HomePage: React.FC = () => {
           </div>
         </div>
 
-        <h2 className="absolute top-[499px] left-[20px] font-inter-tight text-[24px] font-normal leading-[110%] tracking-[-0.48px] text-white">
+        {/* Raffle Block */}
+        <div 
+          className="absolute top-[510px] left-[20px] right-[20px] inline-flex flex-col justify-center items-start gap-[15px] rounded-[8px] cursor-pointer"
+          style={{
+            padding: '26px 22px 26px 165px',
+            background: 'url(/assets/products/tickets.png) lightgray -1px -0.393px / 100.844% 138.198% no-repeat',
+          }}
+          onClick={() => window.open('https://finam.ru/landing/mtw', '_blank')}
+        >
+          <p className="font-inter-tight font-medium text-[20px] text-white leading-[23px] tracking-[-0.32px]">
+            Разыгрываем Билет в VIP-зону
+          </p>
+          <button
+            className="inline-flex h-[26px] px-[8px] justify-center items-center rounded-[8px] bg-white font-inter font-medium text-[12px] text-[#1A1A1F] leading-[16px] tracking-[-0.024px] whitespace-nowrap"
+            onClick={(e) => {
+              e.stopPropagation();
+              window.open('https://finam.ru/landing/mtw', '_blank');
+            }}
+          >
+            Узнать подробности
+          </button>
+        </div>
+
+        <h2 className="absolute top-[685px] left-[20px] font-inter-tight text-[24px] font-normal leading-[110%] tracking-[-0.48px] text-white">
           Мои бейджи
         </h2>
-        <div className="absolute top-[541px] left-[20px] grid grid-cols-2 gap-x-[9px] gap-y-[9px]">
+        <div className="absolute top-[727px] left-[20px] grid grid-cols-2 gap-x-[9px] gap-y-[9px]">
           {badges.map((badge, index) => (
             <Badge
               key={index}
@@ -392,7 +415,7 @@ export const HomePage: React.FC = () => {
 
         <div
           id="telegram-quest"
-          className="absolute top-[698px] left-1/2 -translate-x-1/2"
+          className="absolute top-[884px] left-1/2 -translate-x-1/2"
         >
           <TelegramChannelBlock 
             onClick={handleTelegramLinkClick} 
