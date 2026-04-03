@@ -3,19 +3,30 @@
   inset: 0;
   width: 100vw;
   height: 100vh;
-  min-height: 100dvh;
+  height: 100dvh;
   background: #000;
   z-index: 9999;
   isolation: isolate;
   display: flex;
   justify-content: center;
   align-items: center;
-  overflow: auto;
+  overflow: hidden;
   font-family: 'Inter', sans-serif;
   color: #fff;
   padding-top: env(safe-area-inset-top, 0);
   padding-bottom: env(safe-area-inset-bottom, 0);
   box-sizing: border-box;
+}
+
+.backdrop {
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: #000;
+  z-index: 0;
+  pointer-events: none;
 }
 
 .formWrapper {
@@ -24,6 +35,8 @@
   width: 393px;
   height: 852px;
   overflow: hidden;
+  z-index: 1;
+  flex-shrink: 0;
 }
 
 .closeButton {

@@ -242,23 +242,47 @@ export const UserDataInputModal: React.FC<UserDataInputModalProps> = ({
     }
   };
 
-  // Функция для прокрутки к полю ввода при фокусе (для мобильных устройств)
+  // Функция для обработки фокуса на поле ввода
   const handleInputFocus = (field: 'name' | 'phone' | 'email') => {
     setFocusedInput(field);
-    // Используем requestAnimationFrame для того, чтобы скролл произошел после появления клавиатуры
-    requestAnimationFrame(() => {
-      setTimeout(() => {
-        const inputElement = inputRefs[field].current;
-        if (inputElement) {
-          inputElement.scrollIntoView({ 
-            behavior: 'smooth', 
-            block: 'center',
-            inline: 'nearest'
-          });
-        }
-      }, 300); // Небольшая задержка для появления клавиатуры
-    });
+    // Убрали scrollIntoView - он вызывал проблемы в Telegram WebView
+    // Клавиатура Telegram сама управляет позиционированием
   };
+
+  // Блокируем скролл и фиксируем позицию страницы (для Telegram WebView)
+  useEffect(() => {
+    if (isOpen) {
+      const scrollY = window.scrollY;
+      const html = document.documentElement;
+      const body = document.body;
+      
+      // Сохраняем оригинальные стили
+      const originalHtmlOverflow = html.style.overflow;
+      const originalBodyOverflow = body.style.overflow;
+      const originalBodyPosition = body.style.position;
+      const originalBodyTop = body.style.top;
+      const originalBodyLeft = body.style.left;
+      const originalBodyRight = body.style.right;
+      
+      // Фиксируем страницу
+      html.style.overflow = 'hidden';
+      body.style.overflow = 'hidden';
+      body.style.position = 'fixed';
+      body.style.top = `-${scrollY}px`;
+      body.style.left = '0';
+      body.style.right = '0';
+      
+      return () => {
+        html.style.overflow = originalHtmlOverflow;
+        body.style.overflow = originalBodyOverflow;
+        body.style.position = originalBodyPosition;
+        body.style.top = originalBodyTop;
+        body.style.left = originalBodyLeft;
+        body.style.right = originalBodyRight;
+        window.scrollTo(0, scrollY);
+      };
+    }
+  }, [isOpen]);
 
   if (!isOpen) {
     return null;
@@ -268,6 +292,7 @@ export const UserDataInputModal: React.FC<UserDataInputModalProps> = ({
   if (showThankYou) {
     return (
       <div className={styles.container}>
+        <div className={styles.backdrop} />
         <div className={styles.formWrapper}>
           <div className={styles.gradient} />
           <div
@@ -319,6 +344,7 @@ export const UserDataInputModal: React.FC<UserDataInputModalProps> = ({
 
   return (
     <div className={styles.container}>
+      <div className={styles.backdrop} />
       <div className={styles.formWrapper}>
         {showCloseButton && <button onClick={onClose} className={styles.closeButton}>&times;</button>}
         <div className={styles.gradient} />
