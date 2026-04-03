@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { Checkbox } from '@/shared/ui/checkbox';
+import { Check } from 'lucide-react';
 import styles from './user-data-input-modal.module.css';
 import { useAppStore } from '@/shared/store/app-store';
 import { validateUserForm, validateEmail, validatePhone, validateName } from '@/shared/lib/validation';
@@ -410,19 +410,37 @@ export const UserDataInputModal: React.FC<UserDataInputModalProps> = ({
           </button>
 
           <div className={styles.privacyContainer}>
-            <Checkbox
-              id="privacy-policy"
-              checked={agreedToPolicy}
-              onCheckedChange={(checked) => setAgreedToPolicy(checked as boolean)}
-              className={styles.checkbox}
-            />
-            <label 
-              htmlFor="privacy-policy" 
+            <div 
+              className={styles.checkboxWrapper}
+              onClick={() => setAgreedToPolicy(!agreedToPolicy)}
+              role="checkbox"
+              aria-checked={agreedToPolicy}
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === ' ' || e.key === 'Enter') {
+                  e.preventDefault();
+                  setAgreedToPolicy(!agreedToPolicy);
+                }
+              }}
+            >
+              <div 
+                className={`h-4 w-4 shrink-0 rounded-sm border shadow ${
+                  agreedToPolicy 
+                    ? 'bg-primary border-primary text-primary-foreground' 
+                    : 'border-primary'
+                } ${styles.checkbox}`}
+              >
+                {agreedToPolicy && (
+                  <Check className="h-4 w-4" />
+                )}
+              </div>
+            </div>
+            <span 
               className={styles.privacyText}
               onClick={(e) => {
                 // Если клик был на ссылку, не переключаем чекбокс
                 const target = e.target as HTMLElement;
-                if (target.tagName === 'A' || target.closest('a')) {
+                if (target.tagName === 'SPAN' && target.classList.contains(styles.privacyLink)) {
                   return;
                 }
                 // Переключаем чекбокс при клике на текст
@@ -453,7 +471,7 @@ export const UserDataInputModal: React.FC<UserDataInputModalProps> = ({
               >
                 получение рекламных рассылок
               </span>
-            </label>
+            </span>
           </div>
           {errors.policy && <p style={{ color: 'red', fontSize: '12px', position: 'absolute', top: '612px', left: '28px' }}>{errors.policy}</p>}
         </form>
