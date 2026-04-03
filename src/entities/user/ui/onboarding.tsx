@@ -225,12 +225,12 @@ export const Onboarding: React.FC = () => {
           </button>
         </div>
 
-        {/* Вторая кнопка - 289px для iPhone 16 */}
+        {/* Вторая кнопка - 340px для iPhone 16 */}
         <div className="w-full flex justify-center">
           <button
             className="flex justify-center items-center gap-10 rounded-lg px-4 py-2 bg-[#59307C] hover:bg-[#6B3A8F] transition-colors"
             style={{
-              width: '310px',
+              width: '340px',
               height: '36px',
             }}
           >
