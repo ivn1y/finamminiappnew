@@ -47,10 +47,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
         {subtitle}
       </p>
       <button
-        className="inline-flex h-[26px] px-[8px] justify-center items-center rounded-[8px] font-inter font-medium text-[12px] text-white leading-[16px] tracking-[-0.024px] whitespace-nowrap self-start"
-        style={{
-          background: 'linear-gradient(305deg, #FEDA3B -2.67%, #EF5541 38.9%, #801FDB 77.17%, #7E2A89 98.46%)',
-        }}
+        className="inline-flex h-[26px] px-[8px] justify-center items-center rounded-[8px] bg-white font-inter font-medium text-[12px] text-[#1A1A1F] leading-[16px] tracking-[-0.024px] whitespace-nowrap self-start"
         onClick={(e) => {
           e.stopPropagation();
           onClick();
