@@ -38,7 +38,7 @@ export async function POST(request: NextRequest) {
         where: { allowsWriteToPm: true },
         select: { telegramId: true },
       })
-      targetUserIds = users.map(u => u.telegramId)
+      targetUserIds = users.map((u: { telegramId: bigint }) => u.telegramId)
     }
 
     if (targetUserIds.length === 0) {
