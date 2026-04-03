@@ -35,6 +35,7 @@
     "auto-restart": "./auto-restart.sh",
     "demo-universal": "./demo-universal.sh",
     "dev:secure": "npm run dev:all & ngrok http 3000",
+    "postinstall": "prisma generate",
     "build": "next build",
     "build:local": "next build",
     "start:prod": "next start --port 3000",
