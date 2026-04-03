@@ -1,7 +1,7 @@
 import { GlobalProviders } from "./providers"
 import "@/app/globals.css"
 import { Inter, Inter_Tight } from "next/font/google"
-import type { Metadata } from "next"
+import type { Metadata, Viewport } from "next"
 import { Toaster } from "@/shared/ui/sonner"
 import { Analytics } from '@vercel/analytics/react';
 
@@ -17,9 +17,35 @@ const interTight = Inter_Tight({
   variable: "--font-inter-tight",
 })
 
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  viewportFit: 'cover',
+  themeColor: [
+    { media: '(prefers-color-scheme: light)', color: '#000000' },
+    { media: '(prefers-color-scheme: dark)', color: '#000000' },
+  ],
+}
+
 export const metadata: Metadata = {
   title: "Generation:Fi - Инвестиционная игра",
   description: "Геймифицированное инвестиционное MiniApp с коллекционными картами",
+  manifest: '/manifest.json',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'black-translucent',
+    title: "Generation:Fi",
+  },
+  formatDetection: {
+    telephone: false,
+  },
+  other: {
+    'mobile-web-app-capable': 'yes',
+    'msapplication-TileColor': '#000000',
+    'msapplication-navbutton-color': '#000000',
+  },
   icons: {
     icon: [
       { url: "/images/icon.webp", sizes: "1024x1024", type: "image/webp" },
@@ -32,7 +58,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="ru" className={`${inter.variable} ${interTight.variable}`} suppressHydrationWarning>
+    <html lang="ru" className={`${inter.variable} ${interTight.variable}`} suppressHydrationWarning style={{ backgroundColor: '#000000' }}>
       <head>
         <link
           rel="icon"
@@ -40,6 +66,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           type="image/<generated>"
           sizes="<generated>"
         />
+        {/* Android Chrome - цвет панели навигации */}
+        <meta name="theme-color" content="#000000" media="(prefers-color-scheme: light)" />
+        <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)" />
+        {/* Samsung Internet */}
+        <meta name="theme-color" content="#000000" />
+        {/* Windows Phone */}
+        <meta name="msapplication-navbutton-color" content="#000000" />
+        {/* iOS Safari - цвет области вокруг notch */}
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <script
           dangerouslySetInnerHTML={{
             __html: `
@@ -56,7 +91,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           }}
         />
       </head>
-      <body className="min-h-screen bg-background font-sans antialiased">
+      <body className="min-h-screen bg-black font-sans antialiased" style={{ backgroundColor: '#000000' }}>
         <GlobalProviders>
           {children}
           <Toaster/>
