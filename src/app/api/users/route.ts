@@ -31,7 +31,7 @@ export async function GET(request: NextRequest) {
     ])
 
     return NextResponse.json({
-      users: users.map(user => ({
+      users: users.map((user: { id: string; telegramId: bigint; username: string | null; firstName: string | null; lastName: string | null; isPremium: boolean; allowsWriteToPm: boolean; createdAt: Date }) => ({
         ...user,
         telegramId: user.telegramId.toString(),
       })),
