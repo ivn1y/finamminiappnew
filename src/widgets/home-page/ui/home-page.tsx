@@ -376,10 +376,13 @@ export const HomePage: React.FC = () => {
 
         {/* Raffle Block */}
         <div 
-          className="absolute top-[510px] left-[20px] right-[20px] inline-flex flex-col justify-center items-start gap-[15px] rounded-[8px] cursor-pointer"
+          className="absolute top-[510px] left-[20px] right-[20px] flex flex-col justify-center items-start gap-[15px] overflow-hidden rounded-[8px] cursor-pointer bg-[#1A1A1F]"
           style={{
             padding: '26px 22px 26px 165px',
-            background: 'url(/assets/products/tickets.png) lightgray -1px -0.393px / 100.844% 138.198% no-repeat',
+            backgroundImage: 'url(/assets/products/tickets.png?v=2)',
+            backgroundRepeat: 'no-repeat',
+            backgroundPosition: 'left center',
+            backgroundSize: 'cover',
           }}
           onClick={() => window.open('https://finam.ru/landing/mtw', '_blank')}
         >
