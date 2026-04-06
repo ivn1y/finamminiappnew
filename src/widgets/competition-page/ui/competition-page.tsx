@@ -67,13 +67,13 @@ export const CompetitionPage: React.FC = () => {
               
               {/* CTA Button */}
               <button
-                onClick={handleNavigate}
-                className="px-4 py-3 rounded-lg font-inter font-medium text-[16px] text-white leading-[24px] tracking-[-0.128px]"
+                disabled
+                className="px-4 py-3 rounded-lg font-inter font-medium text-[16px] text-white leading-[24px] tracking-[-0.128px] cursor-not-allowed"
                 style={{
                   background: 'linear-gradient(305deg, #FEDA3B -2.67%, #EF5541 38.9%, #801FDB 77.17%, #7E2A89 98.46%)'
                 }}
               >
-                Перейти
+                Скоро
               </button>
             </div>
 
@@ -254,13 +254,13 @@ export const CompetitionPage: React.FC = () => {
 
               {/* View button */}
               <button
-                onClick={handleNavigate}
-                className="absolute left-1/2 -translate-x-1/2 top-[545px] px-3 py-[10px] rounded-lg font-inter font-medium text-[14px] text-white leading-[20px] tracking-[-0.056px]"
+                disabled
+                className="absolute left-1/2 -translate-x-1/2 top-[545px] px-3 py-[10px] rounded-lg font-inter font-medium text-[14px] text-white leading-[20px] tracking-[-0.056px] cursor-not-allowed"
                 style={{
                   background: 'linear-gradient(305deg, #FEDA3B -2.67%, #EF5541 38.9%, #801FDB 77.17%, #7E2A89 98.46%)'
                 }}
               >
-                Посмотреть
+                Скоро
               </button>
             </div>
 

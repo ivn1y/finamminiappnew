@@ -4,7 +4,7 @@ import React from 'react';
 
 export const CuratorContacts: React.FC = () => {
   const handleTelegramClick = () => {
-    window.open('https://t.me/timisworking', '_blank');
+    window.open('https://t.me/Nabokov_Dmitriy', '_blank');
   };
 
   return (
@@ -48,9 +48,9 @@ export const CuratorContacts: React.FC = () => {
           margin: 0,
         }}
       >
-        Твой куратор - Тимур Солдатенков
+        Твой куратор - Дмитрий Набоков
         <br />
-        Project Manager в "Финаме"
+        Business Development Manager в "Финаме"
       </p>
       <button
         onClick={handleTelegramClick}

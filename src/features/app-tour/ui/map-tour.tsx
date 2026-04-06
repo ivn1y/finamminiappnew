@@ -13,9 +13,13 @@ const MapTour: React.FC<MapTourProps> = ({ onComplete }) => {
 
   return (
     <div
-      className="fixed inset-0 z-50 pointer-events-auto"
+      className="fixed z-50 pointer-events-auto"
       onClick={onComplete}
       style={{
+        top: '-100px',
+        left: '-100px',
+        right: '-100px',
+        bottom: '-100px',
         backgroundColor: 'rgba(0, 0, 0, 0.8)',
       }}
     >

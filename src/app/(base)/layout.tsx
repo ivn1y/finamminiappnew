@@ -67,7 +67,7 @@ export default function BaseLayout({
       // Если основные разделы скрыты и пользователь пытается зайти на home, map, products, chat
       // редиректим на страницу ввода данных
       if (HIDE_MAIN_SECTIONS) {
-        const hiddenPaths = ['/collab/home', '/collab/map', '/collab/products', '/collab/chat'];
+        const hiddenPaths = ['/collab/home', '/collab/competition', '/collab/products', '/collab/chat'];
         if (hiddenPaths.includes(pathname)) {
           console.log('[BaseLayout] Redirecting to data-input - main sections hidden');
           router.push('/collab/data-input');
@@ -80,7 +80,7 @@ export default function BaseLayout({
   }, [pathname, router]);
 
   // Скрываем содержимое страниц home, map, products, chat если флаг включен
-  const hiddenPaths = ['/collab/home', '/collab/map', '/collab/products', '/collab/chat'];
+  const hiddenPaths = ['/collab/home', '/collab/competition', '/collab/products', '/collab/chat'];
   const shouldHideContent = HIDE_MAIN_SECTIONS && hiddenPaths.includes(pathname);
 
   return (
