@@ -14,6 +14,7 @@ const FinamDiaryLogo = () => (
 
 interface ProductCardProps {
   backgroundImage: string;
+  backgroundTranslateX?: string;
   title: React.ReactNode;
   subtitle: React.ReactNode;
   buttonText: string;
@@ -22,6 +23,7 @@ interface ProductCardProps {
 
 const ProductCard: React.FC<ProductCardProps> = ({
   backgroundImage,
+  backgroundTranslateX,
   title,
   subtitle,
   buttonText,
@@ -32,8 +34,13 @@ const ProductCard: React.FC<ProductCardProps> = ({
     onClick={onClick}
   >
     <div 
-      className="absolute inset-0 bg-cover bg-center"
-      style={{ backgroundImage: `url(${backgroundImage})` }}
+      className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+      style={{
+        backgroundImage: `url(${backgroundImage})`,
+        ...(backgroundTranslateX
+          ? { transform: `translateX(${backgroundTranslateX})` }
+          : {}),
+      }}
     />
     <div 
       className="absolute inset-0"
@@ -118,7 +125,8 @@ export const ProductsPage: React.FC = () => {
 
               {/* Prediction Market Card */}
               <ProductCard
-                backgroundImage="/assets/products/prediction-bg.png"
+                backgroundImage="/assets/products/prediction-bg.png?v=2"
+                backgroundTranslateX="-60px"
                 title={
                   <h3 className="font-inter-tight font-medium text-[20px] text-white leading-[23px] tracking-[-0.32px]">
                     Prediction Market
