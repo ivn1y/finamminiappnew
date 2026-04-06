@@ -61,24 +61,24 @@ const ProfileTour: React.FC<ProfileTourProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 pointer-events-none">
-      {/* 4-part overlay */}
+      {/* 4-part overlay with extended bounds for safe areas */}
       <div 
-        style={{ ...overlayStyle, top: 0, left: 0, width: '100%', height: highlightedElementRect.top }} 
+        style={{ ...overlayStyle, top: '-100px', left: '-100px', right: '-100px', height: highlightedElementRect.top + 100 }} 
         className="pointer-events-auto"
         onClick={handleOverlayClick}
       />
       <div 
-        style={{ ...overlayStyle, top: highlightedElementRect.bottom, left: 0, width: '100%', bottom: 0 }} 
+        style={{ ...overlayStyle, top: highlightedElementRect.bottom, left: '-100px', right: '-100px', bottom: '-100px' }} 
         className="pointer-events-auto"
         onClick={handleOverlayClick}
       />
       <div 
-        style={{ ...overlayStyle, top: highlightedElementRect.top, left: 0, width: highlightedElementRect.left, height: highlightedElementRect.height }} 
+        style={{ ...overlayStyle, top: highlightedElementRect.top, left: '-100px', width: highlightedElementRect.left + 100, height: highlightedElementRect.height }} 
         className="pointer-events-auto"
         onClick={handleOverlayClick}
       />
       <div 
-        style={{ ...overlayStyle, top: highlightedElementRect.top, left: highlightedElementRect.right, right: 0, height: highlightedElementRect.height }} 
+        style={{ ...overlayStyle, top: highlightedElementRect.top, left: highlightedElementRect.right, right: '-100px', height: highlightedElementRect.height }} 
         className="pointer-events-auto"
         onClick={handleOverlayClick}
       />

@@ -19,7 +19,7 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({ activeTab, i
 
   const tabs = [
     { id: 'home', label: 'Главная', icon: '/assets/icons/main.png', iconGray: '/assets/icons/main_gray.svg', href: '/collab/home' },
-    { id: 'map', label: 'Соревнование', icon: '/assets/icons/competition.png', iconGray: '/assets/icons/competition_gray.svg', href: '/collab/map' },
+    { id: 'competition', label: 'Соревнование', icon: '/assets/icons/competition.png', iconGray: '/assets/icons/competition_gray.svg', href: '/collab/competition' },
     { id: 'products', label: 'Продукты', icon: '/assets/icons/products.png', iconGray: '/assets/icons/products_gray.svg', href: '/collab/products' },
     { id: 'chat', label: 'Ассистент', icon: '/assets/icons/assistant.png', iconGray: '/assets/icons/assistant_gray.svg', href: '/collab/chat' },
     { id: 'profile', label: 'Профиль', icon: '/assets/icons/profile.png', iconGray: '/assets/icons/profile_gray.svg', href: '/collab/profile' }

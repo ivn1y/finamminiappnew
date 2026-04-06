@@ -113,7 +113,7 @@ export const ProductsPage: React.FC = () => {
                 }
                 subtitle={<>Для финтех блогеров<br />от Финам</>}
                 buttonText="Узнать условия"
-                onClick={() => window.open('https://www.finam.ru/landings/finamx/', '_blank')}
+                onClick={() => window.open('https://forms.yandex.ru/u/69d3805695add54da54673e6/', '_blank')}
               />
 
               {/* Prediction Market Card */}

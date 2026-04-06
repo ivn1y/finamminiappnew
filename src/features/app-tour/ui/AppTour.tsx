@@ -57,12 +57,13 @@ export const AppTour: React.FC<AppTourProps> = ({
     <div
       style={{
         position: 'fixed',
-        top: 0,
-        left: 0,
-        width: '100%',
-        height: '100%',
-        background: 'transparent', // The shadow creates the overlay effect
+        top: '-100px',
+        left: '-100px',
+        right: '-100px',
+        bottom: '-100px',
+        background: 'transparent',
         zIndex: 9998,
+        overflow: 'visible',
       }}
     >
       {highlightBox && (
@@ -70,8 +71,8 @@ export const AppTour: React.FC<AppTourProps> = ({
           onClick={handleHighlightedElementClick}
           style={{
             position: 'absolute',
-            top: `${highlightBox.top - 2}px`,
-            left: `${highlightBox.left - 2}px`,
+            top: `${highlightBox.top - 2 + 100}px`,
+            left: `${highlightBox.left - 2 + 100}px`,
             width: `${highlightBox.width + 4}px`,
             height: `${highlightBox.height + 4}px`,
             borderRadius: '4px',
@@ -87,9 +88,8 @@ export const AppTour: React.FC<AppTourProps> = ({
       <div
         style={{
           position: 'absolute',
-          top: '676px',
-          left: '20px',
-          right: '20px',
+          top: '776px',
+          left: '120px',
           width: '353px',
           height: '163px',
           flexShrink: 0,
