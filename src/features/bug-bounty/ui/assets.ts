@@ -1,7 +1,6 @@
 export const bugBountyAssets = {
   finamDiaryLogo: '/assets/logos/finamdiarylogo.png',
   ticketBackground: '/assets/products/ticketbackgorund.png',
-  ratingBg: '/images/bug-bounty/rating-bg.svg',
 } as const;
 
 export const marketingGradientBg =

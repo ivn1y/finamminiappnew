@@ -111,6 +111,7 @@
   --sidebar-border: oklch(0.92 0.004 286.32);
   --sidebar-ring: oklch(0.723 0.219 149.579);
   --icon-base-default: #1A1A1F;
+  --icon-onbrand-secondary: rgba(0, 0, 0, 0.56);
   --gradients-text-small-start: #FDB938;
   --gradients-text-small-end: #ED6B51;
 }
@@ -148,6 +149,7 @@
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.527 0.154 150.069);
   --icon-base-default: #1A1A1F; /* Assuming it's the same for dark mode */
+  --icon-onbrand-secondary: rgba(0, 0, 0, 0.56);
   --gradients-text-small-start: #FDB938;
   --gradients-text-small-end: #ED6B51;
 }
