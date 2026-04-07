@@ -31,3 +31,27 @@ model Broadcast {
   failCount Int      @default(0)
   status    String   @default("pending")
 }
+
+/// Участник потока /bugbounty (идентифицируется стабильным ключом в localStorage)
+model BugBountyParticipant {
+  id               String              @id @default(cuid())
+  participantKey   String              @unique
+  email            String
+  displayName      String
+  phone            String
+  createdAt        DateTime            @default(now())
+  updatedAt        DateTime            @updatedAt
+  reports          BugBountyReport[]
+}
+
+model BugBountyReport {
+  id             String               @id @default(cuid())
+  participantId  String
+  participant    BugBountyParticipant @relation(fields: [participantId], references: [id], onDelete: Cascade)
+  title          String
+  description    String
+  createdAt      DateTime             @default(now())
+
+  @@index([participantId])
+  @@index([createdAt])
+}
