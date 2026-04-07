@@ -58,7 +58,7 @@ export function BugBountyReportDialog({
         toast.error(data.error ?? 'Не удалось отправить');
         return;
       }
-      toast.success('Репорт сохранён');
+      toast.success('Отправлено на проверку');
       reset();
       onOpenChange(false);
       onSuccess();
@@ -77,7 +77,7 @@ export function BugBountyReportDialog({
         <DialogHeader>
           <DialogTitle className="text-white">Новый баг-репорт</DialogTitle>
           <DialogDescription className="text-white/60">
-            Опишите проблему — данные попадут в базу для разбора организаторами.
+            После отправки репорт попадает на проверку. Очки в рейтинге начисляются только за принятые баги.
           </DialogDescription>
         </DialogHeader>
         <div className="flex flex-col gap-3 pt-2">
