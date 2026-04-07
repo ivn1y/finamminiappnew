@@ -134,7 +134,7 @@ export const ProductsPage: React.FC = () => {
                 }
                 subtitle={<>Зарабатывай<br />на прогнозировании<br />событий</>}
                 buttonText="Выбрать исход"
-                onClick={() => window.open('https://t.me/predictmarket_bot', '_blank')}
+                onClick={() => window.open('https://infla-market.ru/', '_blank')}
               />
             </div>
 
