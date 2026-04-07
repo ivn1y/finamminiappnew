@@ -5,9 +5,7 @@ import { ExternalLink } from 'lucide-react';
 import { toast } from 'sonner';
 import { BugBountyLogo } from './bug-bounty-logo';
 import { MarketingPrimaryButton } from './marketing-primary-button';
-import { bugBountyAssets } from './assets';
 import { BugBountyReportDialog } from './bug-bounty-report-dialog';
-import { cn } from '@/shared/lib/utils';
 
 function scoreLabel(n: number): string {
   const m = n % 100;
@@ -73,11 +71,21 @@ export function BugBountyLeaderboard({ participantKey, onLeaderboardChange }: Pr
         }}
       />
 
-      <div className="pointer-events-none absolute inset-0 flex items-center justify-center overflow-hidden opacity-[0.35]" aria-hidden>
-        <div className="relative h-[120%] w-[340%] max-w-none -rotate-[125deg]">
-          <img src={bugBountyAssets.ratingBg} alt="" className="h-full w-full object-cover" />
-        </div>
-      </div>
+      <div
+        className="pointer-events-none absolute z-0"
+        style={{
+          left: '50%',
+          top: 'calc(32% + 130px)',
+          width: '720px',
+          aspectRatio: '1283.535 / 507.672',
+          height: 'auto',
+          transform: 'translate(-50%, -50%) rotate(-28.908deg)',
+          background:
+            'linear-gradient(291deg, rgba(232, 226, 218, 0.82) 0%, rgba(228, 216, 204, 0.72) 24%, rgba(218, 198, 186, 0.68) 36%, rgba(192, 152, 162, 0.62) 44%, rgba(118, 78, 98, 0.5) 52%, rgba(42, 28, 52, 0.42) 64%, rgba(42, 28, 52, 0) 78%)',
+          filter: 'blur(51px)',
+        }}
+        aria-hidden
+      />
 
       <div className="relative z-10 flex flex-1 flex-col px-5 pt-[calc(50px+env(safe-area-inset-top,0px))]">
         <BugBountyLogo />
@@ -85,13 +93,13 @@ export function BugBountyLeaderboard({ participantKey, onLeaderboardChange }: Pr
           Рейтинг
         </h1>
 
-        <div className="mx-auto mt-6 grid w-full max-w-[353px] grid-cols-[40px_1fr_56px] px-1 text-[10px] font-medium uppercase leading-7 tracking-[-0.16px] text-white/[0.56]">
-          <span className="text-left">Позиция</span>
-          <span className="text-center">Участник</span>
-          <span className="text-right">Очки</span>
+        <div className="mx-auto mt-6 grid w-[353px] grid-cols-[108px_minmax(0,1fr)_88px] items-center font-[family-name:var(--font-inter)] text-[10px] font-medium uppercase leading-7 tracking-[-0.16px] text-white/[0.56]">
+          <span className="whitespace-nowrap pl-[20px] text-left">Позиция</span>
+          <span className="whitespace-nowrap text-center">Участник</span>
+          <span className="whitespace-nowrap pr-[20px] text-right">Очки</span>
         </div>
 
-        <div className="mx-auto mt-3 flex w-full max-w-[353px] flex-col gap-2">
+        <div className="mx-auto mt-3 flex w-[353px] flex-col gap-2">
           {loading ? (
             <p className="py-8 text-center text-sm text-white/50">Загрузка таблицы…</p>
           ) : rows.length === 0 ? (
@@ -100,14 +108,20 @@ export function BugBountyLeaderboard({ participantKey, onLeaderboardChange }: Pr
             rows.map((row) => (
               <div
                 key={`${row.rank}-${row.displayName}`}
-                className={cn(
-                  'grid h-[46px] grid-cols-[40px_1fr_56px] items-center rounded-lg bg-black/60 px-4 text-[15px] font-normal leading-[22px] tracking-[-0.09px]',
-                  isHighlighted(row) && 'ring-1 ring-[#fdb938]/80 bg-black/80',
-                )}
+                className="mx-auto grid h-[46px] w-[353px] grid-cols-[108px_minmax(0,1fr)_88px] items-center rounded-[8px] font-[family-name:var(--font-inter)] text-[15px] font-normal leading-[22px] tracking-[-0.09px] [background-color:var(--icon-onbrand-secondary,rgba(0,0,0,0.56))]"
               >
-                <span className="text-center tabular-nums">{row.rank}</span>
-                <span className="truncate text-center">{row.displayName}</span>
-                <span className="text-right tabular-nums">{row.score}</span>
+                <span className="flex h-full min-w-0 items-center justify-start gap-[20px] whitespace-nowrap pl-[20px]">
+                  <span className="shrink-0 tabular-nums text-white">{row.rank}</span>
+                  {isHighlighted(row) ? (
+                    <span className="shrink-0 text-[15px] font-normal leading-[22px] tracking-[-0.09px] text-white/[0.55]">
+                      Вы
+                    </span>
+                  ) : null}
+                </span>
+                <span className="min-w-0 truncate px-2 text-center text-white">{row.displayName}</span>
+                <span className="flex h-full items-center justify-end whitespace-nowrap pr-[20px] tabular-nums text-white">
+                  {row.score}
+                </span>
               </div>
             ))
           )}
