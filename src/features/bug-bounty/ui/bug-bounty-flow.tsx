@@ -55,7 +55,11 @@ function BugBountyFlowInner() {
     );
   }
 
-  switch (step) {
+  // Ключ и профиль восстанавливаются из localStorage и /api/bug-bounty/me, а шаг — нет.
+  // Без этого после обновления страницы снова показывался бы welcome/rules.
+  const activeStep: Step = registered ? 'leaderboard' : step;
+
+  switch (activeStep) {
     case 'welcome':
       return <BugBountyWelcome onRules={() => setStep('rules')} />;
     case 'rules':
