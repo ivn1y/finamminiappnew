@@ -37,6 +37,9 @@ yarn-error.log*
 *.db-journal
 prisma/dev.db
 
+# Bug bounty uploads (local / self-hosted)
+/data/bug-bounty-uploads
+
 # vercel
 .vercel
 

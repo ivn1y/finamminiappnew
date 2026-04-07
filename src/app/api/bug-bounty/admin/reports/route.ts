@@ -3,6 +3,7 @@ import { BugBountyReportStatus } from '@prisma/client'
 import { prisma } from '@/shared/lib/db'
 import { verifyBugBountyAdmin } from '@/shared/lib/bug-bounty/admin-auth'
 import { isBugBountyReportStatus } from '@/shared/lib/bug-bounty/report-status'
+import { parseBugBountyAttachmentsJson } from '@/shared/lib/bug-bounty/report-attachments-constants'
 
 /**
  * Список репортов для модерации.
@@ -29,7 +30,9 @@ export async function GET(request: NextRequest) {
       id: true,
       title: true,
       description: true,
+      attachments: true,
       status: true,
+      rejectionComment: true,
       createdAt: true,
       reviewedAt: true,
       participant: {
@@ -50,6 +53,14 @@ export async function GET(request: NextRequest) {
       id: r.id,
       title: r.title,
       description: r.description,
+      attachments: parseBugBountyAttachmentsJson(r.attachments).map((a) => ({
+        id: a.id,
+        mime: a.mime,
+        kind: a.kind,
+        name: a.name,
+        url: `/api/bug-bounty/admin/attachments/${r.id}/${a.id}`,
+      })),
+      rejectionComment: r.rejectionComment,
       status: r.status,
       createdAt: r.createdAt.toISOString(),
       reviewedAt: r.reviewedAt?.toISOString() ?? null,

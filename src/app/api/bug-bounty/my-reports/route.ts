@@ -24,6 +24,7 @@ export async function GET(request: NextRequest) {
       id: true,
       title: true,
       status: true,
+      rejectionComment: true,
       createdAt: true,
       reviewedAt: true,
     },
@@ -36,6 +37,10 @@ export async function GET(request: NextRequest) {
       title: r.title,
       status: r.status,
       statusLabel: BUG_BOUNTY_STATUS_LABEL[r.status],
+      rejectionComment:
+        r.status === 'REJECTED' && r.rejectionComment?.trim()
+          ? r.rejectionComment.trim()
+          : null,
       createdAt: r.createdAt.toISOString(),
       reviewedAt: r.reviewedAt?.toISOString() ?? null,
     })),

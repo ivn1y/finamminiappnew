@@ -57,9 +57,13 @@ model BugBountyReport {
   participant    BugBountyParticipant    @relation(fields: [participantId], references: [id], onDelete: Cascade)
   title          String
   description    String
-  status         BugBountyReportStatus   @default(PENDING)
-  reviewedAt     DateTime?
-  createdAt      DateTime                @default(now())
+  /// JSON: [{ "id": string, "mime": string, "kind": "image" | "video", "name": string }]
+  attachments    Json?
+  status            BugBountyReportStatus   @default(PENDING)
+  /// Виден участнику, если статус REJECTED
+  rejectionComment  String?
+  reviewedAt        DateTime?
+  createdAt         DateTime                @default(now())
 
   @@index([participantId])
   @@index([createdAt])
