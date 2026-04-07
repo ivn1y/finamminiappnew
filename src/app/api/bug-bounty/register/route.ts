@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/shared/lib/db'
-import { isParticipantKey, isReasonableEmail } from '@/shared/lib/bug-bounty/validate'
+import { isParticipantKey } from '@/shared/lib/bug-bounty/validate'
+import { validateEmail, validatePhone } from '@/shared/lib/validation'
 
 type Body = {
   participantKey?: string
@@ -23,20 +24,37 @@ export async function POST(request: NextRequest) {
     if (!isParticipantKey(participantKey)) {
       return NextResponse.json({ error: 'Некорректный ключ участника' }, { status: 400 })
     }
-    if (!isReasonableEmail(email)) {
-      return NextResponse.json({ error: 'Укажите корректную почту' }, { status: 400 })
+    const emailValidation = validateEmail(email)
+    if (!emailValidation.isValid) {
+      return NextResponse.json(
+        { error: emailValidation.error ?? 'Укажите корректную почту' },
+        { status: 400 },
+      )
     }
     if (!displayName || displayName.length > MAX_NAME) {
       return NextResponse.json({ error: 'Укажите имя для турнирной таблицы' }, { status: 400 })
     }
-    if (!phone || phone.length > MAX_PHONE) {
-      return NextResponse.json({ error: 'Укажите телефон для связи' }, { status: 400 })
+    const phoneValidation = validatePhone(phone)
+    if (!phoneValidation.isValid) {
+      return NextResponse.json(
+        { error: phoneValidation.error ?? 'Укажите корректный номер телефона' },
+        { status: 400 },
+      )
+    }
+    const phoneStored = phoneValidation.formatted ?? phone
+    if (phoneStored.length > MAX_PHONE) {
+      return NextResponse.json({ error: 'Номер телефона слишком длинный' }, { status: 400 })
     }
 
     await prisma.bugBountyParticipant.upsert({
       where: { participantKey },
-      create: { participantKey, email, displayName, phone },
-      update: { email, displayName, phone },
+      create: {
+        participantKey,
+        email: email.trim().toLowerCase(),
+        displayName,
+        phone: phoneStored,
+      },
+      update: { email: email.trim().toLowerCase(), displayName, phone: phoneStored },
     })
 
     return NextResponse.json({ success: true })

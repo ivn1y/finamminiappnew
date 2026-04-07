@@ -1,9 +1,10 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { ChevronLeft } from 'lucide-react';
 import { cn } from '@/shared/lib/utils';
-import { bugBountyAssets, marketingGradientBg } from './assets';
+import { validateEmail, validatePhone } from '@/shared/lib/validation';
+import { marketingGradientBg } from './assets';
 
 type Props = {
   onBack: () => void;
@@ -15,19 +16,63 @@ export function BugBountyRegistration({ onBack, onComplete }: Props) {
   const [displayName, setDisplayName] = useState('');
   const [phone, setPhone] = useState('');
   const [saving, setSaving] = useState(false);
+  const [errors, setErrors] = useState<Partial<Record<'email' | 'phone', string>>>({});
 
   const canSubmit = useMemo(() => {
-    return email.trim().length > 0 && displayName.trim().length > 0 && phone.trim().length > 0;
+    if (!displayName.trim() || !email.trim() || !phone.trim()) return false;
+    return validateEmail(email).isValid && validatePhone(phone).isValid;
   }, [email, displayName, phone]);
+
+  const handleEmailChange = useCallback((value: string) => {
+    setEmail(value);
+    if (value.trim() === '') {
+      setErrors((prev) => ({ ...prev, email: undefined }));
+      return;
+    }
+    const r = validateEmail(value);
+    setErrors((prev) => ({ ...prev, email: r.isValid ? undefined : r.error }));
+  }, []);
+
+  const handlePhoneChange = useCallback((value: string) => {
+    setPhone(value);
+    if (value.trim() === '') {
+      setErrors((prev) => ({ ...prev, phone: undefined }));
+      return;
+    }
+    const r = validatePhone(value);
+    if (!r.isValid) {
+      setErrors((prev) => ({ ...prev, phone: r.error }));
+      return;
+    }
+    setErrors((prev) => ({ ...prev, phone: undefined }));
+    const digitsOnly = value.replace(/\D/g, '');
+    const isRussianStyle11 =
+      !value.trim().startsWith('+') &&
+      digitsOnly.length === 11 &&
+      (digitsOnly.startsWith('8') || digitsOnly.startsWith('7'));
+    const isCompleteInternationalNumber = value.trim().startsWith('+') && digitsOnly.length >= 10;
+    if (r.formatted && (isRussianStyle11 || isCompleteInternationalNumber)) {
+      setPhone(r.formatted);
+    }
+  }, []);
 
   const handleDone = async () => {
     if (!canSubmit || saving) return;
+    const emailRes = validateEmail(email.trim());
+    const phoneRes = validatePhone(phone.trim());
+    if (!emailRes.isValid || !phoneRes.isValid) {
+      setErrors({
+        ...(emailRes.isValid ? {} : { email: emailRes.error }),
+        ...(phoneRes.isValid ? {} : { phone: phoneRes.error }),
+      });
+      return;
+    }
     setSaving(true);
     try {
       await onComplete({
-        email: email.trim(),
+        email: email.trim().toLowerCase(),
         displayName: displayName.trim(),
-        phone: phone.trim(),
+        phone: phoneRes.formatted ?? phone.trim(),
       });
     } finally {
       setSaving(false);
@@ -35,16 +80,18 @@ export function BugBountyRegistration({ onBack, onComplete }: Props) {
   };
 
   return (
-    <div className="relative flex min-h-[100dvh] flex-col bg-black text-white">
-      <div className="pointer-events-none absolute left-1/2 top-[18%] w-[284px] -translate-x-1/2 -translate-y-1/2" aria-hidden>
-        <img src={bugBountyAssets.regEllipse1} alt="" className="h-auto w-full opacity-90" />
-      </div>
-      <div className="pointer-events-none absolute bottom-[8%] right-[-20px] w-[132px]" aria-hidden>
-        <img src={bugBountyAssets.regEllipse2} alt="" className="h-auto w-full opacity-80" />
-      </div>
+    <div className="relative flex h-[100dvh] max-h-[100dvh] flex-col overflow-hidden bg-black text-white">
+      {/* Макет: top 101, inset слева 55 / справа 54 */}
+      <div
+        className="pointer-events-none absolute left-[55px] top-[101px] z-0 h-[205px] w-[284px] rounded-[284px] opacity-[0.38] blur-[80px]"
+        style={{
+          background: 'var(--gradients-button-marketing-end-default, #59307C)',
+        }}
+        aria-hidden
+      />
 
-      <div className="relative z-10 mx-auto w-full max-w-[393px] flex-1 px-5 pt-[171px]">
-        <div className="text-center">
+      <div className="relative z-10 mx-auto flex min-h-0 w-full max-w-[393px] flex-1 flex-col px-5 pt-[171px]">
+        <div className="shrink-0 text-center">
           <h1 className="font-[family-name:var(--font-inter-tight)] text-[30px] font-normal leading-[1.1] tracking-[-0.6px]">
             Быстрая регистрация
           </h1>
@@ -53,40 +100,61 @@ export function BugBountyRegistration({ onBack, onComplete }: Props) {
           </p>
         </div>
 
-        <div className="mt-16 flex flex-col gap-4">
-          <input
-            type="email"
-            inputMode="email"
-            autoComplete="email"
-            placeholder="Почта"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            disabled={saving}
-            className="h-14 w-full rounded-lg border-0 bg-[rgba(79,79,89,0.16)] px-4 text-base leading-6 tracking-[-0.128px] text-white placeholder:text-[#a4a4b2] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white/25 disabled:opacity-60"
-          />
-          <input
-            type="text"
-            autoComplete="nickname"
-            placeholder="Имя для турнирной таблицы"
-            value={displayName}
-            onChange={(e) => setDisplayName(e.target.value)}
-            disabled={saving}
-            className="h-14 w-full rounded-lg border-0 bg-[rgba(79,79,89,0.16)] px-4 text-base leading-6 tracking-[-0.128px] text-white placeholder:text-[#a4a4b2] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white/25 disabled:opacity-60"
-          />
-          <input
-            type="tel"
-            inputMode="tel"
-            autoComplete="tel"
-            placeholder="Номер телефона для связи"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-            disabled={saving}
-            className="h-14 w-full rounded-lg border-0 bg-[rgba(79,79,89,0.16)] px-4 text-base leading-6 tracking-[-0.128px] text-white placeholder:text-[#a4a4b2] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white/25 disabled:opacity-60"
-          />
+        <div className="mt-[81px] flex min-h-0 flex-1 flex-col">
+          <div className="min-h-0 flex-1" aria-hidden />
+          <div className="mb-[197px] flex shrink-0 flex-col gap-4">
+            <div className="flex flex-col gap-1">
+              <input
+                type="email"
+                inputMode="email"
+                autoComplete="email"
+                placeholder="Почта"
+                value={email}
+                onChange={(e) => handleEmailChange(e.target.value)}
+                disabled={saving}
+                aria-invalid={!!errors.email}
+                className={cn(
+                  'h-14 w-full shrink-0 rounded-lg border-0 bg-[rgba(79,79,89,0.16)] px-4 text-base leading-6 tracking-[-0.128px] text-white placeholder:text-[#a4a4b2] focus-visible:outline-none focus-visible:ring-1 disabled:opacity-60',
+                  errors.email ? 'ring-1 ring-[#EF5541]/80 focus-visible:ring-[#EF5541]/80' : 'focus-visible:ring-white/25',
+                )}
+              />
+              {errors.email ? (
+                <p className="px-1 text-[12px] leading-4 text-[#EF5541]">{errors.email}</p>
+              ) : null}
+            </div>
+            <input
+              type="text"
+              autoComplete="nickname"
+              placeholder="Имя для турнирной таблицы"
+              value={displayName}
+              onChange={(e) => setDisplayName(e.target.value)}
+              disabled={saving}
+              className="h-14 w-full shrink-0 rounded-lg border-0 bg-[rgba(79,79,89,0.16)] px-4 text-base leading-6 tracking-[-0.128px] text-white placeholder:text-[#a4a4b2] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white/25 disabled:opacity-60"
+            />
+            <div className="flex flex-col gap-1">
+              <input
+                type="tel"
+                inputMode="tel"
+                autoComplete="tel"
+                placeholder="+7 912 345-67-89"
+                value={phone}
+                onChange={(e) => handlePhoneChange(e.target.value)}
+                disabled={saving}
+                aria-invalid={!!errors.phone}
+                className={cn(
+                  'h-14 w-full shrink-0 rounded-lg border-0 bg-[rgba(79,79,89,0.16)] px-4 text-base leading-6 tracking-[-0.128px] text-white placeholder:text-[#a4a4b2] focus-visible:outline-none focus-visible:ring-1 disabled:opacity-60',
+                  errors.phone ? 'ring-1 ring-[#EF5541]/80 focus-visible:ring-[#EF5541]/80' : 'focus-visible:ring-white/25',
+                )}
+              />
+              {errors.phone ? (
+                <p className="px-1 text-[12px] leading-4 text-[#EF5541]">{errors.phone}</p>
+              ) : null}
+            </div>
+          </div>
         </div>
       </div>
 
-      <div className="relative z-10 mt-auto w-full px-5 pb-[max(10px,env(safe-area-inset-bottom))] pt-3">
+      <div className="relative z-10 w-full shrink-0 px-5 pb-[calc(clamp(1.5rem,12dvh,5.625rem)+env(safe-area-inset-bottom,0px))]">
         <div className="mx-auto flex w-full max-w-[393px] items-center justify-between gap-[10px]">
           <button
             type="button"

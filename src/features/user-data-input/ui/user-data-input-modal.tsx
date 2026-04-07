@@ -143,11 +143,14 @@ export const UserDataInputModal: React.FC<UserDataInputModalProps> = ({
         // Для российского номера (начинается с 8) нужно 11 цифр
         // Для международного формата (+7) проверяем, что номер полный
         const digitsOnly = value.replace(/\D/g, '');
-        const isCompleteRussianNumber = value.startsWith('8') && digitsOnly.length === 11;
-        const isCompleteInternationalNumber = value.startsWith('+') && digitsOnly.length >= 10;
+        const isRussianStyle11 =
+          !value.trim().startsWith('+') &&
+          digitsOnly.length === 11 &&
+          (digitsOnly.startsWith('8') || digitsOnly.startsWith('7'));
+        const isCompleteInternationalNumber = value.trim().startsWith('+') && digitsOnly.length >= 10;
         
         if (validationResult.isValid && validationResult.formatted && 
-            (isCompleteRussianNumber || isCompleteInternationalNumber)) {
+            (isRussianStyle11 || isCompleteInternationalNumber)) {
           setFormData(prev => ({ ...prev, phone: validationResult.formatted! }));
         }
         break;

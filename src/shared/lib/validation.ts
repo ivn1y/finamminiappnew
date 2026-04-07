@@ -383,6 +383,23 @@ export function validatePhone(phone: string): { isValid: boolean; error?: string
     return { isValid: false, error: 'Телефон обязателен для заполнения' };
   }
 
+  const trimmed = phone.trim();
+  const digitsOnly = trimmed.replace(/\D/g, '');
+
+  // Ввод без «+», начинается с 8 или 7: только национальный формат РФ/КЗ (+7), ровно 11 цифр.
+  // Иначе libphonenumber при переборе стран может ошибочно принять лишние цифры как валидный номер (например, DE).
+  if (!trimmed.startsWith('+') && /^[87]/.test(digitsOnly)) {
+    if (digitsOnly.length !== 11) {
+      return {
+        isValid: false,
+        error:
+          digitsOnly.length < 11
+            ? 'Введите номер полностью: 11 цифр, например 8 912 345 67 89'
+            : 'Лишние цифры: для номера с 8 или 7 нужно ровно 11 цифр (или укажите страну через +)',
+      };
+    }
+  }
+
   // Получаем варианты нормализации
   const normalizedVariants = normalizePhoneNumber(phone);
   
