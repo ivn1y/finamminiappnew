@@ -1,8 +1,6 @@
 export const bugBountyAssets = {
-  welcomeTicket: '/images/bug-bounty/welcome-ticket.png',
-  ellipseGlow: '/images/bug-bounty/ellipse-glow.svg',
-  logoUnion: '/images/bug-bounty/logo-union.svg',
-  logoFinamText: '/images/bug-bounty/logo-finam-text.svg',
+  finamDiaryLogo: '/assets/logos/finamdiarylogo.png',
+  ticketBackground: '/assets/products/ticketbackgorund.png',
   rulesTopGlow: '/images/bug-bounty/rules-top-glow.svg',
   ratingBg: '/images/bug-bounty/rating-bg.svg',
   regEllipse1: '/images/bug-bounty/reg-ellipse-1.svg',

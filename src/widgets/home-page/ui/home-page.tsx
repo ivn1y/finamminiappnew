@@ -384,16 +384,17 @@ export const HomePage: React.FC = () => {
             backgroundPosition: 'left center',
             backgroundSize: 'cover',
           }}
-          onClick={() => window.open('https://finam.ru/landing/mtw', '_blank')}
+          onClick={() => router.push('/bugbounty')}
         >
           <p className="font-inter-tight font-medium text-[20px] text-white leading-[23px] tracking-[-0.32px]">
             Разыгрываем Билет в VIP-зону
           </p>
           <button
+            type="button"
             className="inline-flex h-[26px] px-[8px] justify-center items-center rounded-[8px] bg-white font-inter font-medium text-[12px] text-[#1A1A1F] leading-[16px] tracking-[-0.024px] whitespace-nowrap"
             onClick={(e) => {
               e.stopPropagation();
-              window.open('https://finam.ru/landing/mtw', '_blank');
+              router.push('/bugbounty');
             }}
           >
             Узнать подробности
