@@ -24,6 +24,8 @@ type BugBountyContextValue = {
   registered: boolean;
   loading: boolean;
   refresh: () => Promise<void>;
+  /** После входа по почте подставляем ключ участника с сервера */
+  adoptParticipantKey: (key: string) => Promise<void>;
 };
 
 const BugBountyContext = createContext<BugBountyContextValue | null>(null);
@@ -79,6 +81,15 @@ export function BugBountyProvider({ children }: { children: ReactNode }) {
     await fetchProfile(participantKey);
   }, [participantKey, fetchProfile]);
 
+  const adoptParticipantKey = useCallback(
+    async (key: string) => {
+      localStorage.setItem(STORAGE_KEY, key);
+      setParticipantKey(key);
+      await fetchProfile(key);
+    },
+    [fetchProfile],
+  );
+
   const value = useMemo(
     () => ({
       participantKey,
@@ -86,8 +97,9 @@ export function BugBountyProvider({ children }: { children: ReactNode }) {
       registered: profile !== null,
       loading,
       refresh,
+      adoptParticipantKey,
     }),
-    [participantKey, profile, loading, refresh],
+    [participantKey, profile, loading, refresh, adoptParticipantKey],
   );
 
   return <BugBountyContext.Provider value={value}>{children}</BugBountyContext.Provider>;

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/shared/lib/db'
 import { isParticipantKey } from '@/shared/lib/bug-bounty/validate'
+import { hashPassword } from '@/shared/lib/bug-bounty/password'
 import { validateEmail, validatePhone } from '@/shared/lib/validation'
 
 type Body = {
@@ -8,10 +9,12 @@ type Body = {
   email?: string
   displayName?: string
   phone?: string
+  password?: string
 }
 
 const MAX_NAME = 120
 const MAX_PHONE = 32
+const MIN_PASSWORD = 8
 
 export async function POST(request: NextRequest) {
   try {
@@ -20,6 +23,7 @@ export async function POST(request: NextRequest) {
     const email = body.email?.trim() ?? ''
     const displayName = body.displayName?.trim() ?? ''
     const phone = body.phone?.trim() ?? ''
+    const password = body.password ?? ''
 
     if (!isParticipantKey(participantKey)) {
       return NextResponse.json({ error: 'Некорректный ключ участника' }, { status: 400 })
@@ -45,16 +49,37 @@ export async function POST(request: NextRequest) {
     if (phoneStored.length > MAX_PHONE) {
       return NextResponse.json({ error: 'Номер телефона слишком длинный' }, { status: 400 })
     }
+    if (password.length < MIN_PASSWORD) {
+      return NextResponse.json(
+        { error: `Пароль не короче ${MIN_PASSWORD} символов` },
+        { status: 400 },
+      )
+    }
+
+    const emailNorm = email.trim().toLowerCase()
+    const taken = await prisma.bugBountyParticipant.findUnique({
+      where: { email: emailNorm },
+      select: { participantKey: true },
+    })
+    if (taken && taken.participantKey !== participantKey) {
+      return NextResponse.json(
+        { error: 'Эта почта уже занята. Войдите под этой почтой.' },
+        { status: 409 },
+      )
+    }
+
+    const passwordHash = await hashPassword(password)
 
     await prisma.bugBountyParticipant.upsert({
       where: { participantKey },
       create: {
         participantKey,
-        email: email.trim().toLowerCase(),
+        email: emailNorm,
         displayName,
         phone: phoneStored,
+        passwordHash,
       },
-      update: { email: email.trim().toLowerCase(), displayName, phone: phoneStored },
+      update: { email: emailNorm, displayName, phone: phoneStored, passwordHash },
     })
 
     return NextResponse.json({ success: true })

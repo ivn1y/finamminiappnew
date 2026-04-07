@@ -1,27 +1,38 @@
 'use client';
 
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { ChevronLeft } from 'lucide-react';
 import { cn } from '@/shared/lib/utils';
 import { validateEmail, validatePhone } from '@/shared/lib/validation';
 import { marketingGradientBg } from './assets';
 
+const MIN_PASSWORD = 8;
+
 type Props = {
+  initialEmail?: string;
   onBack: () => void;
-  onComplete: (data: { email: string; displayName: string; phone: string }) => Promise<void>;
+  onComplete: (data: {
+    email: string;
+    displayName: string;
+    phone: string;
+    password: string;
+  }) => Promise<void>;
 };
 
-export function BugBountyRegistration({ onBack, onComplete }: Props) {
-  const [email, setEmail] = useState('');
+export function BugBountyRegistration({ initialEmail, onBack, onComplete }: Props) {
+  const [email, setEmail] = useState(initialEmail ?? '');
   const [displayName, setDisplayName] = useState('');
   const [phone, setPhone] = useState('');
+  const [password, setPassword] = useState('');
   const [saving, setSaving] = useState(false);
-  const [errors, setErrors] = useState<Partial<Record<'email' | 'phone', string>>>({});
+  const [errors, setErrors] = useState<Partial<Record<'email' | 'phone' | 'password', string>>>({});
 
   const canSubmit = useMemo(() => {
-    if (!displayName.trim() || !email.trim() || !phone.trim()) return false;
+    if (!displayName.trim() || !email.trim() || !phone.trim() || password.length < MIN_PASSWORD) {
+      return false;
+    }
     return validateEmail(email).isValid && validatePhone(phone).isValid;
-  }, [email, displayName, phone]);
+  }, [email, displayName, phone, password]);
 
   const handleEmailChange = useCallback((value: string) => {
     setEmail(value);
@@ -32,6 +43,12 @@ export function BugBountyRegistration({ onBack, onComplete }: Props) {
     const r = validateEmail(value);
     setErrors((prev) => ({ ...prev, email: r.isValid ? undefined : r.error }));
   }, []);
+
+  useEffect(() => {
+    if (initialEmail?.trim()) {
+      setEmail(initialEmail.trim());
+    }
+  }, [initialEmail]);
 
   const handlePhoneChange = useCallback((value: string) => {
     setPhone(value);
@@ -60,6 +77,13 @@ export function BugBountyRegistration({ onBack, onComplete }: Props) {
     if (!canSubmit || saving) return;
     const emailRes = validateEmail(email.trim());
     const phoneRes = validatePhone(phone.trim());
+    if (password.length < MIN_PASSWORD) {
+      setErrors((prev) => ({
+        ...prev,
+        password: `Не короче ${MIN_PASSWORD} символов`,
+      }));
+      return;
+    }
     if (!emailRes.isValid || !phoneRes.isValid) {
       setErrors({
         ...(emailRes.isValid ? {} : { email: emailRes.error }),
@@ -73,6 +97,7 @@ export function BugBountyRegistration({ onBack, onComplete }: Props) {
         email: email.trim().toLowerCase(),
         displayName: displayName.trim(),
         phone: phoneRes.formatted ?? phone.trim(),
+        password,
       });
     } finally {
       setSaving(false);
@@ -148,6 +173,27 @@ export function BugBountyRegistration({ onBack, onComplete }: Props) {
               />
               {errors.phone ? (
                 <p className="px-1 text-[12px] leading-4 text-[#EF5541]">{errors.phone}</p>
+              ) : null}
+            </div>
+            <div className="flex flex-col gap-1">
+              <input
+                type="password"
+                autoComplete="new-password"
+                placeholder="Пароль"
+                value={password}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                  setErrors((prev) => ({ ...prev, password: undefined }));
+                }}
+                disabled={saving}
+                aria-invalid={!!errors.password}
+                className={cn(
+                  'h-14 w-full shrink-0 rounded-lg border-0 bg-[rgba(79,79,89,0.16)] px-4 text-base leading-6 tracking-[-0.128px] text-white placeholder:text-[#a4a4b2] focus-visible:outline-none focus-visible:ring-1 disabled:opacity-60',
+                  errors.password ? 'ring-1 ring-[#EF5541]/80 focus-visible:ring-[#EF5541]/80' : 'focus-visible:ring-white/25',
+                )}
+              />
+              {errors.password ? (
+                <p className="px-1 text-[12px] leading-4 text-[#EF5541]">{errors.password}</p>
               ) : null}
             </div>
           </div>

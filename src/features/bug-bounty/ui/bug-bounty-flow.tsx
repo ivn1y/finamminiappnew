@@ -4,26 +4,29 @@ import { useCallback, useState } from 'react';
 import { toast } from 'sonner';
 import { BugBountyWelcome } from './bug-bounty-welcome';
 import { BugBountyRules } from './bug-bounty-rules';
+import { BugBountyLogin } from './bug-bounty-login';
 import { BugBountyRegistration } from './bug-bounty-registration';
 import { BugBountyLeaderboard } from './bug-bounty-leaderboard';
 import { BugBountyProvider, useBugBounty } from './bug-bounty-context';
 
-type Step = 'welcome' | 'rules' | 'register' | 'leaderboard';
+type Step = 'welcome' | 'rules' | 'login' | 'register' | 'leaderboard';
 
 function BugBountyFlowInner() {
-  const { participantKey, registered, loading, refresh } = useBugBounty();
+  const { participantKey, registered, loading, refresh, adoptParticipantKey } = useBugBounty();
   const [step, setStep] = useState<Step>('welcome');
+  const [registerEmailPrefill, setRegisterEmailPrefill] = useState('');
 
   const handleParticipate = useCallback(() => {
     if (registered) {
       setStep('leaderboard');
       return;
     }
-    setStep('register');
+    setRegisterEmailPrefill('');
+    setStep('login');
   }, [registered]);
 
   const handleRegister = useCallback(
-    async (data: { email: string; displayName: string; phone: string }) => {
+    async (data: { email: string; displayName: string; phone: string; password: string }) => {
       if (!participantKey) {
         toast.error('Сессия не готова, обновите страницу');
         return;
@@ -57,10 +60,25 @@ function BugBountyFlowInner() {
       return <BugBountyWelcome onRules={() => setStep('rules')} />;
     case 'rules':
       return <BugBountyRules onParticipate={handleParticipate} />;
+    case 'login':
+      return (
+        <BugBountyLogin
+          onBack={() => setStep('rules')}
+          onSuccess={async (key) => {
+            await adoptParticipantKey(key);
+            setStep('leaderboard');
+          }}
+          onGoRegister={(prefill) => {
+            setRegisterEmailPrefill(prefill);
+            setStep('register');
+          }}
+        />
+      );
     case 'register':
       return (
         <BugBountyRegistration
-          onBack={() => setStep('rules')}
+          initialEmail={registerEmailPrefill}
+          onBack={() => setStep('login')}
           onComplete={handleRegister}
         />
       );
