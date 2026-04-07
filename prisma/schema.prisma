@@ -44,14 +44,24 @@ model BugBountyParticipant {
   reports          BugBountyReport[]
 }
 
+enum BugBountyReportStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+}
+
 model BugBountyReport {
-  id             String               @id @default(cuid())
+  id             String                  @id @default(cuid())
   participantId  String
-  participant    BugBountyParticipant @relation(fields: [participantId], references: [id], onDelete: Cascade)
+  participant    BugBountyParticipant    @relation(fields: [participantId], references: [id], onDelete: Cascade)
   title          String
   description    String
-  createdAt      DateTime             @default(now())
+  status         BugBountyReportStatus   @default(PENDING)
+  reviewedAt     DateTime?
+  createdAt      DateTime                @default(now())
 
   @@index([participantId])
   @@index([createdAt])
+  @@index([status])
 }
+

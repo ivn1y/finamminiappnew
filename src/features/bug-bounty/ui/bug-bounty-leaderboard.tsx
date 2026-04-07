@@ -19,6 +19,15 @@ function scoreLabel(n: number): string {
 type Row = { rank: number; displayName: string; score: number };
 type LeaderboardPayload = { rows: Row[]; self: Row | null };
 
+type MyReportItem = {
+  id: string;
+  title: string;
+  status: string;
+  statusLabel: string;
+  createdAt: string;
+  reviewedAt: string | null;
+};
+
 type Props = {
   participantKey: string;
   onLeaderboardChange?: () => void;
@@ -27,22 +36,31 @@ type Props = {
 export function BugBountyLeaderboard({ participantKey, onLeaderboardChange }: Props) {
   const [rows, setRows] = useState<Row[]>([]);
   const [self, setSelf] = useState<Row | null>(null);
+  const [myReports, setMyReports] = useState<MyReportItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [reportOpen, setReportOpen] = useState(false);
 
   const load = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await fetch(
-        `/api/bug-bounty/leaderboard?participantKey=${encodeURIComponent(participantKey)}`,
-      );
-      if (!res.ok) {
+      const [lbRes, mineRes] = await Promise.all([
+        fetch(`/api/bug-bounty/leaderboard?participantKey=${encodeURIComponent(participantKey)}`),
+        fetch(`/api/bug-bounty/my-reports?participantKey=${encodeURIComponent(participantKey)}`),
+      ]);
+      if (!lbRes.ok) {
         toast.error('Не удалось загрузить рейтинг');
         return;
       }
-      const data = (await res.json()) as LeaderboardPayload;
+      const data = (await lbRes.json()) as LeaderboardPayload;
       setRows(data.rows ?? []);
       setSelf(data.self ?? null);
+
+      if (mineRes.ok) {
+        const mine = (await mineRes.json()) as { reports?: MyReportItem[] };
+        setMyReports(mine.reports ?? []);
+      } else {
+        setMyReports([]);
+      }
     } finally {
       setLoading(false);
     }
@@ -103,7 +121,9 @@ export function BugBountyLeaderboard({ participantKey, onLeaderboardChange }: Pr
           {loading ? (
             <p className="py-8 text-center text-sm text-white/50">Загрузка таблицы…</p>
           ) : rows.length === 0 ? (
-            <p className="py-8 text-center text-sm text-white/50">Пока нет участников с очками</p>
+            <p className="py-8 text-center text-sm text-white/50">
+              Пока никто не набрал очков за принятые баги
+            </p>
           ) : (
             rows.map((row) => (
               <div
@@ -126,6 +146,36 @@ export function BugBountyLeaderboard({ participantKey, onLeaderboardChange }: Pr
             ))
           )}
         </div>
+
+        {myReports.length > 0 ? (
+          <div className="mx-auto mt-8 w-full max-w-[353px]">
+            <h2 className="text-center font-[family-name:var(--font-inter-tight)] text-[17px] font-normal leading-6 tracking-[-0.17px] text-white">
+              Мои репорты
+            </h2>
+            <ul className="mt-3 flex flex-col gap-2">
+              {myReports.map((r) => (
+                <li
+                  key={r.id}
+                  className="rounded-lg border border-white/10 bg-white/[0.04] px-3 py-2.5 text-left"
+                >
+                  <p className="text-[15px] leading-[22px] tracking-[-0.09px] text-white">{r.title}</p>
+                  <p className="mt-1 text-[12px] leading-4 text-white/55">
+                    {r.statusLabel}
+                    <span className="text-white/35">
+                      {' · '}
+                      {new Date(r.createdAt).toLocaleString('ru-RU', {
+                        day: 'numeric',
+                        month: 'short',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                      })}
+                    </span>
+                  </p>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ) : null}
 
         {self && self.rank > 50 && (
           <p className="mx-auto mt-4 max-w-[353px] text-center text-sm text-white/55">

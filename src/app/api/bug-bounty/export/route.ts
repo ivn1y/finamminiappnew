@@ -53,6 +53,8 @@ export async function GET(request: NextRequest) {
 
   const header = [
     'createdAt',
+    'status',
+    'reviewedAt',
     'email',
     'displayName',
     'phone',
@@ -67,6 +69,8 @@ export async function GET(request: NextRequest) {
     ...reports.map((r) =>
       [
         r.createdAt.toISOString(),
+        r.status,
+        r.reviewedAt?.toISOString() ?? '',
         r.participant.email,
         r.participant.displayName,
         r.participant.phone,
