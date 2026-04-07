@@ -1,34 +1,38 @@
 import { MarketingPrimaryButton } from './marketing-primary-button';
-import { bugBountyAssets } from './assets';
 
 type Props = {
   onParticipate: () => void;
 };
 
+const rulesTopGlowBackground =
+  'var(--Marketing-Gradient-BG-01, linear-gradient(305deg, var(--gradients-bg-01-start, #FEDA3B) -2.67%, var(--gradients-bg-01-middle1, #EF5541) 38.9%, var(--gradients-bg-01-middle2, #801FDB) 77.17%, var(--gradients-bg-01-end, #7E2A89) 98.46%))';
+
 export function BugBountyRules({ onParticipate }: Props) {
   return (
     <div className="relative flex min-h-[100dvh] flex-col bg-black text-white">
-      <div className="pointer-events-none absolute left-[-87px] top-[-66px] h-[260px] w-[375px] opacity-80" aria-hidden>
-        <img src={bugBountyAssets.rulesTopGlow} alt="" className="h-full w-full object-cover" />
-      </div>
+      <div
+        className="pointer-events-none absolute right-[105px] top-[-66px] z-0 h-[260px] w-[375px] rounded-[375px] opacity-[0.16] blur-[50px]"
+        style={{ background: rulesTopGlowBackground }}
+        aria-hidden
+      />
 
-      <div className="relative z-10 flex flex-1 flex-col overflow-hidden">
+      <div className="relative z-10 flex flex-col pb-[max(1.5rem,env(safe-area-inset-bottom))]">
         <h1 className="px-5 pt-[46px] font-[family-name:var(--font-inter-tight)] text-[30px] font-normal leading-[1.1] tracking-[-0.6px]">
           Условия участия в конкурсе Дневника Трейдера
         </h1>
 
-        <div className="mt-6 flex-1 overflow-y-auto overscroll-contain px-5 pb-36">
+        <div className="mt-6 px-5">
           <div className="max-w-[353px] text-[16px] leading-normal text-white">
             <RulesBody />
           </div>
         </div>
-      </div>
 
-      <div className="fixed bottom-0 left-0 right-0 z-20 bg-gradient-to-t from-black via-black to-transparent px-5 pb-[max(1rem,env(safe-area-inset-bottom))] pt-10">
-        <div className="mx-auto w-full max-w-[393px]">
-          <MarketingPrimaryButton type="button" onClick={onParticipate}>
-            Участвовать
-          </MarketingPrimaryButton>
+        <div className="mt-10 px-5">
+          <div className="mx-auto w-full max-w-[393px]">
+            <MarketingPrimaryButton type="button" onClick={onParticipate}>
+              Участвовать
+            </MarketingPrimaryButton>
+          </div>
         </div>
       </div>
     </div>
@@ -51,8 +55,11 @@ function RulesBody() {
           <br />
           Любая ошибка на платформе{' '}
         </span>
-        <span
-          className="bg-clip-text font-[family-name:var(--font-inter-tight)] font-normal text-transparent"
+        <a
+          href="https://beta.comon.ru"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="bg-clip-text font-[family-name:var(--font-inter-tight)] font-normal text-transparent underline decoration-white/35 underline-offset-[3px] outline-offset-4 focus-visible:rounded-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-white/50"
           style={{
             backgroundImage:
               'linear-gradient(90deg, rgb(255, 149, 0) 0%, rgb(255, 137, 0) 40%, rgb(242, 61, 0) 56%, rgb(165, 90, 255) 90%)',
@@ -61,7 +68,7 @@ function RulesBody() {
           }}
         >
           beta.comon.ru
-        </span>
+        </a>
         <span className="font-[family-name:var(--font-inter-tight)] font-normal">
           : некорректное отображение, сбой функциональности, проблемы с авторизацией, опечатки в контенте и т.д.
           <br />
