@@ -24,6 +24,7 @@ type MyReportItem = {
   title: string;
   status: string;
   statusLabel: string;
+  rejectionComment: string | null;
   createdAt: string;
   reviewedAt: string | null;
 };
@@ -57,7 +58,12 @@ export function BugBountyLeaderboard({ participantKey, onLeaderboardChange }: Pr
 
       if (mineRes.ok) {
         const mine = (await mineRes.json()) as { reports?: MyReportItem[] };
-        setMyReports(mine.reports ?? []);
+        setMyReports(
+          (mine.reports ?? []).map((r) => ({
+            ...r,
+            rejectionComment: r.rejectionComment ?? null,
+          })),
+        );
       } else {
         setMyReports([]);
       }
@@ -171,6 +177,12 @@ export function BugBountyLeaderboard({ participantKey, onLeaderboardChange }: Pr
                       })}
                     </span>
                   </p>
+                  {r.status === 'REJECTED' && r.rejectionComment ? (
+                    <p className="mt-2 rounded-md border border-white/10 bg-white/[0.06] px-2.5 py-2 text-[12px] leading-[1.45] text-white/80">
+                      <span className="font-medium text-white/90">Комментарий модератора: </span>
+                      {r.rejectionComment}
+                    </p>
+                  ) : null}
                 </li>
               ))}
             </ul>

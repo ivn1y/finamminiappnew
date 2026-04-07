@@ -1,8 +1,17 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
+import { Maximize2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { Button } from '@/shared/ui/button';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/shared/ui/dialog';
 import { cn } from '@/shared/lib/utils';
 
 type Filter = 'PENDING' | 'ACCEPTED' | 'REJECTED' | 'ALL';
@@ -11,7 +20,15 @@ type ReportRow = {
   id: string;
   title: string;
   description: string;
+  attachments: {
+    id: string;
+    mime: string;
+    kind: string;
+    name: string;
+    url: string;
+  }[];
   status: string;
+  rejectionComment: string | null;
   createdAt: string;
   reviewedAt: string | null;
   participant: {
@@ -67,6 +84,13 @@ export function BugBountyAdminPanel() {
   const [participantsLoading, setParticipantsLoading] = useState(false);
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
   const [actingId, setActingId] = useState<string | null>(null);
+  const [mediaViewer, setMediaViewer] = useState<{
+    url: string;
+    kind: 'image' | 'video';
+    name: string;
+  } | null>(null);
+  const [rejectTarget, setRejectTarget] = useState<{ id: string; title: string } | null>(null);
+  const [rejectComment, setRejectComment] = useState('');
 
   const checkSession = useCallback(async () => {
     setSessionLoading(true);
@@ -97,7 +121,13 @@ export function BugBountyAdminPanel() {
         setReports([]);
         return;
       }
-      setReports(data.reports ?? []);
+      setReports(
+        (data.reports ?? []).map((row) => ({
+          ...row,
+          attachments: row.attachments ?? [],
+          rejectionComment: row.rejectionComment ?? null,
+        })),
+      );
     } finally {
       setListLoading(false);
     }
@@ -167,23 +197,41 @@ export function BugBountyAdminPanel() {
     }
   };
 
-  const patchStatus = async (id: string, status: 'ACCEPTED' | 'REJECTED' | 'PENDING') => {
+  const patchReport = async (
+    id: string,
+    status: 'ACCEPTED' | 'REJECTED' | 'PENDING',
+    rejectionCommentForReject?: string | null,
+  ): Promise<boolean> => {
     setActingId(id);
     try {
+      const body: { status: string; rejectionComment?: string | null } = { status };
+      if (status === 'REJECTED') {
+        body.rejectionComment = rejectionCommentForReject ?? null;
+      }
       const res = await fetch(`/api/bug-bounty/admin/reports/${encodeURIComponent(id)}`, {
         ...fetchOpts,
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ status }),
+        body: JSON.stringify(body),
       });
       const data = (await res.json().catch(() => ({}))) as { error?: string };
       if (!res.ok) {
         toast.error(data.error ?? 'Не удалось обновить');
-        return;
+        return false;
       }
       await loadReports();
+      return true;
     } finally {
       setActingId(null);
+    }
+  };
+
+  const confirmReject = async () => {
+    if (!rejectTarget) return;
+    const ok = await patchReport(rejectTarget.id, 'REJECTED', rejectComment.trim() || null);
+    if (ok) {
+      setRejectTarget(null);
+      setRejectComment('');
     }
   };
 
@@ -239,6 +287,7 @@ export function BugBountyAdminPanel() {
   }
 
   return (
+    <>
     <div className="mx-auto w-full max-w-5xl space-y-6">
       <div className="flex flex-col gap-3 border-b border-zinc-800 pb-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
@@ -334,9 +383,83 @@ export function BugBountyAdminPanel() {
                           </span>
                         </div>
                         <p className="mt-2 font-medium text-zinc-100">{r.title}</p>
+                        {r.status === 'REJECTED' && r.rejectionComment ? (
+                          <p className="mt-2 rounded-md bg-red-950/40 px-2 py-1.5 text-xs text-red-100/90 ring-1 ring-red-500/25">
+                            <span className="font-medium text-red-200/90">Комментарий участнику: </span>
+                            {r.rejectionComment}
+                          </p>
+                        ) : null}
                         <p className="mt-1 text-xs text-zinc-500">
                           {r.participant.displayName} · {r.participant.email} · {r.participant.phone}
                         </p>
+                        {r.attachments.length > 0 ? (
+                          <div className="mt-3 rounded-lg border border-zinc-800/80 bg-black/25 p-3">
+                            <p className="mb-2 text-xs font-medium text-zinc-400">
+                              Вложения{' '}
+                              <span className="font-normal text-zinc-500">({r.attachments.length})</span>
+                            </p>
+                            <ul className="flex max-w-full flex-row gap-3 overflow-x-auto overscroll-x-contain pb-1">
+                              {r.attachments.map((att) => (
+                                <li
+                                  key={att.id}
+                                  className="w-[min(100%,280px)] shrink-0 rounded-md border border-zinc-800 bg-zinc-950/80 p-2"
+                                >
+                                  <div className="mb-2 flex items-center justify-between gap-2">
+                                    <p
+                                      className="min-w-0 truncate text-[11px] text-zinc-500"
+                                      title={att.name}
+                                    >
+                                      {att.name}
+                                    </p>
+                                    <button
+                                      type="button"
+                                      className="flex shrink-0 items-center gap-1 rounded px-1.5 py-0.5 text-[11px] text-zinc-400 hover:bg-zinc-800 hover:text-zinc-200"
+                                      onClick={() =>
+                                        setMediaViewer({
+                                          url: att.url,
+                                          kind: att.kind === 'video' ? 'video' : 'image',
+                                          name: att.name,
+                                        })
+                                      }
+                                    >
+                                      <Maximize2 className="size-3" aria-hidden />
+                                      На весь экран
+                                    </button>
+                                  </div>
+                                  {att.kind === 'image' ? (
+                                    <button
+                                      type="button"
+                                      className="block w-full cursor-zoom-in text-left"
+                                      onClick={() =>
+                                        setMediaViewer({
+                                          url: att.url,
+                                          kind: 'image',
+                                          name: att.name,
+                                        })
+                                      }
+                                    >
+                                      {/* eslint-disable-next-line @next/next/no-img-element -- same-origin admin attachment URL */}
+                                      <img
+                                        src={att.url}
+                                        alt={att.name}
+                                        className="max-h-52 w-full rounded object-contain"
+                                      />
+                                    </button>
+                                  ) : (
+                                    <div className="space-y-1.5">
+                                      <video
+                                        src={att.url}
+                                        controls
+                                        className="max-h-52 w-full rounded bg-black"
+                                        preload="metadata"
+                                      />
+                                    </div>
+                                  )}
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        ) : null}
                       </div>
                       <div className="flex shrink-0 flex-wrap gap-2">
                         {r.status !== 'ACCEPTED' ? (
@@ -345,7 +468,7 @@ export function BugBountyAdminPanel() {
                             size="sm"
                             className="bg-emerald-700 text-white hover:bg-emerald-600"
                             disabled={busy}
-                            onClick={() => void patchStatus(r.id, 'ACCEPTED')}
+                            onClick={() => void patchReport(r.id, 'ACCEPTED')}
                           >
                             Принять
                           </Button>
@@ -356,7 +479,10 @@ export function BugBountyAdminPanel() {
                             size="sm"
                             variant="destructive"
                             disabled={busy}
-                            onClick={() => void patchStatus(r.id, 'REJECTED')}
+                            onClick={() => {
+                              setRejectTarget({ id: r.id, title: r.title });
+                              setRejectComment('');
+                            }}
                           >
                             Отклонить
                           </Button>
@@ -368,7 +494,7 @@ export function BugBountyAdminPanel() {
                             variant="outline"
                             className="border-zinc-600"
                             disabled={busy}
-                            onClick={() => void patchStatus(r.id, 'PENDING')}
+                            onClick={() => void patchReport(r.id, 'PENDING')}
                           >
                             В очередь
                           </Button>
@@ -459,5 +585,99 @@ export function BugBountyAdminPanel() {
         </>
       )}
     </div>
+
+    <Dialog open={mediaViewer !== null} onOpenChange={(o) => !o && setMediaViewer(null)}>
+      <DialogContent
+        className={cn(
+          'h-[100dvh] max-h-[100dvh] w-screen max-w-[100vw] gap-0 overflow-hidden border-0 bg-zinc-950 p-0 shadow-2xl',
+          'left-0 top-0 translate-x-0 translate-y-0 rounded-none sm:left-0 sm:top-0 sm:max-w-[100vw] sm:translate-x-0 sm:translate-y-0',
+        )}
+        aria-describedby={undefined}
+      >
+        {mediaViewer ? (
+          <>
+            <DialogTitle className="sr-only">{mediaViewer.name}</DialogTitle>
+            <div className="flex h-[calc(100dvh-3rem)] min-h-0 w-full items-center justify-center p-3 pt-14">
+              {mediaViewer.kind === 'image' ? (
+                // eslint-disable-next-line @next/next/no-img-element -- fullscreen viewer
+                <img
+                  src={mediaViewer.url}
+                  alt={mediaViewer.name}
+                  className="max-h-full max-w-full object-contain"
+                />
+              ) : (
+                <video
+                  src={mediaViewer.url}
+                  controls
+                  playsInline
+                  className="max-h-full max-w-full"
+                  preload="metadata"
+                />
+              )}
+            </div>
+            <p className="absolute bottom-3 left-1/2 max-w-[min(90vw,32rem)] -translate-x-1/2 truncate px-2 text-center text-xs text-zinc-500">
+              {mediaViewer.name}
+            </p>
+          </>
+        ) : null}
+      </DialogContent>
+    </Dialog>
+
+    <Dialog
+      open={rejectTarget !== null}
+      onOpenChange={(o) => {
+        if (!o) {
+          setRejectTarget(null);
+          setRejectComment('');
+        }
+      }}
+    >
+      <DialogContent className="border-zinc-800 bg-zinc-900 text-zinc-100 sm:max-w-md">
+        <DialogHeader>
+          <DialogTitle>Отклонить репорт</DialogTitle>
+          <DialogDescription className="text-zinc-400">
+            {rejectTarget ? (
+              <>
+                <span className="font-medium text-zinc-300">{rejectTarget.title}</span>
+                <span className="mt-2 block">
+                  Комментарий увидит участник рядом с этим репортом в разделе «Мои репорты» (необязательно).
+                </span>
+              </>
+            ) : null}
+          </DialogDescription>
+        </DialogHeader>
+        <textarea
+          value={rejectComment}
+          onChange={(e) => setRejectComment(e.target.value)}
+          placeholder="Например: дубликат, не воспроизводится, вне области программы…"
+          rows={4}
+          maxLength={2000}
+          className="w-full resize-none rounded-md border border-zinc-700 bg-zinc-950 px-3 py-2 text-sm text-zinc-100 placeholder:text-zinc-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-500"
+        />
+        <p className="text-xs text-zinc-500">{rejectComment.length} / 2000</p>
+        <DialogFooter className="gap-2 sm:gap-0">
+          <Button
+            type="button"
+            variant="outline"
+            className="border-zinc-600"
+            onClick={() => {
+              setRejectTarget(null);
+              setRejectComment('');
+            }}
+          >
+            Отмена
+          </Button>
+          <Button
+            type="button"
+            variant="destructive"
+            disabled={actingId !== null && rejectTarget !== null && actingId === rejectTarget.id}
+            onClick={() => void confirmReject()}
+          >
+            Отклонить
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+    </>
   );
 }

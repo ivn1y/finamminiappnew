@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/shared/lib/db'
 import { csvEscapeCell } from '@/shared/lib/bug-bounty/validate'
+import { parseBugBountyAttachmentsJson } from '@/shared/lib/bug-bounty/report-attachments-constants'
 
 /**
  * Выгрузка репортов для Excel (CSV с UTF-8 BOM).
@@ -55,11 +56,13 @@ export async function GET(request: NextRequest) {
     'createdAt',
     'status',
     'reviewedAt',
+    'rejectionComment',
     'email',
     'displayName',
     'phone',
     'title',
     'description',
+    'attachmentsJson',
     'participantKey',
     'reportId',
   ]
@@ -71,11 +74,13 @@ export async function GET(request: NextRequest) {
         r.createdAt.toISOString(),
         r.status,
         r.reviewedAt?.toISOString() ?? '',
+        r.rejectionComment ?? '',
         r.participant.email,
         r.participant.displayName,
         r.participant.phone,
         r.title,
         r.description,
+        JSON.stringify(parseBugBountyAttachmentsJson(r.attachments)),
         r.participant.participantKey,
         r.id,
       ]
