@@ -79,7 +79,7 @@ export function BugBountyLeaderboard({ participantKey, onLeaderboardChange }: Pr
         </div>
       </div>
 
-      <div className="relative z-10 flex flex-1 flex-col px-5 pt-[50px]">
+      <div className="relative z-10 flex flex-1 flex-col px-5 pt-[calc(50px+env(safe-area-inset-top,0px))]">
         <BugBountyLogo />
         <h1 className="mt-16 text-center font-[family-name:var(--font-inter-tight)] text-[30px] font-normal leading-[1.1] tracking-[-0.6px]">
           Рейтинг
