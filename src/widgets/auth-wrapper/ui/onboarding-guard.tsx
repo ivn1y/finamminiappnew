@@ -14,7 +14,7 @@ export function OnboardingGuard({ children }: OnboardingGuardProps) {
   const { isOnboardingComplete } = useAppStore()
 
   // Пути, которые не требуют завершения онбординга
-  const onboardingPaths = ['/', '/onboarding', '/auth', '/privacy-policy', '/qr-test']
+  const onboardingPaths = ['/', '/onboarding', '/auth', '/privacy-policy', '/qr-test', '/bugbounty']
   const isOnboardingPath = onboardingPaths.some(path => pathname.startsWith(path))
 
   useEffect(() => {

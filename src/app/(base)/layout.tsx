@@ -39,7 +39,7 @@ export default function BaseLayout({
     // Небольшая задержка для инициализации store
     const timer = setTimeout(() => {
       // Старая логика с проверкой онбординга (закомментирована)
-      // const onboardingPaths = ['/', '/onboarding', '/auth', '/privacy-policy', '/qr-test'];
+      // const onboardingPaths = ['/', '/onboarding', '/auth', '/privacy-policy', '/qr-test', '/bugbounty'];
       // const isOnboardingPath = onboardingPaths.some(path => pathname.startsWith(path));
 
       // Если пользователь не завершил онбординг и не находится на странице онбординга
