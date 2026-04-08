@@ -5,7 +5,10 @@ import { toast } from 'sonner';
 import { BugBountyWelcome } from './bug-bounty-welcome';
 import { BugBountyRules } from './bug-bounty-rules';
 import { BugBountyLogin } from './bug-bounty-login';
-import { BugBountyRegistration } from './bug-bounty-registration';
+import {
+  BugBountyRegistration,
+  type BugBountyRegisterCompleteResult,
+} from './bug-bounty-registration';
 import { BugBountyLeaderboard } from './bug-bounty-leaderboard';
 import { BugBountyProvider, useBugBounty } from './bug-bounty-context';
 
@@ -26,10 +29,15 @@ function BugBountyFlowInner() {
   }, [registered]);
 
   const handleRegister = useCallback(
-    async (data: { email: string; displayName: string; phone: string; password: string }) => {
+    async (data: {
+      email: string;
+      displayName: string;
+      phone: string;
+      password: string;
+    }): Promise<BugBountyRegisterCompleteResult> => {
       if (!participantKey) {
         toast.error('Сессия не готова, обновите страницу');
-        return;
+        return { success: false };
       }
       const res = await fetch('/api/bug-bounty/register', {
         method: 'POST',
@@ -38,11 +46,20 @@ function BugBountyFlowInner() {
       });
       const body = (await res.json().catch(() => ({}))) as { error?: string };
       if (!res.ok) {
+        if (res.status === 409) {
+          return {
+            success: false,
+            email:
+              body.error ??
+              'Эта почта уже занята. Войдите под этой почтой.',
+          };
+        }
         toast.error(body.error ?? 'Не удалось сохранить');
-        return;
+        return { success: false };
       }
       await refresh();
       setStep('leaderboard');
+      return { success: true };
     },
     [participantKey, refresh],
   );

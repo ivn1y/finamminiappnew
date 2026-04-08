@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { Prisma } from '@prisma/client'
 import { prisma } from '@/shared/lib/db'
 import { isParticipantKey } from '@/shared/lib/bug-bounty/validate'
 import { hashPassword } from '@/shared/lib/bug-bounty/password'
@@ -84,6 +85,19 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ success: true })
   } catch (e) {
+    if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === 'P2002') {
+      const target = e.meta?.target
+      const fields = Array.isArray(target) ? target : target != null ? [target] : []
+      const isEmailUnique = fields.some(
+        (f) => f === 'email' || String(f).endsWith('_email_key') || String(f).includes('email'),
+      )
+      if (isEmailUnique) {
+        return NextResponse.json(
+          { error: 'Эта почта уже занята. Войдите под этой почтой.' },
+          { status: 409 },
+        )
+      }
+    }
     console.error('[bug-bounty/register]', e)
     return NextResponse.json({ error: 'Не удалось сохранить данные' }, { status: 500 })
   }
