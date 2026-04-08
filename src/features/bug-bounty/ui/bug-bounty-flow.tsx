@@ -22,7 +22,7 @@ function BugBountyFlowInner() {
       return;
     }
     setRegisterEmailPrefill('');
-    setStep('login');
+    setStep('register');
   }, [registered]);
 
   const handleRegister = useCallback(
@@ -67,7 +67,7 @@ function BugBountyFlowInner() {
     case 'login':
       return (
         <BugBountyLogin
-          onBack={() => setStep('rules')}
+          onBack={() => setStep('register')}
           onSuccess={async (key) => {
             await adoptParticipantKey(key);
             setStep('leaderboard');
@@ -82,7 +82,8 @@ function BugBountyFlowInner() {
       return (
         <BugBountyRegistration
           initialEmail={registerEmailPrefill}
-          onBack={() => setStep('login')}
+          onBack={() => setStep('rules')}
+          onGoLogin={() => setStep('login')}
           onComplete={handleRegister}
         />
       );

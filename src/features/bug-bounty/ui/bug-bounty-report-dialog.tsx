@@ -161,12 +161,15 @@ export function BugBountyReportDialog({
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent
         className={cn(
-          'flex max-h-[min(90dvh,calc(100dvh-1.5rem))] w-[calc(100vw-1.25rem)] max-w-[393px] flex-col gap-0 overflow-hidden border border-white/10 bg-[#121214] p-6 pb-6 pt-14 text-white md:max-h-[min(85dvh,calc(100dvh-2rem))] md:w-full md:max-w-[560px] md:p-8 md:pt-16',
+          'flex max-h-[min(90dvh,calc(100dvh-1.5rem))] w-[calc(100vw-1.25rem)] max-w-[393px] flex-col gap-0 overflow-hidden border border-white/10 bg-[#121214] p-6 text-white md:max-h-[min(85dvh,calc(100dvh-2rem))] md:w-full md:max-w-[560px] md:p-8',
           'left-1/2 top-3 -translate-x-1/2 translate-y-0 sm:top-6 md:top-[8%]',
+          '[&>button]:right-6 [&>button]:top-6 md:[&>button]:right-8 md:[&>button]:top-8',
         )}
       >
-        <DialogHeader className="shrink-0 space-y-1.5 text-left">
-          <DialogTitle className="text-white">Новый баг-репорт</DialogTitle>
+        <DialogHeader className="shrink-0 space-y-1.5 pr-12 text-left md:pr-14">
+          <DialogTitle className="text-lg font-semibold leading-tight text-white">
+            Новый баг-репорт
+          </DialogTitle>
           <DialogDescription className="text-white/60">
             После отправки репорт попадает на проверку. Очки в рейтинге начисляются только за принятые баги.
           </DialogDescription>
