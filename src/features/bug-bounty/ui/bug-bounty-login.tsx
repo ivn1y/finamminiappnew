@@ -76,7 +76,10 @@ export function BugBountyLogin({ onBack, onSuccess, onGoRegister }: Props) {
   };
 
   return (
-    <div className="relative flex h-[100dvh] max-h-[100dvh] flex-col overflow-hidden bg-black text-white">
+    <div
+      className="fixed inset-0 flex items-center justify-center overflow-hidden bg-black text-white pb-[12%]"
+      style={{ touchAction: 'none' }}
+    >
       <div
         className="pointer-events-none absolute left-[55px] top-[101px] z-0 h-[205px] w-[284px] rounded-[284px] opacity-[0.38] blur-[80px]"
         style={{
@@ -85,8 +88,8 @@ export function BugBountyLogin({ onBack, onSuccess, onGoRegister }: Props) {
         aria-hidden
       />
 
-      <div className="relative z-10 mx-auto flex min-h-0 w-full max-w-[393px] flex-1 flex-col px-5 pt-[171px]">
-        <div className="shrink-0 text-center">
+      <div className="relative z-10 w-full max-w-[393px] px-5">
+        <div className="text-center">
           <h1 className="font-[family-name:var(--font-inter-tight)] text-[30px] font-normal leading-[1.1] tracking-[-0.6px]">
             Вход
           </h1>
@@ -95,56 +98,51 @@ export function BugBountyLogin({ onBack, onSuccess, onGoRegister }: Props) {
           </p>
         </div>
 
-        <div className="mt-[81px] flex min-h-0 flex-1 flex-col">
-          <div className="min-h-0 flex-1" aria-hidden />
-          <div className="mb-[197px] flex shrink-0 flex-col gap-4">
-            {errors.form ? (
-              <p className="px-1 text-center text-[12px] leading-4 text-[#EF5541]">{errors.form}</p>
-            ) : null}
-            <div className="flex flex-col gap-1">
-              <input
-                type="email"
-                inputMode="email"
-                autoComplete="email"
-                placeholder="Почта"
-                value={email}
-                onChange={(e) => handleEmailChange(e.target.value)}
-                disabled={submitting}
-                aria-invalid={!!errors.email}
-                className={cn(
-                  'h-14 w-full shrink-0 rounded-lg border-0 bg-[rgba(79,79,89,0.16)] px-4 text-base leading-6 tracking-[-0.128px] text-white placeholder:text-[#a4a4b2] focus-visible:outline-none focus-visible:ring-1 disabled:opacity-60',
-                  errors.email ? 'ring-1 ring-[#EF5541]/80 focus-visible:ring-[#EF5541]/80' : 'focus-visible:ring-white/25',
-                )}
-              />
-              {errors.email ? (
-                <p className="px-1 text-[12px] leading-4 text-[#EF5541]">{errors.email}</p>
-              ) : null}
-            </div>
+        <div className="mt-6 flex flex-col gap-4">
+          {errors.form ? (
+            <p className="px-1 text-center text-[12px] leading-4 text-[#EF5541]">{errors.form}</p>
+          ) : null}
+          <div className="flex flex-col gap-1">
             <input
-              type="password"
-              autoComplete="current-password"
-              placeholder="Пароль"
-              value={password}
-              onChange={(e) => {
-                setPassword(e.target.value);
-                setErrors((prev) => ({ ...prev, form: undefined }));
-              }}
+              type="email"
+              inputMode="email"
+              autoComplete="email"
+              placeholder="Почта"
+              value={email}
+              onChange={(e) => handleEmailChange(e.target.value)}
               disabled={submitting}
-              className="h-14 w-full shrink-0 rounded-lg border-0 bg-[rgba(79,79,89,0.16)] px-4 text-base leading-6 tracking-[-0.128px] text-white placeholder:text-[#a4a4b2] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white/25 disabled:opacity-60"
+              aria-invalid={!!errors.email}
+              className={cn(
+                'h-14 w-full rounded-lg border-0 bg-[rgba(79,79,89,0.16)] px-4 text-base leading-6 tracking-[-0.128px] text-white placeholder:text-[#a4a4b2] focus-visible:outline-none focus-visible:ring-1 disabled:opacity-60',
+                errors.email ? 'ring-1 ring-[#EF5541]/80 focus-visible:ring-[#EF5541]/80' : 'focus-visible:ring-white/25',
+              )}
             />
-            <button
-              type="button"
-              onClick={() => onGoRegister(email.trim())}
-              className="mt-1 text-center text-[15px] leading-5 tracking-[-0.15px] text-white/[0.52] underline-offset-2 hover:text-white/[0.72] hover:underline focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white/25"
-            >
-              Нет аккаунта? Зарегистрироваться
-            </button>
+            {errors.email ? (
+              <p className="px-1 text-[12px] leading-4 text-[#EF5541]">{errors.email}</p>
+            ) : null}
           </div>
+          <input
+            type="password"
+            autoComplete="current-password"
+            placeholder="Пароль"
+            value={password}
+            onChange={(e) => {
+              setPassword(e.target.value);
+              setErrors((prev) => ({ ...prev, form: undefined }));
+            }}
+            disabled={submitting}
+            className="h-14 w-full rounded-lg border-0 bg-[rgba(79,79,89,0.16)] px-4 text-base leading-6 tracking-[-0.128px] text-white placeholder:text-[#a4a4b2] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white/25 disabled:opacity-60"
+          />
+          <button
+            type="button"
+            onClick={() => onGoRegister(email.trim())}
+            className="mt-1 text-center text-[15px] leading-5 tracking-[-0.15px] text-white/[0.52] underline-offset-2 hover:text-white/[0.72] hover:underline focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white/25"
+          >
+            Нет аккаунта? Зарегистрироваться
+          </button>
         </div>
-      </div>
 
-      <div className="relative z-10 w-full shrink-0 px-5 pb-[calc(clamp(1.5rem,12dvh,5.625rem)+env(safe-area-inset-bottom,0px))]">
-        <div className="mx-auto flex w-full max-w-[393px] items-center justify-between gap-[10px]">
+        <div className="mt-5 flex items-center gap-[10px]">
           <button
             type="button"
             onClick={onBack}

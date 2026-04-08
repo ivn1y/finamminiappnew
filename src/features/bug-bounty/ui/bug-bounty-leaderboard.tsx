@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { ExternalLink } from 'lucide-react';
 import { toast } from 'sonner';
 import { BugBountyLogo } from './bug-bounty-logo';
@@ -83,8 +83,14 @@ export function BugBountyLeaderboard({ participantKey, onLeaderboardChange }: Pr
   const isHighlighted = (row: Row) =>
     self !== null && row.rank === self.rank && row.displayName === self.displayName;
 
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    scrollRef.current?.scrollTo(0, 0);
+  }, []);
+
   return (
-    <div className="relative flex min-h-[100dvh] flex-col overflow-hidden bg-black text-white">
+    <div className="fixed inset-0 flex flex-col bg-black text-white">
       <BugBountyReportDialog
         open={reportOpen}
         onOpenChange={setReportOpen}
@@ -111,7 +117,11 @@ export function BugBountyLeaderboard({ participantKey, onLeaderboardChange }: Pr
         aria-hidden
       />
 
-      <div className="relative z-10 flex flex-1 flex-col px-5 pt-[calc(50px+env(safe-area-inset-top,0px))]">
+      <div
+        ref={scrollRef}
+        className="relative z-10 flex-1 overflow-y-auto px-5 pt-[calc(50px+env(safe-area-inset-top,0px))]"
+        style={{ WebkitOverflowScrolling: 'touch', overscrollBehavior: 'none' }}
+      >
         <BugBountyLogo />
         <h1 className="mt-16 text-center font-[family-name:var(--font-inter-tight)] text-[30px] font-normal leading-[1.1] tracking-[-0.6px]">
           Рейтинг
@@ -195,10 +205,10 @@ export function BugBountyLeaderboard({ participantKey, onLeaderboardChange }: Pr
           </p>
         )}
 
-        <div className="flex-1" />
+        <div className="h-6" />
       </div>
 
-      <div className="relative z-10 flex flex-col gap-3 px-5 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-6">
+      <div className="relative z-10 shrink-0 flex flex-col gap-3 px-5 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-4">
         <div className="mx-auto w-full max-w-[393px]">
           <MarketingPrimaryButton type="button" onClick={() => setReportOpen(true)}>
             Отправить баги
