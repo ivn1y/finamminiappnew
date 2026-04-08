@@ -1,3 +1,6 @@
+'use client';
+
+import { useEffect, useRef } from 'react';
 import { MarketingPrimaryButton } from './marketing-primary-button';
 
 type Props = {
@@ -8,30 +11,42 @@ const rulesTopGlowBackground =
   'var(--Marketing-Gradient-BG-01, linear-gradient(305deg, var(--gradients-bg-01-start, #FEDA3B) -2.67%, var(--gradients-bg-01-middle1, #EF5541) 38.9%, var(--gradients-bg-01-middle2, #801FDB) 77.17%, var(--gradients-bg-01-end, #7E2A89) 98.46%))';
 
 export function BugBountyRules({ onParticipate }: Props) {
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    scrollRef.current?.scrollTo(0, 0);
+  }, []);
+
   return (
-    <div className="relative flex min-h-[100dvh] flex-col bg-black text-white">
-      <div
-        className="pointer-events-none absolute right-[105px] top-[-66px] z-0 h-[260px] w-[375px] rounded-[375px] opacity-[0.16] blur-[50px]"
-        style={{ background: rulesTopGlowBackground }}
-        aria-hidden
-      />
+    <div
+      ref={scrollRef}
+      className="fixed inset-0 overflow-y-auto bg-black text-white"
+      style={{ WebkitOverflowScrolling: 'touch', overscrollBehavior: 'none' }}
+    >
+      <div className="relative min-h-full">
+        <div
+          className="pointer-events-none absolute right-[105px] top-[-66px] z-0 h-[260px] w-[375px] rounded-[375px] opacity-[0.16] blur-[50px]"
+          style={{ background: rulesTopGlowBackground }}
+          aria-hidden
+        />
 
-      <div className="relative z-10 flex flex-col pb-[max(1.5rem,env(safe-area-inset-bottom))]">
-        <h1 className="px-5 pt-[46px] font-[family-name:var(--font-inter-tight)] text-[30px] font-normal leading-[1.1] tracking-[-0.6px]">
-          Условия участия в конкурсе Дневника Трейдера
-        </h1>
+        <div className="relative z-10 flex flex-col pb-[max(2rem,env(safe-area-inset-bottom))]">
+          <h1 className="px-5 pt-[46px] font-[family-name:var(--font-inter-tight)] text-[30px] font-normal leading-[1.1] tracking-[-0.6px]">
+            Условия участия в конкурсе Дневника Трейдера
+          </h1>
 
-        <div className="mt-6 px-5">
-          <div className="max-w-[353px] text-[16px] leading-normal text-white">
-            <RulesBody />
+          <div className="mt-6 px-5">
+            <div className="max-w-[353px] text-[16px] leading-normal text-white">
+              <RulesBody />
+            </div>
           </div>
-        </div>
 
-        <div className="mt-10 px-5">
-          <div className="mx-auto w-full max-w-[393px]">
-            <MarketingPrimaryButton type="button" onClick={onParticipate}>
-              Участвовать
-            </MarketingPrimaryButton>
+          <div className="mt-10 px-5">
+            <div className="mx-auto w-full max-w-[393px]">
+              <MarketingPrimaryButton type="button" onClick={onParticipate}>
+                Участвовать
+              </MarketingPrimaryButton>
+            </div>
           </div>
         </div>
       </div>

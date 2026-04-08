@@ -8,7 +8,7 @@ import { BugBountyFlow } from '@/features/bug-bounty';
  */
 export default function BugBountyPage() {
   return (
-    <div className="mx-auto min-h-[100dvh] w-full max-w-[393px] bg-black">
+    <div className="mx-auto min-h-[100dvh] w-full max-w-[393px] bg-black" style={{ overscrollBehavior: 'none' }}>
       <BugBountyFlow />
     </div>
   );

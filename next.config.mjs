@@ -53,6 +53,7 @@ const securityHeaders = [
 ];
 
 const nextConfig = {
+  allowedDevOrigins: ['192.168.1.207', 'http://192.168.1.207:3000', 'http://192.168.1.207'],
   eslint: {
     ignoreDuringBuilds: true,
   },

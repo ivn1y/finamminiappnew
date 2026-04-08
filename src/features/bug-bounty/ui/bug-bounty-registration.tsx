@@ -105,8 +105,10 @@ export function BugBountyRegistration({ initialEmail, onBack, onComplete }: Prop
   };
 
   return (
-    <div className="relative flex h-[100dvh] max-h-[100dvh] flex-col overflow-hidden bg-black text-white">
-      {/* Макет: top 101, inset слева 55 / справа 54 */}
+    <div
+      className="fixed inset-0 flex items-center justify-center overflow-hidden bg-black text-white pb-[10%]"
+      style={{ touchAction: 'none' }}
+    >
       <div
         className="pointer-events-none absolute left-[55px] top-[101px] z-0 h-[205px] w-[284px] rounded-[284px] opacity-[0.38] blur-[80px]"
         style={{
@@ -115,8 +117,8 @@ export function BugBountyRegistration({ initialEmail, onBack, onComplete }: Prop
         aria-hidden
       />
 
-      <div className="relative z-10 mx-auto flex min-h-0 w-full max-w-[393px] flex-1 flex-col px-5 pt-[171px]">
-        <div className="shrink-0 text-center">
+      <div className="relative z-10 w-full max-w-[393px] px-5">
+        <div className="text-center">
           <h1 className="font-[family-name:var(--font-inter-tight)] text-[30px] font-normal leading-[1.1] tracking-[-0.6px]">
             Быстрая регистрация
           </h1>
@@ -125,83 +127,78 @@ export function BugBountyRegistration({ initialEmail, onBack, onComplete }: Prop
           </p>
         </div>
 
-        <div className="mt-[81px] flex min-h-0 flex-1 flex-col">
-          <div className="min-h-0 flex-1" aria-hidden />
-          <div className="mb-[197px] flex shrink-0 flex-col gap-4">
-            <div className="flex flex-col gap-1">
-              <input
-                type="email"
-                inputMode="email"
-                autoComplete="email"
-                placeholder="Почта"
-                value={email}
-                onChange={(e) => handleEmailChange(e.target.value)}
-                disabled={saving}
-                aria-invalid={!!errors.email}
-                className={cn(
-                  'h-14 w-full shrink-0 rounded-lg border-0 bg-[rgba(79,79,89,0.16)] px-4 text-base leading-6 tracking-[-0.128px] text-white placeholder:text-[#a4a4b2] focus-visible:outline-none focus-visible:ring-1 disabled:opacity-60',
-                  errors.email ? 'ring-1 ring-[#EF5541]/80 focus-visible:ring-[#EF5541]/80' : 'focus-visible:ring-white/25',
-                )}
-              />
-              {errors.email ? (
-                <p className="px-1 text-[12px] leading-4 text-[#EF5541]">{errors.email}</p>
-              ) : null}
-            </div>
+        <div className="mt-6 flex flex-col gap-3">
+          <div className="flex flex-col gap-1">
             <input
-              type="text"
-              autoComplete="nickname"
-              placeholder="Имя для турнирной таблицы"
-              value={displayName}
-              onChange={(e) => setDisplayName(e.target.value)}
+              type="email"
+              inputMode="email"
+              autoComplete="email"
+              placeholder="Почта"
+              value={email}
+              onChange={(e) => handleEmailChange(e.target.value)}
               disabled={saving}
-              className="h-14 w-full shrink-0 rounded-lg border-0 bg-[rgba(79,79,89,0.16)] px-4 text-base leading-6 tracking-[-0.128px] text-white placeholder:text-[#a4a4b2] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white/25 disabled:opacity-60"
+              aria-invalid={!!errors.email}
+              className={cn(
+                'h-14 w-full rounded-lg border-0 bg-[rgba(79,79,89,0.16)] px-4 text-base leading-6 tracking-[-0.128px] text-white placeholder:text-[#a4a4b2] focus-visible:outline-none focus-visible:ring-1 disabled:opacity-60',
+                errors.email ? 'ring-1 ring-[#EF5541]/80 focus-visible:ring-[#EF5541]/80' : 'focus-visible:ring-white/25',
+              )}
             />
-            <div className="flex flex-col gap-1">
-              <input
-                type="tel"
-                inputMode="tel"
-                autoComplete="tel"
-                placeholder="+7 912 345-67-89"
-                value={phone}
-                onChange={(e) => handlePhoneChange(e.target.value)}
-                disabled={saving}
-                aria-invalid={!!errors.phone}
-                className={cn(
-                  'h-14 w-full shrink-0 rounded-lg border-0 bg-[rgba(79,79,89,0.16)] px-4 text-base leading-6 tracking-[-0.128px] text-white placeholder:text-[#a4a4b2] focus-visible:outline-none focus-visible:ring-1 disabled:opacity-60',
-                  errors.phone ? 'ring-1 ring-[#EF5541]/80 focus-visible:ring-[#EF5541]/80' : 'focus-visible:ring-white/25',
-                )}
-              />
-              {errors.phone ? (
-                <p className="px-1 text-[12px] leading-4 text-[#EF5541]">{errors.phone}</p>
-              ) : null}
-            </div>
-            <div className="flex flex-col gap-1">
-              <input
-                type="password"
-                autoComplete="new-password"
-                placeholder="Пароль"
-                value={password}
-                onChange={(e) => {
-                  setPassword(e.target.value);
-                  setErrors((prev) => ({ ...prev, password: undefined }));
-                }}
-                disabled={saving}
-                aria-invalid={!!errors.password}
-                className={cn(
-                  'h-14 w-full shrink-0 rounded-lg border-0 bg-[rgba(79,79,89,0.16)] px-4 text-base leading-6 tracking-[-0.128px] text-white placeholder:text-[#a4a4b2] focus-visible:outline-none focus-visible:ring-1 disabled:opacity-60',
-                  errors.password ? 'ring-1 ring-[#EF5541]/80 focus-visible:ring-[#EF5541]/80' : 'focus-visible:ring-white/25',
-                )}
-              />
-              {errors.password ? (
-                <p className="px-1 text-[12px] leading-4 text-[#EF5541]">{errors.password}</p>
-              ) : null}
-            </div>
+            {errors.email ? (
+              <p className="px-1 text-[12px] leading-4 text-[#EF5541]">{errors.email}</p>
+            ) : null}
+          </div>
+          <input
+            type="text"
+            autoComplete="nickname"
+            placeholder="Имя для турнирной таблицы"
+            value={displayName}
+            onChange={(e) => setDisplayName(e.target.value)}
+            disabled={saving}
+            className="h-14 w-full rounded-lg border-0 bg-[rgba(79,79,89,0.16)] px-4 text-base leading-6 tracking-[-0.128px] text-white placeholder:text-[#a4a4b2] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white/25 disabled:opacity-60"
+          />
+          <div className="flex flex-col gap-1">
+            <input
+              type="tel"
+              inputMode="tel"
+              autoComplete="tel"
+              placeholder="+7 912 345-67-89"
+              value={phone}
+              onChange={(e) => handlePhoneChange(e.target.value)}
+              disabled={saving}
+              aria-invalid={!!errors.phone}
+              className={cn(
+                'h-14 w-full rounded-lg border-0 bg-[rgba(79,79,89,0.16)] px-4 text-base leading-6 tracking-[-0.128px] text-white placeholder:text-[#a4a4b2] focus-visible:outline-none focus-visible:ring-1 disabled:opacity-60',
+                errors.phone ? 'ring-1 ring-[#EF5541]/80 focus-visible:ring-[#EF5541]/80' : 'focus-visible:ring-white/25',
+              )}
+            />
+            {errors.phone ? (
+              <p className="px-1 text-[12px] leading-4 text-[#EF5541]">{errors.phone}</p>
+            ) : null}
+          </div>
+          <div className="flex flex-col gap-1">
+            <input
+              type="password"
+              autoComplete="new-password"
+              placeholder="Пароль"
+              value={password}
+              onChange={(e) => {
+                setPassword(e.target.value);
+                setErrors((prev) => ({ ...prev, password: undefined }));
+              }}
+              disabled={saving}
+              aria-invalid={!!errors.password}
+              className={cn(
+                'h-14 w-full rounded-lg border-0 bg-[rgba(79,79,89,0.16)] px-4 text-base leading-6 tracking-[-0.128px] text-white placeholder:text-[#a4a4b2] focus-visible:outline-none focus-visible:ring-1 disabled:opacity-60',
+                errors.password ? 'ring-1 ring-[#EF5541]/80 focus-visible:ring-[#EF5541]/80' : 'focus-visible:ring-white/25',
+              )}
+            />
+            {errors.password ? (
+              <p className="px-1 text-[12px] leading-4 text-[#EF5541]">{errors.password}</p>
+            ) : null}
           </div>
         </div>
-      </div>
 
-      <div className="relative z-10 w-full shrink-0 px-5 pb-[calc(clamp(1.5rem,12dvh,5.625rem)+env(safe-area-inset-bottom,0px))]">
-        <div className="mx-auto flex w-full max-w-[393px] items-center justify-between gap-[10px]">
+        <div className="mt-5 flex items-center gap-[10px]">
           <button
             type="button"
             onClick={onBack}
