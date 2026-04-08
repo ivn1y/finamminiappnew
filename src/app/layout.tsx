@@ -4,6 +4,7 @@ import { Inter, Inter_Tight } from "next/font/google"
 import type { Metadata, Viewport } from "next"
 import { Toaster } from "@/shared/ui/sonner"
 import { Analytics } from '@vercel/analytics/react';
+import { YandexMetrika } from '@/shared/ui/yandex-metrika';
 
 const inter = Inter({
   subsets: ["latin", "latin-ext"],
@@ -97,6 +98,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <Toaster/>
         </GlobalProviders>
         <Analytics />
+        <YandexMetrika />
       </body>
     </html>
   )
