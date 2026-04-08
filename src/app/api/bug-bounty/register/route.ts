@@ -51,7 +51,7 @@ export async function POST(request: NextRequest) {
     }
     if (password.length < MIN_PASSWORD) {
       return NextResponse.json(
-        { error: `Пароль не короче ${MIN_PASSWORD} символов` },
+        { error: `Введите не менее ${MIN_PASSWORD} символов` },
         { status: 400 },
       )
     }

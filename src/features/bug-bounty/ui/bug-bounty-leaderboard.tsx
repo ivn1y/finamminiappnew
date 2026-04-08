@@ -1,22 +1,14 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { ExternalLink } from 'lucide-react';
 import { toast } from 'sonner';
 import { BugBountyLogo } from './bug-bounty-logo';
 import { MarketingPrimaryButton } from './marketing-primary-button';
 import { BugBountyReportDialog } from './bug-bounty-report-dialog';
 
-function scoreLabel(n: number): string {
-  const m = n % 100;
-  if (m >= 11 && m <= 14) return 'очков';
-  const k = n % 10;
-  if (k === 1) return 'очко';
-  if (k >= 2 && k <= 4) return 'очка';
-  return 'очков';
-}
-
-type Row = { rank: number; displayName: string; score: number };
+type Row = { rank: number; displayName: string; score: number; isYou?: boolean };
 type LeaderboardPayload = { rows: Row[]; self: Row | null };
 
 type MyReportItem = {
@@ -40,6 +32,24 @@ export function BugBountyLeaderboard({ participantKey, onLeaderboardChange }: Pr
   const [myReports, setMyReports] = useState<MyReportItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [reportOpen, setReportOpen] = useState(false);
+  const [footerPortal, setFooterPortal] = useState<HTMLElement | null>(null);
+
+  useEffect(() => {
+    setFooterPortal(document.body);
+  }, []);
+
+  useEffect(() => {
+    const html = document.documentElement;
+    const body = document.body;
+    const prevHtmlOverflow = html.style.overflow;
+    const prevBodyOverflow = body.style.overflow;
+    html.style.overflow = 'hidden';
+    body.style.overflow = 'hidden';
+    return () => {
+      html.style.overflow = prevHtmlOverflow;
+      body.style.overflow = prevBodyOverflow;
+    };
+  }, []);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -80,8 +90,15 @@ export function BugBountyLeaderboard({ participantKey, onLeaderboardChange }: Pr
     window.open('https://beta.comon.ru', '_blank', 'noopener,noreferrer');
   };
 
-  const isHighlighted = (row: Row) =>
-    self !== null && row.rank === self.rank && row.displayName === self.displayName;
+  const apiSendsIsYou =
+    rows.length === 0 || rows.some((r) => typeof r.isYou === 'boolean');
+  const youreInTopFive = apiSendsIsYou
+    ? rows.some((r) => r.isYou === true)
+    : Boolean(
+        self &&
+          rows.some((r) => r.rank === self.rank && r.displayName === self.displayName),
+      );
+  const showSelfRow = Boolean(self && !youreInTopFive);
 
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -89,8 +106,26 @@ export function BugBountyLeaderboard({ participantKey, onLeaderboardChange }: Pr
     scrollRef.current?.scrollTo(0, 0);
   }, []);
 
+  const scrollBottomPad =
+    'pb-[max(10.5rem,calc(8.75rem+env(safe-area-inset-bottom,0px)))]';
+
+  const renderRow = (row: Row, keySuffix: string) => (
+    <div
+      key={`${row.rank}-${row.displayName}-${keySuffix}`}
+      className="mx-auto grid h-[46px] w-[353px] grid-cols-[108px_minmax(0,1fr)_88px] items-center rounded-[8px] font-[family-name:var(--font-inter)] text-[15px] font-normal leading-[22px] tracking-[-0.09px] [background-color:var(--icon-onbrand-secondary,rgba(0,0,0,0.56))]"
+    >
+      <span className="flex h-full min-w-0 items-center justify-start whitespace-nowrap pl-[20px]">
+        <span className="shrink-0 tabular-nums text-white">{row.rank}</span>
+      </span>
+      <span className="min-w-0 truncate px-2 text-center text-white">{row.displayName}</span>
+      <span className="flex h-full items-center justify-end whitespace-nowrap pr-[20px] tabular-nums text-white">
+        {row.score}
+      </span>
+    </div>
+  );
+
   return (
-    <div className="fixed inset-0 flex flex-col bg-black text-white">
+    <div className="fixed inset-0 overflow-hidden bg-black text-white">
       <BugBountyReportDialog
         open={reportOpen}
         onOpenChange={setReportOpen}
@@ -119,8 +154,8 @@ export function BugBountyLeaderboard({ participantKey, onLeaderboardChange }: Pr
 
       <div
         ref={scrollRef}
-        className="relative z-10 flex-1 overflow-y-auto px-5 pt-[calc(50px+env(safe-area-inset-top,0px))]"
-        style={{ WebkitOverflowScrolling: 'touch', overscrollBehavior: 'none' }}
+        className={`relative z-10 h-full touch-pan-y overflow-y-auto px-5 pt-[calc(50px+env(safe-area-inset-top,0px))] ${scrollBottomPad}`}
+        style={{ WebkitOverflowScrolling: 'touch', overscrollBehavior: 'contain' }}
       >
         <BugBountyLogo />
         <h1 className="mt-16 text-center font-[family-name:var(--font-inter-tight)] text-[30px] font-normal leading-[1.1] tracking-[-0.6px]">
@@ -136,30 +171,21 @@ export function BugBountyLeaderboard({ participantKey, onLeaderboardChange }: Pr
         <div className="mx-auto mt-3 flex w-[353px] flex-col gap-2">
           {loading ? (
             <p className="py-8 text-center text-sm text-white/50">Загрузка таблицы…</p>
-          ) : rows.length === 0 ? (
+          ) : rows.length === 0 && !self ? (
             <p className="py-8 text-center text-sm text-white/50">
               Пока никто не набрал очков за принятые баги
             </p>
           ) : (
-            rows.map((row) => (
-              <div
-                key={`${row.rank}-${row.displayName}`}
-                className="mx-auto grid h-[46px] w-[353px] grid-cols-[108px_minmax(0,1fr)_88px] items-center rounded-[8px] font-[family-name:var(--font-inter)] text-[15px] font-normal leading-[22px] tracking-[-0.09px] [background-color:var(--icon-onbrand-secondary,rgba(0,0,0,0.56))]"
-              >
-                <span className="flex h-full min-w-0 items-center justify-start gap-[20px] whitespace-nowrap pl-[20px]">
-                  <span className="shrink-0 tabular-nums text-white">{row.rank}</span>
-                  {isHighlighted(row) ? (
-                    <span className="shrink-0 text-[15px] font-normal leading-[22px] tracking-[-0.09px] text-white/[0.55]">
-                      Вы
-                    </span>
-                  ) : null}
-                </span>
-                <span className="min-w-0 truncate px-2 text-center text-white">{row.displayName}</span>
-                <span className="flex h-full items-center justify-end whitespace-nowrap pr-[20px] tabular-nums text-white">
-                  {row.score}
-                </span>
-              </div>
-            ))
+            <>
+              {rows.length === 0 ? (
+                <p className="py-2 text-center text-sm text-white/50">
+                  Пока никто не набрал очков за принятые баги
+                </p>
+              ) : (
+                rows.map((row) => renderRow(row, 'top'))
+              )}
+              {showSelfRow && self ? renderRow(self, 'self') : null}
+            </>
           )}
         </div>
 
@@ -199,30 +225,29 @@ export function BugBountyLeaderboard({ participantKey, onLeaderboardChange }: Pr
           </div>
         ) : null}
 
-        {self && self.rank > 50 && (
-          <p className="mx-auto mt-4 max-w-[353px] text-center text-sm text-white/55">
-            Ваша позиция: {self.rank} · {self.score} {scoreLabel(self.score)}
-          </p>
-        )}
-
         <div className="h-6" />
       </div>
 
-      <div className="relative z-10 shrink-0 flex flex-col gap-3 px-5 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-4">
-        <div className="mx-auto w-full max-w-[393px]">
-          <MarketingPrimaryButton type="button" onClick={() => setReportOpen(true)}>
-            Отправить баги
-          </MarketingPrimaryButton>
-        </div>
-        <button
-          type="button"
-          onClick={openBeta}
-          className="mx-auto flex items-center gap-2 pb-2 text-sm text-white/55 underline-offset-4 hover:text-white/80 hover:underline"
-        >
-          Открыть beta.comon.ru
-          <ExternalLink className="size-3.5 opacity-70" aria-hidden />
-        </button>
-      </div>
+      {footerPortal
+        ? createPortal(
+            <div className="fixed inset-x-0 bottom-0 z-40 flex flex-col gap-3 bg-black px-5 pt-4 pb-[max(1.5rem,env(safe-area-inset-bottom,0px))]">
+              <div className="mx-auto w-full max-w-[393px]">
+                <MarketingPrimaryButton type="button" onClick={() => setReportOpen(true)}>
+                  Отправить баги
+                </MarketingPrimaryButton>
+              </div>
+              <button
+                type="button"
+                onClick={openBeta}
+                className="mx-auto flex items-center gap-2 pb-2 text-sm text-white/55 underline-offset-4 hover:text-white/80 hover:underline"
+              >
+                Открыть beta.comon.ru
+                <ExternalLink className="size-3.5 opacity-70" aria-hidden />
+              </button>
+            </div>,
+            footerPortal,
+          )
+        : null}
     </div>
   );
 }
