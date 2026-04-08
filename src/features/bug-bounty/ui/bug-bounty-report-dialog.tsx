@@ -161,8 +161,8 @@ export function BugBountyReportDialog({
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent
         className={cn(
-          'flex max-h-[min(90dvh,calc(100dvh-1.5rem))] w-[calc(100vw-1.25rem)] max-w-[393px] flex-col gap-0 overflow-hidden border border-white/10 bg-[#121214] p-6 pb-6 pt-14 text-white',
-          'left-1/2 top-3 -translate-x-1/2 translate-y-0 sm:top-6',
+          'flex max-h-[min(90dvh,calc(100dvh-1.5rem))] w-[calc(100vw-1.25rem)] max-w-[393px] flex-col gap-0 overflow-hidden border border-white/10 bg-[#121214] p-6 pb-6 pt-14 text-white md:max-h-[min(85dvh,calc(100dvh-2rem))] md:w-full md:max-w-[560px] md:p-8 md:pt-16',
+          'left-1/2 top-3 -translate-x-1/2 translate-y-0 sm:top-6 md:top-[8%]',
         )}
       >
         <DialogHeader className="shrink-0 space-y-1.5 text-left">

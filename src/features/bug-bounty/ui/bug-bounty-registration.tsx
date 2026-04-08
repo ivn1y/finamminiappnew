@@ -109,23 +109,23 @@ export function BugBountyRegistration({ initialEmail, onBack, onComplete }: Prop
 
   return (
     <div
-      className="fixed inset-0 flex items-center justify-center overflow-hidden bg-black text-white pb-[10%]"
+      className="fixed inset-0 flex items-center justify-center overflow-hidden bg-black text-white pb-[10%] md:overflow-y-auto md:pb-0 md:py-10"
       style={{ touchAction: 'none' }}
     >
       <div
-        className="pointer-events-none absolute left-[55px] top-[101px] z-0 h-[205px] w-[284px] rounded-[284px] opacity-[0.38] blur-[80px]"
+        className="pointer-events-none absolute left-[55px] top-[101px] z-0 h-[205px] w-[284px] rounded-[284px] opacity-[0.38] blur-[80px] md:left-1/2 md:top-[28%] md:h-[280px] md:w-[480px] md:-translate-x-1/2 md:opacity-25"
         style={{
           background: 'var(--gradients-button-marketing-end-default, #59307C)',
         }}
         aria-hidden
       />
 
-      <div className="relative z-10 w-full max-w-[393px] px-5">
+      <div className="relative z-10 my-auto w-full max-w-[393px] px-5 md:max-w-[480px] md:rounded-2xl md:border md:border-white/10 md:bg-[#0c0c0e] md:p-10 md:shadow-[0_0_0_1px_rgba(255,255,255,0.04),0_24px_80px_rgba(0,0,0,0.55)] lg:max-w-[520px]">
         <div className="text-center">
-          <h1 className="font-[family-name:var(--font-inter-tight)] text-[30px] font-normal leading-[1.1] tracking-[-0.6px]">
+          <h1 className="font-[family-name:var(--font-inter-tight)] text-[30px] font-normal leading-[1.1] tracking-[-0.6px] md:text-4xl md:tracking-[-0.8px]">
             Быстрая регистрация
           </h1>
-          <p className="mt-1 text-[17px] leading-6 tracking-[-0.17px] text-white/[0.72]">
+          <p className="mt-1 text-[17px] leading-6 tracking-[-0.17px] text-white/[0.72] md:text-lg">
             Расскажи о себе в нескольких словах
           </p>
         </div>

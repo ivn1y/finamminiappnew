@@ -49,7 +49,7 @@ function BugBountyFlowInner() {
 
   if (loading || !participantKey) {
     return (
-      <div className="flex min-h-[100dvh] items-center justify-center bg-black text-[15px] text-white/50">
+      <div className="flex min-h-[100dvh] items-center justify-center bg-black text-[15px] text-white/50 md:min-h-screen md:text-base">
         Загрузка…
       </div>
     );
