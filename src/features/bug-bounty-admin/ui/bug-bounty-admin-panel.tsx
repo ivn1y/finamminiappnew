@@ -91,6 +91,12 @@ export function BugBountyAdminPanel() {
   } | null>(null);
   const [rejectTarget, setRejectTarget] = useState<{ id: string; title: string } | null>(null);
   const [rejectComment, setRejectComment] = useState('');
+  const [resetTarget, setResetTarget] = useState<ParticipantRow | null>(null);
+  const [resetPassword, setResetPassword] = useState('');
+  const [resetPasswordConfirm, setResetPasswordConfirm] = useState('');
+  const [resetSubmitting, setResetSubmitting] = useState(false);
+
+  const MIN_PARTICIPANT_PASSWORD = 8;
 
   const checkSession = useCallback(async () => {
     setSessionLoading(true);
@@ -232,6 +238,42 @@ export function BugBountyAdminPanel() {
     if (ok) {
       setRejectTarget(null);
       setRejectComment('');
+    }
+  };
+
+  const confirmResetPassword = async () => {
+    if (!resetTarget) return;
+    if (resetPassword.length < MIN_PARTICIPANT_PASSWORD) {
+      toast.error(`Пароль не короче ${MIN_PARTICIPANT_PASSWORD} символов`);
+      return;
+    }
+    if (resetPassword !== resetPasswordConfirm) {
+      toast.error('Пароли не совпадают');
+      return;
+    }
+    setResetSubmitting(true);
+    try {
+      const res = await fetch(
+        `/api/bug-bounty/admin/participants/${encodeURIComponent(resetTarget.id)}`,
+        {
+          ...fetchOpts,
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ password: resetPassword }),
+        },
+      );
+      const data = (await res.json().catch(() => ({}))) as { error?: string };
+      if (!res.ok) {
+        toast.error(data.error ?? 'Не удалось сменить пароль');
+        return;
+      }
+      toast.success('Пароль обновлён — передайте его участнику отдельным каналом');
+      setResetTarget(null);
+      setResetPassword('');
+      setResetPasswordConfirm('');
+      await loadParticipants();
+    } finally {
+      setResetSubmitting(false);
     }
   };
 
@@ -543,7 +585,7 @@ export function BugBountyAdminPanel() {
             <p className="text-sm text-zinc-500">Пока никто не зарегистрировался.</p>
           ) : (
             <div className="overflow-x-auto rounded-lg border border-zinc-800">
-              <table className="w-full min-w-[720px] border-collapse text-left text-sm text-zinc-200">
+              <table className="w-full min-w-[880px] border-collapse text-left text-sm text-zinc-200">
                 <thead>
                   <tr className="border-b border-zinc-800 bg-zinc-900/80 text-xs uppercase tracking-wide text-zinc-500">
                     <th className="px-3 py-2 font-medium">Имя</th>
@@ -553,6 +595,7 @@ export function BugBountyAdminPanel() {
                     <th className="px-3 py-2 font-medium">Пароль</th>
                     <th className="px-3 py-2 font-medium">Регистрация</th>
                     <th className="px-3 py-2 font-medium">Ключ</th>
+                    <th className="px-3 py-2 font-medium">Действия</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -575,6 +618,21 @@ export function BugBountyAdminPanel() {
                         title={p.participantKey}
                       >
                         {p.participantKey}
+                      </td>
+                      <td className="whitespace-nowrap px-3 py-2">
+                        <Button
+                          type="button"
+                          size="sm"
+                          variant="outline"
+                          className="border-zinc-600 text-xs"
+                          onClick={() => {
+                            setResetTarget(p);
+                            setResetPassword('');
+                            setResetPasswordConfirm('');
+                          }}
+                        >
+                          Сбросить пароль
+                        </Button>
                       </td>
                     </tr>
                   ))}
@@ -674,6 +732,72 @@ export function BugBountyAdminPanel() {
             onClick={() => void confirmReject()}
           >
             Отклонить
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+
+    <Dialog
+      open={resetTarget !== null}
+      onOpenChange={(o) => {
+        if (!o) {
+          setResetTarget(null);
+          setResetPassword('');
+          setResetPasswordConfirm('');
+        }
+      }}
+    >
+      <DialogContent className="border-zinc-800 bg-zinc-900 text-zinc-100 sm:max-w-md">
+        <DialogHeader>
+          <DialogTitle>Сброс пароля участника</DialogTitle>
+          <DialogDescription className="text-zinc-400">
+            {resetTarget ? (
+              <>
+                <span className="font-medium text-zinc-300">{resetTarget.displayName}</span>
+                <span className="mt-1 block text-sm">{resetTarget.email}</span>
+                <span className="mt-3 block">
+                  Задайте новый пароль и передайте его участнику безопасным каналом (например ответом на его письмо).
+                </span>
+              </>
+            ) : null}
+          </DialogDescription>
+        </DialogHeader>
+        <div className="space-y-3">
+          <input
+            type="password"
+            autoComplete="new-password"
+            placeholder={`Новый пароль (от ${MIN_PARTICIPANT_PASSWORD} символов)`}
+            value={resetPassword}
+            onChange={(e) => setResetPassword(e.target.value)}
+            disabled={resetSubmitting}
+            className="h-10 w-full rounded-md border border-zinc-700 bg-zinc-950 px-3 text-sm text-zinc-100 placeholder:text-zinc-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-500"
+          />
+          <input
+            type="password"
+            autoComplete="new-password"
+            placeholder="Повторите пароль"
+            value={resetPasswordConfirm}
+            onChange={(e) => setResetPasswordConfirm(e.target.value)}
+            disabled={resetSubmitting}
+            className="h-10 w-full rounded-md border border-zinc-700 bg-zinc-950 px-3 text-sm text-zinc-100 placeholder:text-zinc-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-500"
+          />
+        </div>
+        <DialogFooter className="gap-2 sm:gap-0">
+          <Button
+            type="button"
+            variant="outline"
+            className="border-zinc-600"
+            disabled={resetSubmitting}
+            onClick={() => {
+              setResetTarget(null);
+              setResetPassword('');
+              setResetPasswordConfirm('');
+            }}
+          >
+            Отмена
+          </Button>
+          <Button type="button" disabled={resetSubmitting} onClick={() => void confirmResetPassword()}>
+            {resetSubmitting ? 'Сохранение…' : 'Сохранить пароль'}
           </Button>
         </DialogFooter>
       </DialogContent>

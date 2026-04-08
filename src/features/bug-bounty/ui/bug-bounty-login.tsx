@@ -7,6 +7,9 @@ import { cn } from '@/shared/lib/utils';
 import { validateEmail } from '@/shared/lib/validation';
 import { marketingGradientBg } from './assets';
 
+const BUG_BOUNTY_SUPPORT_EMAIL = 'FinamCollab@corp.finam.ru';
+const BUG_BOUNTY_SUPPORT_MAILTO = `mailto:${BUG_BOUNTY_SUPPORT_EMAIL}?subject=${encodeURIComponent('Восстановление пароля, bug bounty')}`;
+
 type Props = {
   onBack: () => void;
   onSuccess: (participantKey: string) => void;
@@ -160,6 +163,17 @@ export function BugBountyLogin({ onBack, onSuccess, onGoRegister }: Props) {
             {submitting ? 'Вход…' : 'Войти'}
           </button>
         </div>
+
+        <p className="mt-6 text-center text-[14px] leading-5 tracking-[-0.14px] text-white/[0.65]">
+          Забыли пароль? Напишите нам на{' '}
+          <a
+            href={BUG_BOUNTY_SUPPORT_MAILTO}
+            className="font-medium text-white/[0.92] underline decoration-white/30 underline-offset-2 transition-colors hover:text-white hover:decoration-white/50"
+          >
+            {BUG_BOUNTY_SUPPORT_EMAIL}
+          </a>
+          .
+        </p>
       </div>
     </div>
   );
