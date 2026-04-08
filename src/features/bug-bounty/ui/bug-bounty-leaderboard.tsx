@@ -116,7 +116,9 @@ export function BugBountyLeaderboard({ participantKey, onLeaderboardChange }: Pr
       <span className="flex h-full min-w-0 items-center justify-start whitespace-nowrap pl-[20px]">
         <span className="shrink-0 tabular-nums text-white">{row.rank}</span>
       </span>
-      <span className="min-w-0 truncate px-2 text-center text-white">{row.displayName}</span>
+      <span className="min-w-0 whitespace-nowrap pl-[calc(50%-26px)] text-left text-white">
+        {row.displayName.length > 10 ? `${row.displayName.slice(0, 10)}…` : row.displayName}
+      </span>
       <span className="flex h-full items-center justify-end whitespace-nowrap pr-[20px] tabular-nums text-white">
         {row.score}
       </span>
@@ -166,7 +168,7 @@ export function BugBountyLeaderboard({ participantKey, onLeaderboardChange }: Pr
         >
           <span className="whitespace-nowrap pl-[20px] text-left">Позиция</span>
           <span className="whitespace-nowrap text-center">Участник</span>
-          <span className="whitespace-nowrap pr-[20px] text-right">Очки</span>
+          <span className="whitespace-nowrap text-right">Очки</span>
         </div>
 
         <div className={`${tableClass} mt-3 flex flex-col gap-2 md:mt-4`}>
