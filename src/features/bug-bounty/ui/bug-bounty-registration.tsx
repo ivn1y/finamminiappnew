@@ -8,6 +8,10 @@ import { marketingGradientBg } from './assets';
 
 const MIN_PASSWORD = 8;
 
+export type BugBountyRegisterCompleteResult =
+  | { success: true }
+  | { success: false; email?: string };
+
 type Props = {
   initialEmail?: string;
   onBack: () => void;
@@ -17,7 +21,7 @@ type Props = {
     displayName: string;
     phone: string;
     password: string;
-  }) => Promise<void>;
+  }) => Promise<BugBountyRegisterCompleteResult>;
 };
 
 export function BugBountyRegistration({ initialEmail, onBack, onGoLogin, onComplete }: Props) {
@@ -97,12 +101,15 @@ export function BugBountyRegistration({ initialEmail, onBack, onGoLogin, onCompl
     }
     setSaving(true);
     try {
-      await onComplete({
+      const result = await onComplete({
         email: email.trim().toLowerCase(),
         displayName: displayName.trim(),
         phone: phoneRes.formatted ?? phone.trim(),
         password,
       });
+      if (!result.success && result.email) {
+        setErrors((prev) => ({ ...prev, email: result.email }));
+      }
     } finally {
       setSaving(false);
     }
