@@ -174,7 +174,7 @@ export function BugBountyReportDialog({
             После отправки репорт попадает на проверку. Очки в рейтинге начисляются только за принятые баги.
           </DialogDescription>
         </DialogHeader>
-        <div className="mt-4 flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto overflow-x-hidden overscroll-contain pr-0.5">
+        <div className="mt-4 flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto overflow-x-hidden overscroll-contain p-1">
           <input
             type="text"
             placeholder="Краткое название"
