@@ -73,6 +73,9 @@ export function BugBountyRegistration({ initialEmail, onBack, onComplete }: Prop
     }
   }, []);
 
+  const passwordTooShort = password.length > 0 && password.length < MIN_PASSWORD;
+  const showPasswordHelp = password.length === 0 || passwordTooShort || !!errors.password;
+
   const handleDone = async () => {
     if (!canSubmit || saving) return;
     const emailRes = validateEmail(email.trim());
@@ -80,7 +83,7 @@ export function BugBountyRegistration({ initialEmail, onBack, onComplete }: Prop
     if (password.length < MIN_PASSWORD) {
       setErrors((prev) => ({
         ...prev,
-        password: `Не короче ${MIN_PASSWORD} символов`,
+        password: `Введите не менее ${MIN_PASSWORD} символов`,
       }));
       return;
     }
@@ -186,14 +189,28 @@ export function BugBountyRegistration({ initialEmail, onBack, onComplete }: Prop
                 setErrors((prev) => ({ ...prev, password: undefined }));
               }}
               disabled={saving}
-              aria-invalid={!!errors.password}
+              aria-invalid={!!errors.password || passwordTooShort}
+              aria-describedby={showPasswordHelp ? 'bb-reg-password-help' : undefined}
               className={cn(
                 'h-14 w-full rounded-lg border-0 bg-[rgba(79,79,89,0.16)] px-4 text-base leading-6 tracking-[-0.128px] text-white placeholder:text-[#a4a4b2] focus-visible:outline-none focus-visible:ring-1 disabled:opacity-60',
-                errors.password ? 'ring-1 ring-[#EF5541]/80 focus-visible:ring-[#EF5541]/80' : 'focus-visible:ring-white/25',
+                errors.password || passwordTooShort
+                  ? 'ring-1 ring-[#EF5541]/80 focus-visible:ring-[#EF5541]/80'
+                  : 'focus-visible:ring-white/25',
               )}
             />
-            {errors.password ? (
-              <p className="px-1 text-[12px] leading-4 text-[#EF5541]">{errors.password}</p>
+            {showPasswordHelp ? (
+              <p
+                id="bb-reg-password-help"
+                className={cn(
+                  'px-1 text-[12px] leading-4',
+                  errors.password || passwordTooShort ? 'text-[#EF5541]' : 'text-white/[0.5]',
+                )}
+              >
+                {errors.password ??
+                  (passwordTooShort
+                    ? `Введите не менее ${MIN_PASSWORD} символов`
+                    : `Пароль — не менее ${MIN_PASSWORD} символов`)}
+              </p>
             ) : null}
           </div>
         </div>

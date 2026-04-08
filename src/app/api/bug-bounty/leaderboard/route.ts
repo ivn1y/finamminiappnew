@@ -40,10 +40,12 @@ export async function GET(request: NextRequest) {
     }))
     .sort(sortParticipants)
 
-  const top = ranked.filter((p) => p.score > 0).slice(0, 50).map((p, i) => ({
+  const withScores = ranked.filter((p) => p.score > 0)
+  const topFive = withScores.slice(0, 5).map((p, i) => ({
     rank: i + 1,
     displayName: p.displayName,
     score: p.score,
+    isYou: myKey !== undefined && p.participantKey === myKey,
   }))
 
   let self: { rank: number; displayName: string; score: number } | null = null
@@ -58,5 +60,5 @@ export async function GET(request: NextRequest) {
     }
   }
 
-  return NextResponse.json({ rows: top, self })
+  return NextResponse.json({ rows: topFive, self })
 }
