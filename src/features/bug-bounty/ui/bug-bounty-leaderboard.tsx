@@ -108,13 +108,16 @@ export function BugBountyLeaderboard({ participantKey, onLeaderboardChange }: Pr
   const rowGridClass =
     'grid h-[46px] grid-cols-[108px_minmax(0,1fr)_88px] items-center md:grid-cols-[7.5rem_minmax(0,1fr)_6.75rem]';
 
-  const renderRow = (row: Row, keySuffix: string) => (
+  const renderRow = (row: Row, keySuffix: string) => {
+    const isSelf = keySuffix === 'self' || row.isYou;
+    return (
     <div
       key={`${row.rank}-${row.displayName}-${keySuffix}`}
       className={`${tableClass} ${rowGridClass} rounded-[8px] font-[family-name:var(--font-inter)] text-[15px] font-normal leading-[22px] tracking-[-0.09px] md:text-base md:leading-6 [background-color:var(--icon-onbrand-secondary,rgba(0,0,0,0.56))]`}
     >
-      <span className="flex h-full min-w-0 items-center justify-start whitespace-nowrap pl-[20px]">
+      <span className="flex h-full min-w-0 items-center justify-start gap-5 whitespace-nowrap pl-[20px]">
         <span className="shrink-0 tabular-nums text-white">{row.rank}</span>
+        {isSelf && <span className="text-white/60">Вы</span>}
       </span>
       <span className="min-w-0 whitespace-nowrap pl-[calc(50%-26px)] text-left text-white">
         {row.displayName.length > 10 ? `${row.displayName.slice(0, 10)}…` : row.displayName}
@@ -123,7 +126,8 @@ export function BugBountyLeaderboard({ participantKey, onLeaderboardChange }: Pr
         {row.score}
       </span>
     </div>
-  );
+    );
+  };
 
   return (
     <div className="fixed inset-0 overflow-hidden bg-black text-white">
