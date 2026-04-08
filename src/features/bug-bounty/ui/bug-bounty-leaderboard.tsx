@@ -1,7 +1,6 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { createPortal } from 'react-dom';
 import { ExternalLink } from 'lucide-react';
 import { toast } from 'sonner';
 import { BugBountyLogo } from './bug-bounty-logo';
@@ -32,11 +31,6 @@ export function BugBountyLeaderboard({ participantKey, onLeaderboardChange }: Pr
   const [myReports, setMyReports] = useState<MyReportItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [reportOpen, setReportOpen] = useState(false);
-  const [footerPortal, setFooterPortal] = useState<HTMLElement | null>(null);
-
-  useEffect(() => {
-    setFooterPortal(document.body);
-  }, []);
 
   useEffect(() => {
     const html = document.documentElement;
@@ -107,12 +101,17 @@ export function BugBountyLeaderboard({ participantKey, onLeaderboardChange }: Pr
   }, []);
 
   const scrollBottomPad =
-    'pb-[max(10.5rem,calc(8.75rem+env(safe-area-inset-bottom,0px)))]';
+    'pb-[max(10.5rem,calc(8.75rem+env(safe-area-inset-bottom,0px)))] md:pb-[max(12rem,calc(10rem+env(safe-area-inset-bottom,0px)))]';
+
+  const tableClass =
+    'mx-auto w-full max-w-[353px] md:max-w-3xl lg:max-w-4xl';
+  const rowGridClass =
+    'grid h-[46px] grid-cols-[108px_minmax(0,1fr)_88px] items-center md:grid-cols-[7.5rem_minmax(0,1fr)_6.75rem]';
 
   const renderRow = (row: Row, keySuffix: string) => (
     <div
       key={`${row.rank}-${row.displayName}-${keySuffix}`}
-      className="mx-auto grid h-[46px] w-[353px] grid-cols-[108px_minmax(0,1fr)_88px] items-center rounded-[8px] font-[family-name:var(--font-inter)] text-[15px] font-normal leading-[22px] tracking-[-0.09px] [background-color:var(--icon-onbrand-secondary,rgba(0,0,0,0.56))]"
+      className={`${tableClass} ${rowGridClass} rounded-[8px] font-[family-name:var(--font-inter)] text-[15px] font-normal leading-[22px] tracking-[-0.09px] md:text-base md:leading-6 [background-color:var(--icon-onbrand-secondary,rgba(0,0,0,0.56))]`}
     >
       <span className="flex h-full min-w-0 items-center justify-start whitespace-nowrap pl-[20px]">
         <span className="shrink-0 tabular-nums text-white">{row.rank}</span>
@@ -154,21 +153,23 @@ export function BugBountyLeaderboard({ participantKey, onLeaderboardChange }: Pr
 
       <div
         ref={scrollRef}
-        className={`relative z-10 h-full touch-pan-y overflow-y-auto px-5 pt-[calc(50px+env(safe-area-inset-top,0px))] ${scrollBottomPad}`}
+        className={`relative z-10 h-full touch-pan-y overflow-y-auto px-5 pt-[calc(50px+env(safe-area-inset-top,0px))] md:px-10 lg:px-16 ${scrollBottomPad}`}
         style={{ WebkitOverflowScrolling: 'touch', overscrollBehavior: 'contain' }}
       >
         <BugBountyLogo />
-        <h1 className="mt-16 text-center font-[family-name:var(--font-inter-tight)] text-[30px] font-normal leading-[1.1] tracking-[-0.6px]">
+        <h1 className="mt-16 text-center font-[family-name:var(--font-inter-tight)] text-[30px] font-normal leading-[1.1] tracking-[-0.6px] md:mt-20 md:text-4xl md:tracking-[-0.8px]">
           Рейтинг
         </h1>
 
-        <div className="mx-auto mt-6 grid w-[353px] grid-cols-[108px_minmax(0,1fr)_88px] items-center font-[family-name:var(--font-inter)] text-[10px] font-medium uppercase leading-7 tracking-[-0.16px] text-white/[0.56]">
+        <div
+          className={`${tableClass} mt-6 grid grid-cols-[108px_minmax(0,1fr)_88px] items-center font-[family-name:var(--font-inter)] text-[10px] font-medium uppercase leading-7 tracking-[-0.16px] text-white/[0.56] md:mt-8 md:grid-cols-[7.5rem_minmax(0,1fr)_6.75rem] md:text-xs`}
+        >
           <span className="whitespace-nowrap pl-[20px] text-left">Позиция</span>
           <span className="whitespace-nowrap text-center">Участник</span>
           <span className="whitespace-nowrap pr-[20px] text-right">Очки</span>
         </div>
 
-        <div className="mx-auto mt-3 flex w-[353px] flex-col gap-2">
+        <div className={`${tableClass} mt-3 flex flex-col gap-2 md:mt-4`}>
           {loading ? (
             <p className="py-8 text-center text-sm text-white/50">Загрузка таблицы…</p>
           ) : rows.length === 0 && !self ? (
@@ -190,8 +191,8 @@ export function BugBountyLeaderboard({ participantKey, onLeaderboardChange }: Pr
         </div>
 
         {myReports.length > 0 ? (
-          <div className="mx-auto mt-8 w-full max-w-[353px]">
-            <h2 className="text-center font-[family-name:var(--font-inter-tight)] text-[17px] font-normal leading-6 tracking-[-0.17px] text-white">
+          <div className={`${tableClass} mt-8`}>
+            <h2 className="text-center font-[family-name:var(--font-inter-tight)] text-[17px] font-normal leading-6 tracking-[-0.17px] text-white md:text-xl">
               Мои репорты
             </h2>
             <ul className="mt-3 flex flex-col gap-2">
@@ -228,26 +229,21 @@ export function BugBountyLeaderboard({ participantKey, onLeaderboardChange }: Pr
         <div className="h-6" />
       </div>
 
-      {footerPortal
-        ? createPortal(
-            <div className="fixed inset-x-0 bottom-0 z-40 flex flex-col gap-3 bg-black px-5 pt-4 pb-[max(1.5rem,env(safe-area-inset-bottom,0px))]">
-              <div className="mx-auto w-full max-w-[393px]">
-                <MarketingPrimaryButton type="button" onClick={() => setReportOpen(true)}>
-                  Отправить баги
-                </MarketingPrimaryButton>
-              </div>
-              <button
-                type="button"
-                onClick={openBeta}
-                className="mx-auto flex items-center gap-2 pb-2 text-sm text-white/55 underline-offset-4 hover:text-white/80 hover:underline"
-              >
-                Открыть beta.comon.ru
-                <ExternalLink className="size-3.5 opacity-70" aria-hidden />
-              </button>
-            </div>,
-            footerPortal,
-          )
-        : null}
+      <div className="absolute inset-x-0 bottom-0 z-40 flex flex-col gap-3 bg-black px-5 pt-4 pb-[max(1.5rem,env(safe-area-inset-bottom,0px))] md:px-10 lg:px-16">
+        <div className="mx-auto w-full max-w-[393px] md:max-w-3xl lg:max-w-4xl">
+          <MarketingPrimaryButton type="button" onClick={() => setReportOpen(true)}>
+            Отправить баги
+          </MarketingPrimaryButton>
+        </div>
+        <button
+          type="button"
+          onClick={openBeta}
+          className="mx-auto flex items-center gap-2 pb-2 text-sm text-white/55 underline-offset-4 hover:text-white/80 hover:underline"
+        >
+          Открыть beta.comon.ru
+          <ExternalLink className="size-3.5 opacity-70" aria-hidden />
+        </button>
+      </div>
     </div>
   );
 }

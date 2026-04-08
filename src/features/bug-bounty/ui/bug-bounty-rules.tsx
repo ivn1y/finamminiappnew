@@ -30,19 +30,19 @@ export function BugBountyRules({ onParticipate }: Props) {
           aria-hidden
         />
 
-        <div className="relative z-10 flex flex-col pb-[calc(5rem+env(safe-area-inset-bottom,0px))]">
-          <h1 className="px-5 pt-[46px] font-[family-name:var(--font-inter-tight)] text-[30px] font-normal leading-[1.1] tracking-[-0.6px]">
+        <div className="relative z-10 flex flex-col pb-[calc(5rem+env(safe-area-inset-bottom,0px))] md:pb-24">
+          <h1 className="px-5 pt-[46px] font-[family-name:var(--font-inter-tight)] text-[30px] font-normal leading-[1.1] tracking-[-0.6px] md:mx-auto md:max-w-4xl md:px-8 md:pt-20 md:text-center md:text-4xl md:leading-[1.15] md:tracking-[-0.8px] lg:px-12">
             Условия участия в конкурсе Дневник Трейдера
           </h1>
 
-          <div className="mt-6 px-5">
-            <div className="max-w-[353px] text-[16px] leading-normal text-white">
+          <div className="mt-6 px-5 md:mt-10 md:px-8 lg:px-12">
+            <div className="max-w-[353px] text-[16px] leading-normal text-white md:mx-auto md:max-w-3xl md:text-lg md:leading-relaxed">
               <RulesBody />
             </div>
           </div>
 
-          <div className="mt-10 px-5">
-            <div className="mx-auto w-full max-w-[393px]">
+          <div className="mt-10 px-5 md:mt-14 md:px-8 lg:px-12">
+            <div className="mx-auto w-full max-w-[393px] md:max-w-md">
               <MarketingPrimaryButton type="button" onClick={onParticipate}>
                 Участвовать
               </MarketingPrimaryButton>

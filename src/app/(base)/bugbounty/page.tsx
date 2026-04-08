@@ -8,8 +8,13 @@ import { BugBountyFlow } from '@/features/bug-bounty';
  */
 export default function BugBountyPage() {
   return (
-    <div className="mx-auto min-h-[100dvh] w-full max-w-[393px] bg-black" style={{ overscrollBehavior: 'none' }}>
-      <BugBountyFlow />
+    <div className="min-h-[100dvh] w-full bg-black" style={{ overscrollBehavior: 'none' }}>
+      {/*
+        Мобилка: узкая колонка по макету. md+: на всю ширину окна — отдельные md:-стили внутри экранов.
+      */}
+      <div className="relative mx-auto min-h-[100dvh] w-full max-w-[393px] bg-black md:mx-0 md:max-w-none">
+        <BugBountyFlow />
+      </div>
     </div>
   );
 }
