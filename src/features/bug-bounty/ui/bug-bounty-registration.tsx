@@ -11,6 +11,7 @@ const MIN_PASSWORD = 8;
 type Props = {
   initialEmail?: string;
   onBack: () => void;
+  onGoLogin: () => void;
   onComplete: (data: {
     email: string;
     displayName: string;
@@ -19,7 +20,7 @@ type Props = {
   }) => Promise<void>;
 };
 
-export function BugBountyRegistration({ initialEmail, onBack, onComplete }: Props) {
+export function BugBountyRegistration({ initialEmail, onBack, onGoLogin, onComplete }: Props) {
   const [email, setEmail] = useState(initialEmail ?? '');
   const [displayName, setDisplayName] = useState('');
   const [phone, setPhone] = useState('');
@@ -240,6 +241,18 @@ export function BugBountyRegistration({ initialEmail, onBack, onComplete }: Prop
             {saving ? 'Сохранение…' : 'Готово'}
           </button>
         </div>
+
+        <p className="mt-5 text-center text-[15px] leading-5 tracking-[-0.15px] text-white/[0.52]">
+          Уже есть аккаунт?{' '}
+          <button
+            type="button"
+            onClick={onGoLogin}
+            disabled={saving}
+            className="text-white/[0.72] underline-offset-2 hover:text-white hover:underline focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white/25 disabled:opacity-50"
+          >
+            Войдите
+          </button>
+        </p>
       </div>
     </div>
   );

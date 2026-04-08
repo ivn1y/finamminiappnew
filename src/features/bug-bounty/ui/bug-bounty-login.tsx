@@ -133,13 +133,6 @@ export function BugBountyLogin({ onBack, onSuccess, onGoRegister }: Props) {
             disabled={submitting}
             className="h-14 w-full rounded-lg border-0 bg-[rgba(79,79,89,0.16)] px-4 text-base leading-6 tracking-[-0.128px] text-white placeholder:text-[#a4a4b2] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white/25 disabled:opacity-60"
           />
-          <button
-            type="button"
-            onClick={() => onGoRegister(email.trim())}
-            className="mt-1 text-center text-[15px] leading-5 tracking-[-0.15px] text-white/[0.52] underline-offset-2 hover:text-white/[0.72] hover:underline focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white/25"
-          >
-            Нет аккаунта? Зарегистрироваться
-          </button>
         </div>
 
         <div className="mt-5 flex items-center gap-[10px]">

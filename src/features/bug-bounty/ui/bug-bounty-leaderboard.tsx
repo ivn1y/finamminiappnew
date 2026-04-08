@@ -6,6 +6,8 @@ import { toast } from 'sonner';
 import { BugBountyLogo } from './bug-bounty-logo';
 import { MarketingPrimaryButton } from './marketing-primary-button';
 import { BugBountyReportDialog } from './bug-bounty-report-dialog';
+import { BugBountyReportViewDialog } from './bug-bounty-report-view-dialog';
+import { BugBountyRulesBody } from './bug-bounty-rules';
 
 type Row = { rank: number; displayName: string; score: number; isYou?: boolean };
 type LeaderboardPayload = { rows: Row[]; self: Row | null };
@@ -31,6 +33,7 @@ export function BugBountyLeaderboard({ participantKey, onLeaderboardChange }: Pr
   const [myReports, setMyReports] = useState<MyReportItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [reportOpen, setReportOpen] = useState(false);
+  const [viewReportId, setViewReportId] = useState<string | null>(null);
 
   useEffect(() => {
     const html = document.documentElement;
@@ -140,6 +143,14 @@ export function BugBountyLeaderboard({ participantKey, onLeaderboardChange }: Pr
           onLeaderboardChange?.();
         }}
       />
+      <BugBountyReportViewDialog
+        open={viewReportId !== null}
+        onOpenChange={(open) => {
+          if (!open) setViewReportId(null);
+        }}
+        participantKey={participantKey}
+        reportId={viewReportId}
+      />
 
       <div
         className="pointer-events-none absolute z-0"
@@ -203,34 +214,47 @@ export function BugBountyLeaderboard({ participantKey, onLeaderboardChange }: Pr
             </h2>
             <ul className="mt-3 flex flex-col gap-2">
               {myReports.map((r) => (
-                <li
-                  key={r.id}
-                  className="rounded-lg border border-white/10 bg-white/[0.04] px-3 py-2.5 text-left"
-                >
-                  <p className="text-[15px] leading-[22px] tracking-[-0.09px] text-white">{r.title}</p>
-                  <p className="mt-1 text-[12px] leading-4 text-white/55">
-                    {r.statusLabel}
-                    <span className="text-white/35">
-                      {' · '}
-                      {new Date(r.createdAt).toLocaleString('ru-RU', {
-                        day: 'numeric',
-                        month: 'short',
-                        hour: '2-digit',
-                        minute: '2-digit',
-                      })}
-                    </span>
-                  </p>
-                  {r.status === 'REJECTED' && r.rejectionComment ? (
-                    <p className="mt-2 rounded-md border border-white/10 bg-white/[0.06] px-2.5 py-2 text-[12px] leading-[1.45] text-white/80">
-                      <span className="font-medium text-white/90">Комментарий модератора: </span>
-                      {r.rejectionComment}
+                <li key={r.id} className="rounded-lg border border-white/10 bg-white/[0.04] p-0">
+                  <button
+                    type="button"
+                    onClick={() => setViewReportId(r.id)}
+                    className="w-full rounded-lg px-3 py-2.5 text-left transition hover:bg-white/[0.07] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/25"
+                  >
+                    <p className="text-[15px] leading-[22px] tracking-[-0.09px] text-white">{r.title}</p>
+                    <p className="mt-1 text-[12px] leading-4 text-white/55">
+                      {r.statusLabel}
+                      <span className="text-white/35">
+                        {' · '}
+                        {new Date(r.createdAt).toLocaleString('ru-RU', {
+                          day: 'numeric',
+                          month: 'short',
+                          hour: '2-digit',
+                          minute: '2-digit',
+                        })}
+                      </span>
                     </p>
-                  ) : null}
+                    <p className="mt-2 text-[11px] leading-4 text-white/40">Нажмите, чтобы открыть</p>
+                    {r.status === 'REJECTED' && r.rejectionComment ? (
+                      <p className="mt-2 rounded-md border border-white/10 bg-white/[0.06] px-2.5 py-2 text-[12px] leading-[1.45] text-white/80">
+                        <span className="font-medium text-white/90">Комментарий модератора: </span>
+                        {r.rejectionComment}
+                      </p>
+                    ) : null}
+                  </button>
                 </li>
               ))}
             </ul>
           </div>
         ) : null}
+
+        <h2 className="mt-8 text-center font-[family-name:var(--font-inter-tight)] text-[30px] font-normal leading-[1.1] tracking-[-0.6px] text-white md:mt-10 md:text-4xl md:tracking-[-0.8px]">
+          Правила
+        </h2>
+        <div className={`${tableClass} mt-6 md:mt-8`}>
+          <div className="text-[15px] leading-normal text-white md:text-base md:leading-relaxed">
+            <BugBountyRulesBody />
+          </div>
+        </div>
 
         <div className="h-6" />
       </div>

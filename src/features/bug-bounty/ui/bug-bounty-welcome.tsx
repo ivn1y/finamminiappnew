@@ -46,14 +46,14 @@ export function BugBountyWelcome({ onRules }: Props) {
             Привет!
           </h1>
           <p className="text-balance text-[17px] font-normal leading-6 tracking-[-0.17px] text-white/[0.72] md:text-xl md:leading-8 md:tracking-normal">
-            Тестируй Дневник трейдера, находи и&nbsp;фиксируй баги, и&nbsp;выигрывай VIP-билеты на&nbsp;Moscow Trading Week. Призовой фонд&nbsp;— 400&nbsp;000&nbsp;₽.
+            Тестируйте Дневник трейдера, находите и&nbsp;фиксируйте баги, и&nbsp;выигрывайте VIP-билеты на&nbsp;Moscow Trading Week. Призовой фонд&nbsp;— 400&nbsp;000&nbsp;₽.
           </p>
         </div>
       </div>
 
       <div className="relative z-10 mt-[316px] w-full min-w-0 px-5 pb-[max(90px,env(safe-area-inset-bottom,0px))] md:mt-16 md:mx-auto md:max-w-lg md:px-12 md:pb-16 lg:px-16">
         <MarketingPrimaryButton type="button" onClick={onRules}>
-          Правила
+          Принять участие
         </MarketingPrimaryButton>
       </div>
     </div>

@@ -37,7 +37,7 @@ export function BugBountyRules({ onParticipate }: Props) {
 
           <div className="mt-6 px-5 md:mt-10 md:px-8 lg:px-12">
             <div className="max-w-[353px] text-[16px] leading-normal text-white md:mx-auto md:max-w-3xl md:text-lg md:leading-relaxed">
-              <RulesBody />
+              <BugBountyRulesBody />
             </div>
           </div>
 
@@ -54,7 +54,7 @@ export function BugBountyRules({ onParticipate }: Props) {
   );
 }
 
-function RulesBody() {
+export function BugBountyRulesBody() {
   const linkGradient = 'linear-gradient(90deg, rgb(255, 149, 0) 0%, rgb(255, 137, 0) 40%, rgb(242, 61, 0) 56%, rgb(165, 90, 255) 90%)';
 
   return (
