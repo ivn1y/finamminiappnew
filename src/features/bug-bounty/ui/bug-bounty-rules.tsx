@@ -30,9 +30,9 @@ export function BugBountyRules({ onParticipate }: Props) {
           aria-hidden
         />
 
-        <div className="relative z-10 flex flex-col pb-[max(2rem,env(safe-area-inset-bottom))]">
+        <div className="relative z-10 flex flex-col pb-[calc(5rem+env(safe-area-inset-bottom,0px))]">
           <h1 className="px-5 pt-[46px] font-[family-name:var(--font-inter-tight)] text-[30px] font-normal leading-[1.1] tracking-[-0.6px]">
-            Условия участия в конкурсе Дневника Трейдера
+            Условия участия в конкурсе Дневник Трейдера
           </h1>
 
           <div className="mt-6 px-5">
@@ -55,96 +55,61 @@ export function BugBountyRules({ onParticipate }: Props) {
 }
 
 function RulesBody() {
+  const linkGradient = 'linear-gradient(90deg, rgb(255, 149, 0) 0%, rgb(255, 137, 0) 40%, rgb(242, 61, 0) 56%, rgb(165, 90, 255) 90%)';
+
   return (
-    <>
-      <p className="mb-0">
-        <span className="font-[family-name:var(--font-inter-tight)] font-bold">1. Участники</span>
-        <span className="font-[family-name:var(--font-inter-tight)] font-normal">
-          <br />
-          К участию допускаются все желающие, прошедшие регистрацию в боте.
-          <br />
-          <br />
-        </span>
-        <span className="font-[family-name:var(--font-inter-tight)] font-bold">2. Что считается багом</span>
-        <span className="font-[family-name:var(--font-inter-tight)] font-normal">
-          <br />
-          Любая ошибка на платформе{' '}
-        </span>
-        <a
-          href="https://beta.comon.ru"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="bg-clip-text font-[family-name:var(--font-inter-tight)] font-normal text-transparent underline decoration-white/35 underline-offset-[3px] outline-offset-4 focus-visible:rounded-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-white/50"
-          style={{
-            backgroundImage:
-              'linear-gradient(90deg, rgb(255, 149, 0) 0%, rgb(255, 137, 0) 40%, rgb(242, 61, 0) 56%, rgb(165, 90, 255) 90%)',
-            WebkitBackgroundClip: 'text',
-            backgroundClip: 'text',
-          }}
-        >
-          beta.comon.ru
-        </a>
-        <span className="font-[family-name:var(--font-inter-tight)] font-normal">
-          : некорректное отображение, сбой функциональности, проблемы с авторизацией, опечатки в контенте и т.д.
-          <br />
-          <br />
-        </span>
-        <span className="font-[family-name:var(--font-inter-tight)] font-bold">3. Правила подачи</span>
-        <span className="font-[family-name:var(--font-inter-tight)] font-normal">
-          <br />• Каждый баг-репорт должен содержать название и подробное описание{' '}
-        </span>
-      </p>
-      <p className="mb-0 font-[family-name:var(--font-inter-tight)] font-normal">
-        • Приветствуются скриншоты и видео
-        <br />
-        с воспроизведением бага{' '}
-      </p>
-      <p className="mb-0 font-[family-name:var(--font-inter-tight)] font-normal">• Дубликаты не засчитываются </p>
-      <p className="mb-0 font-[family-name:var(--font-inter-tight)] font-normal">
-        • Намеренные атаки на платформу запрещены{' '}
-      </p>
-      <p className="mb-0">
-        <span className="font-[family-name:var(--font-inter-tight)] font-normal">
-          <br />
-        </span>
-        <span className="font-[family-name:var(--font-inter-tight)] font-bold">4. Оценка и очки</span>
-        <span className="font-[family-name:var(--font-inter-tight)] font-normal">
-          <br />
-          • Принятый баг — +1 очко{' '}
-        </span>
-      </p>
-      <p className="mb-0 font-[family-name:var(--font-inter-tight)] font-normal">
-        • Отклонённые и дублирующие репорты очков не приносят{' '}
-      </p>
-      <p className="mb-0">
-        <span className="font-[family-name:var(--font-inter-tight)] font-normal">
-          • Организаторы вправе изменить оценку
-          <br />
-          с обоснованием
-          <br />
-          <br />
-        </span>
-        <span className="font-[family-name:var(--font-inter-tight)] font-bold">5. Призы</span>
-        <span className="font-[family-name:var(--font-inter-tight)] font-normal">
-          <br />
-          • 1-е место: 2 билета на Moscow Trading Week{' '}
-        </span>
-      </p>
-      <p className="mb-0 font-[family-name:var(--font-inter-tight)] font-normal">
-        • 2-е место: 1 билет на Moscow Trading Week{' '}
-      </p>
-      <p>
-        <span className="font-[family-name:var(--font-inter-tight)] font-normal">
-          • 3-е место: Мерч от организаторов
-          <br />
-          <br />
-        </span>
-        <span className="font-[family-name:var(--font-inter-tight)] font-bold">6. Решения организаторов</span>
-        <span className="font-[family-name:var(--font-inter-tight)] font-normal">
-          <br />
-          Решения жюри по спорным вопросам являются окончательными.
-        </span>
-      </p>
-    </>
+    <div className="flex flex-col gap-6 font-[family-name:var(--font-inter-tight)]">
+      <div>
+        <p className="font-bold">1. Участники</p>
+        <p className="mt-1 font-normal">
+          Все пользователи, прошедшие регистрацию в&nbsp;рамках конкурса.
+        </p>
+      </div>
+
+      <div>
+        <p className="font-bold">2. Что считается багом</p>
+        <p className="mt-1 font-normal">
+          Любая воспроизводимая ошибка на{' '}
+          <a
+            href="https://beta.comon.ru"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="bg-clip-text text-transparent underline decoration-white/35 underline-offset-[3px] outline-offset-4 focus-visible:rounded-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-white/50"
+            style={{ backgroundImage: linkGradient, WebkitBackgroundClip: 'text', backgroundClip: 'text' }}
+          >
+            beta.comon.ru
+          </a>
+          : сбои в&nbsp;работе функций, некорректное отображение, проблемы с&nbsp;авторизацией, опечатки в&nbsp;контенте.
+        </p>
+      </div>
+
+      <div>
+        <p className="font-bold">3. Требования к&nbsp;репорту</p>
+        <p className="mt-1 font-normal">
+          Название и&nbsp;подробное описание бага. Скриншоты и&nbsp;видео приветствуются. Дубликаты не&nbsp;засчитываются. Намеренные атаки на&nbsp;платформу&nbsp;— дисквалификация.
+        </p>
+      </div>
+
+      <div>
+        <p className="font-bold">4. Система оценки</p>
+        <p className="mt-1 font-normal">
+          Принятый баг&nbsp;— +1&nbsp;очко. Дубли и&nbsp;отклонённые репорты очков не&nbsp;приносят. Организаторы вправе скорректировать оценку с&nbsp;обоснованием.
+        </p>
+      </div>
+
+      <div>
+        <p className="font-bold">5. Призовой фонд&nbsp;— 400&nbsp;000&nbsp;₽</p>
+        <p className="mt-1 font-normal">
+          20&nbsp;VIP-билетов на&nbsp;Moscow Trading Week&nbsp;— 20-ти участникам с&nbsp;наибольшим количеством очков.
+        </p>
+      </div>
+
+      <div>
+        <p className="font-bold">6. Решения организаторов</p>
+        <p className="mt-1 font-normal">
+          Окончательны и&nbsp;обжалованию не&nbsp;подлежат.
+        </p>
+      </div>
+    </div>
   );
 }
