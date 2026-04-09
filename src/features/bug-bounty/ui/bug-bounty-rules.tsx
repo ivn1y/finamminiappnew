@@ -105,9 +105,19 @@ export function BugBountyRulesBody() {
       </div>
 
       <div>
-        <p className="font-bold">6. Решения организаторов</p>
+        <p className="font-bold">6. Сроки проведения и&nbsp;решения организаторов</p>
         <p className="mt-1 font-normal">
-          Окончательны и&nbsp;обжалованию не&nbsp;подлежат.
+          Конкурс проводится с&nbsp;10 по&nbsp;30&nbsp;апреля включительно. Итоги подведем в&nbsp;нашем сообществе в&nbsp;
+          <a
+            href="https://t.me/+sT39l5GVcGljOTdi"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="bg-clip-text text-transparent underline decoration-white/35 underline-offset-[3px] outline-offset-4 focus-visible:rounded-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-white/50"
+            style={{ backgroundImage: linkGradient, WebkitBackgroundClip: 'text', backgroundClip: 'text' }}
+          >
+            Telegram
+          </a>
+          . Решения организаторов окончательны и&nbsp;обжалованию не&nbsp;подлежат.
         </p>
       </div>
     </div>
