@@ -1,10 +1,14 @@
 'use client';
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { ChevronLeft } from 'lucide-react';
+import { ChevronLeft, Check } from 'lucide-react';
 import { cn } from '@/shared/lib/utils';
 import { validateEmail, validatePhone } from '@/shared/lib/validation';
 import { marketingGradientBg } from './assets';
+import { ConsentPersonalDataOverlay } from './consent-personal-data-overlay';
+
+const consentLinkGradient =
+  'linear-gradient(90deg, #FDB938 0%, #DE6D4B 50%, #A55AFF 100%)';
 
 const MIN_PASSWORD = 8;
 
@@ -30,14 +34,17 @@ export function BugBountyRegistration({ initialEmail, onBack, onGoLogin, onCompl
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
   const [saving, setSaving] = useState(false);
+  const [adConsent, setAdConsent] = useState(false);
+  const [showConsent, setShowConsent] = useState(false);
   const [errors, setErrors] = useState<Partial<Record<'email' | 'phone' | 'password', string>>>({});
 
   const canSubmit = useMemo(() => {
     if (!displayName.trim() || !email.trim() || !phone.trim() || password.length < MIN_PASSWORD) {
       return false;
     }
+    if (!adConsent) return false;
     return validateEmail(email).isValid && validatePhone(phone).isValid;
-  }, [email, displayName, phone, password]);
+  }, [email, displayName, phone, password, adConsent]);
 
   const handleEmailChange = useCallback((value: string) => {
     setEmail(value);
@@ -117,8 +124,8 @@ export function BugBountyRegistration({ initialEmail, onBack, onGoLogin, onCompl
 
   return (
     <div
-      className="fixed inset-0 flex items-center justify-center overflow-hidden bg-black text-white pb-[10%] md:overflow-y-auto md:pb-0 md:py-10"
-      style={{ touchAction: 'none' }}
+      className="fixed inset-0 flex items-center justify-center overflow-y-auto bg-black text-white py-6 md:py-10"
+      style={{ WebkitOverflowScrolling: 'touch' }}
     >
       <div
         className="pointer-events-none absolute left-[55px] top-[101px] z-0 h-[205px] w-[284px] rounded-[284px] opacity-[0.38] blur-[80px] md:left-1/2 md:top-[28%] md:h-[280px] md:w-[480px] md:-translate-x-1/2 md:opacity-25"
@@ -223,6 +230,43 @@ export function BugBountyRegistration({ initialEmail, onBack, onGoLogin, onCompl
           </div>
         </div>
 
+        <p className="mt-4 text-center text-[15px] leading-5 tracking-[-0.15px] text-white/[0.52]">
+          Уже есть аккаунт?{' '}
+          <button
+            type="button"
+            onClick={onGoLogin}
+            disabled={saving}
+            className="text-white/[0.72] underline-offset-2 hover:text-white hover:underline focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white/25 disabled:opacity-50"
+          >
+            Войдите
+          </button>
+        </p>
+
+        <label className="mt-4 flex cursor-pointer items-start gap-3">
+          <span className="relative mt-0.5 flex-shrink-0">
+            <input
+              type="checkbox"
+              checked={adConsent}
+              onChange={(e) => setAdConsent(e.target.checked)}
+              disabled={saving}
+              className="peer sr-only"
+            />
+            <span
+              className={cn(
+                'flex size-5 items-center justify-center rounded-[5px] border transition-colors',
+                adConsent
+                  ? 'border-white/25 bg-white/10'
+                  : 'border-white/25 bg-transparent',
+              )}
+            >
+              {adConsent && <Check className="size-3.5 text-white" strokeWidth={2.5} />}
+            </span>
+          </span>
+          <span className="text-[13px] leading-[1.4] tracking-[-0.1px] text-white/[0.62]">
+            В&nbsp;соответствии с&nbsp;Федеральным законом от&nbsp;13.03.2006 №&nbsp;38&#8209;ФЗ «О&nbsp;рекламе» даю согласие на&nbsp;получение рекламных и&nbsp;иных сообщений. Подтверждаю, что данные, указанные мной в&nbsp;настоящей анкете являются моими актуальными, на&nbsp;момент предоставления согласия данными.
+          </span>
+        </label>
+
         <div className="mt-5 flex items-center gap-[10px]">
           <button
             type="button"
@@ -245,21 +289,31 @@ export function BugBountyRegistration({ initialEmail, onBack, onGoLogin, onCompl
             )}
             style={canSubmit && !saving ? { backgroundImage: marketingGradientBg } : undefined}
           >
-            {saving ? 'Сохранение…' : 'Готово'}
+            {saving ? 'Сохранение…' : 'Зарегистрироваться'}
           </button>
         </div>
 
-        <p className="mt-5 text-center text-[15px] leading-5 tracking-[-0.15px] text-white/[0.52]">
-          Уже есть аккаунт?{' '}
+        <p className="mt-4 text-center text-[13px] leading-[1.4] tracking-[-0.1px] text-white/[0.42]">
+          Нажимая &laquo;Зарегистрироваться&raquo;,
+          <br />
+          вы&nbsp;соглашаетесь с{' '}
           <button
             type="button"
-            onClick={onGoLogin}
-            disabled={saving}
-            className="text-white/[0.72] underline-offset-2 hover:text-white hover:underline focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white/25 disabled:opacity-50"
+            onClick={() => setShowConsent(true)}
+            className="inline whitespace-nowrap bg-clip-text text-transparent underline decoration-white/30 underline-offset-[3px]"
+            style={{
+              backgroundImage: consentLinkGradient,
+              WebkitBackgroundClip: 'text',
+              backgroundClip: 'text',
+            }}
           >
-            Войдите
+            обработкой персональных данных
           </button>
         </p>
+
+        {showConsent && (
+          <ConsentPersonalDataOverlay onClose={() => setShowConsent(false)} />
+        )}
       </div>
     </div>
   );
