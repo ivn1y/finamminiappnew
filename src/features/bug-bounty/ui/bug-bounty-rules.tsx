@@ -100,7 +100,7 @@ export function BugBountyRulesBody() {
       <div>
         <p className="font-bold">5. Призовой фонд&nbsp;— 520&nbsp;000&nbsp;₽</p>
         <p className="mt-1 font-normal">
-          20&nbsp;VIP-билетов на&nbsp;Moscow Trading Week&nbsp;— 20-ти участникам с&nbsp;наибольшим количеством очков.
+          20&nbsp;Бизнес-билетов на&nbsp;Moscow Trading Week&nbsp;— 20-ти участникам с&nbsp;наибольшим количеством очков.
         </p>
       </div>
 
