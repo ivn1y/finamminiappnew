@@ -46,7 +46,7 @@ export function BugBountyWelcome({ onRules }: Props) {
             Привет!
           </h1>
           <p className="text-balance text-[17px] font-normal leading-6 tracking-[-0.17px] text-white/[0.72] md:text-xl md:leading-8 md:tracking-normal">
-            Тестируйте Дневник трейдера, находите и&nbsp;фиксируйте баги, и&nbsp;выигрывайте VIP-билеты на&nbsp;Moscow Trading Week. Призовой фонд&nbsp;— 520&nbsp;000&nbsp;₽.
+            Тестируйте Дневник трейдера, находите и&nbsp;фиксируйте баги, и&nbsp;выигрывайте Бизнес-билеты на&nbsp;Moscow Trading Week. Призовой фонд&nbsp;— 520&nbsp;000&nbsp;₽.
           </p>
         </div>
       </div>
