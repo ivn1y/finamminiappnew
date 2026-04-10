@@ -12,7 +12,7 @@ const { auth } = createAuth(authConfig)
 const middlewareConfig = {
   authRedirectPath: '/auth', // Используется только для обычных браузеров
   dashboardPath: '/collab',
-  publicPaths: ['/images/', '/videos/', '/onboarding', '/privacy-policy', '/bugbounty', '/'],
+  publicPaths: ['/images/', '/videos/', '/onboarding', '/privacy-policy', '/consent-personal-data', '/bugbounty', '/'],
   telegramBotToken: process.env.TELEGRAM_BOT_TOKEN || '',
 }
 
