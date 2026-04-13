@@ -1,4 +1,6 @@
 #!/bin/bash
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+cd "$SCRIPT_DIR"
 
 # Супер простой запуск для тестирования
 # Автор: AI Assistant
@@ -25,4 +27,4 @@ node simple-mock-server.js &
 sleep 2
 
 # Запускаем Next.js
-npx next dev --port 3000 --hostname 0.0.0.0
+node scripts/run-next-dev.js dev --port 3000 --hostname 0.0.0.0

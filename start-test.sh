@@ -1,4 +1,6 @@
 #!/bin/bash
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+cd "$SCRIPT_DIR"
 
 # 🚀 Простой запуск для тестирования на телефоне и компьютере
 # Автор: AI Assistant
@@ -46,7 +48,7 @@ echo "⚠️  Для остановки нажмите Ctrl+C"
 echo ""
 
 # Запускаем Next.js
-npx next dev --port 3000 --hostname 0.0.0.0 &
+node scripts/run-next-dev.js dev --port 3000 --hostname 0.0.0.0 &
 NEXT_PID=$!
 
 # Ждем запуска

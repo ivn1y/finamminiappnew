@@ -4,15 +4,15 @@
 const cspDirectives = [
   "default-src 'self'",
   // Scripts: self + inline for Next.js hydration + eval for development
-  "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://telegram.org https://*.telegram.org",
+  "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://telegram.org https://*.telegram.org https://mc.yandex.ru",
   // Styles: self + inline for styled-components/emotion/tailwind
   "style-src 'self' 'unsafe-inline'",
   // Images: self + data URIs + Telegram CDN + blob for dynamic images
-  "img-src 'self' data: blob: https://*.telegram.org https://telegram.org",
+  "img-src 'self' data: blob: https://*.telegram.org https://telegram.org https://mc.yandex.ru",
   // Fonts: self + data URIs
   "font-src 'self' data:",
   // Connect: API endpoints
-  "connect-src 'self' https://*.finam.ru https://telegram.org https://*.telegram.org wss://*.finam.ru",
+  "connect-src 'self' https://*.finam.ru https://telegram.org https://*.telegram.org wss://*.finam.ru https://mc.yandex.ru",
   // Frame sources: Telegram widgets
   "frame-src 'self' https://telegram.org https://*.telegram.org",
   // Prevent embedding in frames (clickjacking protection)

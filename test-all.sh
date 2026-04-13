@@ -1,4 +1,6 @@
 #!/bin/bash
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+cd "$SCRIPT_DIR"
 
 # Универсальный скрипт для тестирования
 # Автор: AI Assistant
@@ -65,7 +67,7 @@ echo "🔧 Настройка для мобильного доступа..."
 export HOSTNAME=0.0.0.0
 export PORT=3000
 
-npx next dev --port 3000 --hostname 0.0.0.0
+node scripts/run-next-dev.js dev --port 3000 --hostname 0.0.0.0
 
 # При выходе убиваем mock API
 echo ""

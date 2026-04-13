@@ -1,6 +1,5 @@
 'use client'
 
-import Script from 'next/script'
 import { usePathname } from 'next/navigation'
 import { useEffect, useRef } from 'react'
 
@@ -24,6 +23,10 @@ function getMetrikaId(): number | null {
   return Number.isFinite(id) ? id : null
 }
 
+/**
+ * Дополнение к {@link YandexMetrikaHead}: хиты при клиентских переходах (App Router) и &lt;noscript&gt;.
+ * Инициализация ym — только в head, без дубля.
+ */
 export function YandexMetrika() {
   const pathname = usePathname()
   const id = getMetrikaId()
@@ -49,37 +52,15 @@ export function YandexMetrika() {
     return null
   }
 
-  const src = `https://mc.yandex.ru/metrika/tag.js?id=${id}`
-
   return (
-    <>
-      <Script
-        id="yandex-metrika"
-        strategy="afterInteractive"
-        src={src}
-        onLoad={() => {
-          if (typeof window === 'undefined' || !window.ym) return
-          window.ym(id, 'init', {
-            ssr: true,
-            webvisor: true,
-            clickmap: true,
-            ecommerce: 'dataLayer',
-            referrer: document.referrer,
-            url: location.href,
-            accurateTrackBounce: true,
-            trackLinks: true,
-          })
-        }}
-      />
-      <noscript>
-        <div>
-          <img
-            src={`https://mc.yandex.ru/watch/${id}`}
-            style={{ position: 'absolute', left: '-9999px' }}
-            alt=""
-          />
-        </div>
-      </noscript>
-    </>
+    <noscript>
+      <div>
+        <img
+          src={`https://mc.yandex.ru/watch/${id}`}
+          style={{ position: 'absolute', left: '-9999px' }}
+          alt=""
+        />
+      </div>
+    </noscript>
   )
 }
