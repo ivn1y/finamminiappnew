@@ -6,6 +6,9 @@
 
 set -e
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+cd "$SCRIPT_DIR"
+
 # Цвета для вывода
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -157,7 +160,7 @@ print_warning "Для остановки нажмите Ctrl+C"
 echo ""
 
 # Запускаем Next.js с правильными параметрами для разработки
-NODE_ENV=development npx next dev --port 3000 --hostname 0.0.0.0 --turbo &
+NODE_ENV=development node scripts/run-next-dev.js dev --port 3000 --hostname 0.0.0.0 --turbo &
 NEXT_PID=$!
 
 # Ждем запуска Next.js

@@ -1,7 +1,5 @@
 'use client';
 
-import type { Metadata } from 'next';
-
 import { BottomNavigation } from '@/widgets/bottom-navigation';
 import { usePathname, useRouter } from 'next/navigation';
 import { useAppStore } from '@/shared/store/app-store';

@@ -1,4 +1,6 @@
 #!/bin/bash
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+cd "$SCRIPT_DIR"
 
 # Автоматический перезапуск для стабильной работы
 # Автор: AI Assistant
@@ -29,7 +31,7 @@ start_servers() {
     sleep 3
     
     # Запускаем Next.js
-    npx next dev --port 3000 --hostname 0.0.0.0 &
+    node scripts/run-next-dev.js dev --port 3000 --hostname 0.0.0.0 &
     NEXT_PID=$!
     
     echo "✅ Серверы запущены"

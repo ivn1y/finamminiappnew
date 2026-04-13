@@ -4,7 +4,8 @@ import { Inter, Inter_Tight } from "next/font/google"
 import type { Metadata, Viewport } from "next"
 import { Toaster } from "@/shared/ui/sonner"
 import { Analytics } from '@vercel/analytics/react';
-import { YandexMetrika } from '@/shared/ui/yandex-metrika';
+import { YandexMetrika } from '@/shared/ui/yandex-metrika'
+import { YandexMetrikaHead } from '@/shared/ui/yandex-metrika-head'
 
 const inter = Inter({
   subsets: ["latin", "latin-ext"],
@@ -76,6 +77,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <meta name="msapplication-navbutton-color" content="#000000" />
         {/* iOS Safari - цвет области вокруг notch */}
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <YandexMetrikaHead />
         <script
           dangerouslySetInnerHTML={{
             __html: `

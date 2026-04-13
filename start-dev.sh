@@ -1,4 +1,6 @@
 #!/bin/bash
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+cd "$SCRIPT_DIR"
 
 # Скрипт для запуска полной локальной среды разработки
 # Включает в себя mock-api сервер и основной Next.js сервер
