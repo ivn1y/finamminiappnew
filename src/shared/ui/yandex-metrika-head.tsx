@@ -15,19 +15,18 @@ function getId(): number | null {
 }
 
 /**
- * Счётчик Яндекс.Метрики: ранняя загрузка из &lt;head&gt; (аналог «вставь код в head» из инструкции Метрики).
- * Реализовано через next/script + beforeInteractive — так делает Next.js вместо сырого &lt;script&gt; в body.
+ * Счётчик Яндекс.Метрики: тот же код, что в кабинете Метрики, ID из NEXT_PUBLIC_YANDEX_METRIKA_ID.
+ * strategy afterInteractive — стабильнее в App Router (beforeInteractive внутри ручного &lt;head&gt; ломал dev/HMR и чанки layout).
  */
 export function YandexMetrikaHead() {
   if (!enabled()) return null
   const id = getId()
   if (id == null) return null
 
-  // 1:1 с кодом из кабинета Метрики (вставка в head), ID из NEXT_PUBLIC_YANDEX_METRIKA_ID
   return (
     <Script
       id="yandex-metrika"
-      strategy="beforeInteractive"
+      strategy="afterInteractive"
       dangerouslySetInnerHTML={{
         __html: `
 (function(m,e,t,r,i,k,a){

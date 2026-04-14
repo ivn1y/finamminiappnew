@@ -77,7 +77,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <meta name="msapplication-navbutton-color" content="#000000" />
         {/* iOS Safari - цвет области вокруг notch */}
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-        <YandexMetrikaHead />
         <script
           dangerouslySetInnerHTML={{
             __html: `
@@ -95,6 +94,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body className="min-h-screen bg-black font-sans antialiased" style={{ backgroundColor: '#000000' }}>
+        <YandexMetrikaHead />
         <GlobalProviders>
           {children}
           <Toaster/>
