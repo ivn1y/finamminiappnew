@@ -25,7 +25,7 @@ function getMetrikaId(): number | null {
 
 /**
  * Дополнение к {@link YandexMetrikaHead}: хиты при клиентских переходах (App Router) и &lt;noscript&gt;.
- * Инициализация ym — только в head, без дубля.
+ * Инициализация ym — в корневом layout через next/script, без дубля.
  */
 export function YandexMetrika() {
   const pathname = usePathname()
