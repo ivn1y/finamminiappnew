@@ -107,7 +107,7 @@ export function BugBountyRulesBody() {
       <div>
         <p className="font-bold">6. Сроки проведения и&nbsp;решения организаторов</p>
         <p className="mt-1 font-normal">
-          Конкурс проводится с&nbsp;10 по&nbsp;30&nbsp;апреля включительно. Итоги подведем в&nbsp;нашем сообществе в&nbsp;
+          Конкурс проводится с&nbsp;10&nbsp;апреля по&nbsp;10&nbsp;мая включительно. Итоги подведем в&nbsp;нашем сообществе в&nbsp;
           <a
             href="https://t.me/+sT39l5GVcGljOTdi"
             target="_blank"
