@@ -59,6 +59,8 @@ model BugBountyReport {
   description    String
   /// JSON: [{ "id": string, "mime": string, "kind": "image" | "video", "name": string }]
   attachments    Json?
+  /// Бинарные данные вложений (хранятся в БД, чтобы переживать передеплой контейнера)
+  blobs          BugBountyAttachmentBlob[]
   status            BugBountyReportStatus   @default(PENDING)
   /// Виден участнику, если статус REJECTED
   rejectionComment  String?
@@ -68,5 +70,19 @@ model BugBountyReport {
   @@index([participantId])
   @@index([createdAt])
   @@index([status])
+}
+
+/// Бинарные данные вложений bug-bounty репортов.
+/// Хранятся в БД (BLOB), а не на диске контейнера, иначе пропадают при каждом передеплое Coolify.
+/// fileId совпадает с id в BugBountyReport.attachments JSON.
+model BugBountyAttachmentBlob {
+  fileId     String            @id
+  reportId   String
+  report     BugBountyReport   @relation(fields: [reportId], references: [id], onDelete: Cascade)
+  mime       String
+  data       Bytes
+  createdAt  DateTime          @default(now())
+
+  @@index([reportId])
 }
 

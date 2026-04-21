@@ -1,7 +1,6 @@
-import fs from 'node:fs/promises'
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/shared/lib/db'
-import { getBugBountyReportFilePath } from '@/shared/lib/bug-bounty/report-attachments'
+import { readBugBountyAttachment } from '@/shared/lib/bug-bounty/report-attachments'
 import {
   isSafeBugBountyFileId,
   parseBugBountyAttachmentsJson,
@@ -55,18 +54,17 @@ export async function GET(request: NextRequest, ctx: RouteCtx) {
     return NextResponse.json({ error: 'Не найдено' }, { status: 404 })
   }
 
-  const filePath = getBugBountyReportFilePath(reportId, fileId)
-  try {
-    const buf = await fs.readFile(filePath)
-    return new NextResponse(buf, {
-      status: 200,
-      headers: {
-        'Content-Type': meta.mime,
-        'Cache-Control': 'private, max-age=3600',
-        'Content-Disposition': `inline; filename*=UTF-8''${encodeURIComponent(meta.name)}`,
-      },
-    })
-  } catch {
+  const payload = await readBugBountyAttachment(reportId, fileId)
+  if (!payload) {
     return NextResponse.json({ error: 'Файл недоступен' }, { status: 404 })
   }
+
+  return new NextResponse(new Uint8Array(payload.data), {
+    status: 200,
+    headers: {
+      'Content-Type': payload.mime || meta.mime,
+      'Cache-Control': 'private, max-age=3600',
+      'Content-Disposition': `inline; filename*=UTF-8''${encodeURIComponent(meta.name)}`,
+    },
+  })
 }

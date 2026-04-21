@@ -72,7 +72,7 @@ async function createReportWithOptionalFiles(
       }
       const fileId = randomUUID()
       const name = fileNameFromBlob(file)
-      await writeBugBountyAttachment(report.id, fileId, buf)
+      await writeBugBountyAttachment(report.id, fileId, mime, buf)
       metas.push({ id: fileId, mime, kind, name })
     }
 
