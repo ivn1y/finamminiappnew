@@ -1,5 +1,5 @@
-import { ChatPage } from '@/widgets/chat-page';
+import { WebinarPage } from '@/widgets/webinar-page';
 
 export default function ChatPageRoute() {
-  return <ChatPage />;
+  return <WebinarPage />;
 }
