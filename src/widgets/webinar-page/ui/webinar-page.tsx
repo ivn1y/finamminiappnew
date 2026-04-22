@@ -287,6 +287,38 @@ export const WebinarPage: React.FC = () => {
             ))}
           </div>
         </section>
+
+        {/* Нижний CTA */}
+        <section className="mt-[28px] px-[20px]">
+          <div
+            className="rounded-[16px] p-[1px]"
+            style={{
+              background:
+                'linear-gradient(305deg, #FEDA3B -2.67%, #EF5541 38.9%, #801FDB 77.17%, #7E2A89 98.46%)',
+            }}
+          >
+            <div className="rounded-[15px] bg-[#0F0F13] p-[20px] text-center">
+              <p className="font-inter-tight text-[22px] font-semibold leading-[110%] tracking-[-0.44px] text-white">
+                Готов прокачать торговый процесс?
+              </p>
+              <p className="mt-[8px] font-inter text-[13px] leading-[18px] tracking-[-0.026px] text-[rgba(255,255,255,0.72)]">
+                Запишись на бесплатный вебинар и узнай, как «Дневник трейдера» с ИИ помогает фиксировать идеи и принимать решения быстрее.
+              </p>
+              <button
+                type="button"
+                className="mt-[16px] w-full h-[52px] rounded-[12px] inline-flex items-center justify-center gap-[8px] font-inter-tight text-[16px] font-semibold tracking-[-0.32px] text-[#0D0512] transition-transform active:scale-[0.99]"
+                style={{
+                  background: 'linear-gradient(90deg, #FDB938 6.62%, #ED6B51 100%)',
+                  boxShadow:
+                    '0px 12px 32px -10px rgba(237, 107, 81, 0.55)',
+                }}
+              >
+                <IconPlay />
+                Записаться на вебинар
+              </button>
+            </div>
+          </div>
+        </section>
       </div>
     </div>
   );
