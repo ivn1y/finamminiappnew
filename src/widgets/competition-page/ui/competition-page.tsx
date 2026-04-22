@@ -1,344 +1,269 @@
 'use client';
 
 import React from 'react';
-import Image from 'next/image';
+
+const BUG_BOUNTY_URL = 'https://collab.generationfi.online/bugbounty';
+
+const openBugBounty = () => {
+  if (typeof window === 'undefined') return;
+  const telegramOpenLink = (window as any).Telegram?.WebApp?.openLink;
+  if (typeof telegramOpenLink === 'function') {
+    telegramOpenLink(BUG_BOUNTY_URL);
+  } else {
+    window.open(BUG_BOUNTY_URL, '_blank', 'noopener,noreferrer');
+  }
+};
+
+type Stat = { value: string; label: string };
+type Step = { title: string; description: string };
+type Reward = { title: string; description: string };
+
+const STATS: Stat[] = [
+  { value: '520 000 ₽', label: 'Призовой фонд' },
+  { value: '20', label: 'Бизнес-билетов' },
+  { value: '10 мая', label: 'Финал конкурса' },
+];
+
+const STEPS: Step[] = [
+  {
+    title: 'Зарегистрируйся',
+    description: 'Создай аккаунт участника за минуту, без лишних вопросов.',
+  },
+  {
+    title: 'Тестируй платформу',
+    description: 'Находи баги на beta.comon.ru — сбои, баги UI, проблемы авторизации, опечатки.',
+  },
+  {
+    title: 'Отправляй репорты',
+    description: 'Опиши шаги, приложи скрин или видео. За каждый принятый баг — +1 очко.',
+  },
+  {
+    title: 'Попади в топ-20',
+    description: 'Лучшие участники забирают Бизнес-билеты на Moscow Trading Week.',
+  },
+];
+
+const REWARDS: Reward[] = [
+  {
+    title: 'Бизнес-билеты',
+    description: '20 билетов в бизнес-зону Moscow Trading Week — нетворкинг и доступ к закрытым сессиям.',
+  },
+  {
+    title: 'Вклад в продукт',
+    description: 'Твои находки попадут напрямую в продакт-команду Финама и сделают «Дневник трейдера» лучше.',
+  },
+  {
+    title: 'Комьюнити и признание',
+    description: 'Лидерборд в реальном времени и отдельный Telegram-канал с итогами и разборами.',
+  },
+];
+
+const GoldButton: React.FC<{
+  onClick: () => void;
+  children: React.ReactNode;
+  icon?: React.ReactNode;
+  className?: string;
+}> = ({ onClick, children, icon, className = '' }) => (
+  <button
+    type="button"
+    onClick={onClick}
+    className={`w-full h-[52px] rounded-[12px] inline-flex items-center justify-center gap-[8px] font-inter-tight text-[16px] font-semibold tracking-[-0.32px] text-[#0D0512] transition-transform active:scale-[0.99] ${className}`}
+    style={{
+      background: 'linear-gradient(90deg, #FDB938 6.62%, #ED6B51 100%)',
+      boxShadow: '0px 12px 32px -10px rgba(237, 107, 81, 0.55)',
+    }}
+  >
+    {icon}
+    {children}
+  </button>
+);
+
+const IconArrow = () => (
+  <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path
+      d="M4 9h10m0 0-4-4m4 4-4 4"
+      stroke="#0D0512"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
+const IconBug = () => (
+  <svg width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path
+      d="M10 2.5a3 3 0 0 1 3 3H7a3 3 0 0 1 3-3Zm-4.5 4h9a3.5 3.5 0 0 1 3.5 3.5v.5h-2V9a1 1 0 1 0-2 0v1h-1V9a1 1 0 1 0-2 0v1H9V9a1 1 0 1 0-2 0v1H6V9a1 1 0 1 0-2 0v1H2v-.5A3.5 3.5 0 0 1 5.5 6.5Zm-.5 5.5h10v.5a5 5 0 0 1-10 0V12Zm2 5.2a1 1 0 1 1 2 0V19a1 1 0 1 1-2 0v-1.8Zm5 0a1 1 0 1 1 2 0V19a1 1 0 1 1-2 0v-1.8Z"
+      fill="#0D0512"
+    />
+  </svg>
+);
 
 export const CompetitionPage: React.FC = () => {
-  const handleNavigate = () => {
-    const url = 'https://workspace.finam.ru';
-    if (typeof window !== 'undefined' && (window as any).Telegram?.WebApp?.openLink) {
-      (window as any).Telegram.WebApp.openLink(url);
-    } else {
-      window.open(url, '_blank');
-    }
-  };
-
   return (
     <div className="w-full bg-black overflow-x-hidden">
       <div className="flex justify-center">
-        <div 
-          className="relative w-[393px] bg-black pb-[100px]"
-          style={{ minHeight: '100vh' }}
-        >
-          {/* Background Ellipse - Hero */}
-          <div 
-            className="absolute w-[390px] h-[281px] left-0 top-[140px] rounded-[390px] pointer-events-none"
+        <div className="relative w-[393px] bg-black pb-[120px]" style={{ minHeight: '100vh' }}>
+          <div
+            aria-hidden
+            className="pointer-events-none absolute left-1/2 -translate-x-1/2 top-[40px] w-[390px] h-[281px] rounded-[390px] opacity-40 blur-[80px]"
             style={{
-              opacity: 0.26,
-              background: 'linear-gradient(305deg, #FEDA3B -2.67%, #EF5541 38.9%, #801FDB 77.17%, #7E2A89 98.46%)',
-              filter: 'blur(80px)'
+              background:
+                'linear-gradient(305deg, #FEDA3B -2.67%, #EF5541 38.9%, #801FDB 77.17%, #7E2A89 98.46%)',
             }}
           />
-          
-          {/* Background Ellipse - How it works */}
-          <div 
-            className="absolute w-[284px] h-[150px] left-[73px] top-[499px] rounded-[284px] pointer-events-none -scale-x-100"
-            style={{
-              opacity: 0.49,
-              background: 'linear-gradient(120deg, #141414 39.78%, #371C40 48.19%, #371C40 52.99%, #9D465A 59.21%, #FFB27A 65.42%, #F0E4D8 78.35%)',
-              filter: 'blur(80px)'
-            }}
-          />
-          
-          {/* Content */}
-          <div className="relative z-10 flex flex-col items-center pt-[60px] px-5 gap-[30px]">
-            
-            {/* Logo */}
-            <div className="w-[118px] h-[118px] relative">
-              <img
-                src="/assets/competition/finam-logo.svg"
-                alt="Финам Коллаб"
-                width={118}
-                height={118}
-                className="object-contain"
+
+          <div className="relative z-10 pt-[32px] px-[20px]">
+            <div className="inline-flex items-center gap-[8px] px-[12px] h-[28px] rounded-[14px] bg-[#1A1A1F] border border-[#2A2A32]">
+              <span
+                className="w-[8px] h-[8px] rounded-full"
+                style={{
+                  background: 'linear-gradient(90deg, #FDB938 0%, #ED6B51 100%)',
+                }}
               />
+              <span className="font-inter text-[12px] font-medium tracking-[-0.024px] text-white leading-[14px]">
+                Идёт Bug Bounty «Дневник трейдера»
+              </span>
             </div>
 
-            {/* Hero Section */}
-            <div className="flex flex-col items-center gap-5 w-[353px]">
-              <div className="flex flex-col items-center gap-[7px]">
-                <h1 className="w-[353px] text-white text-center font-inter-tight text-[30px] font-normal leading-[110%] tracking-[-0.6px]">
-                  Площадка соревнований по трейдингу, ML и финтех-разработке
-                </h1>
-                <p className="self-stretch font-inter text-[17px] font-normal text-white/[0.72] text-center leading-[24px] tracking-[-0.17px]">
-                  Решай реальные задачи индустрии, выигрывай призы и предложения работы от фондов
+            <h1 className="mt-[14px] font-inter-tight text-[32px] font-semibold leading-[110%] tracking-[-0.64px] text-white">
+              Находи баги,
+              <br />
+              <span
+                style={{
+                  background: 'linear-gradient(90deg, #FDB938 6.62%, #ED6B51 100%)',
+                  WebkitBackgroundClip: 'text',
+                  backgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                }}
+              >
+                забирай призы
+              </span>
+            </h1>
+
+            <p className="mt-[12px] font-inter text-[15px] leading-[22px] tracking-[-0.03px] text-[rgba(255,255,255,0.72)]">
+              Мы запустили открытое Bug Bounty новой платформы «Дневник трейдера» на beta.comon.ru. Помоги нам поймать баги, а мы поделимся Бизнес-билетами на Moscow Trading Week и призовым фондом 520 000 ₽.
+            </p>
+          </div>
+
+          <div className="relative z-10 mt-[18px] px-[20px]">
+            <div
+              className="rounded-[14px] p-[1px]"
+              style={{
+                background:
+                  'linear-gradient(305deg, #FEDA3B -2.67%, #EF5541 38.9%, #801FDB 77.17%, #7E2A89 98.46%)',
+              }}
+            >
+              <div className="rounded-[13px] bg-[#0F0F13] p-[16px]">
+                <div className="grid grid-cols-3 gap-[8px]">
+                  {STATS.map((stat) => (
+                    <div
+                      key={stat.label}
+                      className="flex flex-col items-center text-center p-[10px] rounded-[10px] bg-[#141418] border border-[#1F1F25]"
+                    >
+                      <span className="font-inter-tight text-[16px] font-semibold leading-[20px] tracking-[-0.32px] text-white">
+                        {stat.value}
+                      </span>
+                      <span className="mt-[4px] font-inter text-[10px] uppercase tracking-[0.06em] leading-[12px] text-[#8A8A95]">
+                        {stat.label}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+
+                <GoldButton onClick={openBugBounty} icon={<IconBug />} className="mt-[14px]">
+                  Принять участие
+                </GoldButton>
+
+                <p className="mt-[10px] text-center font-inter text-[11px] leading-[14px] text-[#8A8A95]">
+                  Откроется {BUG_BOUNTY_URL.replace('https://', '')}
                 </p>
-              </div>
-              
-              {/* CTA Button */}
-              <button
-                disabled
-                className="px-4 py-3 rounded-lg font-inter font-medium text-[16px] text-white leading-[24px] tracking-[-0.128px] cursor-not-allowed"
-                style={{
-                  background: 'linear-gradient(305deg, #FEDA3B -2.67%, #EF5541 38.9%, #801FDB 77.17%, #7E2A89 98.46%)'
-                }}
-              >
-                Скоро
-              </button>
-            </div>
-
-            {/* How it works section */}
-            <div className="w-[353px] py-[10px]">
-              <h2 className="font-inter-tight text-[24px] text-white leading-[110%] tracking-[-0.48px]">
-                Как это работает?
-              </h2>
-            </div>
-
-            {/* How it works cards */}
-            <div className="flex gap-[9px]">
-              <div 
-                className="relative w-[172px] rounded-lg px-4 py-3 overflow-hidden"
-              >
-                <div className="absolute inset-0 rounded-lg overflow-hidden">
-                  <Image
-                    src="/assets/competition/card-bg-1.png"
-                    alt=""
-                    fill
-                    className="object-cover"
-                  />
-                  <div className="absolute inset-0 bg-[rgba(221,221,255,0.1)]" />
-                </div>
-                <div className="relative flex flex-col gap-[6px] items-center">
-                  <div className="w-full aspect-[140/95]" />
-                  <p className="font-inter font-medium text-[14px] text-white text-center leading-[20px] tracking-[-0.056px] h-[39px] flex items-center justify-center">
-                    Участвуй в соревнованиях
-                  </p>
-                  <p className="font-inter text-[12px] text-[#6f6f7c] text-center leading-[16px] h-[64px]">
-                    Финансовые компании публикуют реальные задачи.
-                  </p>
-                </div>
-              </div>
-
-              <div 
-                className="relative w-[172px] rounded-lg px-4 py-3 overflow-hidden"
-              >
-                <div className="absolute inset-0 rounded-lg overflow-hidden">
-                  <Image
-                    src="/assets/competition/card-bg-2.png"
-                    alt=""
-                    fill
-                    className="object-cover"
-                  />
-                  <div className="absolute inset-0 bg-[rgba(221,221,255,0.1)]" />
-                </div>
-                <div className="relative flex flex-col gap-[6px] items-center">
-                  <div className="w-full aspect-[140/95]" />
-                  <p className="font-inter font-medium text-[14px] text-white text-center leading-[20px] tracking-[-0.056px] h-[39px] flex items-center justify-center">
-                    Получай награды
-                  </p>
-                  <p className="font-inter text-[12px] text-[#6f6f7c] text-center leading-[16px]">
-                    Денежные призы, приглашения в команды и карьерные возможности.
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* What you get section */}
-            <div className="flex flex-col items-center w-[353px] pt-5 pb-[60px] gap-8">
-              <h2 className="w-[353px] font-inter-tight text-[30px] text-white text-center leading-[110%] tracking-[-0.6px]">
-                Что получаешь
-              </h2>
-
-              <div className="flex flex-col gap-5 w-full">
-                {/* Prize funds */}
-                <div className="relative w-full rounded-lg px-5 py-4 overflow-hidden">
-                  <div className="absolute inset-0 rounded-lg overflow-hidden">
-                    <Image
-                      src="/assets/competition/content-bg-1.png"
-                      alt=""
-                      fill
-                      className="object-cover"
-                    />
-                    <div className="absolute inset-0 bg-[rgba(221,221,255,0.1)]" />
-                  </div>
-                  <div className="relative flex flex-col gap-[10px] w-[228px]">
-                    <h3 className="font-inter-tight text-[24px] text-white leading-[110%] tracking-[-0.48px]">
-                      Призовые фонды
-                    </h3>
-                    <p className="font-inter text-[14px] text-[#A4A4B2] leading-[20px] tracking-[-0.056px] w-[198px]">
-                      Соревнования с призами до 500 000 ₽
-                    </p>
-                  </div>
-                </div>
-
-                {/* Career opportunities */}
-                <div className="relative w-full rounded-lg px-5 py-4 overflow-hidden">
-                  <div className="absolute inset-0 rounded-lg overflow-hidden">
-                    <Image
-                      src="/assets/competition/content-bg-2.png"
-                      alt=""
-                      fill
-                      className="object-cover"
-                    />
-                    <div className="absolute inset-0 bg-[rgba(221,221,255,0.1)]" />
-                  </div>
-                  <div className="relative flex flex-col gap-[10px]">
-                    <h3 className="font-inter-tight text-[24px] text-white leading-[110%] tracking-[-0.48px] w-[228px]">
-                      Карьерные возможности
-                    </h3>
-                    <p className="font-inter text-[14px] text-[#A4A4B2] leading-[20px] tracking-[-0.056px] w-[228px]">
-                      Лучшие участники получают приглашения в фонды и финтех-команды
-                    </p>
-                  </div>
-                </div>
-
-                {/* Practical experience */}
-                <div className="relative w-full rounded-lg px-5 py-4 overflow-hidden">
-                  <div className="absolute inset-0 rounded-lg overflow-hidden">
-                    <Image
-                      src="/assets/competition/content-bg-3.png"
-                      alt=""
-                      fill
-                      className="object-cover"
-                    />
-                    <div className="absolute inset-0 bg-[rgba(221,221,255,0.1)]" />
-                  </div>
-                  <div className="relative flex flex-col gap-[10px] w-[228px]">
-                    <h3 className="font-inter-tight text-[24px] text-white leading-[110%] tracking-[-0.48px]">
-                      Практический опыт
-                    </h3>
-                    <p className="font-inter text-[14px] text-[#A4A4B2] leading-[20px] tracking-[-0.056px] w-[285px]">
-                      Работа с реальными задачами индустрии
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Coming soon section */}
-            <div className="relative w-[353px] h-[621px]">
-              {/* Background glow */}
-              <div 
-                className="absolute w-[390px] h-[422px] left-0 top-0 rounded-[422px] pointer-events-none -scale-x-100"
-                style={{
-                  opacity: 0.3,
-                  background: 'linear-gradient(315deg, #FAF1E6 -0.45%, #F9DEC0 15.8%, #ED9FA6 32.05%, #994B69 48.29%, rgba(51, 22, 86, 0.00) 64.54%)',
-                  filter: 'blur(80px)'
-                }}
-              />
-              
-              <div className="absolute w-full top-[20px]">
-                <h2 className="w-full font-inter-tight text-[30px] text-white text-center leading-[110%] tracking-[-0.6px]">
-                  Скоро начнутся первые соревнования
-                </h2>
-              </div>
-
-              {/* Phone mockup */}
-              <div 
-                className="absolute left-1/2 -translate-x-1/2 top-[113px] w-[264px] h-[349px] rounded-[8px] p-[2px]"
-                style={{
-                  background: 'linear-gradient(305deg, #FEDA3B -2.67%, #EF5541 38.9%, #801FDB 77.17%, #7E2A89 98.46%)',
-                  boxShadow: '0px 74px 21px 0px rgba(255,255,255,0), 0px 47px 19px 0px rgba(255,255,255,0.01), 0px 27px 16px 0px rgba(255,255,255,0.03), 0px 12px 12px 0px rgba(255,255,255,0.04), 0px 3px 6px 0px rgba(255,255,255,0.05)'
-                }}
-              >
-                <div className="relative w-full h-full rounded-[6px] overflow-hidden bg-black">
-                  <Image
-                    src="/assets/images/trader-diary.png"
-                    alt="Дневник трейдера"
-                    fill
-                    className="object-cover"
-                    style={{ objectPosition: 'calc(50% - 55px) center' }}
-                  />
-                </div>
-              </div>
-
-              {/* Card info */}
-              <div className="absolute left-1/2 -translate-x-1/2 top-[474px] w-[353px] text-center">
-                <h3 className="font-inter-tight text-[24px] text-white leading-[110%] tracking-[-0.48px]">
-                  Дневник трейдера
-                </h3>
-                <p className="font-inter text-[14px] text-[#6f6f7c] leading-[1.2] tracking-[-0.14px] mt-2">
-                  ИИ инструмент для успешного трейдинга
-                </p>
-              </div>
-
-              {/* View button */}
-              <button
-                disabled
-                className="absolute left-1/2 -translate-x-1/2 top-[545px] px-3 py-[10px] rounded-lg font-inter font-medium text-[14px] text-white leading-[20px] tracking-[-0.056px] cursor-not-allowed"
-                style={{
-                  background: 'linear-gradient(305deg, #FEDA3B -2.67%, #EF5541 38.9%, #801FDB 77.17%, #7E2A89 98.46%)'
-                }}
-              >
-                Скоро
-              </button>
-            </div>
-
-            {/* Partners section */}
-            <div className="relative w-[353px] flex flex-col items-center">
-              {/* Background glow */}
-              <div 
-                className="absolute w-[284px] h-[205px] right-[54px] top-[-23px] rounded-[284px] pointer-events-none"
-                style={{
-                  opacity: 0.14,
-                  background: '#E838C0',
-                  filter: 'blur(80px)'
-                }}
-              />
-              
-              <div className="relative z-10 flex flex-col items-center gap-8 px-[10px] pt-5">
-                <div className="flex flex-col items-center gap-[14px] max-w-[336px] text-center">
-                  <h2 className="font-inter-tight text-[30px] text-white text-center leading-[110%] tracking-[-0.6px]">
-                    У Воркспейса уже есть партнеры
-                  </h2>
-                  <p className="font-inter text-[17px] text-white/70 leading-[24px] tracking-[-0.17px]">
-                    Заказчики и спонсоры новых соревнований
-                  </p>
-                </div>
-
-                {/* Partner logos */}
-                <div className="flex flex-col gap-2 w-full max-w-[336px]">
-                  {/* Финам */}
-                  <div className="w-full h-[130px] bg-[#1a1a1f] rounded-lg flex items-center justify-center p-[10px]">
-                    <div className="relative w-[160px] h-[72px] flex items-center justify-center">
-                      <div className="flex flex-col items-center gap-1">
-                        <img
-                          src="/assets/competition/partner-finam-union.svg"
-                          alt="Финам"
-                          width={51}
-                          height={47}
-                          className="object-contain"
-                        />
-                        <img
-                          src="/assets/competition/partner-finam-vector.svg"
-                          alt="Финам"
-                          width={96}
-                          height={18}
-                          className="object-contain"
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Viking */}
-                  <div className="w-full h-[130px] bg-[#1a1a1f] rounded-lg flex items-center justify-center p-[10px]">
-                    <div className="relative w-[160px] h-[72px] flex items-center justify-center">
-                      <img
-                        src="/assets/logos/viking.svg"
-                        alt="Viking"
-                        width={130}
-                        height={60}
-                        className="object-contain"
-                      />
-                    </div>
-                  </div>
-
-                  {/* Финам Дневник */}
-                  <div className="w-full h-[130px] bg-[#1a1a1f] rounded-lg flex items-center justify-center p-[10px]">
-                    <div className="relative w-[160px] h-[72px] flex items-center justify-center">
-                      <img
-                        src="/assets/logos/finamDiarygray.svg"
-                        alt="Финам Дневник"
-                        width={180}
-                        height={60}
-                        className="object-contain"
-                      />
-                    </div>
-                  </div>
-                </div>
               </div>
             </div>
           </div>
+
+          <section className="relative z-10 mt-[28px] px-[20px]">
+            <h2 className="font-inter-tight text-[22px] font-semibold leading-[110%] tracking-[-0.44px] text-white">
+              Зачем это нужно
+            </h2>
+            <p className="mt-[10px] font-inter text-[14px] leading-[22px] tracking-[-0.028px] text-[rgba(255,255,255,0.78)]">
+              «Дневник трейдера» — это новый сервис, который объединяет фиксацию идей, аналитику портфеля и ИИ-помощника. Мы хотим, чтобы он работал безупречно ещё до публичного релиза. Поэтому открываем платформу для трейдеров, QA и разработчиков — чтобы вы нашли всё, что мы могли упустить, а мы превратили ваши репорты в улучшения продукта.
+            </p>
+          </section>
+
+          <section className="relative z-10 mt-[24px] px-[20px]">
+            <h2 className="font-inter-tight text-[22px] font-semibold leading-[110%] tracking-[-0.44px] text-white">
+              Как это работает
+            </h2>
+            <ol className="mt-[12px] flex flex-col gap-[8px]">
+              {STEPS.map((step, idx) => (
+                <li
+                  key={step.title}
+                  className="flex items-start gap-[12px] p-[14px] rounded-[12px] bg-[#141418] border border-[#1F1F25]"
+                >
+                  <div
+                    className="shrink-0 w-[28px] h-[28px] rounded-full flex items-center justify-center font-inter-tight text-[13px] font-semibold text-[#0D0512]"
+                    style={{
+                      background: 'linear-gradient(90deg, #FDB938 6.62%, #ED6B51 100%)',
+                    }}
+                  >
+                    {idx + 1}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-inter-tight text-[15px] font-semibold leading-[20px] tracking-[-0.3px] text-white">
+                      {step.title}
+                    </p>
+                    <p className="mt-[2px] font-inter text-[13px] leading-[18px] tracking-[-0.026px] text-[rgba(255,255,255,0.72)]">
+                      {step.description}
+                    </p>
+                  </div>
+                </li>
+              ))}
+            </ol>
+          </section>
+
+          <section className="relative z-10 mt-[24px] px-[20px]">
+            <h2 className="font-inter-tight text-[22px] font-semibold leading-[110%] tracking-[-0.44px] text-white">
+              Что ты получаешь
+            </h2>
+            <div className="mt-[12px] flex flex-col gap-[10px]">
+              {REWARDS.map((reward) => (
+                <div
+                  key={reward.title}
+                  className="p-[14px] rounded-[12px] bg-[#151519]"
+                >
+                  <p className="font-inter-tight text-[15px] font-semibold leading-[20px] tracking-[-0.3px] text-white">
+                    {reward.title}
+                  </p>
+                  <p className="mt-[4px] font-inter text-[13px] leading-[18px] tracking-[-0.026px] text-[rgba(255,255,255,0.72)]">
+                    {reward.description}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          <section className="relative z-10 mt-[28px] px-[20px]">
+            <div
+              className="rounded-[16px] p-[1px]"
+              style={{
+                background:
+                  'linear-gradient(305deg, #FEDA3B -2.67%, #EF5541 38.9%, #801FDB 77.17%, #7E2A89 98.46%)',
+              }}
+            >
+              <div className="rounded-[15px] bg-[#0F0F13] p-[20px] text-center">
+                <p className="font-inter-tight text-[22px] font-semibold leading-[110%] tracking-[-0.44px] text-white">
+                  Готов ловить баги?
+                </p>
+                <p className="mt-[8px] font-inter text-[13px] leading-[18px] tracking-[-0.026px] text-[rgba(255,255,255,0.72)]">
+                  Регистрация, правила и форма отчёта — на странице конкурса. Конкурс идёт до 10 мая включительно.
+                </p>
+                <GoldButton onClick={openBugBounty} icon={<IconArrow />} className="mt-[16px]">
+                  Перейти к Bug Bounty
+                </GoldButton>
+              </div>
+            </div>
+          </section>
         </div>
       </div>
     </div>
